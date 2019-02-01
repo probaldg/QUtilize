@@ -1,0 +1,6 @@
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\bin\Debug\QBA.Qutilize.Models.dll
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\bin\Debug\QBA.Qutilize.Models.pdb
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\obj\Debug\QBA.Qutilize.Models.csproj.CoreCompileInputs.cache
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\obj\Debug\QBA.Qutilize.Models.dll
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\obj\Debug\QBA.Qutilize.Models.pdb
+D:\Projects\Qutilize\QBA.Qutilize\QBA.Qutilize.Models\obj\Debug\QBA.Qutilize.Models.csprojAssemblyReference.cache
