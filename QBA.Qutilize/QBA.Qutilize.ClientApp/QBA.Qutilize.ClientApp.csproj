@@ -69,8 +69,12 @@
     </Compile>
     <Compile Include="Helper\CommandHandler.cs" />
     <Compile Include="Helper\EncryptionHelper.cs" />
+    <Compile Include="Helper\ParentProjects.cs" />
     <Compile Include="Helper\PasswordHelper.cs" />
+    <Compile Include="Helper\ProjectForTreeView.cs" />
+    <Compile Include="Helper\ProjectListForTreeView.cs" />
     <Compile Include="Helper\ViewModelBase.cs" />
+    <Compile Include="ViewModel\DailyTaskViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="Views\DailyTask.xaml.cs">
       <DependentUpon>DailyTask.xaml</DependentUpon>

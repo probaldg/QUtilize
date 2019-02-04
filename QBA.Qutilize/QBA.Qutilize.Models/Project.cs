@@ -19,5 +19,10 @@ namespace QBA.Qutilize.Models
 
         public int? ParentProjectID { get; set; }
         public ICollection<User> Users { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreateDate { get; set; }
+        public string EditedBy { get; set; }
+        public DateTime? EditedDate { get; set; }
+        public bool IsActive { get; set; }
     }
 }

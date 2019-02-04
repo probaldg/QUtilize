@@ -6,7 +6,106 @@
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
         Title="DailyTask" Height="350" Width="350" BorderThickness="2">
-    <Grid>
-        
-    </Grid>
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="HorizontalAlignment" Value="left"/>
+            <Setter Property="Width" Value="172"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="MinHeight" Value="15"/>
+            <Setter Property="MinWidth" Value="150"/>
+
+        </Style>
+
+        <Style TargetType="PasswordBox">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="MinHeight" Value="15"/>
+            <Setter Property="MinWidth" Value="150"/>
+
+        </Style>
+
+        <Style TargetType="Button" x:Key="btn">
+            <Setter Property="Background" Value="Blue"/>
+            <Setter Property="Foreground" Value="#000"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                        CornerRadius="5"
+                        BorderThickness="1"
+                        Padding="5"
+                        BorderBrush="#000">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#fff"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+      
+    </Window.Resources>
+    <Border CornerRadius="5">
+        <Grid x:Name="uiGridMain" Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+            </Grid>
+
+            <GroupBox Header="Project List" Grid.Row="2" HorizontalAlignment="Center" Margin="10,10,0,0"
+                  VerticalAlignment="Top" Height="236" Width="263" BorderBrush="Blue">
+               
+
+                <ListBox ItemsSource="{Binding Projects}" SelectedItem="{Binding DataContext.SelectedProject, ElementName=lstProject}" x:Name="lstProject">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="IsSelected" Value="True"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                       
+                        <DataTemplate>
+                            <StackPanel>
+                                <!--<Image Source="{Binding imageLocation}" Stretch="UniformToFill"/>-->
+                                <Button Content="{Binding ProjectName}" FontSize="20"  Width="150" Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}" CommandParameter="{Binding DataContext.SelectedProject, ElementName=lstProject}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+               
+            </GroupBox>
+
+        </Grid>
+    </Border>
 </Window>

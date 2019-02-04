@@ -1,11 +1,9 @@
-﻿using QBA.Qutilize.DataAccess.DataModel;
-using QBA.Qutilize.Models;
-using System;
+﻿using Newtonsoft.Json.Linq;
+using QBA.Qutilize.DataAccess.DataModel;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace QBA.Qutilize.WebAPI.Controllers
 {
@@ -16,19 +14,37 @@ namespace QBA.Qutilize.WebAPI.Controllers
         {
             _dbContext = new QutilizeModel();
         }
-        public IEnumerable<Project> GetUserProjectsByUserID(int userID)
-        {
-        //    var UserInRole = db.UserProfiles.
-        //Join(db.UsersInRoles, u => u.UserId, uir => uir.UserId,
-        //(u, uir) => new { u, uir }).
-        //Join(db.Roles, r => r.uir.RoleId, ro => ro.RoleId, (r, ro) => new { r, ro })
-        //.Select(m => new AddUserToRole
-        //{
-        //    UserName = m.r.u.UserName,
-        //    RoleName = m.ro.RoleName
-        //});
 
-                var ProjectsForUser=  _dbContext.Projects.Join(_dbContext.Users )
+        [HttpGet()]
+        [Route("api/UserProject/GetUserProjectsByUserID/")]
+        [ResponseType(typeof(JObject))]
+        public ICollection<Project> GetUserProjectsByUserID(int id)
+        {
+            List<Project> projects = new List<Project>();
+            try
+            {
+                var User = _dbContext.Users.Include("Projects").Where(x => x.Id == id && x.IsActive).FirstOrDefault<User>();
+                foreach (var item in User.Projects)
+                {
+                    projects.Add(new Project
+                    {
+                        Name = item.Name,
+                        Description = item.Description,
+                        ParentProjectId = item.ParentProjectId,
+                        IsActive=item.IsActive,
+                        CreateDate= item.CreateDate,
+                        CreatedBy=item.CreatedBy,
+                        Id= item.Id
+                    });
+                }
+
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+           
+            return projects;
         }
     }
 }

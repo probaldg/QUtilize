@@ -70,6 +70,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 {
                    
                     var authenticateduser= await CallWebApi(new User {
+                        
                         UserName = UserID,
                         Password = UserPassword,
                         IsActive = true
@@ -77,9 +78,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     if(authenticateduser != null)
                     {
-                      
-                        DailyTask dailyTask = new DailyTask();
-                        dailyTask.Show();
+                        ConfigureDailyTaskViewModel(authenticateduser);
                         _loginView.Close();
 
                     }
@@ -93,13 +92,33 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 
 
         }
-              
+
+        private static void ConfigureDailyTaskViewModel(User user)
+        {
+
+            DailyTask dailyTask = new DailyTask();
+           
+         
+            DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask,user);
+
+            dailyTaskVM.User = user;
+            dailyTaskVM.UserId = user.ID;
+            foreach (var item in user.Projects)
+            {
+                dailyTaskVM.Projects.Add(item);
+            }
+            
+            dailyTask.DataContext = dailyTaskVM;
+
+
+            dailyTask.Show();
+        }
+
         private static async Task<User> CallWebApi(User user)
         {
             HttpClient client = new HttpClient

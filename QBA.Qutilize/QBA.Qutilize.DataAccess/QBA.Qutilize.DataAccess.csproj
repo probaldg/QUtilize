@@ -56,6 +56,8 @@
     <Compile Include="DataModel\QutilizeModel.cs" />
     <Compile Include="DataModel\Role.cs" />
     <Compile Include="DataModel\User.cs" />
+    <Compile Include="DataModel\UserProjects.cs" />
+    <Compile Include="DataModel\UserRoles.cs" />
     <Compile Include="Migrations\201902010953078_InitialDatabase.cs" />
     <Compile Include="Migrations\201902010953078_InitialDatabase.Designer.cs">
       <DependentUpon>201902010953078_InitialDatabase.cs</DependentUpon>
@@ -63,6 +65,14 @@
     <Compile Include="Migrations\201902011047538_MakingEditedDateNullable.cs" />
     <Compile Include="Migrations\201902011047538_MakingEditedDateNullable.Designer.cs">
       <DependentUpon>201902011047538_MakingEditedDateNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902011313086_configuringUserRoleMappingTable.cs" />
+    <Compile Include="Migrations\201902011313086_configuringUserRoleMappingTable.Designer.cs">
+      <DependentUpon>201902011313086_configuringUserRoleMappingTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902011315387_configuringUserProjectMappingTable.cs" />
+    <Compile Include="Migrations\201902011315387_configuringUserProjectMappingTable.Designer.cs">
+      <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,6 +87,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902011047538_MakingEditedDateNullable.resx">
       <DependentUpon>201902011047538_MakingEditedDateNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902011313086_configuringUserRoleMappingTable.resx">
+      <DependentUpon>201902011313086_configuringUserRoleMappingTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902011315387_configuringUserProjectMappingTable.resx">
+      <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

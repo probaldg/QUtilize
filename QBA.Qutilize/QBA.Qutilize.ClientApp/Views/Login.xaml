@@ -83,7 +83,7 @@
                     <TextBlock >Password:</TextBlock>
 
                     <PasswordBox x:Name="txtUserpassword" PWDH:PasswordHelper.Attach="True" PWDH:PasswordHelper.Password="{Binding UserPassword, Mode=TwoWay, NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}"></PasswordBox>
-                    <Button Content="Login" Width="100"  HorizontalAlignment="Left" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}"/>
+                    <Button Content="Login" Width="100" IsDefault="True"  HorizontalAlignment="Left" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}"/>
                     <!--<Image Source="Images\smalllogo.png" Height="50" Width="50" Visibility="Visible" ></Image>-->
 
                 </StackPanel>

@@ -4,12 +4,13 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using User = QBA.Qutilize.Models.User;
 using QBA.Qutilize.DataAccess.DataModel;
+using Microsoft.Ajax.Utilities;
 
 namespace QBA.Qutilize.WebAPI.Controllers
 {
     public class AccountController : ApiController
     {
-      
+
         QutilizeModel _dbContext;
         public AccountController()
         {
@@ -21,17 +22,40 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [ResponseType(typeof(JObject))]
         public User Login(User user)
         {
-            var dbUser = _dbContext.Users.SingleOrDefault(x => x.UserName == user.UserName
+            var dbUser = _dbContext.Users.Include("Projects").SingleOrDefault(x => x.UserName == user.UserName
                         && x.Password == user.Password && x.IsActive);
+
+           // var dbUser = _dbContext.Users.Include("Projects").Where(x => x.UserName == user.UserName && x.IsActive).FirstOrDefault<User>();
 
             if (dbUser != null)
             {
+
                 User userModel = new User
                 {
-                  Name   = dbUser.Name,
+                    ID = dbUser.Id,
+                    Name = dbUser.Name,
                     UserName = dbUser.UserName,
                     IsActive = dbUser.IsActive,
+                    CreateDate = dbUser.CreateDate,
+                    CreatedBy = dbUser.CreatedBy
                 };
+
+                //Getting all the project for this user
+                foreach (var item in dbUser.Projects)
+                {
+                    QBA.Qutilize.Models.Project project = new QBA.Qutilize.Models.Project();
+                    project.ProjectName = item.Name;
+                    project.ProjectID= item.Id;
+                    project.Description = item.Description;
+                    project.ParentProjectID = item.ParentProjectId;
+                    project.CreatedBy = item.CreatedBy;
+                    project.CreateDate = item.CreateDate;
+                    project.IsActive = item.IsActive;
+
+                    userModel.Projects.Add(project);
+                }
+
+                
                 return userModel;
             }
             else
@@ -39,27 +63,6 @@ namespace QBA.Qutilize.WebAPI.Controllers
 
         }
 
-        //[HttpPost()]
-        //[Route("api/Account/Login/")]
-        //[ResponseType(typeof(JObject))]
-        //public User Login(string userId, string password)
-        //{
-        //    var dbUser = _dbContext.Users.SingleOrDefault(x => x.UserID == userId
-        //                && x.Password == password && x.Active.ToLower() == "y");
-
-        //    if (dbUser != null)
-        //    {
-        //        User userModel = new User
-        //        {
-        //            UserID = dbUser.UserID,
-        //            UserName = dbUser.UserName,
-        //            Active = dbUser.Active,
-        //        };
-        //        return userModel;
-        //    }
-        //    else
-        //        return null;
-
-        //}
+       
     }
 }
