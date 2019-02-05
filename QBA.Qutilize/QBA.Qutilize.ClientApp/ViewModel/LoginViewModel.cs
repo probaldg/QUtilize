@@ -106,15 +106,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
          
             DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask,user);
 
-            dailyTaskVM.User = user;
-            dailyTaskVM.UserId = user.ID;
-            foreach (var item in user.Projects)
-            {
-                dailyTaskVM.Projects.Add(item);
-            }
+            //dailyTaskVM.User = user;    
+            //dailyTaskVM.UserId = user.ID;
+            //foreach (var item in user.Projects)
+            //{
+            //    dailyTaskVM.Projects.Add(item);
+            //}
             
             dailyTask.DataContext = dailyTaskVM;
-
 
             dailyTask.Show();
         }
@@ -160,5 +159,20 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             return EncryptionHelper.ConvertStringToMD5(password);
         }
+
+        //private static void SetDefaultProjectAsCurrentProject(DailyTaskViewModel dailyTaskVM)
+        //{
+        //    var defaultProj = dailyTaskVM.Projects.ToList().FirstOrDefault(x => x.ProjectName.ToLower() == "Default Project".ToLower());
+        //    if (defaultProj != null)
+        //    {
+        //        dailyTaskVM.CurrentWorkingProject = new CurrentWorkingProject
+        //        {
+        //            ProjectID = defaultProj.ProjectID,
+        //            ProjectName = defaultProj.ProjectName,
+        //            StrartDateTime = DateTime.Now
+        //        };
+        //    }
+
+        //}
     }
 }

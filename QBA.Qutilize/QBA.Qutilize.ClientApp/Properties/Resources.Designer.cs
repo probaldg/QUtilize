@@ -71,11 +71,29 @@ namespace QBA.Qutilize.ClientApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to api/DailyTask/UpdateStartTime/.
+        /// </summary>
+        internal static string InsertStartTimeAPIRoutePath {
+            get {
+                return ResourceManager.GetString("InsertStartTimeAPIRoutePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to api/Account/Login/.
         /// </summary>
         internal static string LoginWebAPIRoutePath {
             get {
                 return ResourceManager.GetString("LoginWebAPIRoutePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to api/DailyTask/UpdateEndTime/.
+        /// </summary>
+        internal static string UpdateEndTimeAPIRoutePath {
+            get {
+                return ResourceManager.GetString("UpdateEndTimeAPIRoutePath", resourceCulture);
             }
         }
     }

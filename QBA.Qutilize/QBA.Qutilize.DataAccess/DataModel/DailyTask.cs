@@ -12,14 +12,14 @@ namespace QBA.Qutilize.DataAccess.DataModel
         public int DailyTaskId { get; set; }
 
         [Required]
-        public int UserID { get; set; }
+        public int? UserID { get; set; }
 
         [Required]
         public int ProjectID { get; set; }
 
         public DateTime StartDateTime { get; set; }
 
-        public DateTime EndDateTime { get; set; }
+        public DateTime? EndDateTime { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }

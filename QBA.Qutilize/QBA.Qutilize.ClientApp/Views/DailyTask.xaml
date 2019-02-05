@@ -80,9 +80,9 @@
 
             <GroupBox Header="Project List" Grid.Row="2" HorizontalAlignment="Center" Margin="10,10,0,0"
                   VerticalAlignment="Top" Height="236" Width="263" BorderBrush="Blue">
-               
 
-                <ListBox ItemsSource="{Binding Projects}" SelectedItem="{Binding DataContext.SelectedProject, ElementName=lstProject}" x:Name="lstProject">
+
+                <ListBox ItemsSource="{Binding Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding DataContext.SelectedProject, ElementName=lstProject}" x:Name="lstProject">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Style.Triggers>
@@ -93,11 +93,12 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
-                       
+
                         <DataTemplate>
-                            <StackPanel>
-                                <!--<Image Source="{Binding imageLocation}" Stretch="UniformToFill"/>-->
-                                <Button Content="{Binding ProjectName}" FontSize="20"  Width="150" Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}" CommandParameter="{Binding DataContext.SelectedProject, ElementName=lstProject}"/>
+                            <StackPanel >
+
+                                <Button Content="{Binding ProjectName}" FontSize="20"  Width="150" 
+                                        Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}" CommandParameter="{Binding DataContext.SelectedProject, ElementName=lstProject}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
