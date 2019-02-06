@@ -7,7 +7,7 @@
       xmlns:local="clr-namespace:QBA.Qutilize.ClientApp"
         xmlns:PWDH="clr-namespace:QBA.Qutilize.ClientApp.Helper"
         mc:Ignorable="d"
-        Title="Login"  Height="350" Width="350" BorderThickness="2">
+        Title="Login"  Height="350" Width="300" BorderThickness="1" ResizeMode="CanMinimize" WindowStyle="None" BorderBrush="SteelBlue">
 
     <Window.Resources>
         <Style TargetType="TextBlock">
@@ -78,14 +78,17 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="1" Margin="10,20,10,10" Grid.ColumnSpan="2">
+                <StackPanel  Orientation="Horizontal"  Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    <Image x:Name="image" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="10,50,10,10" Grid.ColumnSpan="2">
                     <StackPanel.Background>
                         <ImageBrush/>
                     </StackPanel.Background>
-                    <TextBlock FontWeight="SemiBold" >User Name:</TextBlock>
+                    <TextBlock FontWeight="SemiBold" FontSize="13" >User Name:</TextBlock>
                     <TextBox Name="txtUserName" 
                              Text="{Binding UserID, Mode=TwoWay,NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FFCDCDD1" SelectionOpacity="1" AutomationProperties.IsRowHeader="True" />
-                    <TextBlock FontWeight="SemiBold" >Password:</TextBlock>
+                    <TextBlock FontWeight="SemiBold" FontSize="13" >Password:</TextBlock>
 
                     <PasswordBox x:Name="txtUserpassword" PWDH:PasswordHelper.Attach="True" PWDH:PasswordHelper.Password="{Binding UserPassword, Mode=TwoWay, NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FFCDCDD1"/>
                     <Button Content="Login" Width="100" IsDefault="True"  HorizontalAlignment="Left" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}" Foreground="White" FontWeight="Bold" Background="#FF0C00FF" Cursor="Hand"/>
@@ -96,10 +99,7 @@
                     <Label Content="A product of" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
                     <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
                 </StackPanel>
-                <Image x:Name="image" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png"   HorizontalAlignment="Left" Height="40" Margin="69,0,0,0" VerticalAlignment="Top" Width="162" RenderTransformOrigin="0.998,0.056" Stretch="Fill" Grid.ColumnSpan="2">
-                    
 
-                </Image>
             </Grid>
         </Grid>
     </Border>
