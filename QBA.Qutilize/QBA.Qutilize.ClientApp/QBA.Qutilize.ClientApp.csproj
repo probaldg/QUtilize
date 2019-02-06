@@ -144,5 +144,8 @@
   <ItemGroup>
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Qutilize.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

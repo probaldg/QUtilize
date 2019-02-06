@@ -71,6 +71,15 @@ namespace QBA.Qutilize.ClientApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Qutilize.
+        /// </summary>
+        internal static string DefaultProjectName {
+            get {
+                return ResourceManager.GetString("DefaultProjectName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to api/DailyTask/UpdateStartTime/.
         /// </summary>
         internal static string InsertStartTimeAPIRoutePath {
