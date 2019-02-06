@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
+       WindowStyle="None"
         Title="DailyTask" Height="350" Width="350" BorderThickness="2">
 
     <Window.Resources>
@@ -64,7 +65,7 @@
             </Style.Triggers>
         </Style>
 
-      
+
     </Window.Resources>
     <Border CornerRadius="5">
         <Grid x:Name="uiGridMain" Margin="10">
@@ -77,18 +78,27 @@
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
             </Grid>
+            <Button Grid.Row="1" Content="Logout " FontSize="10" 
+                     Width="50" Height="20" Margin="0,5,5,0"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding Logout}"/>
+                                      
+
 
             <GroupBox Header="Project List" Grid.Row="2" HorizontalAlignment="Center" Margin="10,10,0,0"
-                  VerticalAlignment="Top" Height="236" Width="263" BorderBrush="Blue">
+                  VerticalAlignment="Center" Height="236" Width="263" BorderBrush="Blue">
 
 
-                <ListBox ItemsSource="{Binding Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding DataContext.SelectedProject, ElementName=lstProject}" x:Name="lstProject">
+                <ListBox ItemsSource="{Binding Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
+                         SelectedItem="{Binding DataContext.SelectedProject, Mode=TwoWay, ElementName=lstProject}" x:Name="lstProject" SelectedIndex="{Binding isSelected}"
+                         HorizontalContentAlignment="Center" >
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
+                           
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="IsSelected" Value="True"/>
                                 </Trigger>
+                               
                             </Style.Triggers>
                         </Style>
                     </ListBox.ItemContainerStyle>
@@ -97,14 +107,14 @@
                         <DataTemplate>
                             <StackPanel >
 
-                                <Button Content="{Binding ProjectName}" FontSize="20"  Width="150" 
+                                <Button    Content="{Binding ProjectName}" FontSize="20" HorizontalContentAlignment="Center"  Width="200" 
                                         Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}" CommandParameter="{Binding DataContext.SelectedProject, ElementName=lstProject}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-               
+
             </GroupBox>
 
         </Grid>
