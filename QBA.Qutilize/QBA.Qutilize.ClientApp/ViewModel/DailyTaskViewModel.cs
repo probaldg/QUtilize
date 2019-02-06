@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace QBA.Qutilize.ClientApp.ViewModel
@@ -118,6 +119,16 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { _isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
+
         private CurrentWorkingProject _currentWorkingProject;
 
         public CurrentWorkingProject CurrentWorkingProject
@@ -170,6 +181,39 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 return new CommandHandler(_ => UpdateTask());
             }
         }
+        public ICommand Logout
+        {
+            get
+            {
+                return new CommandHandler(_ => LogoutUser());
+            }
+        }
+
+        private void LogoutUser()
+        {
+            if(CurrentWorkingProject != null)
+            {
+                DailyTaskModel dtm = new DailyTaskModel
+                {
+                    DailyTaskId = CurrentWorkingProject.DailyTaskId,
+                    ProjectId = CurrentWorkingProject.ProjectID,
+                    UserId = UserId,
+                    StartTime = CurrentWorkingProject.StrartDateTime,
+                    EndTime = DateTime.Now
+
+                };
+                var response = UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                CurrentWorkingProject = null;
+                User = null;
+                SelectedProject = null;
+                Login loginView = new Login();
+                loginView.Show();
+
+                _dailyTaskView.Close();
+
+               
+            }
+        }
 
         private void UpdateTask()
         {
@@ -188,6 +232,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 {
                     if (SelectedProject.ProjectName == CurrentWorkingProject.ProjectName)
                     {
+                        IsSelected = true;
                         MessageBox.Show("This is your current project and the start time was " + CurrentWorkingProject.StrartDateTime);
                     }
                     else
@@ -302,7 +347,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void SetDefaultProjectAsCurrentProject()
         {
-            var defaultProj = Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Default Project".ToLower());
+            var defaultProj = Projects.FirstOrDefault(x => x.ProjectName.ToLower() == Properties.Resources.DefaultProjectName.ToLower());
+            IsSelected = true;
             if (defaultProj != null)
             {
                 CurrentWorkingProject = new CurrentWorkingProject
@@ -364,5 +410,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         }
 
+        private void FindPrjectButton()
+        {
+            ListBox control = (ListBox)_dailyTaskView.FindName("lstProject");
+           
+        }
     }
 }
