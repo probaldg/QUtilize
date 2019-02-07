@@ -74,6 +74,10 @@
     <Compile Include="Migrations\201902011315387_configuringUserProjectMappingTable.Designer.cs">
       <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.cs" />
+    <Compile Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.Designer.cs">
+      <DependentUpon>201902050818111_MakingEndTimeNullableInDailyTaskTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -93,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902011315387_configuringUserProjectMappingTable.resx">
       <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.resx">
+      <DependentUpon>201902050818111_MakingEndTimeNullableInDailyTaskTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

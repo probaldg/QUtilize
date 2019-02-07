@@ -9,8 +9,6 @@ namespace QBA.Qutilize.Models
    public class UserStackMapping
     {
         public int ID { get; set; }
-
-       
         public string UserID { get; set; }
 
         public int Stack { get; set; }

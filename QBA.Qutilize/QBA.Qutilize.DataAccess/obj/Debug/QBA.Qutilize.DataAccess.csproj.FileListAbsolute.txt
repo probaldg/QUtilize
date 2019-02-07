@@ -20,13 +20,14 @@ D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\bin\Debug\EntityFr
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\bin\Debug\EntityFramework.SqlServer.dll
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\bin\Debug\EntityFramework.xml
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.csprojAssemblyReference.cache
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.Migrations.InitialDatabase.resources
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.Migrations.MakingEditedDateNullable.resources
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.Migrations.configuringUserRoleMappingTable.resources
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.Migrations.configuringUserProjectMappingTable.resources
+D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.Migrations.MakingEndTimeNullableInDailyTaskTable.resources
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.csproj.GenerateResource.cache
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.csproj.CoreCompileInputs.cache
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.csproj.CopyComplete
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.dll
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.pdb
-D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.DataAccess\obj\Debug\QBA.Qutilize.DataAccess.csprojAssemblyReference.cache

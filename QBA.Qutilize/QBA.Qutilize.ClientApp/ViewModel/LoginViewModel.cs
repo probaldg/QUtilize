@@ -45,14 +45,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        private bool _loggedIn;
-
-        public bool LoggedIn
-        {
-            get { return _loggedIn; }
-            set { _loggedIn = value; }
-        }
-
+       
         public ICommand Login
         {
             get
@@ -69,7 +62,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 if (ValidateInput())
                 {
                    
-                    var authenticateduser= await CallWebApi(new User {
+                    var authenticateduser= await WebAPIHelper.CallWebApiForUserAuthentication(new User {
                         
                         UserName = UserID,
                         Password = UserPassword,
@@ -80,7 +73,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         ConfigureDailyTaskViewModel(authenticateduser);
                         _loginView.Close();
-
                     }
                     else
                     {
@@ -102,49 +94,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
 
             DailyTask dailyTask = new DailyTask();
-           
-         
             DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask,user);
 
-            //dailyTaskVM.User = user;    
-            //dailyTaskVM.UserId = user.ID;
-            //foreach (var item in user.Projects)
-            //{
-            //    dailyTaskVM.Projects.Add(item);
-            //}
-            
             dailyTask.DataContext = dailyTaskVM;
-
             dailyTask.Show();
         }
 
-        private static async Task<User> CallWebApi(User user)
-        {
-            HttpClient client = new HttpClient
-            {
-                BaseAddress = new Uri(ConfigurationManager.AppSettings["WebApibaseAddress"])
-            };
-
-            var completeApiAddress = ConfigurationManager.AppSettings["WebApibaseAddress"] + Properties.Resources.LoginWebAPIRoutePath;
-
-            var myContent = JsonConvert.SerializeObject(user);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            var response =  client.PostAsync(completeApiAddress, byteContent).Result;
-
-
-            if (response.IsSuccessStatusCode)
-            {
-                var JsonString = await response.Content.ReadAsStringAsync();
-
-                var deserialized = JsonConvert.DeserializeObject<User>(JsonString);
-                return deserialized;
-            }
-            else
-                return null;
-        }
         private bool ValidateInput()
         {
             if (UserID == null)
@@ -160,19 +115,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             return EncryptionHelper.ConvertStringToMD5(password);
         }
 
-        //private static void SetDefaultProjectAsCurrentProject(DailyTaskViewModel dailyTaskVM)
-        //{
-        //    var defaultProj = dailyTaskVM.Projects.ToList().FirstOrDefault(x => x.ProjectName.ToLower() == "Default Project".ToLower());
-        //    if (defaultProj != null)
-        //    {
-        //        dailyTaskVM.CurrentWorkingProject = new CurrentWorkingProject
-        //        {
-        //            ProjectID = defaultProj.ProjectID,
-        //            ProjectName = defaultProj.ProjectName,
-        //            StrartDateTime = DateTime.Now
-        //        };
-        //    }
-
-        //}
+        
     }
 }

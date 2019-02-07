@@ -65,7 +65,6 @@ D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\bin\roslyn\VBCSCompile
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\bin\roslyn\VBCSCompiler.exe.config
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\obj\Debug\QBA.Qutilize.WebApp.csprojAssemblyReference.cache
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\obj\Debug\QBA.Qutilize.WebApp.csproj.CoreCompileInputs.cache
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\obj\Debug\QBA.Qutilize.WebApp.csproj.CopyComplete
 D:\Projects\GIT\QUtilize\QBA.Qutilize\QBA.Qutilize.WebApp\obj\Debug\QBA.Qutilize.WebApp.dll

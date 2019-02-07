@@ -121,13 +121,4 @@
   <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AppIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="InsertStartTimeAPIRoutePath" xml:space="preserve">
-    <value>api/DailyTask/UpdateStartTime/</value>
-  </data>
-  <data name="LoginWebAPIRoutePath" xml:space="preserve">
-    <value>api/Account/Login/</value>
-  </data>
-  <data name="UpdateEndTimeAPIRoutePath" xml:space="preserve">
-    <value>api/DailyTask/UpdateEndTime/</value>
-  </data>
 </root>
