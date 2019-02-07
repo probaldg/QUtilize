@@ -35,7 +35,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             InsertProjectStartTime();
 
         }
-
+        //test comment
         
 
         private User _user;
