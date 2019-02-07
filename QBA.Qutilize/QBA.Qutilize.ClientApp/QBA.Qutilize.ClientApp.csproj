@@ -75,7 +75,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Converter\ObjectToBooleanConverter.cs" />
     <Compile Include="Helper\CommandHandler.cs" />
     <Compile Include="Helper\EncryptionHelper.cs" />
     <Compile Include="Helper\PasswordHelper.cs" />
@@ -151,6 +150,8 @@
   <ItemGroup>
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Converter\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
