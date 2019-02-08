@@ -25,7 +25,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             _dailyTaskView = dailyTask;
             Projects = new ObservableCollection<Project>();
-
+            User = user;
          
             foreach (var item in user.Projects)
             {
@@ -164,7 +164,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                         };
                         var response =WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
-                        if (response != null)
+                        if (response > 0)
                         {
                             SetNewCurrentProjectAndInsertStartTime(NewSelectedProject);
                         }
@@ -236,7 +236,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             if (response != null)
             {
-                CurrentWorkingProject.DailyTaskId = response.Result.DailyTaskId;
+                CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
             }
         }
 

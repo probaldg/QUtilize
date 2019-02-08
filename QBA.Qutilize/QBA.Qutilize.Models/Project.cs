@@ -12,7 +12,7 @@ namespace QBA.Qutilize.Models
         {
             Users = new List<User>();
         }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
         public string ProjectName { get; set; }
 
         public string Description { get; set; }

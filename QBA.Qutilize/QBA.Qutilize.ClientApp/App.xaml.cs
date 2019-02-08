@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -15,7 +16,19 @@ namespace QBA.Qutilize.ClientApp
     {
         private System.Windows.Forms.NotifyIcon _notifyIcon;
         private bool _isExit;
-
+        Mutex m;
+        public App()
+        {
+            bool isnew;
+            m = new Mutex(true, "QBA.Qutilize.ClientApp", out isnew);
+            if (!isnew)
+            {
+                MessageBox.Show(string.Format("Another instance of QUtilize is already running.{0} " +
+                    " Kindly close all running instances and try again.", Environment.NewLine), " Qutilize " +
+                    " Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -33,7 +46,7 @@ namespace QBA.Qutilize.ClientApp
         private void CreateContextMenu()
         {
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-            _notifyIcon.ContextMenuStrip.Items.Add("MainWindow...").Click += (s, e) => ShowAppWindow();
+            //_notifyIcon.ContextMenuStrip.Items.Add("MainWindow...").Click += (s, e) => ShowAppWindow();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
         }
 

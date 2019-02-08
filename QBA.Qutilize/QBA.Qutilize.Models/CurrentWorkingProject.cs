@@ -9,7 +9,7 @@ namespace QBA.Qutilize.Models
    public class CurrentWorkingProject
     {
         //public Project Project { get; set; }
-        public int ProjectID { get; set; }
+        public int? ProjectID { get; set; }
 
         public string ProjectName { get; set; }
         public int DailyTaskId { get; set; }

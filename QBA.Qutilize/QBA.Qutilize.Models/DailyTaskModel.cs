@@ -12,7 +12,7 @@ namespace QBA.Qutilize.Models
     {
         public int DailyTaskId { get; set; }
         public int? UserId { get; set; }
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 

@@ -11,6 +11,7 @@ namespace QBA.Qutilize.Models
         public User()
         {
             Projects = new List<Project>();
+            Roles = new List<Roles>();
         }
         public int ID { get; set; }
         public string UserName { get; set; }

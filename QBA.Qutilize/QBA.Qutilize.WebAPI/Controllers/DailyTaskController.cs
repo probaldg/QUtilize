@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
-using QBA.Qutilize.DataAccess.DataModel;
+using QBA.Qutilize.DataAccess.DAL;
 using QBA.Qutilize.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -10,57 +11,63 @@ namespace QBA.Qutilize.WebAPI.Controllers
 {
     public class DailyTaskController : ApiController
     {
-        QutilizeModel _dbContext;
+        QUtilizeDBCon _dbContext;
         public DailyTaskController()
         {
-            _dbContext = new QutilizeModel();
+            _dbContext = new QUtilizeDBCon();
         }
 
         [HttpPost]
         [Route("api/DailyTask/UpdateStartTime/")]
         [ResponseType(typeof(JObject))]
-        public DailyTask UpdateStartTime(DailyTaskModel dailyTaskModel)
+        public decimal? UpdateStartTime(DailyTaskModel dailyTaskModel)
         {
-            DailyTask dt=  new DailyTask
+            decimal? DailyTaskId = 0;
+            if (dailyTaskModel == null)
             {
-                ProjectID = dailyTaskModel.ProjectId,
-                UserID = dailyTaskModel.UserId,
-                StartDateTime = dailyTaskModel.StartTime,
-              
-                CreatedBy = dailyTaskModel.UserId.ToString(),
-                CreateDate = dailyTaskModel.StartTime,
-                IsActive = true
-            };
-            _dbContext.DailyTasks.Add(dt);
-            _dbContext.SaveChanges();
+                return 0;
+            }
+           
+            try
+            {
+                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true).ToList();
+                _dbContext.SaveChanges();
+                if (queryResult != null && queryResult.Count > 0)
+                {
+                    DailyTaskId = queryResult.First();
+                }
+            }
+            catch (Exception ex)
+            {
 
-            
-            return dt;
+                throw ex;
+            }
+
+            return DailyTaskId;
         }
-
-
 
         [HttpPost()]
         [Route("api/DailyTask/UpdateEndTime/")]
         [ResponseType(typeof(JObject))]
-        public DailyTask UpdateEndTime(DailyTaskModel dailyTaskModel)
+        public int UpdateEndTime(DailyTaskModel dailyTaskModel)
         {
-            DailyTask dailyTask= null;
+            if (dailyTaskModel == null)
+            {
+                throw new ArgumentNullException(nameof(dailyTaskModel));
+            }
+
+            int queryResult;
             try
             {
-                dailyTask = _dbContext.DailyTasks.FirstOrDefault(x => x.DailyTaskId == dailyTaskModel.DailyTaskId);
-
-                if (dailyTask != null)
-                    dailyTask.EndDateTime = DateTime.Now;
-
+                 queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, DateTime.Now);
                 _dbContext.SaveChanges();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw;
+                throw ex;
             }
 
-            return dailyTask;
+            return queryResult;
         }
     }
 }

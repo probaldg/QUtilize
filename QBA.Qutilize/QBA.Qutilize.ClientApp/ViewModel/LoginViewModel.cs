@@ -92,12 +92,20 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private static void ConfigureDailyTaskViewModel(User user)
         {
+            try
+            {
+                DailyTask dailyTask = new DailyTask();
+                DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
 
-            DailyTask dailyTask = new DailyTask();
-            DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask,user);
+                dailyTask.DataContext = dailyTaskVM;
+                dailyTask.Show();
+            }
+            catch (Exception)
+            {
 
-            dailyTask.DataContext = dailyTaskVM;
-            dailyTask.Show();
+                throw;
+            }
+          
         }
 
         private bool ValidateInput()
