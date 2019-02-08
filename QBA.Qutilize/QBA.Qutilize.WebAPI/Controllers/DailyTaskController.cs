@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using QBA.Qutilize.DataAccess.DataModel;
+using QBA.Qutilize.DataAccess.DAL;
 using QBA.Qutilize.Models;
 using System;
 using System.Linq;
@@ -10,32 +10,19 @@ namespace QBA.Qutilize.WebAPI.Controllers
 {
     public class DailyTaskController : ApiController
     {
-        QutilizeModel _dbContext;
+        QUtilizeDBCon _dbContext;
         public DailyTaskController()
         {
-            _dbContext = new QutilizeModel();
+            _dbContext = new QUtilizeDBCon();
         }
 
         [HttpPost]
         [Route("api/DailyTask/UpdateStartTime/")]
         [ResponseType(typeof(JObject))]
-        public DailyTask UpdateStartTime(DailyTaskModel dailyTaskModel)
+        public int UpdateStartTime(DailyTaskModel dailyTaskModel)
         {
-            DailyTask dt=  new DailyTask
-            {
-                ProjectID = dailyTaskModel.ProjectId,
-                UserID = dailyTaskModel.UserId,
-                StartDateTime = dailyTaskModel.StartTime,
-              
-                CreatedBy = dailyTaskModel.UserId.ToString(),
-                CreateDate = dailyTaskModel.StartTime,
-                IsActive = true
-            };
-            _dbContext.DailyTasks.Add(dt);
-            _dbContext.SaveChanges();
-
-            
-            return dt;
+            var result = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true);
+            return result;
         }
 
 
@@ -45,7 +32,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [ResponseType(typeof(JObject))]
         public DailyTask UpdateEndTime(DailyTaskModel dailyTaskModel)
         {
-            DailyTask dailyTask= null;
+            DailyTask dailyTask = null;
             try
             {
                 dailyTask = _dbContext.DailyTasks.FirstOrDefault(x => x.DailyTaskId == dailyTaskModel.DailyTaskId);

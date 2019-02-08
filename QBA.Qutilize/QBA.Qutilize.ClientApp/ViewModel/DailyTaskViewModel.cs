@@ -25,7 +25,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             _dailyTaskView = dailyTask;
             Projects = new ObservableCollection<Project>();
-
+            User = user;
          
             foreach (var item in user.Projects)
             {

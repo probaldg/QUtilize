@@ -1,20 +1,20 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
 using User = QBA.Qutilize.Models.User;
-using QBA.Qutilize.DataAccess.DataModel;
-using Microsoft.Ajax.Utilities;
+using QBA.Qutilize.DataAccess.DAL;
+using System.Linq;
+using QBA.Qutilize.Models;
 
 namespace QBA.Qutilize.WebAPI.Controllers
 {
     public class AccountController : ApiController
     {
 
-        QutilizeModel _dbContext;
+        QUtilizeDBCon _dbContext;
         public AccountController()
         {
-            _dbContext = new QutilizeModel();
+            _dbContext = new QUtilizeDBCon();
         }
 
         [HttpPost()]
@@ -22,47 +22,49 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [ResponseType(typeof(JObject))]
         public User Login(User user)
         {
-            var dbUser = _dbContext.Users.Include("Projects").SingleOrDefault(x => x.UserName == user.UserName
-                        && x.Password == user.Password && x.IsActive);
+            if (user == null)
+                return null;
 
-           // var dbUser = _dbContext.Users.Include("Projects").Where(x => x.UserName == user.UserName && x.IsActive).FirstOrDefault<User>();
+            var dbUser = _dbContext.USPUsers_Get(user.UserName, user.Password).ToList();
 
             if (dbUser != null)
             {
-
-                User userModel = new User
-                {
-                    ID = dbUser.Id,
-                    Name = dbUser.Name,
-                    UserName = dbUser.UserName,
-                    IsActive = dbUser.IsActive,
-                    CreateDate = dbUser.CreateDate,
-                    CreatedBy = dbUser.CreatedBy
-                };
-
-                //Getting all the project for this user
-                foreach (var item in dbUser.Projects)
-                {
-                    QBA.Qutilize.Models.Project project = new QBA.Qutilize.Models.Project();
-                    project.ProjectName = item.Name;
-                    project.ProjectID= item.Id;
-                    project.Description = item.Description;
-                    project.ParentProjectID = item.ParentProjectId;
-                    project.CreatedBy = item.CreatedBy;
-                    project.CreateDate = item.CreateDate;
-                    project.IsActive = item.IsActive;
-
-                    userModel.Projects.Add(project);
-                }
-
-                
-                return userModel;
+                return CreateUser(dbUser);
             }
             else
                 return null;
 
         }
 
-       
+        private User CreateUser(System.Collections.Generic.List<USPUsers_Get_Result> dbUser)
+        {
+            User userModel = new User();
+            if (dbUser.Count > 0)
+            {
+                userModel.ID = dbUser.ElementAt(0).Id;
+                userModel.Name = dbUser.ElementAt(0).Name;
+                userModel.UserName = dbUser.ElementAt(0).UserName;
+                userModel.CreateDate = dbUser.ElementAt(0).CreateDate;
+                userModel.CreatedBy = dbUser.ElementAt(0).CreatedBy;
+
+                foreach (var item in dbUser)
+                {
+                    userModel.Projects.Add(new Qutilize.Models.Project()
+                    {
+                        ProjectName = item.ProjectName,
+                        ProjectID = item.ProjectID,
+                        ParentProjectID = item.ParentProjectId,
+                        Description = item.ProjectDescription,
+
+                    });
+                    userModel.Roles.Add(new Roles()
+                    {
+                        Id = item.RoleID,
+                        Name = item.RoleName
+                    });
+                }
+            }
+            return userModel;
+        }
     }
 }

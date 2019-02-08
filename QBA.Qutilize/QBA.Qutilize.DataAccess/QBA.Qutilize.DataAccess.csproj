@@ -51,56 +51,65 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="DataModel\DailyTask.cs" />
-    <Compile Include="DataModel\Project.cs" />
-    <Compile Include="DataModel\QutilizeModel.cs" />
-    <Compile Include="DataModel\Role.cs" />
-    <Compile Include="DataModel\User.cs" />
-    <Compile Include="DataModel\UserProjects.cs" />
-    <Compile Include="DataModel\UserRoles.cs" />
-    <Compile Include="Migrations\201902010953078_InitialDatabase.cs" />
-    <Compile Include="Migrations\201902010953078_InitialDatabase.Designer.cs">
-      <DependentUpon>201902010953078_InitialDatabase.cs</DependentUpon>
+    <Compile Include="DAL\DailyTask.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902011047538_MakingEditedDateNullable.cs" />
-    <Compile Include="Migrations\201902011047538_MakingEditedDateNullable.Designer.cs">
-      <DependentUpon>201902011047538_MakingEditedDateNullable.cs</DependentUpon>
+    <Compile Include="DAL\Project.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902011313086_configuringUserRoleMappingTable.cs" />
-    <Compile Include="Migrations\201902011313086_configuringUserRoleMappingTable.Designer.cs">
-      <DependentUpon>201902011313086_configuringUserRoleMappingTable.cs</DependentUpon>
+    <Compile Include="DAL\QUtilizeModel.Context.cs">
+      <DependentUpon>QUtilizeModel.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Migrations\201902011315387_configuringUserProjectMappingTable.cs" />
-    <Compile Include="Migrations\201902011315387_configuringUserProjectMappingTable.Designer.cs">
-      <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
+    <Compile Include="DAL\QUtilizeModel.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.cs" />
-    <Compile Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.Designer.cs">
-      <DependentUpon>201902050818111_MakingEndTimeNullableInDailyTaskTable.cs</DependentUpon>
+    <Compile Include="DAL\QUtilizeModel.Designer.cs">
+      <DependentUpon>QUtilizeModel.edmx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="DAL\Role.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\User.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\USPUsers_Get_Result.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DAL\QUtilizeModel.edmx.diagram">
+      <DependentUpon>QUtilizeModel.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902010953078_InitialDatabase.resx">
-      <DependentUpon>201902010953078_InitialDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902011047538_MakingEditedDateNullable.resx">
-      <DependentUpon>201902011047538_MakingEditedDateNullable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902011313086_configuringUserRoleMappingTable.resx">
-      <DependentUpon>201902011313086_configuringUserRoleMappingTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902011315387_configuringUserProjectMappingTable.resx">
-      <DependentUpon>201902011315387_configuringUserProjectMappingTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902050818111_MakingEndTimeNullableInDailyTaskTable.resx">
-      <DependentUpon>201902050818111_MakingEndTimeNullableInDailyTaskTable.cs</DependentUpon>
-    </EmbeddedResource>
+    <EntityDeploy Include="DAL\QUtilizeModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>QUtilizeModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DAL\QUtilizeModel.Context.tt">
+      <DependentUpon>QUtilizeModel.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>QUtilizeModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DAL\QUtilizeModel.tt">
+      <DependentUpon>QUtilizeModel.edmx</DependentUpon>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>QUtilizeModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
