@@ -15,7 +15,7 @@ namespace QBA.Qutilize.ClientApp
     public partial class App : Application
     {
         private System.Windows.Forms.NotifyIcon _notifyIcon;
-        //private bool _isExit;
+        private bool _isExit;
         Mutex m;
         public App()
         {
@@ -46,17 +46,17 @@ namespace QBA.Qutilize.ClientApp
         private void CreateContextMenu()
         {
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-            _notifyIcon.ContextMenuStrip.Items.Add("MainWindow...").Click += (s, e) => ShowAppWindow();
+            //_notifyIcon.ContextMenuStrip.Items.Add("MainWindow...").Click += (s, e) => ShowAppWindow();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
         }
 
-        //private void ExitApplication()
-        //{
-        //    _isExit = true;
-        //    MainWindow.Close();
-        //    _notifyIcon.Dispose();
-        //    _notifyIcon = null;
-        //}
+        private void ExitApplication()
+        {
+            _isExit = true;
+            MainWindow.Close();
+            _notifyIcon.Dispose();
+            _notifyIcon = null;
+        }
 
         private void ShowAppWindow()
         {

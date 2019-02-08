@@ -1,10 +1,6 @@
 namespace QBA.Qutilize.DataAccess.Migrations
 {
-    using QBA.Qutilize.DataAccess.DataModel;
-    using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<QBA.Qutilize.DataAccess.DataModel.QutilizeModel>
     {
