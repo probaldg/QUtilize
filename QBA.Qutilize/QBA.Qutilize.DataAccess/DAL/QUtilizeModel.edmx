@@ -135,6 +135,7 @@
         </Association>
         <Function Name="USPDailyTask_UpdateEndTaskTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="DailyTaskId" Type="int" Mode="In" />
+          <Parameter Name="StartDateTime" Type="datetime" Mode="In" />
         </Function>
         <Function Name="USPDailyTasks_InsertTaskStartTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserID" Type="int" Mode="In" />
@@ -258,8 +259,9 @@
           </AssociationSet>
           <FunctionImport Name="USPDailyTask_UpdateEndTaskTime">
           <Parameter Name="DailyTaskId" Mode="In" Type="Int32" />
+            <Parameter Name="StartDateTime" Mode="In" Type="DateTime" />
           </FunctionImport>
-          <FunctionImport Name="USPDailyTasks_InsertTaskStartTime">
+          <FunctionImport Name="USPDailyTasks_InsertTaskStartTime" ReturnType="Collection(Decimal)">
             <Parameter Name="UserID" Mode="In" Type="Int32" />
             <Parameter Name="ProjectId" Mode="In" Type="Int32" />
             <Parameter Name="StartDateTime" Mode="In" Type="DateTime" />

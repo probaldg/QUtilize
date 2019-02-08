@@ -2,6 +2,7 @@
 using QBA.Qutilize.DataAccess.DAL;
 using QBA.Qutilize.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -19,17 +20,22 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [HttpPost]
         [Route("api/DailyTask/UpdateStartTime/")]
         [ResponseType(typeof(JObject))]
-        public int UpdateStartTime(DailyTaskModel dailyTaskModel)
+        public decimal? UpdateStartTime(DailyTaskModel dailyTaskModel)
         {
+            decimal? DailyTaskId = 0;
             if (dailyTaskModel == null)
             {
                 return 0;
             }
-            int result;
+           
             try
             {
-                result = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true);
+                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true).ToList();
                 _dbContext.SaveChanges();
+                if (queryResult != null && queryResult.Count > 0)
+                {
+                    DailyTaskId = queryResult.First();
+                }
             }
             catch (Exception ex)
             {
@@ -37,7 +43,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
                 throw ex;
             }
 
-            return result;
+            return DailyTaskId;
         }
 
         [HttpPost()]
@@ -45,10 +51,15 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [ResponseType(typeof(JObject))]
         public int UpdateEndTime(DailyTaskModel dailyTaskModel)
         {
+            if (dailyTaskModel == null)
+            {
+                throw new ArgumentNullException(nameof(dailyTaskModel));
+            }
+
             int queryResult;
             try
             {
-                queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId);
+                 queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, DateTime.Now);
                 _dbContext.SaveChanges();
             }
             catch (System.Exception ex)

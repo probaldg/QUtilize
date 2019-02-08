@@ -32,16 +32,20 @@ namespace QBA.Qutilize.DataAccess.DAL
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
     
-        public virtual int USPDailyTask_UpdateEndTaskTime(Nullable<int> dailyTaskId)
+        public virtual int USPDailyTask_UpdateEndTaskTime(Nullable<int> dailyTaskId, Nullable<System.DateTime> startDateTime)
         {
             var dailyTaskIdParameter = dailyTaskId.HasValue ?
                 new ObjectParameter("DailyTaskId", dailyTaskId) :
                 new ObjectParameter("DailyTaskId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTask_UpdateEndTaskTime", dailyTaskIdParameter);
+            var startDateTimeParameter = startDateTime.HasValue ?
+                new ObjectParameter("StartDateTime", startDateTime) :
+                new ObjectParameter("StartDateTime", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTask_UpdateEndTaskTime", dailyTaskIdParameter, startDateTimeParameter);
         }
     
-        public virtual int USPDailyTasks_InsertTaskStartTime(Nullable<int> userID, Nullable<int> projectId, Nullable<System.DateTime> startDateTime, string createdby, Nullable<bool> isActive)
+        public virtual ObjectResult<Nullable<decimal>> USPDailyTasks_InsertTaskStartTime(Nullable<int> userID, Nullable<int> projectId, Nullable<System.DateTime> startDateTime, string createdby, Nullable<bool> isActive)
         {
             var userIDParameter = userID.HasValue ?
                 new ObjectParameter("UserID", userID) :
@@ -63,7 +67,7 @@ namespace QBA.Qutilize.DataAccess.DAL
                 new ObjectParameter("IsActive", isActive) :
                 new ObjectParameter("IsActive", typeof(bool));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTasks_InsertTaskStartTime", userIDParameter, projectIdParameter, startDateTimeParameter, createdbyParameter, isActiveParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<decimal>>("USPDailyTasks_InsertTaskStartTime", userIDParameter, projectIdParameter, startDateTimeParameter, createdbyParameter, isActiveParameter);
         }
     
         public virtual ObjectResult<USPUsers_Get_Result> USPUsers_Get(string userID, string password)
