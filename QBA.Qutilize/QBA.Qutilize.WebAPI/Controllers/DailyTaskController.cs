@@ -21,33 +21,42 @@ namespace QBA.Qutilize.WebAPI.Controllers
         [ResponseType(typeof(JObject))]
         public int UpdateStartTime(DailyTaskModel dailyTaskModel)
         {
-            var result = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true);
+            if (dailyTaskModel == null)
+            {
+                return 0;
+            }
+            int result;
+            try
+            {
+                result = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
             return result;
         }
-
-
 
         [HttpPost()]
         [Route("api/DailyTask/UpdateEndTime/")]
         [ResponseType(typeof(JObject))]
-        public DailyTask UpdateEndTime(DailyTaskModel dailyTaskModel)
+        public int UpdateEndTime(DailyTaskModel dailyTaskModel)
         {
-            DailyTask dailyTask = null;
+            int queryResult;
             try
             {
-                dailyTask = _dbContext.DailyTasks.FirstOrDefault(x => x.DailyTaskId == dailyTaskModel.DailyTaskId);
-
-                if (dailyTask != null)
-                    dailyTask.EndDateTime = DateTime.Now;
-
+                queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId);
                 _dbContext.SaveChanges();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw;
+                throw ex;
             }
 
-            return dailyTask;
+            return queryResult;
         }
     }
 }
