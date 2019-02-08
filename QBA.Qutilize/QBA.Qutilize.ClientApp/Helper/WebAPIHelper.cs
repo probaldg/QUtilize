@@ -43,7 +43,7 @@ namespace QBA.Qutilize.ClientApp.Helper
             }
         }
 
-        public static async Task<DailyTaskModel> CallInserStartTimeWebApi(DailyTaskModel dailyTaskModel)
+        public static async Task<Nullable<decimal>> CallInserStartTimeWebApi(DailyTaskModel dailyTaskModel)
         {
             try
             {
@@ -59,8 +59,7 @@ namespace QBA.Qutilize.ClientApp.Helper
                 if (response.IsSuccessStatusCode)
                 {
                     var JsonString = await response.Content.ReadAsStringAsync();
-
-                    var deserialized = JsonConvert.DeserializeObject<DailyTaskModel>(JsonString);
+                    var deserialized = JsonConvert.DeserializeObject<Nullable<decimal>>(JsonString);
                     return deserialized;
                 }
                 else
@@ -68,13 +67,12 @@ namespace QBA.Qutilize.ClientApp.Helper
             }
             catch (Exception)
             {
-
                 throw;
             }
 
         }
 
-        public async static Task<DailyTaskModel> UpdateEndTimeForTheCurrentWorkingProject(DailyTaskModel dailyTaskModel)
+        public async static Task<int> UpdateEndTimeForTheCurrentWorkingProject(DailyTaskModel dailyTaskModel)
         {
             try
             {
@@ -88,17 +86,16 @@ namespace QBA.Qutilize.ClientApp.Helper
                 if (response.IsSuccessStatusCode)
                 {
                     var JsonString = await response.Content.ReadAsStringAsync();
-                    var deserialized = JsonConvert.DeserializeObject<DailyTaskModel>(JsonString);
+                    var deserialized = JsonConvert.DeserializeObject<int>(JsonString);
 
                     return deserialized;
                 }
                 else
-                    return null;
+                    return 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
         private static HttpClient CreateHTTPClient()
