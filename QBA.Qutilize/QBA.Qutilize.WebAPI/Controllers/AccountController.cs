@@ -24,45 +24,65 @@ namespace QBA.Qutilize.WebAPI.Controllers
         {
             if (user == null)
                 return null;
-
-            var dbUser = _dbContext.USPUsers_Get(user.UserName, user.Password).ToList();
-
-            if (dbUser != null)
+            try
             {
-                return CreateUser(dbUser);
-            }
-            else
-                return null;
+                var dbUser = _dbContext.USPUsers_Get(user.UserName, user.Password).ToList();
 
+                if (dbUser != null)
+                {
+                    return CreateUser(dbUser);
+                }
+                else
+                    return null;
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private User CreateUser(System.Collections.Generic.List<USPUsers_Get_Result> dbUser)
         {
             User userModel = new User();
-            if (dbUser.Count > 0)
+            try
             {
-                userModel.ID = dbUser.ElementAt(0).Id;
-                userModel.Name = dbUser.ElementAt(0).Name;
-                userModel.UserName = dbUser.ElementAt(0).UserName;
-                userModel.CreateDate = dbUser.ElementAt(0).CreateDate;
-                userModel.CreatedBy = dbUser.ElementAt(0).CreatedBy;
-
-                foreach (var item in dbUser)
+                if (dbUser.Count > 0)
                 {
-                    userModel.Projects.Add(new Qutilize.Models.Project()
-                    {
-                        ProjectName = item.ProjectName,
-                        ProjectID = item.ProjectID,
-                        ParentProjectID = item.ParentProjectId,
-                        Description = item.ProjectDescription,
+                    userModel.ID = dbUser.ElementAt(0).Id;
+                    userModel.Name = dbUser.ElementAt(0).Name;
+                    userModel.UserName = dbUser.ElementAt(0).UserName;
+                    userModel.CreateDate = dbUser.ElementAt(0).CreateDate;
+                    userModel.CreatedBy = dbUser.ElementAt(0).CreatedBy;
 
-                    });
-                    userModel.Roles.Add(new Roles()
+                    foreach (var item in dbUser)
                     {
-                        Id = item.RoleID,
-                        Name = item.RoleName
-                    });
+                        if(item.ProjectID != null)
+                        {
+                            userModel.Projects.Add(new Qutilize.Models.Project()
+                            {
+                                ProjectName = item.ProjectName,
+                                ProjectID = item.ProjectID,
+                                ParentProjectID = item.ParentProjectId,
+                                Description = item.ProjectDescription,
+                            });
+                        }
+                       
+                        if(item.RoleID != null)
+                        {
+                            userModel.Roles.Add(new Roles()
+                            {
+                                Id = item.RoleID,
+                                Name = item.RoleName
+                            });
+                        }
+                        
+                    }
                 }
+
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
             }
             return userModel;
         }
