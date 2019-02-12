@@ -15,3 +15,6 @@ Debug
 QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-wal
 QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-shm
 QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-wal
+*.ide-wal
+*.ide-shm
+QBA.Qutilize/.vs/QBA.Qutilize/v15/.suo
