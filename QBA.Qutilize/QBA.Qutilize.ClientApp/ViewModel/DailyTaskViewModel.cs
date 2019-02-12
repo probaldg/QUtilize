@@ -26,7 +26,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             _dailyTaskView = dailyTask;
             Projects = new ObservableCollection<Project>();
             User = user;
-         
+            CurrDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
+            CurrUser = "Welcome, " + User.Name.Substring(0, User.Name.IndexOf(' '));
             foreach (var item in user.Projects)
             {
                 Projects.Add(item);
@@ -36,7 +37,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         }
         //test comment
-        
+
 
         private User _user;
 
@@ -67,7 +68,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         public Project SelectedProject
         {
             get {
-               
+
                 return _selectedProject;
             }
             set { _selectedProject = value; }
@@ -84,7 +85,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 OnPropertyChanged("CurrentWorkingProject");
             }
         }
-    
+        public string CurrDate{get;set;}
+        public string CurrUser { get; set; }
         public ICommand UpdateCommandFromSelectedProject
         {
             get
@@ -239,9 +241,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
             }
         }
-
-       
-
       
     }
 }
