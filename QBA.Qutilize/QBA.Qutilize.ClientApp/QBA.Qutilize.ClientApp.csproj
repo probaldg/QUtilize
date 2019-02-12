@@ -153,5 +153,8 @@
   <ItemGroup>
     <Folder Include="Converter\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Qutilize.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
