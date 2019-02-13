@@ -15,6 +15,6 @@ namespace QBA.Qutilize.Models
         public int DailyTaskId { get; set; }
         public DateTime StrartDateTime { get; set; }
         public int EndDateTime { get; set; }
-
+        public bool IsCurrentProject { get; set; }
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="Helper\WebAPIHelper.cs" />
     <Compile Include="ViewModel\DailyTaskViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\ProjectListViewViewModel.cs" />
     <Compile Include="Views\DailyTask.xaml.cs">
       <DependentUpon>DailyTask.xaml</DependentUpon>
     </Compile>
@@ -121,6 +122,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SwitchTypeToggleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DailyTask.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,6 +160,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Qutilize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LogOut.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qba_82p_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qba_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

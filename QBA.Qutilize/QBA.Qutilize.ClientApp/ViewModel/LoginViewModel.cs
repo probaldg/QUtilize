@@ -69,14 +69,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         IsActive = true
                     });
 
-                    if(authenticateduser != null)
+                    if(authenticateduser != null && authenticateduser.ID !=0)
                     {
                         ConfigureDailyTaskViewModel(authenticateduser);
                         _loginView.Close();
                     }
                     else
                     {
-                        MessageBox.Show("User id or password mismatch.");
+                        MessageBox.Show("User id/password is not correct.");
                     }
                 }
                 else

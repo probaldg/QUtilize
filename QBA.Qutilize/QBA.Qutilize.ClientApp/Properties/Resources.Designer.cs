@@ -71,23 +71,13 @@ namespace QBA.Qutilize.ClientApp.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to api/DailyTask/UpdateStartTime/.
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static string InsertStartTimeAPIRoutePath {
+        internal static System.Drawing.Icon qba_icon {
             get {
-                return ResourceManager.GetString("InsertStartTimeAPIRoutePath", resourceCulture);
+                object obj = ResourceManager.GetObject("qba_icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to api/Account/Login/.
-        /// </summary>
-        internal static string LoginWebAPIRoutePath {
-            get {
-                return ResourceManager.GetString("LoginWebAPIRoutePath", resourceCulture);
-            }
-        }
-        
-        
     }
 }

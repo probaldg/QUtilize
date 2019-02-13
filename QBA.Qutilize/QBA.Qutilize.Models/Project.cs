@@ -16,7 +16,7 @@ namespace QBA.Qutilize.Models
         public string ProjectName { get; set; }
 
         public string Description { get; set; }
-
+        public Boolean   IsCurrentProject { get; set; }
         public int? ParentProjectID { get; set; }
         public ICollection<User> Users { get; set; }
         public string CreatedBy { get; set; }
