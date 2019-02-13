@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:QBA.Qutilize.ClientApp"
              StartupUri="Views/Login.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SwitchTypeToggleButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
