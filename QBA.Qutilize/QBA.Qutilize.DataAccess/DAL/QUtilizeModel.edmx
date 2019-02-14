@@ -134,6 +134,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="USP_Dashboard_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserID" Type="int" Mode="In" />
+          <Parameter Name="StartDate" Type="date" Mode="In" />
+          <Parameter Name="EndDate" Type="date" Mode="In" />
+        </Function>
+        <Function Name="USPDailyTask_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DailyTaskID" Type="int" Mode="In" />
+        </Function>
         <Function Name="USPDailyTask_UpdateEndTaskTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="DailyTaskId" Type="int" Mode="In" />
           <Parameter Name="StartDateTime" Type="datetime" Mode="In" />
@@ -274,6 +282,14 @@
             <Parameter Name="UserID" Mode="In" Type="String" />
             <Parameter Name="Password" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="USP_Dashboard_Get" ReturnType="Collection(DB_A05603_qUtilizeModel.USP_Dashboard_Get_Result)">
+            <Parameter Name="UserID" Mode="In" Type="Int32" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="USPDailyTask_Get">
+          <Parameter Name="DailyTaskID" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="USPUsers_Get_Result">
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="200" />
@@ -287,6 +303,14 @@
           <Property Type="Int32" Name="ParentProjectId" Nullable="true" />
           <Property Type="Int32" Name="RoleID" Nullable="true" />
           <Property Type="String" Name="RoleName" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="MaxProjectTimeInHours" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="USP_Dashboard_Get_Result">
+          <Property Type="Int32" Name="projectID" Nullable="false" />
+          <Property Type="String" Name="projectName" Nullable="true" MaxLength="200" />
+          <Property Type="DateTime" Name="Date" Nullable="true" />
+          <Property Type="Int32" Name="totalSec" Nullable="true" />
+          <Property Type="String" Name="hms" Nullable="true" MaxLength="17" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -387,9 +411,22 @@
                 <ScalarProperty Name="ParentProjectId" ColumnName="ParentProjectId" />
                 <ScalarProperty Name="RoleID" ColumnName="RoleID" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="MaxProjectTimeInHours" ColumnName="MaxProjectTimeInHours" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="USP_Dashboard_Get" FunctionName="DB_A05603_qUtilizeModel.Store.USP_Dashboard_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_A05603_qUtilizeModel.USP_Dashboard_Get_Result">
+                <ScalarProperty Name="projectID" ColumnName="projectID" />
+                <ScalarProperty Name="projectName" ColumnName="projectName" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="totalSec" ColumnName="totalSec" />
+                <ScalarProperty Name="hms" ColumnName="hms" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="USPDailyTask_Get" FunctionName="DB_A05603_qUtilizeModel.Store.USPDailyTask_Get" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

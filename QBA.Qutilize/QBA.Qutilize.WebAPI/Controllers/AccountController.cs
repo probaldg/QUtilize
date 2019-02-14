@@ -53,7 +53,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
                     userModel.UserName = dbUser.ElementAt(0).UserName;
                     userModel.CreateDate = dbUser.ElementAt(0).CreateDate;
                     userModel.CreatedBy = dbUser.ElementAt(0).CreatedBy;
-
+                    
                     foreach (var item in dbUser)
                     {
                         if(item.ProjectID != null)
@@ -64,6 +64,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
                                 ProjectID = item.ProjectID,
                                 ParentProjectID = item.ParentProjectId,
                                 Description = item.ProjectDescription,
+                                MaxProjectTimeInHours=item.MaxProjectTimeInHours
                             });
                         }
                        

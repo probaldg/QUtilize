@@ -24,5 +24,6 @@ namespace QBA.Qutilize.DataAccess.DAL
         public Nullable<int> ParentProjectId { get; set; }
         public Nullable<int> RoleID { get; set; }
         public string RoleName { get; set; }
+        public Nullable<int> MaxProjectTimeInHours { get; set; }
     }
 }
