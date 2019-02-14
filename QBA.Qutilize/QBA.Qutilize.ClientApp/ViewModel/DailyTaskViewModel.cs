@@ -27,7 +27,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 {
                     item.Description = "Description not available";
                 }
-
                 projectListViewViewModel.Projects.Add(item);
             }
             ProjectListViewViewModel = projectListViewViewModel;

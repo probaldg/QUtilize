@@ -4,95 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
-       
-        
         mc:Ignorable="d"
        WindowStyle="None"
         Title="DailyTask" Height="350" Width="350" BorderThickness="2" ResizeMode="CanMinimize">
 
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="5,0"/>
-            <Setter Property="Foreground" Value="Blue" />
-            <Setter Property="FontSize" Value="15" />
-            <Setter Property="HorizontalAlignment" Value="left"/>
-            <Setter Property="Width" Value="172"/>
-            <Setter Property="FontWeight" Value="Normal"/>
-
-        </Style>
-
-        <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="MinHeight" Value="15"/>
-            <Setter Property="MinWidth" Value="150"/>
-
-        </Style>
-
-        <Style TargetType="PasswordBox">
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="MinHeight" Value="15"/>
-            <Setter Property="MinWidth" Value="150"/>
-
-        </Style>
-
-        <Style TargetType="Button" x:Key="btn">
-            <Setter Property="Background" Value="Blue"/>
-            <Setter Property="Foreground" Value="#000"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                        CornerRadius="5"
-                        BorderThickness="1"
-                        Padding="5"
-                        BorderBrush="#000">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                            </ContentPresenter>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#fff"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border x:Name="Bd">
-                            <ToggleButton IsChecked="{Binding Path=IsSelected,Mode=TwoWay,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}}"
-                                Command="{Binding SelectedItemCommand}"  >
-                                <ToggleButton.Template>
-                                    <ControlTemplate>
-                                        <TextBlock Text="{Binding ProjectName}" Background="Transparent" Foreground="Black" Margin="3 0" CommandManager.CanExecute="{Binding SelectedItemCommand}"></TextBlock>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Background" TargetName="Bd" Value="LightBlue"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="LightBlue"></Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
 
 
     </Window.Resources>
@@ -120,45 +36,111 @@
                 </Button.Background>
             </Button>
             <TextBlock FontWeight="SemiBold" FontSize="11" Margin="0,28,5,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FFE20BC5" Grid.IsSharedSizeScope="True" Text="{Binding CurrDate}" Grid.ColumnSpan="2"></TextBlock>
-            <GroupBox Header="Project List" Margin="3,52,3,35"
-                  VerticalAlignment="Center" Height="251" BorderBrush="Blue" IsEnabled="False" HorizontalContentAlignment="Stretch" Foreground="#FF121295" ForceCursor="True" FontWeight="Bold" Grid.ColumnSpan="2">
-                <ListBox ItemsSource="{Binding Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
-                         SelectedItem="{Binding DataContext.SelectedProject, Mode=TwoWay, ElementName=lstProject}" x:Name="lstProject" SelectionMode="Single"
-                         HorizontalContentAlignment="Center" SelectedIndex="0" Margin="0"  >
-                    <ListBox.ItemContainerStyle>
+            <GroupBox Header="Project List"  Margin="3,52,3,35"
+                  VerticalAlignment="Center"  BorderBrush="Blue"  HorizontalContentAlignment="Stretch" Foreground="#FF121295" ForceCursor="True" FontWeight="Bold" Grid.ColumnSpan="2">
 
-
+                <ListBox ItemsSource="{Binding ProjectListViewViewModel.Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
+                         SelectedItem="{Binding DataContext.SelectedProject, Mode=TwoWay, ElementName=lstProject}"
+                         x:Name="lstProject" SelectionMode="Single"
+                         HorizontalContentAlignment="Left"
+                         SelectedIndex="{Binding ProjectListViewViewModel.SelectedIndex, Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
+                         Margin="1"  >
+                    <ListBox.ItemContainerStyle >
                         <Style TargetType="ListBoxItem">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="IsSelected" Value="True"/>
-                                </Trigger>
-                            </Style.Triggers>
+                            <Setter Property="Background" Value="AliceBlue" />
+                            <Setter Property="BorderBrush" Value="Black" />
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="Margin" Value="5" />
 
+                            <Style.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True" />
+                                    </MultiTrigger.Conditions>
+                                    <MultiTrigger.Setters>
+                                        <Setter Property="Background" Value="Red" />
+                                        <Setter Property="BorderThickness" Value="3" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+
+                                    </MultiTrigger.Setters>
+                                </MultiTrigger>
+
+                            </Style.Triggers>
 
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
 
                         <DataTemplate >
-                            <StackPanel >
+                            <Grid Width="275" Margin="0,0,0,5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"></RowDefinition>
+                                    <RowDefinition Height="25"></RowDefinition>
+                                </Grid.RowDefinitions>
 
-                                <Button   Content="{Binding ProjectName}" FontSize="20" HorizontalContentAlignment="Center"
-                                          Width="200" 
-                                          Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}" 
-                                          CommandParameter="{Binding DataContext.SelectedProject, ElementName=lstProject}"/>
-                            </StackPanel>
+                                <Grid.ColumnDefinitions>
+
+                                    <ColumnDefinition Width="180"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+
+                                <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                                <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
+
+                                <ToggleButton Width="40"  x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="1" Grid.Column="1"
+                                Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}"
+                                CommandParameter="{Binding ProjectID}" 
+                                IsChecked="{Binding IsCurrentProject, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}"/>
+
+
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <!--<ListBox Width="100" Height="200" 
-                 ItemContainerStyle="{DynamicResource ListBoxItemStyle1}"
-                 ItemsSource="{Binding Projects}"></ListBox>-->
+
             </GroupBox>
-            <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-                <Label Content="A product of" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
-            </StackPanel>
+            <Grid x:Name="grdFooter" VerticalAlignment="Bottom" Grid.ColumnSpan="2" >
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Button  Content="View" Cursor="Hand" Grid.Row="0" Grid.Column="0"  
+                        Command="{Binding DataContext.OpenURLCommand,ElementName=grdFooter}" HorizontalAlignment="Left">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock TextDecorations="Underline">
+                            <ContentPresenter />
+                            </TextBlock>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="Blue" />
+                            <Setter Property="FontWeight" Value="Medium" />
+                            <Setter Property="FontSize" Value="14" />
+                            <Setter Property="Margin" Value="10,0,0,0" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+                    <Label Content="A product of" FontSize="12" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                    <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
+                </StackPanel>
+            </Grid>
+
         </Grid>
     </Border>
 </Window>
