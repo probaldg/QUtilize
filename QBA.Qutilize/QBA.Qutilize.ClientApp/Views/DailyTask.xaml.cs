@@ -34,6 +34,9 @@ namespace QBA.Qutilize.ClientApp.Views
         {
             Left = SystemParameters.WorkArea.Width - Width - 10;
             Top = SystemParameters.WorkArea.Height - Height;
+
+
+
         }
     }
 }

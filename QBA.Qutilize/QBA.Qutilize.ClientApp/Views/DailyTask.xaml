@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
        WindowStyle="None"
-        Title="DailyTask" Height="350" Width="350" BorderThickness="2" ResizeMode="CanMinimize">
+        Title="DailyTask" MinHeight="350" Height="400"  Width="350" BorderThickness="2" ResizeMode="CanMinimize">
 
     <Window.Resources>
 
@@ -51,17 +51,20 @@
                             <Setter Property="BorderBrush" Value="Black" />
                             <Setter Property="BorderThickness" Value="1" />
                             <Setter Property="Margin" Value="5" />
-
+                            
                             <Style.Triggers>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsSelected" Value="True" />
+                                       
                                     </MultiTrigger.Conditions>
                                     <MultiTrigger.Setters>
-                                        <Setter Property="Background" Value="Red" />
-                                        <Setter Property="BorderThickness" Value="3" />
-                                        <Setter Property="BorderBrush" Value="Black" />
-
+                                       
+                                        <Setter Property="BorderThickness" Value="2" />
+                                        <Setter Property="Margin" Value="7" />
+                                        <Setter Property="BorderBrush" Value="White" />
+                                        <Setter Property="Foreground" Value="Green" />
+                                        <Setter Property="Background" Value="CadetBlue"></Setter>
                                     </MultiTrigger.Setters>
                                 </MultiTrigger>
 
@@ -72,7 +75,8 @@
                     <ListBox.ItemTemplate>
 
                         <DataTemplate >
-                            <Grid Width="275" Margin="0,0,0,5">
+                            
+                                <Grid  Width="275" Margin="0,0,0,5" HorizontalAlignment="Left">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30"></RowDefinition>
                                     <RowDefinition Height="25"></RowDefinition>
@@ -87,7 +91,7 @@
 
 
                                 <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
-                                <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" TextWrapping="WrapWithOverflow" />
+                                <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom" TextWrapping="WrapWithOverflow" />
 
                                 <ToggleButton Width="40"  x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="1" Grid.Column="1"
                                 Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}"
@@ -96,6 +100,7 @@
 
 
                             </Grid>
+                            
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
