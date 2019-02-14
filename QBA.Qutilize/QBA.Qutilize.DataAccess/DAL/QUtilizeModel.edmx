@@ -33,6 +33,7 @@
           <Property Name="EditedBy" Type="nvarchar(max)" />
           <Property Name="EditedDate" Type="datetime" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="MaxProjectTimeInHours" Type="int" />
         </EntityType>
         <EntityType Name="Roles">
           <Key>
@@ -205,6 +206,7 @@
           <Property Name="EditedDate" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.UserProjects" FromRole="Projects" ToRole="Users" />
+          <Property Name="MaxProjectTimeInHours" Type="Int32" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -258,7 +260,7 @@
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
           <FunctionImport Name="USPDailyTask_UpdateEndTaskTime">
-          <Parameter Name="DailyTaskId" Mode="In" Type="Int32" />
+            <Parameter Name="DailyTaskId" Mode="In" Type="Int32" />
             <Parameter Name="StartDateTime" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="USPDailyTasks_InsertTaskStartTime" ReturnType="Collection(Decimal)">
@@ -311,6 +313,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="DB_A05603_qUtilizeModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="MaxProjectTimeInHours" ColumnName="MaxProjectTimeInHours" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />

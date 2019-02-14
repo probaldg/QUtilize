@@ -35,6 +35,10 @@ namespace QBA.Qutilize.ClientApp
             CreateContextMenu();
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+        }
         private void CreateContextMenu()
         {
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();

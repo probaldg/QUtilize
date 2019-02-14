@@ -6,21 +6,73 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace QBA.Qutilize.ClientApp.ViewModel
 {
     public class DailyTaskViewModel : ViewModelBase
     {
         DailyTask _dailyTaskView;
+
+        DispatcherTimer checkMaxProjectTimeTimer = new DispatcherTimer();
+       
         public DailyTaskViewModel(DailyTask dailyTask, User user)
         {
             _dailyTaskView = dailyTask;
-            // Projects = new ObservableCollection<Project>();
+
+            checkMaxProjectTimeTimer.Interval = TimeSpan.FromMinutes(1);
+            checkMaxProjectTimeTimer.Tick += CheckMaxProjectTimeTimer_Tick;
+
             User = user;
+            CreateHeader();
+            CreateListViewViewModel(user);
+            SetDefaultProjectAsCurrentProject();
+            InsertProjectStartTime();
+
+            checkMaxProjectTimeTimer.IsEnabled = true;
+            checkMaxProjectTimeTimer.Start();
+        }
+
+        private void CheckMaxProjectTimeTimer_Tick(object sender, EventArgs e)
+        {
+           
+            if(checkMaxProjectTimeTimer.IsEnabled)
+            {
+                checkMaxProjectTimeTimer.IsEnabled = false;
+                checkMaxProjectTimeTimer.Stop();
+                try
+                {
+                    if (CurrentWorkingProject != null)
+                    {
+                        TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+
+                        if (diffrenceInHours.Hours >= CurrentWorkingProject?.MaxProjectTimeInHours)
+                        {
+                            MessageBox.Show("Time consumtion for this project  is more than maximum time.");
+                        }
+                    }
+                    checkMaxProjectTimeTimer.IsEnabled = true;
+                    checkMaxProjectTimeTimer.Start();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+               
+            }
+        }
+
+        private void CreateHeader()
+        {
             CurrDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
             CurrUser = "Welcome, " + User.Name.Substring(0, User.Name.IndexOf(' '));
-            ProjectListViewViewModel projectListViewViewModel = new ProjectListViewViewModel();
+        }
 
+        private void CreateListViewViewModel(User user)
+        {
+            ProjectListViewViewModel projectListViewViewModel = new ProjectListViewViewModel();
             foreach (var item in user.Projects)
             {
                 if (item.Description == "" || item.Description == null)
@@ -30,12 +82,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 projectListViewViewModel.Projects.Add(item);
             }
             ProjectListViewViewModel = projectListViewViewModel;
-            SetDefaultProjectAsCurrentProject();
-            InsertProjectStartTime();
-
         }
-
-
 
         private User _user;
 
@@ -49,8 +96,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-
-
         private ProjectListViewViewModel _projectListViewViewModel;
 
         public ProjectListViewViewModel ProjectListViewViewModel
@@ -63,7 +108,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             }
         }
-
 
         private Project _selectedProject;
 
@@ -97,7 +141,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 return new CommandHandler((ProjectID) => UpdateTask(ProjectID));
             }
         }
-
 
         public ICommand Logout
         {
@@ -158,7 +201,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             }
         }
-
 
         private void UpdateTask(object ProjectID)
         {
@@ -258,7 +300,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     ProjectID = defaultProj.ProjectID,
                     ProjectName = defaultProj.ProjectName,
                     StrartDateTime = DateTime.Now,
-                    IsCurrentProject = true
+                    IsCurrentProject = true,
+                    MaxProjectTimeInHours=defaultProj.MaxProjectTimeInHours
                 };
             }
 
