@@ -40,7 +40,7 @@
                   VerticalAlignment="Center"  BorderBrush="Blue"  HorizontalContentAlignment="Stretch" Foreground="#FF121295" ForceCursor="True" FontWeight="Bold" Grid.ColumnSpan="2">
 
                 <ListBox ItemsSource="{Binding ProjectListViewViewModel.Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
-                         SelectedItem="{Binding DataContext.SelectedProject, Mode=TwoWay, ElementName=lstProject}"
+                         SelectedItem="{Binding DataContext.ProjectListViewViewModel.SelectedProject, Mode=TwoWay, ElementName=lstProject}"
                          x:Name="lstProject" SelectionMode="Single"
                          HorizontalContentAlignment="Left"
                          SelectedIndex="{Binding ProjectListViewViewModel.SelectedIndex, Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"

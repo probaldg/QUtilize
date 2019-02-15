@@ -16,7 +16,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         DailyTask _dailyTaskView;
 
         DispatcherTimer checkMaxProjectTimeTimer = new DispatcherTimer();
-       
+
         public DailyTaskViewModel(DailyTask dailyTask, User user)
         {
             _dailyTaskView = dailyTask;
@@ -36,8 +36,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void CheckMaxProjectTimeTimer_Tick(object sender, EventArgs e)
         {
-           
-            if(checkMaxProjectTimeTimer.IsEnabled)
+
+            if (checkMaxProjectTimeTimer.IsEnabled)
             {
                 StopTimer();
                 try
@@ -119,18 +119,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        private Project _selectedProject;
-
-        public Project SelectedProject
-        {
-            get
-            {
-
-                return _selectedProject;
-            }
-            set { _selectedProject = value; }
-        }
-
         private CurrentWorkingProject _currentWorkingProject;
 
         public CurrentWorkingProject CurrentWorkingProject
@@ -171,16 +159,16 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         private void OpenInBrowser()
         {
             string userName, password;
-           if(User != null)
+            if (User != null)
             {
                 userName = User.UserName;
                 password = User.Password;
             }
-           
+
             if (!IsValidUri("https://www.google.com/"))
                 return;
             System.Diagnostics.Process.Start("https://www.google.com/");
-           
+
         }
 
         public static bool IsValidUri(string uri)
@@ -208,7 +196,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
                 CurrentWorkingProject = null;
                 User = null;
-                SelectedProject = null;
+                ProjectListViewViewModel.SelectedProject = null;
                 StopTimer();
                 Login loginView = new Login();
                 loginView.Show();
@@ -270,10 +258,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         StartTime = CurrentWorkingProject.StrartDateTime,
                         EndTime = DateTime.Now
                     };
+
                     var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
                     if (response > 0)
                     {
-                        SetNewCurrentProjectAndInsertStartTime(SelectedProject);
+                        SetNewCurrentProjectAndInsertStartTime(ProjectListViewViewModel.SelectedProject);
                     }
                     else
                     {
@@ -323,12 +312,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     ProjectName = defaultProj.ProjectName,
                     StrartDateTime = DateTime.Now,
                     IsCurrentProject = true,
-                    MaxProjectTimeInHours=defaultProj.MaxProjectTimeInHours
+                    MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
                 };
             }
 
             ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
+            ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
             ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
             RefreshUI();
         }
 
@@ -352,6 +343,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-       
+
     }
 }
