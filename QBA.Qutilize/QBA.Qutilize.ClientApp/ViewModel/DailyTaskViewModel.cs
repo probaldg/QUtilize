@@ -27,7 +27,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             CreateHeader();
             CreateListViewViewModel(user);
             SetDefaultProjectAsCurrentProject();
-            //InsertProjectStartTime();
+            InsertProjectStartTime();
 
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
