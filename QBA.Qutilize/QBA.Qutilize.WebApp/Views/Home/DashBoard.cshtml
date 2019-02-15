@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "MainLanding";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12" id="dashBoardDateRange">
+        @Html.Action("GetDateRange", "Home")
+    </div>
+</div>
+<div class="row" id="divLoadDashBoardDataDayWise">
+    <div class="form-group">
+        <label>Day wise </label>
+        <canvas id="barChart" width="400" height="150"></canvas>
+    </div>
+</div>
+<div class="row">
+        <div class="col-md-6">
+            @Html.Action("GetDataActual", "Home")
+        </div>
+        <div class="col-md-6" >
+            <div class="form-group">
+                <label>Project wise</label>
+                <canvas id="DonutChart" width="400" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+<script>
+    $(document).ready(function () {
+        gerBarChartData();
+        gerDonutChartData();
+    });
+    function gerBarChartData() {
+        //-----Single Bar --------------
+        var c = document.getElementById("barChart");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues("/Home/BarChartData");
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: tData,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+    }
+    function gerDonutChartData() {
+        //----Donut Chart---------
+        var c = document.getElementById("DonutChart");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues("/Home/GetDonutChartData");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: tData,
+        });
+    }
+</script>
