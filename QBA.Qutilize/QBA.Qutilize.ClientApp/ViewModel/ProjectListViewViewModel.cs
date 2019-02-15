@@ -31,6 +31,15 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        
+        private Project _seletedProject;
+
+        public Project SelectedProject
+        {
+            get { return _seletedProject; }
+            set { _seletedProject = value;
+                OnPropertyChanged("SelectedProject");
+            }
+        }
+
     }
 }

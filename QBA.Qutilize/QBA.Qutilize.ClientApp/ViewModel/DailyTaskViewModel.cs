@@ -6,37 +6,92 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace QBA.Qutilize.ClientApp.ViewModel
 {
     public class DailyTaskViewModel : ViewModelBase
     {
         DailyTask _dailyTaskView;
+
+        DispatcherTimer checkMaxProjectTimeTimer = new DispatcherTimer();
+
         public DailyTaskViewModel(DailyTask dailyTask, User user)
         {
             _dailyTaskView = dailyTask;
-            // Projects = new ObservableCollection<Project>();
+
+            checkMaxProjectTimeTimer.Interval = TimeSpan.FromMinutes(1);
+            checkMaxProjectTimeTimer.Tick += CheckMaxProjectTimeTimer_Tick;
+
             User = user;
+            CreateHeader();
+            CreateListViewViewModel(user);
+            SetDefaultProjectAsCurrentProject();
+            //InsertProjectStartTime();
+
+            checkMaxProjectTimeTimer.IsEnabled = true;
+            checkMaxProjectTimeTimer.Start();
+        }
+
+        private void CheckMaxProjectTimeTimer_Tick(object sender, EventArgs e)
+        {
+
+            if (checkMaxProjectTimeTimer.IsEnabled)
+            {
+                StopTimer();
+                try
+                {
+                    if (CurrentWorkingProject != null)
+                    {
+                        TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+
+                        if (diffrenceInHours.Hours >= CurrentWorkingProject?.MaxProjectTimeInHours)
+                        {
+                            MessageBox.Show(Application.Current.MainWindow, "Time consumtion for this project is more than maximum time.", "Project Time excced", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
+                        }
+                    }
+                    StartTimer();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+
+            }
+        }
+
+        private void StartTimer()
+        {
+            checkMaxProjectTimeTimer.IsEnabled = true;
+            checkMaxProjectTimeTimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            checkMaxProjectTimeTimer.IsEnabled = false;
+            checkMaxProjectTimeTimer.Stop();
+        }
+
+        private void CreateHeader()
+        {
             CurrDate = DateTime.Now.ToString("dddd, dd MMMM yyyy");
             CurrUser = "Welcome, " + User.Name.Substring(0, User.Name.IndexOf(' '));
-            ProjectListViewViewModel projectListViewViewModel = new ProjectListViewViewModel();
+        }
 
+        private void CreateListViewViewModel(User user)
+        {
+            ProjectListViewViewModel projectListViewViewModel = new ProjectListViewViewModel();
             foreach (var item in user.Projects)
             {
                 if (item.Description == "" || item.Description == null)
                 {
                     item.Description = "Description not available";
                 }
-
                 projectListViewViewModel.Projects.Add(item);
             }
             ProjectListViewViewModel = projectListViewViewModel;
-            SetDefaultProjectAsCurrentProject();
-            InsertProjectStartTime();
-
         }
-
-
 
         private User _user;
 
@@ -50,8 +105,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-
-
         private ProjectListViewViewModel _projectListViewViewModel;
 
         public ProjectListViewViewModel ProjectListViewViewModel
@@ -63,19 +116,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 OnPropertyChanged("ProjectListViewViewModel");
 
             }
-        }
-
-
-        private Project _selectedProject;
-
-        public Project SelectedProject
-        {
-            get
-            {
-
-                return _selectedProject;
-            }
-            set { _selectedProject = value; }
         }
 
         private CurrentWorkingProject _currentWorkingProject;
@@ -99,7 +139,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-
         public ICommand Logout
         {
             get
@@ -112,17 +151,23 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             get
             {
-                return new CommandHandler(_ => OpenBrowser());
+                return new CommandHandler(_ => OpenInBrowser());
             }
         }
 
-        private void OpenBrowser()
+        private void OpenInBrowser()
         {
-            // MessageBox.Show("Command clicked");
+            string userName, password;
+            if (User != null)
+            {
+                userName = User.UserName;
+                password = User.Password;
+            }
+
             if (!IsValidUri("https://www.google.com/"))
                 return;
             System.Diagnostics.Process.Start("https://www.google.com/");
-            // return true;
+
         }
 
         public static bool IsValidUri(string uri)
@@ -150,7 +195,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
                 CurrentWorkingProject = null;
                 User = null;
-                SelectedProject = null;
+                ProjectListViewViewModel.SelectedProject = null;
+                StopTimer();
                 Login loginView = new Login();
                 loginView.Show();
 
@@ -159,7 +205,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             }
         }
-
 
         private void UpdateTask(object ProjectID)
         {
@@ -172,7 +217,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 if (CurrentWorkingProject.ProjectID == (int)ProjectID)
                 {
                     ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = true;
-                    CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
+                    RefreshUI();
                 }
                 else
                 {
@@ -182,7 +227,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList()
                         .FindIndex(x => x.ProjectID == Convert.ToInt32(ProjectID));
 
-                    CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
+                    RefreshUI();
                     UpdateCurrentTask();
                 }
             }
@@ -191,6 +236,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                 throw;
             }
+        }
+
+        private void RefreshUI()
+        {
+            CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
         }
 
         private void UpdateCurrentTask()
@@ -207,10 +257,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         StartTime = CurrentWorkingProject.StrartDateTime,
                         EndTime = DateTime.Now
                     };
+
                     var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
                     if (response > 0)
                     {
-                        SetNewCurrentProjectAndInsertStartTime(SelectedProject);
+                        SetNewCurrentProjectAndInsertStartTime(ProjectListViewViewModel.SelectedProject);
                     }
                     else
                     {
@@ -259,12 +310,16 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     ProjectID = defaultProj.ProjectID,
                     ProjectName = defaultProj.ProjectName,
                     StrartDateTime = DateTime.Now,
-                    IsCurrentProject = true
+                    IsCurrentProject = true,
+                    MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
                 };
             }
 
             ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
+            ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
             ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+            RefreshUI();
         }
 
         private void InsertProjectStartTime()
@@ -286,6 +341,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
             }
         }
+
 
     }
 }
