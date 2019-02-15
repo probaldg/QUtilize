@@ -2,6 +2,7 @@
 using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -27,7 +28,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             CreateHeader();
             CreateListViewViewModel(user);
             SetDefaultProjectAsCurrentProject();
-            //InsertProjectStartTime();
+            InsertProjectStartTime();
 
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
@@ -163,10 +164,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 userName = User.UserName;
                 password = User.Password;
             }
+            EncryptionHelper encryptionHelper = new EncryptionHelper();
 
-            if (!IsValidUri("https://www.google.com/"))
+            string url = ConfigurationManager.AppSettings["WebSiteBaseAddress"]  + encryptionHelper.Encryptdata(User.UserName) + "&P="+encryptionHelper.Encryptdata(User.Password);
+
+            if (!IsValidUri(url))
                 return;
-            System.Diagnostics.Process.Start("https://www.google.com/");
+            System.Diagnostics.Process.Start(url);
 
         }
 
