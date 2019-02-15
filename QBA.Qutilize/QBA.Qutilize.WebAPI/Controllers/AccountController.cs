@@ -49,6 +49,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
                 if (dbUser.Count > 0)
                 {
                     userModel.ID = dbUser.ElementAt(0).Id;
+                    userModel.Password = dbUser.ElementAt(0).Password;
                     userModel.Name = dbUser.ElementAt(0).Name;
                     userModel.UserName = dbUser.ElementAt(0).UserName;
                     userModel.CreateDate = dbUser.ElementAt(0).CreateDate;

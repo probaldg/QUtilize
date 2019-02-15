@@ -1,4 +1,5 @@
-﻿using QBA.Qutilize.ClientApp.Helper;
+﻿using Microsoft.Win32;
+using QBA.Qutilize.ClientApp.Helper;
 using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
@@ -163,17 +164,23 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             get
             {
-                return new CommandHandler(_ => OpenBrowser());
+                return new CommandHandler(_ => OpenInBrowser());
             }
         }
 
-        private void OpenBrowser()
+        private void OpenInBrowser()
         {
-            // MessageBox.Show("Command clicked");
+            string userName, password;
+           if(User != null)
+            {
+                userName = User.UserName;
+                password = User.Password;
+            }
+           
             if (!IsValidUri("https://www.google.com/"))
                 return;
             System.Diagnostics.Process.Start("https://www.google.com/");
-            // return true;
+           
         }
 
         public static bool IsValidUri(string uri)
@@ -345,5 +352,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
+       
     }
 }

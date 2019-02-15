@@ -116,7 +116,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button  Content="View" Cursor="Hand" Grid.Row="0" Grid.Column="0"  
-                        Command="{Binding DataContext.OpenURLCommand,ElementName=grdFooter}" HorizontalAlignment="Left">
+                        Command="{Binding DataContext.OpenURLCommand,ElementName=grdFooter}"  HorizontalAlignment="Left">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <TextBlock TextDecorations="Underline">
