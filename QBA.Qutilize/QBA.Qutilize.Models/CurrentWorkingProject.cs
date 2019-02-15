@@ -16,5 +16,7 @@ namespace QBA.Qutilize.Models
         public DateTime StrartDateTime { get; set; }
         public int EndDateTime { get; set; }
         public bool IsCurrentProject { get; set; }
+
+        public int MaxProjectTimeInHours { get; set; }
     }
 }

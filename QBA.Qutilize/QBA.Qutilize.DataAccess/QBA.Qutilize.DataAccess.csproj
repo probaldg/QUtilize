@@ -81,6 +81,9 @@
     <Compile Include="DAL\USPUsers_Get_Result.cs">
       <DependentUpon>QUtilizeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DAL\USP_Dashboard_Get_Result.cs">
+      <DependentUpon>QUtilizeModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

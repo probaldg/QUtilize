@@ -82,5 +82,31 @@ namespace QBA.Qutilize.DataAccess.DAL
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USPUsers_Get_Result>("USPUsers_Get", userIDParameter, passwordParameter);
         }
+    
+        public virtual ObjectResult<USP_Dashboard_Get_Result> USP_Dashboard_Get(Nullable<int> userID, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("UserID", userID) :
+                new ObjectParameter("UserID", typeof(int));
+    
+            var startDateParameter = startDate.HasValue ?
+                new ObjectParameter("StartDate", startDate) :
+                new ObjectParameter("StartDate", typeof(System.DateTime));
+    
+            var endDateParameter = endDate.HasValue ?
+                new ObjectParameter("EndDate", endDate) :
+                new ObjectParameter("EndDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USP_Dashboard_Get_Result>("USP_Dashboard_Get", userIDParameter, startDateParameter, endDateParameter);
+        }
+    
+        public virtual int USPDailyTask_Get(Nullable<int> dailyTaskID)
+        {
+            var dailyTaskIDParameter = dailyTaskID.HasValue ?
+                new ObjectParameter("DailyTaskID", dailyTaskID) :
+                new ObjectParameter("DailyTaskID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTask_Get", dailyTaskIDParameter);
+        }
     }
 }
