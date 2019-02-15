@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using QBA.Qutilize.ClientApp.Helper;
+﻿using QBA.Qutilize.ClientApp.Helper;
 using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
@@ -28,7 +27,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             CreateHeader();
             CreateListViewViewModel(user);
             SetDefaultProjectAsCurrentProject();
-            InsertProjectStartTime();
+            //InsertProjectStartTime();
 
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();

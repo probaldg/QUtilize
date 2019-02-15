@@ -12,6 +12,9 @@ namespace QBA.Qutilize.ClientApp
         private System.Windows.Forms.NotifyIcon _notifyIcon;
        // private bool _isExit;
         Mutex m;
+        int lastDeactivateTick;
+        bool lastDeactivateValid;
+
         public App()
         {
             bool isnew;
@@ -29,15 +32,18 @@ namespace QBA.Qutilize.ClientApp
             base.OnStartup(e);
 
             _notifyIcon = new System.Windows.Forms.NotifyIcon();
-            _notifyIcon.DoubleClick += (s, args) => ShowAppWindow();
+            _notifyIcon.Click += (s, args) => ShowAppWindow();
             _notifyIcon.Icon = ClientApp.Properties.Resources.qba_icon;
             _notifyIcon.Visible = true;
             CreateContextMenu();
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override void OnDeactivated(EventArgs e)
         {
-            base.OnExit(e);
+            base.OnDeactivated(e);
+            lastDeactivateTick = Environment.TickCount;
+            lastDeactivateValid = true;
+            MainWindow.Hide();
         }
         private void CreateContextMenu()
         {
@@ -59,18 +65,22 @@ namespace QBA.Qutilize.ClientApp
         private void ShowAppWindow()
         {
 
-            if (MainWindow.IsVisible)
-            {
-                if (MainWindow.WindowState == WindowState.Minimized)
-                {
-                    MainWindow.WindowState = WindowState.Normal;
-                }
-                MainWindow.Activate();
-            }
-            else
-            {
-                MainWindow.Show();
-            }
+            //if (MainWindow.IsVisible)
+            //{
+            //    if (MainWindow.WindowState == WindowState.Minimized)
+            //    {
+            //        MainWindow.WindowState = WindowState.Normal;
+            //    }
+            //    MainWindow.Activate();
+            //}
+            //else
+            //{
+            //    MainWindow.Show();
+            //}
+
+            if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 1000) return;
+            MainWindow.Show();
+            MainWindow.Activate();
         }
     }
 }

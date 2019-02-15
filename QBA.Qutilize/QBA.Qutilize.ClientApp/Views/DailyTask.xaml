@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
        WindowStyle="None"
+       
         Title="DailyTask" MinHeight="350" Height="400"  Width="350" BorderThickness="2" ResizeMode="CanMinimize">
 
     <Window.Resources>
