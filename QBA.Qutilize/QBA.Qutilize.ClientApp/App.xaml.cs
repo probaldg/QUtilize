@@ -10,7 +10,7 @@ namespace QBA.Qutilize.ClientApp
     public partial class App : Application
     {
         private System.Windows.Forms.NotifyIcon _notifyIcon;
-       // private bool _isExit;
+      
         Mutex m;
         int lastDeactivateTick;
         bool lastDeactivateValid;
@@ -54,8 +54,6 @@ namespace QBA.Qutilize.ClientApp
 
         private void ExitApplication()
         {
-            //_isExit = true;
-           
             MainWindow.Close();
             _notifyIcon.Dispose();
             _notifyIcon = null;

@@ -62,12 +62,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 if (ValidateInput())
                 {
                    
-                    var authenticateduser= await WebAPIHelper.CallWebApiForUserAuthentication(new User {
+                    var authenticateduser= await WebAPIHelper.CallWebApiForUserAuthentication(new User
+                                                                                                   {
                         
-                        UserName = UserID,
-                        Password = UserPassword,
-                        IsActive = true
-                    });
+                                                                                                       UserName = UserID,
+                                                                                                       Password = UserPassword,
+                                                                                                       IsActive = true
+                                                                                                   });
 
                     if(authenticateduser != null && authenticateduser.ID !=0)
                     {
