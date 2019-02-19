@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "MainLanding";
+    ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 
@@ -9,22 +9,33 @@
     </div>
 </div>
 <div class="row" id="divLoadDashBoardDataDayWise">
-    <div class="form-group">
-        <label>Day wise </label>
-        <canvas id="barChart" width="400" height="150"></canvas>
-    </div>
-</div>
-<div class="row">
-        <div class="col-md-6">
-            @Html.Action("GetDataActual", "Home")
-        </div>
-        <div class="col-md-6" >
-            <div class="form-group">
-                <label>Project wise</label>
-                <canvas id="DonutChart" width="400" height="150"></canvas>
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label> Day wise details in minute:</label></div>
+            <div class="panel-body">
+                <canvas id="barChart" width="200" height="30"></canvas>
             </div>
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label> Day wise details:</label></div>
+            <div class="panel-body" id="divActualData">
+                @Html.Action("GetDataActual", "Home")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label>Project wise details in minute:</label></div>
+            <div class="panel-body">
+                <canvas id="DonutChart" width="200" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         gerBarChartData();
@@ -59,5 +70,30 @@
             type: 'doughnut',
             data: tData,
         });
+    }
+    function RefreshData() {
+        try {
+            var vStartDate = $('#txtStartDate').val();
+            var vEndDate = $('#txtEndDate').val();
+            $.ajax({
+                url: '@Url.Action("GetRefreshedData", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    startdate: vStartDate, endDate: vEndDate
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        gerBarChartData();
+                        gerDonutChartData();
+                        $("#divActualData").html(response);
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
     }
 </script>
