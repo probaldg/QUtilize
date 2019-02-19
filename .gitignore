@@ -13,7 +13,11 @@ Debug
 /QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/
 
 QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-wal
-QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-wal
+QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-shm
 QBA.Qutilize/.vs/QBA.Qutilize/v15/Server/sqlite3/storage.ide-wal
 *.ide-wal
+*.ide-shm
 QBA.Qutilize/.vs/QBA.Qutilize/v15/.suo
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/

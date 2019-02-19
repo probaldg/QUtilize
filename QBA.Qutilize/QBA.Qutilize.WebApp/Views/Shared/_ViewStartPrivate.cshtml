@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @*<link rel="shortcut icon" href="~/images/marker.png">*@
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link rel="icon" href="~/images/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    @*<link href="~/fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="~/fons/css/font-awesome.css" rel="stylesheet" />*@
+    <link rel="stylesheet" type="text/css" href="~/Content/WebAdmin.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/Style.css">
+
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/Chart.js"></script>
+    <script src="~/Scripts/Common.js"></script>
+
+    <script>
+        paceOptions = {
+            // Configuration goes here. Example:
+            elements: false,
+            restartOnPushState: false,
+            restartOnRequestAfter: false
+        }
+    </script>
+
+    @*<link rel="stylesheet" href="~/Content/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css">
+        <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>*@
+</head>
+
+<body>
+    
+        <div class="container-fluid">
+            <div class="row" id="header">
+                <div class="panel-body col-md-1 ">
+
+                    @*<div class="col-md-6">
+                        <a href="#" class="burger">
+                            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                                <path fill="#000000" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                            </svg>
+                        </a>
+                    </div>*@
+                    <div class="col-md-6"><img src="~/images/Qutilize.png" alt="Qutilize - Product of QBA" class="img-logo  center-block" /></div>
+
+
+                </div>
+                <div class="col-md-3 text-center">
+
+                    </div>
+                <div class="col-md-6 WelcomeText"></div>
+                <div  ID="HeaderLogin">Welcome @*@HttpContext.Current.Session["Name"].ToString()*@!!!<a class="fa fa-sign-out " href="@Url.Action("Logout", "Home")">LogOut</a>
+                </div>
+
+                <!-----Start User Block---->
+                <div class="col-md-11">
+                    <div class="collapse navbar-collapse">
+                        @*<div class="col-md-1 logoutText" ID="HeaderLogin"><a class="fa fa-sign-out " href="@Url.Action("Logout", "Home")">LogOut</a></div>*@
+                        @*<ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <button type="button" class="btn btn-info btn-circle btn-xl dropdown-toggle user-image" data-toggle="dropdown" style="font-size:15px;">
+                                    @HttpContext.Current.Session["Name"].ToString().FirstOrDefault()
+                                </button>
+
+                                <a href="#" class="dropdown-toggle user-image" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-user"></span>
+                    Welcome @HttpContext.Current.Session["Name"].ToString()!!!
+
+                     <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+
+
+
+                            </li>
+                        </ul>*@
+                    </div>
+                </div>
+                <!-----End User Block------>
+            </div>
+            @*<div class="row panel panel-default hidden scroll" id="menu">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p>Side Menu</p>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="#" class="burger">
+                                <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                                    <path fill="#000000" d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row lien">
+                        <div class="col-md-12">
+                            <a href='/Account/MainLanding' class='fa fa-dashboard'></a>&nbsp;
+                            <a href="/Account/MainLanding">Dashboard</a>
+                            <hr>
+                        </div>
+                    </div>
+                    @Html.Action("LoadSideMenu", "Account")
+                </div>
+            </div>*@
+
+        </div>
+        <div class="container">
+            @*<audio id="jukebox">
+                <source src="~/Content/error.mp3" type="audio/mp3" />
+            </audio>*@
+            <div class="row">
+                @RenderSection("scripts", required: false)
+                @RenderBody()
+            </div>
+
+
+        </div>
+
+        <br /><br /><br /><br />
+
+        <footer ID="footer">
+            <div class="col-md-12">
+                <hr />
+                <p align="center">&copy;2017 &nbsp;<b><img src="~/images/smalllogo.png" alt=":Logo" />.&nbsp;</b> &nbsp;All rights reserved. </p>
+            </div>
+        </footer>
+    
+
+    @*<script>
+         $(".burger").click(function () {
+            console.log("click");
+            $("#menu").toggleClass('hidden');
+            $("#header .burger").toggleClass('hidden');
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $(".dropdown-toggle").dropdown();
+        });
+    </script>
+    <script src="~/Scripts/ModalAnimation.js"></script>*@
+    <script type="text/javascript">
+        var loginUrl='@Url.Action("Index", "Home", new { area = "" })';
+        var logoutUrl='@Url.Action("Logout", "Home", new { area = "" })';
+    </script>
+
+</body>
+
+</html>
