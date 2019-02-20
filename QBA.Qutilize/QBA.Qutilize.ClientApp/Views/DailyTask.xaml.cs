@@ -20,20 +20,31 @@ namespace QBA.Qutilize.ClientApp.Views
     /// </summary>
     public partial class DailyTask : Window
     {
-        //DailyTaskViewModel _vm;
+        
         public DailyTask()
         {
             InitializeComponent();
             SetWindowToBottomRightOfScreen();
-
-            //_vm = new DailyTaskViewModel(this);
-            //this.DataContext = _vm;
         }
 
         private void SetWindowToBottomRightOfScreen()
         {
             Left = SystemParameters.WorkArea.Width - Width - 10;
             Top = SystemParameters.WorkArea.Height - Height;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //Application.Current.MainWindow = this;
+
+            e.Cancel = true;
+            this.Hide();
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            //Application.Current.MainWindow = this;
+            this.Hide();
         }
     }
 }
