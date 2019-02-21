@@ -45,7 +45,7 @@
         //-----Single Bar --------------
         var c = document.getElementById("barChart");
         var ctx = c.getContext("2d");
-        var tData = $.getValues("/Home/BarChartData");
+        var tData = $.getValues('@Url.Action("BarChartData", "Home")');//"/Home/BarChartData"
         var myBarChart = new Chart(ctx, {
             type: 'bar',
             data: tData,
@@ -65,7 +65,7 @@
         //----Donut Chart---------
         var c = document.getElementById("DonutChart");
         var ctx = c.getContext("2d");
-        var tData = $.getValues("/Home/GetDonutChartData");
+        var tData = $.getValues('@Url.Action("GetDonutChartData", "Home")');//"/Home/GetDonutChartData"
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: tData,
