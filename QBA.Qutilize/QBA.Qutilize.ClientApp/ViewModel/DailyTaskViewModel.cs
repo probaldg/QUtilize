@@ -27,9 +27,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             User = user;
             CreateHeader();
             CreateListViewViewModel(user);
+
             SetDefaultProjectAsCurrentProject();
             InsertProjectStartTime();
 
+            Logger.Log("DailyTaskViewModel", "Info", "Timer started.");
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
         }
@@ -46,7 +48,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StrartDateTime;
 
-                        if (diffrenceInHours.Hours >= CurrentWorkingProject?.MaxProjectTimeInHours)
+                        if (diffrenceInHours.Hours > CurrentWorkingProject?.MaxProjectTimeInHours)
                         {
                             MessageBox.Show(Application.Current.MainWindow, "Time consumtion for this project is more than maximum time.", "Project Time excced", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
                         }
@@ -166,7 +168,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             EncryptionHelper encryptionHelper = new EncryptionHelper();
 
-            string url = ConfigurationManager.AppSettings["WebSiteBaseAddress"]  + encryptionHelper.Encryptdata(User.UserName) + "&P="+encryptionHelper.Encryptdata(User.Password);
+            string url = ConfigurationManager.AppSettings["WebSiteBaseAddress"] + encryptionHelper.Encryptdata(User.UserName) + "&P=" + encryptionHelper.Encryptdata(User.Password);
 
             if (!IsValidUri(url))
                 return;
@@ -185,28 +187,46 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         }
         private void LogoutUser()
         {
-            if (CurrentWorkingProject != null)
+            try
             {
-                DailyTaskModel dtm = new DailyTaskModel
+
+
+                if (CurrentWorkingProject != null)
                 {
-                    DailyTaskId = CurrentWorkingProject.DailyTaskId,
-                    ProjectId = CurrentWorkingProject.ProjectID,
-                    UserId = User.ID,
-                    StartTime = CurrentWorkingProject.StrartDateTime,
-                    EndTime = DateTime.Now
+                    DailyTaskModel dtm = new DailyTaskModel
+                    {
+                        DailyTaskId = CurrentWorkingProject.DailyTaskId,
+                        ProjectId = CurrentWorkingProject.ProjectID,
+                        UserId = User.ID,
+                        StartTime = CurrentWorkingProject.StrartDateTime,
+                        EndTime = DateTime.Now
 
-                };
-                var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
-                CurrentWorkingProject = null;
-                User = null;
-                ProjectListViewViewModel.SelectedProject = null;
-                StopTimer();
-                Login loginView = new Login();
-                loginView.Show();
+                    };
 
-                _dailyTaskView.Close();
+                    Logger.Log("LogoutUser", "Info", "Calling update end time API when user logout");
+
+                    var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+
+                    Logger.Log("LogoutUser", "Info", "successfully called update end time API when user logout");
+                    CurrentWorkingProject = null;
+                    User = null;
+                    ProjectListViewViewModel.SelectedProject = null;
+                    StopTimer();
+
+                    Login loginView = new Login();
+                    Application.Current.MainWindow = loginView;
+
+                    loginView.Show();
+                    loginView.Activate();
+                    _dailyTaskView.Close();
 
 
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("LogoutUser", "Error", ex.ToString());
+                throw ex;
             }
         }
 
@@ -235,9 +255,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     UpdateCurrentTask();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Logger.Log("UpdateTask", "Error", ex.ToString());
                 throw;
             }
         }
@@ -262,7 +282,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         EndTime = DateTime.Now
                     };
 
+                    Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
+
                     var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+
+                    Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
                     if (response > 0)
                     {
                         SetNewCurrentProjectAndInsertStartTime(ProjectListViewViewModel.SelectedProject);
@@ -276,7 +300,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             catch (Exception ex)
             {
-
+                Logger.Log("UpdateCurrentTask", "Error", ex.ToString());
                 throw ex;
             }
         }
@@ -304,24 +328,41 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void SetDefaultProjectAsCurrentProject()
         {
-
-            var defaultProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Idle Time".ToLower());
-
-            if (defaultProj != null)
+            try
             {
-                CurrentWorkingProject = new CurrentWorkingProject
+                var defaultProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Idle Time".ToLower());
+
+                if (defaultProj != null)
                 {
-                    ProjectID = defaultProj.ProjectID,
-                    ProjectName = defaultProj.ProjectName,
-                    StrartDateTime = DateTime.Now,
-                    IsCurrentProject = true,
-                    MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
-                };
+                    CurrentWorkingProject = new CurrentWorkingProject
+                    {
+                        ProjectID = defaultProj.ProjectID,
+                        ProjectName = defaultProj.ProjectName,
+                        StrartDateTime = DateTime.Now,
+                        IsCurrentProject = true,
+                        MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
+                    };
+                }
+
+                if (ProjectListViewViewModel.Projects != null)
+                {
+                    if (ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()) != null)
+                    {
+                        ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
+                        ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+                        ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("SetDefaultProjectAsCurrentProject", "Error", $"{ex.ToString()}");
+
+                throw ex;
             }
 
-            ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
-            ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
-            ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+
 
             RefreshUI();
         }
@@ -337,13 +378,23 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 UserId = User.ID,
                 StartTime = CurrentWorkingProject.StrartDateTime
             };
-
-            var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
-
-            if (response != null)
+            try
             {
-                CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
+                Logger.Log("InsertProjectStartTime", "Info", "Calling insert start time API");
+                var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
+
+                Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");
+                if (response != null)
+                {
+                    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Log("InsertProjectStartTime", "Error", ex.ToString());
+                throw ex;
+            }
+
         }
 
 

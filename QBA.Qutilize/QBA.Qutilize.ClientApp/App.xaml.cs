@@ -1,4 +1,6 @@
-﻿using System;
+﻿using QBA.Qutilize.ClientApp.Helper;
+using QBA.Qutilize.ClientApp.Views;
+using System;
 using System.Threading;
 using System.Windows;
 
@@ -10,15 +12,13 @@ namespace QBA.Qutilize.ClientApp
     public partial class App : Application
     {
         private System.Windows.Forms.NotifyIcon _notifyIcon;
-      
+        private bool _isExit;
         Mutex m;
-        int lastDeactivateTick;
-        bool lastDeactivateValid;
+       
 
         public App()
         {
-            bool isnew;
-            m = new Mutex(true, "QBA.Qutilize.ClientApp", out isnew);
+            m = new Mutex(true, "QBA.Qutilize.ClientApp", out bool isnew);
             if (!isnew)
             {
                 MessageBox.Show(string.Format("Another instance of QUtilize is already running.{0} " +
@@ -31,20 +31,25 @@ namespace QBA.Qutilize.ClientApp
         {
             base.OnStartup(e);
 
-            _notifyIcon = new System.Windows.Forms.NotifyIcon();
-            _notifyIcon.Click += (s, args) => ShowAppWindow();
-            _notifyIcon.Icon = ClientApp.Properties.Resources.qba_icon;
-            _notifyIcon.Visible = true;
-            CreateContextMenu();
+            try
+            {
+                _notifyIcon = new System.Windows.Forms.NotifyIcon();
+                _notifyIcon.DoubleClick += (s, args) => ShowAppWindow();
+                _notifyIcon.Icon = ClientApp.Properties.Resources.qba_icon;
+                _notifyIcon.Visible = true;
+                CreateContextMenu();
+                Logger.Log("OnStartup", "Info", $"Application launched successfully.");
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
 
-        protected override void OnDeactivated(EventArgs e)
-        {
-            base.OnDeactivated(e);
-            lastDeactivateTick = Environment.TickCount;
-            lastDeactivateValid = true;
-            MainWindow.Hide();
-        }
+        
+
         private void CreateContextMenu()
         {
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
@@ -54,6 +59,8 @@ namespace QBA.Qutilize.ClientApp
 
         private void ExitApplication()
         {
+            Logger.Log("ExitApplication", "Info", $"Exiting application.");
+            _isExit = true;
             MainWindow.Close();
             _notifyIcon.Dispose();
             _notifyIcon = null;
@@ -62,23 +69,23 @@ namespace QBA.Qutilize.ClientApp
 
         private void ShowAppWindow()
         {
+           
 
-            //if (MainWindow.IsVisible)
-            //{
-            //    if (MainWindow.WindowState == WindowState.Minimized)
-            //    {
-            //        MainWindow.WindowState = WindowState.Normal;
-            //    }
-            //    MainWindow.Activate();
-            //}
-            //else
-            //{
-            //    MainWindow.Show();
-            //}
+            if (MainWindow.IsVisible)
+            {
+                if (MainWindow.WindowState == WindowState.Minimized)
+                {
+                    MainWindow.WindowState = WindowState.Normal;
+                }
+                MainWindow.Activate();
+            }
+            else
+            {
+                MainWindow.Show();
+            }
 
-            if (lastDeactivateValid && Environment.TickCount - lastDeactivateTick < 1000) return;
-            MainWindow.Show();
-            MainWindow.Activate();
         }
+
+       
     }
 }

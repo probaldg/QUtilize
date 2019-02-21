@@ -25,5 +25,16 @@ namespace QBA.Qutilize.ClientApp.Views
             Left = SystemParameters.WorkArea.Width - Width - 10;
             Top = SystemParameters.WorkArea.Height - Height;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
+        }
+
+        private void Window_Deactivated(object sender, System.EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }

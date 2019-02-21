@@ -5,10 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:local1="clr-namespace:QBA.Qutilize.ClientApp.Views"
       xmlns:local="clr-namespace:QBA.Qutilize.ClientApp"
+          
         xmlns:PWDH="clr-namespace:QBA.Qutilize.ClientApp.Helper"
         mc:Ignorable="d"
-        Title="Login"  Height="350" Width="300" BorderThickness="1" ResizeMode="CanMinimize" WindowStyle="None" BorderBrush="SteelBlue">
-
+        Title="Login"  Height="375" Width="300" BorderThickness="1" ResizeMode="CanMinimize"
+        WindowStyle="SingleBorderWindow" BorderBrush="SteelBlue"
+        WindowState="Normal"
+        Closing="Window_Closing" Deactivated="Window_Deactivated">
+      
+    
+   
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="5,0"/>

@@ -1,14 +1,7 @@
-﻿using Newtonsoft.Json;
-using QBA.Qutilize.ClientApp.Helper;
+﻿using QBA.Qutilize.ClientApp.Helper;
 using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -20,6 +13,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         public LoginViewModel(Login login)
         {
             _loginView = login;
+          
         }
         private string _userID;
         private string _password;
@@ -45,7 +39,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-       
         public ICommand Login
         {
             get
@@ -61,7 +54,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 if (ValidateInput())
                 {
-                   
+                    Logger.Log("AuthenticatUser", "Info", "Calling User authentication API");
                     var authenticateduser= await WebAPIHelper.CallWebApiForUserAuthentication(new User
                                                                                                    {
                         
@@ -70,13 +63,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                                                                                        IsActive = true
                                                                                                    });
 
-                    if(authenticateduser != null && authenticateduser.ID !=0)
+                    Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
+                    if (authenticateduser != null && authenticateduser.ID !=0)
                     {
+                        Logger.Log("AuthenticatUser", "Info", $"User Authenticated user Name=  {authenticateduser.UserName}");
                         ConfigureDailyTaskViewModel(authenticateduser);
+
                         _loginView.Close();
                     }
                     else
                     {
+                        Logger.Log("AuthenticatUser", "Info", "User authentication failed.");
+
                         MessageBox.Show("User id/password is not correct.");
                     }
                 }
@@ -85,6 +83,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             catch (Exception ex)
             {
+                Logger.Log("AuthenticatUser", "Error", $"{ex.ToString()}");
+
                 throw ex;
             }
 
@@ -99,12 +99,15 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
 
                 dailyTask.DataContext = dailyTaskVM;
-                dailyTask.Show();
-            }
-            catch (Exception)
-            {
 
-                throw;
+                Application.Current.MainWindow = dailyTask;
+                dailyTask.Show();
+                dailyTask.Activate();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log("ConfigureDailyTaskViewModel", "Error", $"{ex.ToString()}");
+                throw ex;
             }
           
         }
@@ -124,6 +127,5 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             return EncryptionHelper.ConvertStringToMD5(password);
         }
 
-        
     }
 }

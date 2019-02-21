@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.Models", "QBA.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.DataAccess", "QBA.Qutilize.DataAccess\QBA.Qutilize.DataAccess.csproj", "{1A438824-E383-484E-BA6B-F656C084A059}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QUtilizeSetup", "QUtilizeSetup\QUtilizeSetup.vdproj", "{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,8 @@ Global
 		{1A438824-E383-484E-BA6B-F656C084A059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A438824-E383-484E-BA6B-F656C084A059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A438824-E383-484E-BA6B-F656C084A059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}.Debug|Any CPU.ActiveCfg = Debug
+		{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
