@@ -10,142 +10,188 @@
         ResizeMode="CanMinimize" Closing="Window_Closing" Deactivated="Window_Deactivated">
 
     <Window.Resources>
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="BlanchedAlmond" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="5" />
+
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="Bd"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive"  Value="False" />
+                                    <Condition Property="IsSelected"  Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="Aqua" />
+                                <!--<Setter Property="CornerRadius" TargetName="Bd" Value="8" />-->
+                                <Setter Property="BorderThickness" Value="8,1,1,1" />
+                                <Setter Property="BorderBrush" Value="Green" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                    <Condition Property="IsSelected"  Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Background" TargetName="Bd" Value="Aqua" />
+                                <!--<Setter Property="CornerRadius" TargetName="Bd" Value="8" />-->
+                                <Setter Property="BorderBrush" Value="Green" />
+                                <Setter Property="BorderThickness" Value="8,1,1,1" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+           
+
+        </Style>
 
 
     </Window.Resources>
-    <Border CornerRadius="5">
-        <Grid x:Name="uiGridMain" Margin="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="122*"/>
-                <ColumnDefinition Width="47*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.ColumnSpan="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-            </Grid>
-            <Image Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" Width="135"  VerticalAlignment="Top" Height="47" />
-            <TextBlock Grid.Row="0" FontWeight="SemiBold" FontSize="15" Margin="0,3,40,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Text="{Binding CurrUser}" Grid.ColumnSpan="2"></TextBlock>
-            <Button Grid.Row="0" Content="" FontSize="10" 
+    <!--<Border CornerRadius="5">-->
+    <Grid x:Name="uiGridMain" Margin="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="122*"/>
+            <ColumnDefinition Width="47*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+        </Grid>
+        <Image Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,0" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" Width="135"  VerticalAlignment="Top" Height="47" />
+        <TextBlock Grid.Row="0" FontWeight="SemiBold" FontSize="15" Margin="0,3,40,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Text="{Binding CurrUser}" Grid.ColumnSpan="2"></TextBlock>
+        <Button Grid.Row="0" Content="" FontSize="10" 
                      Width="29" Height="28" Margin="0,0,0,0"
                     HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding Logout}" Grid.Column="1" BorderBrush="#FFF9F5F5">
-                <Button.Background>
-                    <ImageBrush ImageSource="/QBA.Qutilize.ClientApp;component/Images/LogOut.PNG"/>
-                </Button.Background>
-            </Button>
-            <TextBlock FontWeight="SemiBold" FontSize="11" Margin="0,28,5,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FFE20BC5" Grid.IsSharedSizeScope="True" Text="{Binding CurrDate}" Grid.ColumnSpan="2"></TextBlock>
-            <GroupBox Header="Project List"  Margin="3,52,3,35"
+            <Button.Background>
+                <ImageBrush ImageSource="/QBA.Qutilize.ClientApp;component/Images/LogOut.PNG"/>
+            </Button.Background>
+        </Button>
+        <TextBlock FontWeight="SemiBold" FontSize="11" Margin="0,28,5,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FFE20BC5" Grid.IsSharedSizeScope="True" Text="{Binding CurrDate}" Grid.ColumnSpan="2"></TextBlock>
+        <GroupBox Header="Project List"  Margin="3,52,3,35"
                   VerticalAlignment="Center"  BorderBrush="Blue"  HorizontalContentAlignment="Stretch" Foreground="#FF121295" ForceCursor="True" FontWeight="Bold" Grid.ColumnSpan="2">
 
-                <ListBox ItemsSource="{Binding ProjectListViewViewModel.Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
+            <ListBox ItemsSource="{Binding ProjectListViewViewModel.Projects, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" 
                          SelectedItem="{Binding DataContext.ProjectListViewViewModel.SelectedProject, Mode=TwoWay, ElementName=lstProject}"
                          x:Name="lstProject" SelectionMode="Single"
                          HorizontalContentAlignment="Left"
                          SelectedIndex="{Binding ProjectListViewViewModel.SelectedIndex, Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
-                         Margin="1"  >
-                    <ListBox.ItemContainerStyle >
+                         Margin="1" BorderThickness="0"  >
+
+                <!--<ListBox.ItemContainerStyle >
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Background" Value="AliceBlue" />
-                            <Setter Property="BorderBrush" Value="Black" />
+                            <Setter Property="BorderBrush" Value="BlueViolet" />
                             <Setter Property="BorderThickness" Value="1" />
                             <Setter Property="Margin" Value="5" />
-                            
+
                             <Style.Triggers>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
+                                        <Condition Property="Selector.IsSelectionActive"  Value="False" />
                                         <Condition Property="IsSelected" Value="True" />
                                     </MultiTrigger.Conditions>
                                     <MultiTrigger.Setters>
-                                       
-                                        <Setter Property="BorderThickness" Value="2" />
-                                        <Setter Property="Margin" Value="7" />
-                                        <Setter Property="BorderBrush" Value="White" />
+
+                                        <Setter Property="BorderThickness" Value="10,1,1,1" />
+                                        <Setter Property="Margin" Value="5" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
                                         <Setter Property="Foreground" Value="Green" />
-                                        <Setter Property="Background" Value="CadetBlue"></Setter>
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"></Setter>
+
                                     </MultiTrigger.Setters>
                                 </MultiTrigger>
 
                             </Style.Triggers>
 
                         </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
+                    </ListBox.ItemContainerStyle>-->
+                <ListBox.ItemTemplate>
+                    <DataTemplate >
+                        <Grid  Width="250" Margin="0,0,0,5" HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"></RowDefinition>
+                                <RowDefinition Height="25"></RowDefinition>
+                            </Grid.RowDefinitions>
 
-                        <DataTemplate >
-                            
-                                <Grid  Width="275" Margin="0,0,0,5" HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"></RowDefinition>
-                                    <RowDefinition Height="25"></RowDefinition>
-                                </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom" TextWrapping="WrapWithOverflow" />
 
-                                <Grid.ColumnDefinitions>
-
-                                    <ColumnDefinition Width="180"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition ></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-
-                                <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
-                                <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom" TextWrapping="WrapWithOverflow" />
-
-                                <ToggleButton Width="40"  x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="1" Grid.Column="1"
+                            <ToggleButton Width="47" Height="24" x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="1" Grid.Column="1"
                                 Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}"
                                 CommandParameter="{Binding ProjectID}" 
                                 IsChecked="{Binding IsCurrentProject, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 
+        </GroupBox>
+        <Grid x:Name="grdFooter" VerticalAlignment="Bottom" Grid.ColumnSpan="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-                            </Grid>
-                            
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-            </GroupBox>
-            <Grid x:Name="grdFooter" VerticalAlignment="Bottom" Grid.ColumnSpan="2" >
-                <Grid.RowDefinitions>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <Button  Content="View" Cursor="Hand" Grid.Row="0" Grid.Column="0"  
+            <Button  Content="View" Cursor="Hand" Grid.Row="0" Grid.Column="0"  
                         Command="{Binding DataContext.OpenURLCommand,ElementName=grdFooter}"  HorizontalAlignment="Left">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <TextBlock TextDecorations="Underline">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock TextDecorations="Underline">
                             <ContentPresenter />
-                            </TextBlock>
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Foreground" Value="Blue" />
-                            <Setter Property="FontWeight" Value="Medium" />
-                            <Setter Property="FontSize" Value="14" />
-                            <Setter Property="Margin" Value="10,0,0,0" />
+                        </TextBlock>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="FontWeight" Value="Medium" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="Margin" Value="10,0,0,0" />
 
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="true">
-                                    <Setter Property="Foreground" Value="Red" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="Red" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
 
-                <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
-                    <Label Content="A product of" FontSize="12" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
-                    <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
-                </StackPanel>
-            </Grid>
-
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+                <Label Content="A product of" FontSize="12" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
+            </StackPanel>
         </Grid>
-    </Border>
+
+    </Grid>
+    <!--</Border>-->
 </Window>

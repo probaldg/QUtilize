@@ -22,19 +22,16 @@
                    TargetType="ContentControl">
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <!--<TextBlock FontFamily="Wingdings 2"
-                                       FontSize="20"
-                                       FontWeight="Bold"
-                                       Foreground="White"
-                                       Text="Y" />-->
+                           
                             <TextBlock 
                                        FontSize="14"
                                        FontWeight="Normal"
                                        Foreground="White"
-                                       Text="Yes" />
+                                       Text=" Yes" />
 
                         </ControlTemplate>
                     </Setter.Value>
@@ -46,6 +43,7 @@
                    TargetType="ContentControl">
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
+              
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
@@ -85,7 +83,11 @@
                                      Height="{Binding ElementName=MainRow,
                                                       Path=ActualHeight}"
                                      HorizontalAlignment="Left"
-                                     Fill="{StaticResource ToggleButtonTrueBackground}" />
+                                     Fill="{StaticResource ToggleButtonTrueBackground}" >
+                                <Ellipse.Stroke>
+                                    <SolidColorBrush x:Name="StrokeColor" Color="Black"/>
+                                </Ellipse.Stroke>
+                            </Ellipse>
 
                             <Ellipse x:Name="BackgroundEllipse2"
                                      Grid.Row="0"
@@ -97,7 +99,11 @@
                                      Height="{Binding ElementName=MainRow,
                                                       Path=ActualHeight}"
                                      HorizontalAlignment="Right"
-                                     Fill="{StaticResource ToggleButtonFalseBackground}" />
+                                     Fill="{StaticResource ToggleButtonFalseBackground}"  >
+                                <Ellipse.Stroke>
+                                    <SolidColorBrush x:Name="StrokeColor" Color="Black"/>
+                                </Ellipse.Stroke>
+                            </Ellipse>
                             <Border x:Name="BackgroundBorder"
                                     Grid.Row="0"
                                     Grid.RowSpan="2"
@@ -133,7 +139,11 @@
                                          Height="{Binding ElementName=MainRow,
                                                           Path=ActualHeight}"
                                          HorizontalAlignment="Right"
-                                         Fill="{StaticResource ToggleButtonTrueForeground}" />
+                                         Fill="{StaticResource ToggleButtonTrueForeground}" >
+                                    <Ellipse.Stroke>
+                                        <SolidColorBrush x:Name="StrokeColor" Color="Black"/>
+                                    </Ellipse.Stroke>
+                                </Ellipse>
                             </StackPanel>
                         </Grid>
                     </Grid>
