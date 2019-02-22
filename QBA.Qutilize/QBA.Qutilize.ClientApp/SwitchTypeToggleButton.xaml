@@ -84,9 +84,9 @@
                                                       Path=ActualHeight}"
                                      HorizontalAlignment="Left"
                                      Fill="{StaticResource ToggleButtonTrueBackground}" >
-                                <Ellipse.Stroke>
+                                <!--<Ellipse.Stroke>
                                     <SolidColorBrush x:Name="StrokeColor" Color="Black"/>
-                                </Ellipse.Stroke>
+                                </Ellipse.Stroke>-->
                             </Ellipse>
 
                             <Ellipse x:Name="BackgroundEllipse2"

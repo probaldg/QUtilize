@@ -14,7 +14,7 @@ namespace QBA.Qutilize.ClientApp
         private System.Windows.Forms.NotifyIcon _notifyIcon;
         private bool _isExit;
         Mutex m;
-       
+
 
         public App()
         {
@@ -42,13 +42,12 @@ namespace QBA.Qutilize.ClientApp
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-           
+
         }
 
-        
+
 
         private void CreateContextMenu()
         {
@@ -69,8 +68,6 @@ namespace QBA.Qutilize.ClientApp
 
         private void ShowAppWindow()
         {
-           
-
             if (MainWindow.IsVisible)
             {
                 if (MainWindow.WindowState == WindowState.Minimized)
@@ -82,11 +79,10 @@ namespace QBA.Qutilize.ClientApp
             else
             {
                 MainWindow.Show();
-                MainWindow.Activate();
+                
             }
-
         }
 
-       
+
     }
 }

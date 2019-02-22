@@ -9,12 +9,10 @@
         xmlns:PWDH="clr-namespace:QBA.Qutilize.ClientApp.Helper"
         mc:Ignorable="d"
         Title="Login"  Height="375" Width="300" BorderThickness="1" ResizeMode="CanMinimize"
-        WindowStyle="SingleBorderWindow" BorderBrush="SteelBlue"
+        WindowStyle="ToolWindow" BorderBrush="SteelBlue"
         WindowState="Normal"
-        Closing="Window_Closing" Deactivated="Window_Deactivated">
-      
+        Closing="Window_Closing" Deactivated="Window_Deactivated" >
     
-   
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="5,0"/>
