@@ -41,7 +41,6 @@
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="MinHeight" Value="15"/>
             <Setter Property="MinWidth" Value="150"/>
-
         </Style>
 
         <Style TargetType="Button" x:Key="btn">
@@ -84,22 +83,25 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <StackPanel  Orientation="Horizontal"  Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                    <Image x:Name="image" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+                <StackPanel  Orientation="Horizontal"  Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2"
+                             HorizontalAlignment="Center">
+                    <Image x:Name="image" Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" VerticalAlignment="Top"
+                           HorizontalAlignment="Center"/>
                 </StackPanel>
-                <StackPanel Grid.Row="1" Margin="10,50,10,10" Grid.ColumnSpan="2">
+                <StackPanel Grid.Row="1" Margin="10,30,10,10" Grid.ColumnSpan="2">
                     <StackPanel.Background>
                         <ImageBrush/>
                     </StackPanel.Background>
                     <TextBlock FontWeight="SemiBold" FontSize="13" >User Name:</TextBlock>
                     <TextBox Name="txtUserName" 
-                             Text="{Binding UserID, Mode=TwoWay,NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FFCDCDD1" SelectionOpacity="1" AutomationProperties.IsRowHeader="True" />
+                             Text="{Binding UserID, Mode=TwoWay,NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                             BorderBrush="#FFCDCDD1" SelectionOpacity="1" AutomationProperties.IsRowHeader="True" />
                     <TextBlock FontWeight="SemiBold" FontSize="13" >Password:</TextBlock>
 
-                    <PasswordBox x:Name="txtUserpassword" PWDH:PasswordHelper.Attach="True" PWDH:PasswordHelper.Password="{Binding UserPassword, Mode=TwoWay, NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}" BorderBrush="#FFCDCDD1"/>
-                    <Button Content="Login" Width="100" IsDefault="True"  HorizontalAlignment="Left" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}" Foreground="White" FontWeight="Bold" Background="#FF0C00FF" Cursor="Hand"/>
-                    <!--<Image Source="Images\smalllogo.png" Height="50" Width="50" Visibility="Visible" ></Image>-->
-
+                    <PasswordBox x:Name="txtUserpassword" PWDH:PasswordHelper.Attach="True" 
+                                 PWDH:PasswordHelper.Password="{Binding UserPassword, Mode=TwoWay, NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}"
+                                 BorderBrush="#FFCDCDD1"/>
+                    <Button Content="Login" Width="80" IsDefault="True"  HorizontalAlignment="Right" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}" Foreground="White" FontWeight="Bold" Background="#FF0C00FF" Cursor="Hand"/>
                 </StackPanel>
                 <StackPanel  Orientation="Horizontal"  Grid.Row="2" VerticalAlignment="Bottom" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                     <Label Content="A product of" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
