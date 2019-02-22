@@ -6,7 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SwitchTypeToggleButton.xaml" />
+                <ResourceDictionary Source="SwitchTypeToggleButton.xaml"></ResourceDictionary>
+               
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -44,6 +44,7 @@ namespace QBA.Qutilize.ClientApp.Views
         private void Window_Deactivated(object sender, EventArgs e)
         {
             //Application.Current.MainWindow = this;
+            //this.WindowState = WindowState.Maximized;
             this.Hide();
         }
     }
