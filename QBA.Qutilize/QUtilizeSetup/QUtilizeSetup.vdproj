@@ -16,13 +16,13 @@
         "Entry"
         {
         "MsmKey" = "8:_012001CC13CF9AA391563DD68A58E52C"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_0FBF235FB2AACE70F80B76967662E347"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -34,13 +34,13 @@
         "Entry"
         {
         "MsmKey" = "8:_3BD548FED55B9739356708E766FE20F9"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_40E0F5B934DFF56CA85E7798BE68FDFC"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -52,25 +52,25 @@
         "Entry"
         {
         "MsmKey" = "8:_719B53AFD5482F6EA671F63D88C41FFC"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
-        "OwnerKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B5BD4001383311254A446A14BEF32ACF"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_B5BD4001383311254A446A14BEF32ACF"
         "OwnerKey" = "8:_0FBF235FB2AACE70F80B76967662E347"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -88,13 +88,13 @@
         "Entry"
         {
         "MsmKey" = "8:_D2F81123D1A80F81188FECA9704ADAE9"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_ECCA8533775234EE88811732502B146B"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -106,7 +106,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+        "OwnerKey" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -571,7 +571,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:QUtilize"
         "ProductCode" = "8:{A93E35EA-C4F8-4283-BC70-E8C5E3FA110A}"
-        "PackageCode" = "8:{7C6D2740-B23E-4984-BCBB-F0AE8CD81245}"
+        "PackageCode" = "8:{0216FDDE-B0A0-46CC-9014-CF80B92F83B7}"
         "UpgradeCode" = "8:{B5950264-BB3C-41D8-BF6B-0D1E1E1E1F20}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -691,7 +691,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_877E42DAC7704B998D12BAD3B83F2C13"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_835EC84B6F0041659A6D8B48DE4344D4"
             {
             "Name" = "8:QUtilize"
             "Arguments" = "8:"
@@ -699,13 +699,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+            "Target" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
             "Folder" = "8:_3BA054DEDE7341CDB0276948B993D429"
             "WorkingFolder" = "8:_444533EA0A994C7398B6F55AD0B6FC22"
             "Icon" = "8:_D0C365F5B7304E2FBFB390E6037F3FE5"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CA86A550DBDC4D5999B16F105A27A759"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_9B6C6FD095EF4C9EB405AF0DF894AF1A"
             {
             "Name" = "8:QUtilize"
             "Arguments" = "8:"
@@ -713,7 +713,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_77CA04CAA2034C86970FC586BB4DB0C5"
+            "Target" = "8:_C43A118CEA1F40FA90A1D30000A594FC"
             "Folder" = "8:_1934FCEA9C0049E18146AAF38AA20E12"
             "WorkingFolder" = "8:_444533EA0A994C7398B6F55AD0B6FC22"
             "Icon" = "8:_D0C365F5B7304E2FBFB390E6037F3FE5"
@@ -1118,7 +1118,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_77CA04CAA2034C86970FC586BB4DB0C5"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C43A118CEA1F40FA90A1D30000A594FC"
             {
             "SourcePath" = "8:..\\QBA.Qutilize.ClientApp\\obj\\Debug\\QBA.Qutilize.ClientApp.exe"
             "TargetName" = "8:"
