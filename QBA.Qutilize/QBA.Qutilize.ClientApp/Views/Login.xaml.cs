@@ -11,13 +11,13 @@ namespace QBA.Qutilize.ClientApp.Views
         LoginViewModel _vm;
         public Login()
         {
-          
+
             InitializeComponent();
 
             SetWindowToBottomRightOfScreen();
 
             _vm = new LoginViewModel(this);
-           this.DataContext = _vm;
+            this.DataContext = _vm;
         }
 
         private void SetWindowToBottomRightOfScreen()
@@ -29,7 +29,7 @@ namespace QBA.Qutilize.ClientApp.Views
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-          
+
             this.Hide();
         }
 
