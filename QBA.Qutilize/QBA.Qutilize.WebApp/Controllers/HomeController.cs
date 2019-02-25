@@ -85,7 +85,29 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         Session.Add("sessUser", dt.Rows[0]["ID"]);
+                        Session.Add("sessUserAllData", dt);
                     }
+                }
+                else
+                {
+                    try
+                    {
+                        DataTable dt = (DataTable)Session["sessUserAllData"];
+                        if (Convert.ToString(dt.Rows[0]["UserName"]).Trim() != EncryptionHelper.Decryptdata(Request.QueryString["U"]).Trim())
+                        {
+                            string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
+                            string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
+                            LoginViewModel lvm = new LoginViewModel();
+                            //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
+                            DataTable dt1 = lvm.VerifyLogin(strUser, strPass);
+                            if (dt1 != null && dt1.Rows.Count > 0)
+                            {
+                                Session.Add("sessUser", dt1.Rows[0]["ID"]);
+                            }
+                        }
+                    }
+                    catch (Exception exx)
+                    { }
                 }
                 if (Session["sessUser"] == null) { return RedirectToAction("Index", "Home"); }
                 #endregion
