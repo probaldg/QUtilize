@@ -52,5 +52,24 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
+
+
+        public static DataTable GetUsers()
+        {
+            DataSet ds = null;
+            try
+            { 
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPUsers_GetForWeb");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds.Tables[0];
+        }
     }
 }
