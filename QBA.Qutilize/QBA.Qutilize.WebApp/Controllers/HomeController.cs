@@ -85,7 +85,29 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         Session.Add("sessUser", dt.Rows[0]["ID"]);
+                        Session.Add("sessUserAllData", dt);
                     }
+                }
+                else
+                {
+                    try
+                    {
+                        DataTable dt = (DataTable)Session["sessUserAllData"];
+                        if (Convert.ToString(dt.Rows[0]["UserName"]).Trim() != EncryptionHelper.Decryptdata(Request.QueryString["U"]).Trim())
+                        {
+                            string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
+                            string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
+                            LoginViewModel lvm = new LoginViewModel();
+                            //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
+                            DataTable dt1 = lvm.VerifyLogin(strUser, strPass);
+                            if (dt1 != null && dt1.Rows.Count > 0)
+                            {
+                                Session.Add("sessUser", dt1.Rows[0]["ID"]);
+                            }
+                        }
+                    }
+                    catch (Exception exx)
+                    { }
                 }
                 if (Session["sessUser"] == null) { return RedirectToAction("Index", "Home"); }
                 #endregion
@@ -140,7 +162,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     _chart.labels = arrrayDate;
                     _chart.datasets = new List<Datasets>();
                     List<Datasets> _dataSet = new List<Datasets>();
-                    string[] arrbg = new string[] { "#2F069E", "#43A7A8", "#0AAFE4", "#C0E2EE", "#B4EEEF", "#56EED2", "#E1F2EE", "#3B04D1", "#ECC9F5", "#EAF5C9", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                    string[] arrbg = new string[] { "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
                     int intColor = 0;
                     foreach (string stproj in arrrayProj)
                     {
@@ -167,7 +189,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         dss.data = arrData;
                         //"#" + ((1 << 24) * Math.random() | 0).toString(16)
                         dss.backgroundColor = GetBackColor(arrbg, intColor, arrrayProj.Length);// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
-                        dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                        dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         dss.borderWidth = "1";
@@ -273,8 +295,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         label = "",
                         data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                        backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
-                        borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
+                        backgroundColor = new string[] { "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                        borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                         borderWidth = "1"
                     });
                     _chart.datasets = _dataSet;
