@@ -234,7 +234,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-                //TODO populate all project in dropdown list
+
             }
 
             return View(obj);
@@ -282,12 +282,9 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
-
-
         #region User Project Mapping region
         public ActionResult UserProjectMapping()
         {
-           
             return View();
         }
 
@@ -360,22 +357,319 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
 
-           
-            DataTable dt = UPM.GetAllProjectByUserID(itemlist[0].UserId); // TODO crate a proc to get all the project mapped to the user
 
-            if (dt.Rows.Count > 0)
+                DataTable dt = UPM.GetAllProjectByUserID(itemlist[0].UserId); // TODO crate a proc to get all the project mapped to the user
+
+                if (dt.Rows.Count > 0)
+                {
+                    UPM.DeleteAllExistingMapping(itemlist[0].UserId); // TODO crate a proc to delete all the project mapped to the user
+                }
+
+                foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+                {
+                    UserProjectMappingModel mm = new UserProjectMappingModel();
+
+                    mm.UserId = i.UserId;
+                    mm.ProjectId = i.ProjectId;
+                    mm.InsertUserProjectMappingdata(mm);
+                }
+            }
+            catch (Exception)
             {
-                UPM.DeleteAllExistingMapping(itemlist[0].UserId); // TODO crate a proc to delete all the project mapped to the user
+
+                throw;
+            }
+            return Json(true);
+        }
+        #endregion
+
+        #region Role managment region
+        public ActionResult ManageRole(int ID = 0)
+        {
+            RoleModel obj = new RoleModel();
+            List<ProjectModel> objRole = new List<ProjectModel>();
+
+            if (ID > 0)
+            {
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt = obj.GetRolesByID(ID);
+                    obj.Id = Convert.ToInt32(dt.Rows[0]["ID"]);
+                    obj.Name = dt.Rows[0]["Name"].ToString();
+                    obj.Description = dt.Rows[0]["Description"].ToString();
+                    obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
+
+                    obj.Update_RoleDetails(obj);
+                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+                //TODO populate all project in dropdown list
             }
 
-            foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            return View(obj);
+        }
+        [HttpPost]
+        public ActionResult ManageRole(RoleModel model)
+        {
+            RoleModel rm = new RoleModel();
+            try
             {
-                UserProjectMappingModel mm = new UserProjectMappingModel();
+                if (model.Id > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = um.GetUsersByID(model.Id);
+                    model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.EditedDate = DateTime.Now;
+                    rm.Update_RoleDetails(model);
 
-                mm.UserId = i.UserId;
-                mm.ProjectId = i.ProjectId;
-                mm.InsertUserProjectMappingdata(mm);
+                    TempData["ErrStatus"] = model.ISErr.ToString();
+                }
+                else
+                {
+                    int id;
+                    if (System.Web.HttpContext.Current.Session["ID"] != null)
+                    {
+                        model.CreatedBy = (System.Web.HttpContext.Current.Session["ID"].ToString());
+                    }
+
+                    model.CreateDate = DateTime.Now;
+
+                    model.IsActive = model.IsActive;
+                    rm.InsertRoletdata(model, out id);
+                    if (id > 0)
+                    {
+
+                    }
+                    TempData["ErrStatus"] = model.ISErr.ToString();
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return RedirectToAction("ManageRole", "Admin");
+        }
+        public ActionResult LoadRoleData()
+        {
+            RoleModel obj = new RoleModel();
+
+            string strUserData = string.Empty;
+
+            int i = 0;
+
+            DataTable dt = obj.GetAllRoles();
+
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" +
+                                 "<td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                i++;
+            }
+            return Content(strUserData);
+        }
+        #endregion
+
+        #region User Role Mapping region
+        public ActionResult UserRoleMapping()
+        {
+
+            return View();
+        }
+
+        public ActionResult LoadALLUserRoleToMapped()
+        {
+            string strProjectMapped = string.Empty;
+            UserProjectMappingModel USM = new UserProjectMappingModel();
+            DataTable dt = USM.GetAllUsers();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                int i = 0;
+
+                strProjectMapped += "<tr>";
+                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                //strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'>Map</button></td>";
+
+                strProjectMapped += "</td>";
+                i++;
+            }
+
+            return Content(strProjectMapped);
+        }
+
+        public ActionResult LoadAllRoles()
+        {
+            UserRoleMappingModel obj = new UserRoleMappingModel();
+            DataTable dt = obj.GetAllRoles();
+            string strModules = string.Empty;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
+                                dr["Name"].ToString();
+
+                strModules += "</li>";
+                strModules += "</ul>";
+
+            }
+            return Content(strModules);
+        }
+
+        public ActionResult SaveRoleMapping(UserRoleMappingModel[] itemlist)
+        {
+            UserRoleMappingModel UPM = new UserRoleMappingModel();
+            int UserID = itemlist[0].UserId;
+            try
+            {
+
+
+                DataTable dt = UPM.GetAllRolesByUserID(itemlist[0].UserId);
+
+                if (dt.Rows.Count > 0)
+                {
+                    UPM.DeleteAllExistingMapping(itemlist[0].UserId);
+                }
+
+                foreach (UserRoleMappingModel i in itemlist)
+                {
+                    UserRoleMappingModel mm = new UserRoleMappingModel();
+
+                    mm.UserId = i.UserId;
+                    mm.RoleId = i.RoleId;
+                    mm.InsertUserRoleMappingdata(mm);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Json(true);
+        }
+
+        public ActionResult GetRolesMappedToUser(int id)
+        {
+            UserRoleMappingModel upm = new UserRoleMappingModel();
+            DataTable dt = upm.GetAllRolesByUserID(id);
+
+            List<UserRoleMappingModel> viewModelList = new List<UserRoleMappingModel>();
+            for (var i = 0; i < dt.Rows.Count; i++)
+            {
+                UserRoleMappingModel um = new UserRoleMappingModel();
+                um.UserId = int.Parse(dt.Rows[i]["UserId"].ToString());
+                um.RoleId = int.Parse(dt.Rows[i]["RoleId"].ToString());
+
+                viewModelList.Add(um);
+            }
+            return Json(viewModelList);
+        }
+
+        #endregion
+
+        #region Role module Mapping region
+        public ActionResult RoleModuleMapping()
+        {
+
+            return View();
+        }
+        public ActionResult LoadALLRoleToBeMappedWithModule()
+        {
+            string strProjectMapped = string.Empty;
+            RoleMouduleMappingModel USM = new RoleMouduleMappingModel();
+            DataTable dt = USM.GetAllRoles();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                int i = 0;
+
+                strProjectMapped += "<tr>";
+                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+                strProjectMapped += "</td>";
+                i++;
+            }
+
+            return Content(strProjectMapped);
+        }
+        public ActionResult LoadAllSysModules()
+        {
+            RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
+            DataTable dt = obj.GetAllModules();
+            string strModules = string.Empty;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
+                                dr["Name"].ToString();
+
+                strModules += "</li>";
+                strModules += "</ul>";
+
+            }
+            return Content(strModules);
+        }
+        public ActionResult GetModuleMappedToRole(int id)
+        {
+            RoleMouduleMappingModel rmm = new RoleMouduleMappingModel();
+            DataTable dt = rmm.GetAllModuleByRoleID(id);
+
+            List<RoleMouduleMappingModel> viewModelList = new List<RoleMouduleMappingModel>();
+            for (var i = 0; i < dt.Rows.Count; i++)
+            {
+                RoleMouduleMappingModel um = new RoleMouduleMappingModel();
+                um.SysModuleId = int.Parse(dt.Rows[i]["SYSModuleID"].ToString());
+                um.RoleId = int.Parse(dt.Rows[i]["RoleId"].ToString());
+
+                viewModelList.Add(um);
+            }
+            return Json(viewModelList);
+        }
+
+        public ActionResult SaveModuleMapping(RoleMouduleMappingModel[] itemlist)
+        {
+            RoleMouduleMappingModel UPM = new RoleMouduleMappingModel();
+
+            try
+            {
+                if (itemlist == null)
+                    return null;
+
+                int RoleID = itemlist[0].RoleId;
+                DataTable dt = UPM.GetAllModuleByRoleID(itemlist[0].RoleId);
+
+                // var moduleListIdDatabase = dt.AsEnumerable().ToArray();
+
+                if (dt.Rows.Count > 0)
+                {
+                    UPM.DeleteAllExistingMapping(itemlist[0].RoleId);
+                }
+
+                foreach (RoleMouduleMappingModel i in itemlist)
+                {
+                    RoleMouduleMappingModel mm = new RoleMouduleMappingModel();
+
+                    mm.RoleId = i.RoleId;
+                    mm.SysModuleId = i.SysModuleId;
+                    mm.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    mm.CreateDate = DateTime.Now;
+                    mm.InsertRoleModuleMappingdata(mm);
+                }
+
+
             }
             catch (Exception)
             {
