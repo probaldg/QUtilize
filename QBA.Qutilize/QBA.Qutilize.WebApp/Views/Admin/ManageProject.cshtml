@@ -1,7 +1,9 @@
 ﻿@model QBA.Qutilize.WebApp.Models.ProjectModel
 @{
-    ViewBag.Title = "Manage Project";
-    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+                /**/
+
+                ViewBag.Title = "Manage Project";
+                Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 
 <!DOCTYPE html>
@@ -44,7 +46,8 @@
             Data Saved Successfully!!!
         </div>
     </div>
-
+    <h4>Manage Project</h4>
+    <hr />
     <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
@@ -70,74 +73,77 @@
         </div>
     </div>
 
+
+
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
     {
         @Html.AntiForgeryToken()
-    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
         <h4>Project Details</h4>
         <hr />
-
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ProjectID)
+        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
 
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ProjectID)
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.ProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.ProjectList, Model.ProjectList, new { @class = "form-control" })
+            @*<div class="form-group">
+                    @Html.LabelFor(model => model.ProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.ProjectList, Model.ProjectList, new { @class = "form-control" })
+                    </div>
+                </div>*@
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.IsActive)
+                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
             </div>
-        </div>*@
-        <div class="form-group">
-            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.IsActive)
-                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
     }
 
     <script type="text/javascript">
         $("#tblGridListViewPost").dataTable();
 
         function checkUserForm() {
-            
-           
+
+
             var ProjectName = document.getElementById("ProjectName").value;
-           
-           
+
+
             if (ProjectName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Project Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
-                
+
                 return false;
             }
 
-          
+
             return true;
         }
     </script>

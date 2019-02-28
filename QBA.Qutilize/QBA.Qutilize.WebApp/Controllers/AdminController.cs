@@ -287,12 +287,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region User Project Mapping region
         public ActionResult UserProjectMapping()
         {
-            //UserProjectMappingModel userProject = new UserProjectMappingModel();
-
-            //SelectList objListOfUserToBind = new SelectList(userProject.GetAllUsers(), "ID", "Name", 0);
-            //userProject.UsersSelectList = objListOfUserToBind;
-
-
+           
             return View();
         }
 
@@ -327,9 +322,9 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             foreach (DataRow dr in dt.Rows)
             {
-                strModules += "<ul class='module' style='list-style: none;'>";
-                strModules += "<li class='limodule' style='list-style: none;'>";
-                strModules += "<input type='checkbox' class='check' name='modules' value='" + dr["Id"].ToString() + "'>" +
+                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
                                 dr["Name"].ToString();
 
                 strModules += "</li>";
@@ -339,6 +334,23 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strModules);
         }
 
+        public ActionResult GetProjectMappedToUser(int id)
+        {
+            UserProjectMappingModel upm = new UserProjectMappingModel();
+            DataTable dt = upm.GetAllProjectByUserID(id);
+
+            List<UserProjectMappingModel> viewModelList = new List<UserProjectMappingModel>();
+            for (var i = 0; i < dt.Rows.Count; i++)
+            {
+                UserProjectMappingModel um = new UserProjectMappingModel();
+                um.UserId = int.Parse(dt.Rows[i]["UserId"].ToString());
+                um.ProjectId = int.Parse(dt.Rows[i]["ProjectId"].ToString());
+                //um.sysModuleID = int.Parse(dt.Rows[i]["sysModuleID"].ToString());
+
+                viewModelList.Add(um);
+            }
+            return Json(viewModelList);
+        }
 
         [HttpPost]
         public ActionResult SaveProjectMapping(UserProjectMappingModel[] itemlist)
