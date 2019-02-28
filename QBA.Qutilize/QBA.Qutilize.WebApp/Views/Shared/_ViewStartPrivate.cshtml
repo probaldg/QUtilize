@@ -124,7 +124,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
                                 <button type="button" class="btn btn-info btn-circle btn-xl dropdown-toggle user-image" data-toggle="dropdown" style="font-size:15px;">
-                                    @HttpContext.Current.Session["Name"].ToString()
+                                    @HttpContext.Current.Session["Name"].ToString().FirstOrDefault()
                                 </button>
                                 <ul class="dropdown-menu ">
                                     <li>
