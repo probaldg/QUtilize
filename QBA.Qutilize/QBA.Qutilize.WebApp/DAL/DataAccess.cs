@@ -52,8 +52,24 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
+        public static DataSet GetUserDetailData(int userID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={new SqlParameter("@Id", Convert.ToInt32(userID))};
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPUserDetailData", param);
+                }
+            }
+            catch (Exception ex)
+            {
 
+            }
 
+            return ds;
+        }
         public static DataTable GetUsers()
         {
             DataSet ds = null;
@@ -70,6 +86,26 @@ namespace QBA.Qutilize.WebApp.DAL
             }
 
             return ds.Tables[0];
+        }
+        public static DataTable GetDashBoardMenu(int UserID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",UserID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("sp_GetDashBoardMenu", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return dt;
         }
     }
 }
