@@ -159,7 +159,9 @@
     <Compile Include="Helper\EncryptionHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
+    <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\UserProjectMappingModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -237,6 +239,8 @@
     <Content Include="Views\Shared\_ViewStartPrivate.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Admin\ManageUsers.cshtml" />
+    <Content Include="Views\Admin\ManageProject.cshtml" />
+    <Content Include="Views\Admin\UserProjectMapping.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

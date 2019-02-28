@@ -80,7 +80,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter Status = new SqlParameter("@Identity", SqlDbType.Int);
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
-                    new SqlParameter("@UserName",model.Name),
+                    new SqlParameter("@UserName",model.UserName),
                     new SqlParameter("@Name",model.Name),
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Password",model.Password),
@@ -126,7 +126,8 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param = {
                     new SqlParameter("@ID",model.ID),
                     new SqlParameter("@Name",model.Name),
-                    new SqlParameter("@Email", model.EmailId),
+                    new SqlParameter("@userName",model.UserName),
+                    new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@isActive",model.IsActive)
@@ -138,6 +139,45 @@ namespace QBA.Qutilize.WebApp.Models
                 result = false;
             }
             return result;
+        }
+
+
+        public DataTable checkemail(string email)
+        {
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@Email",email)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_CheckEmail]", param);
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
+        }
+
+        public DataTable updatePassword(int ID, string newPwd, int editedBy, DateTime editedTS)
+        {
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@Id",ID),
+                                        new SqlParameter("@password",newPwd),
+                                        new SqlParameter("@EditedBy",editedBy),
+                                        new SqlParameter("@EditedDate",editedTS)
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_UpdatePassword]", param);
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 UserViewModel userViewModel = new UserViewModel();
-                userViewModel.GetUsers();
+               // userViewModel.GetUsers();
 
                 return View(userViewModel);
             }

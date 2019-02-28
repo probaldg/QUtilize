@@ -17,25 +17,25 @@ namespace QBA.Qutilize.WebApp.Models
             Users = new List<User>();
         }
 
-        public List<User> GetUsers()
-        {
-           var userDT= DataAccess.GetUsers();
-            Users.Clear();
+        //public List<User> GetUsers()
+        //{
+        //   var userDT= DataAccess.GetUsers();
+        //    Users.Clear();
 
-            if (userDT.Rows.Count>0)
-            {
-                for (int i = 0; i < userDT.Rows.Count-1; i++)
-                {
-                    User user = new User();
-                    user.ID = (int)userDT.Rows[i]["Id"];
-                    user.Name = userDT.Rows[i]["Name"].ToString();
-                    user.UserName= userDT.Rows[i]["UserName"].ToString();
-                    user.EmailId= userDT.Rows[i]["EmailId"]?.ToString();
-                    Users.Add(user);
-                }
+        //    if (userDT.Rows.Count>0)
+        //    {
+        //        for (int i = 0; i < userDT.Rows.Count-1; i++)
+        //        {
+        //            User user = new User();
+        //            user.ID = (int)userDT.Rows[i]["Id"];
+        //            user.Name = userDT.Rows[i]["Name"].ToString();
+        //            user.UserName= userDT.Rows[i]["UserName"].ToString();
+        //            user.EmailId= userDT.Rows[i]["EmailId"]?.ToString();
+        //            Users.Add(user);
+        //        }
                 
-            }
-            return Users;
-        }
+        //    }
+        //    return Users;
+        //}
     }
 }
