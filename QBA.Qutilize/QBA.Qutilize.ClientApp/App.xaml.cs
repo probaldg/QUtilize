@@ -78,8 +78,12 @@ namespace QBA.Qutilize.ClientApp
             }
             else
             {
-                MainWindow.Show();
-                
+                if (MainWindow.IsActive == false)
+                    MainWindow.Activate();
+
+                if (MainWindow.Visibility == Visibility.Hidden)
+                    MainWindow.Show();
+
             }
         }
 
