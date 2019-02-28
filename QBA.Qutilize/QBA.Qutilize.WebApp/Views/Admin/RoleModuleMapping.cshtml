@@ -1,6 +1,6 @@
-﻿@model QBA.Qutilize.WebApp.Models.UserProjectMappingModel
+﻿
 @{
-    ViewBag.Title = "UserProjectMapping";
+    ViewBag.Title = "RoleModuleMapping";
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 
@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>User Project Mapping</title>
+    <title>Role Module Mapping</title>
 </head>
 <body>
     <div class="col-md-12"><br /></div>
@@ -18,20 +18,21 @@
             <span id="errormsg"></span>
         </div>
     </div>
-    <h4>User project Mapping</h4>
+    <h4>Role Module Mapping</h4>
     <hr />
+
     <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
                     <th class="text-center">ID</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Map Projects</th>
+                    <th class="text-center">Role Name</th>
+                    <th class="text-center">Map Modules</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
             <tbody>
-                @Html.Action("LoadALLUserMapped", "Admin")
+                @Html.Action("LoadALLRoleToBeMappedWithModule", "Admin")
             </tbody>
         </table>
     </div>
@@ -44,16 +45,16 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;">Select Project</h4>
+                    <h4 class="modal-title" style="color:#626262;">Select Modules</h4>
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="UserID" id="UserID" />
-                    @Html.Action("LoadAllModules", "Admin")
+                    <input type="hidden" value="" name="RoleID" id="RoleID" />
+                    @Html.Action("LoadAllSysModules", "Admin")
                 </div>
 
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-default" onclick="showArraylist()" value="SUbmit">
+                    <input type="submit" class="btn btn-default" onclick="SelectCheckBox()" value="SUbmit">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
 
@@ -62,15 +63,18 @@
         </div>
     </div>
 
-
     <script type="text/javascript">
         function ShowPermission(id) {
+           
             var id = id;
-            $('input[name="UserID"]').val(id)
+           
+            $('input[name="RoleID"]').val(id)
+
+            
             $("input[type='checkbox']").prop('checked', false)
 
              $.ajax({
-            url: '@Url.Action("GetProjectMappedToUser", "Admin")',
+            url: '@Url.Action("GetModuleMappedToRole", "Admin")',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -82,8 +86,7 @@
             success: function (response) {
                 console.log(response);
                 $.each(response, function (key, value) {
-                    //$("input[name='" + value.ProjectId + "']").prop('checked', true);
-                    $("input[value='" + value.ProjectId + "']").prop('checked', true);
+                    $("input[value='" + value.SysModuleId + "']").prop('checked', true);
 
                 });
 
@@ -93,22 +96,14 @@
             }
         });
         }
-        //$('#myModalForModule').on('show.bs.modal', function (e) {
-        //    var anim = "slideInRight";
-        //    testAnim(anim);
-        //})
-        //$('#myModalForModule').on('hide.bs.modal', function (e) {
-        //    var anim = "slideOutRight";
-        //    testAnim(anim);
-        //})
 
-        function showArraylist() {
+         function SelectCheckBox() {
 
             var Itemlist = [];
             var moduleid = [];
             var moduleids = [];
 
-            var UserID = document.getElementById("UserID").value;
+             var RoleID = document.getElementById("RoleID").value;
             var lastpushedModuleid = 0;
 
             $("ul.module > li.limodule  input:checkbox:checked").each(function () {
@@ -125,7 +120,7 @@
 
             for (var i = 0; i < moduleids.length; i++) {
                 if (lastpushedModuleid != moduleids[i]) {
-                    Item = { userID: UserID, ProjectId: moduleids[i] }
+                    Item = { RoleID: RoleID, SYSModuleId: moduleids[i] }
                     Itemlist.push(Item);
                 }
             }
@@ -136,7 +131,7 @@
            // alert(Itemlist.length);
 
              $.ajax({
-            url: '@Url.Action("SaveProjectMapping", "Admin")',
+            url: '@Url.Action("SaveModuleMapping", "Admin")',
             dataType: "json",
             data: JSON.stringify({ itemlist: Itemlist }),
             type: "POST",
@@ -158,4 +153,3 @@
     </script>
 </body>
 </html>
-
