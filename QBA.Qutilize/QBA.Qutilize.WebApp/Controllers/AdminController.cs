@@ -202,7 +202,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 //strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + dr["ParentProjectName"] + "</td>" +
                 //                 "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
 
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + 
+                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() +
                  "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
             }
@@ -264,12 +264,12 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-               
+
                 model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
                 model.CreateDate = DateTime.Now;
-               
+
                 model.IsActive = model.IsActive;
-               
+
                 obj.InsertProjectdata(model, out int id);
                 if (id > 0)
                 {
@@ -278,7 +278,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 TempData["ErrStatus"] = model.ISErr.ToString();
             }
             return RedirectToAction("ManageProject", "Admin");
-           
+
         }
         #endregion
 
@@ -306,11 +306,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             foreach (DataRow dr in dt.Rows)
             {
                 int i = 0;
-                
+
                 strProjectMapped += "<tr>";
                 strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
-                //strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'>Map</button></td>";
+                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                //strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'>Map</button></td>";
 
                 strProjectMapped += "</td>";
                 i++;
@@ -324,7 +324,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             UserProjectMappingModel obj = new UserProjectMappingModel();
             DataTable dt = obj.GetAllProjects();
             string strModules = string.Empty;
-           
+
             foreach (DataRow dr in dt.Rows)
             {
                 strModules += "<ul class='module' style='list-style: none;'>";
@@ -337,6 +337,40 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             }
             return Content(strModules);
+        }
+
+
+        [HttpPost]
+        public ActionResult SaveProjectMapping(UserProjectMappingModel[] itemlist)
+        {
+            UserProjectMappingModel UPM = new UserProjectMappingModel();
+            int UserID = itemlist[0].UserId;
+            try
+            {
+
+           
+            DataTable dt = UPM.GetAllProjectByUserID(itemlist[0].UserId); // TODO crate a proc to get all the project mapped to the user
+
+            if (dt.Rows.Count > 0)
+            {
+                UPM.DeleteAllExistingMapping(itemlist[0].UserId); // TODO crate a proc to delete all the project mapped to the user
+            }
+
+            foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            {
+                UserProjectMappingModel mm = new UserProjectMappingModel();
+
+                mm.UserId = i.UserId;
+                mm.ProjectId = i.ProjectId;
+                mm.InsertUserProjectMappingdata(mm);
+            }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Json(true);
         }
         #endregion
     }

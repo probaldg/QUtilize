@@ -47,9 +47,10 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="RoleID" id="RoleID" />
+                    <input type="hidden" value="" name="UserID" id="UserID" />
                     @Html.Action("LoadAllModules", "Admin")
                 </div>
+
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-default" onclick="showArraylist()" value="SUbmit">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -62,37 +63,73 @@
 
 
     <script type="text/javascript">
-        @*  function ShowPermission(id) {
-        var id = id;
-        //$('input[name="RoleID"]').val(id)
-        $("input[type='checkbox']").prop('checked',false)
-        $.ajax({
-            url: '@Url.Action("GetPermissions", "Admin")',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            // data: { id:id },
-            data: JSON.stringify({
-                "id":id
-            }),
+        function ShowPermission(id) {
+            var id = id;
+            $('input[name="UserID"]').val(id)
+            $("input[type='checkbox']").prop('checked', false)
 
-            success: function (response) {
-                console.log(response);
-                $.each(response, function (key, value) {
-                    $("input[name='" + value.sysModuleID + "']").prop('checked', true);
-
-                });
-
-            },
-            error: function (response) {
-                console.log(response);
-            }
-        });
-
-    }*@
+        }
+        //$('#myModalForModule').on('show.bs.modal', function (e) {
+        //    var anim = "slideInRight";
+        //    testAnim(anim);
+        //})
+        //$('#myModalForModule').on('hide.bs.modal', function (e) {
+        //    var anim = "slideOutRight";
+        //    testAnim(anim);
+        //})
 
         function showArraylist() {
-            alert('showArraylist');
+
+            var Itemlist = [];
+            var moduleid = [];
+            var moduleids = [];
+
+            var UserID = document.getElementById("UserID").value;
+            var lastpushedModuleid = 0;
+
+            $("ul.module > li.limodule  input:checkbox:checked").each(function () {
+                // alert($(this).attr("name"))
+                if ($(this).attr("name") == "modules") {
+                    moduleid = $(this).val();
+                }
+
+                moduleids.push(moduleid);
+
+            })
+            var length = moduleids.length
+           // alert(length);
+
+            for (var i = 0; i < moduleids.length; i++) {
+                if (lastpushedModuleid != moduleids[i]) {
+                    Item = { userID: UserID, ProjectId: moduleids[i] }
+                    Itemlist.push(Item);
+                }
+            }
+
+
+            lastpushedModuleid = moduleids[i];
+
+           // alert(Itemlist.length);
+
+             $.ajax({
+            url: '@Url.Action("SaveProjectMapping", "Admin")',
+            dataType: "json",
+            data: JSON.stringify({ itemlist: Itemlist }),
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                if (result == true) {
+
+                    alert("Successfully Saved the Data");
+                    
+                } else {
+                    alert("error");
+                 }
+            },
+            error: function (xhr) {
+                console.log();
+            }
+        });
         }
     </script>
 </body>

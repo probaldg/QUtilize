@@ -6,15 +6,16 @@ using System.Web.Mvc;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlClient;
 
 namespace QBA.Qutilize.WebApp.Models
 {
     public class UserProjectMappingModel
     {
         [Key]
-        public int ID { get; set; }
+        public int UserId { get; set; }
         public string ProjectName { get; set; }
-
+        public int ProjectId { get; set; }
         //public int OrgID { get; set; }
         //public string OrgName { get; set; }
         //public SelectList OrganisationList { get; set; }
@@ -58,6 +59,73 @@ namespace QBA.Qutilize.WebApp.Models
 
             }
             return dt;
+        }
+
+        public DataTable GetAllProjectByUserID(int UserID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@UserID",UserID),
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Get]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public DataTable DeleteAllExistingMapping(int UserID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@UserID",UserID),
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_DeleteMappingByUserID]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public Boolean InsertUserProjectMappingdata( UserProjectMappingModel userProjectMapping)
+        {
+            string str = string.Empty;
+            bool result = false;
+            DataTable dt = null;
+           
+
+            try
+            {
+                
+                SqlParameter[] param ={
+                    new SqlParameter("@UserID",userProjectMapping.UserId),
+                    new SqlParameter("@ProjectID",userProjectMapping.ProjectId),
+                   
+                };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Insert]", param);
+                userProjectMapping.ISErr = false;
+                userProjectMapping.ErrString = "Data Saved Successfully!!!";
+                result = true;
+              
+            }
+            catch (Exception ex)
+            {
+                userProjectMapping.ISErr = true;
+                userProjectMapping.ErrString = "Error Occured!!!";
+                result = false;
+            }
+            return result;
+
         }
     }
 
