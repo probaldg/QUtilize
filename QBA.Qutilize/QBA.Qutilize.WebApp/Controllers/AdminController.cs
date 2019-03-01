@@ -183,7 +183,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
-
         #region Project managment region"
         //
         public ActionResult LoadProjectData()
