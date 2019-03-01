@@ -10,6 +10,19 @@ namespace QBA.Qutilize.WebApp.Models
 {
     public class AccountViewModels
     {
+        public DataTable GetDashBoardMenu(int UserID)
+        {
+            DataTable dt = null;
+            try
+            {
+                dt = DataAccess.GetDashBoardMenu(UserID);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
     }
     public class LoginViewModel
     {
@@ -39,6 +52,20 @@ namespace QBA.Qutilize.WebApp.Models
 
             return dt;
         }
+        public DataSet GetUserDetailData(int userID)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.GetUserDetailData(userID);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
         public DataSet GetDashBoardData(int userID, DateTime startDate, DateTime endDate)
         {
             DataSet ds = null;
@@ -53,6 +80,7 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+        
     }
     
 }

@@ -74,12 +74,13 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 #region Session or Querystring checking for authenticate login
+                LoginViewModel lvm = new LoginViewModel();
                 if (Session["sessUser"] == null)
                 {
                     //get value from query string and create session
                     string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                     string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
-                    LoginViewModel lvm = new LoginViewModel();
+                    //LoginViewModel lvm = new LoginViewModel();
                     //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
                     DataTable dt = lvm.VerifyLogin(strUser, strPass);
                     if (dt != null && dt.Rows.Count > 0)
@@ -93,11 +94,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     try
                     {
                         DataTable dt = (DataTable)Session["sessUserAllData"];
-                        if (Convert.ToString(dt.Rows[0]["UserName"]).Trim() != EncryptionHelper.Decryptdata(Request.QueryString["U"]).Trim())
+                        string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
+                        string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
+                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dt.Rows[0]["UserName"]).Trim() != strUser)
                         {
-                            string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
-                            string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
-                            LoginViewModel lvm = new LoginViewModel();
+                            //LoginViewModel lvm = new LoginViewModel();
                             //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
                             DataTable dt1 = lvm.VerifyLogin(strUser, strPass);
                             if (dt1 != null && dt1.Rows.Count > 0)
@@ -109,7 +110,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     catch (Exception exx)
                     { }
                 }
-                if (Session["sessUser"] == null) { return RedirectToAction("Index", "Home"); }
+                if (Session["sessUser"] != null)
+                {
+                    DataSet ds = lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
+                    Session.Add("Name", ds.Tables[0].Rows[0]["Name"]);
+                    Session.Add("Email", ds.Tables[0].Rows[0]["EmailId"]);
+                    Session.Add("EmployeeCode", ds.Tables[0].Rows[0]["EmployeeCode"]);
+                    Session.Add("Designation", ds.Tables[0].Rows[0]["Designation"]);
+                    Session.Add("ManagerName", ds.Tables[0].Rows[0]["ManagerName"]);
+                    Session.Add("ManagerEmpCode", ds.Tables[0].Rows[0]["ManagerEmpCode"]);
+                }
+                else
+                { return RedirectToAction("Index", "Home"); }
                 #endregion
             }
             catch (Exception exx)
@@ -162,7 +174,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     _chart.labels = arrrayDate;
                     _chart.datasets = new List<Datasets>();
                     List<Datasets> _dataSet = new List<Datasets>();
-                    string[] arrbg = new string[] { "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                    string[] arrbg = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
                     int intColor = 0;
                     foreach (string stproj in arrrayProj)
                     {
@@ -295,7 +307,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         label = "",
                         data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                        backgroundColor = new string[] { "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                        backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60",  "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
                         borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                         borderWidth = "1"
                     });

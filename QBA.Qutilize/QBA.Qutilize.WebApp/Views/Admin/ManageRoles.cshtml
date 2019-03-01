@@ -1,0 +1,148 @@
+﻿@model QBA.Qutilize.WebApp.Models.UserRoleModel
+
+@{
+    ViewBag.Title = "ManageRoles";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+@{
+    var strMSGforSave = string.Empty;
+    string strStyle = string.Empty;
+    var ErrStatus = TempData["ErrStatus"];
+    if (ErrStatus != null)
+    {
+        strMSGforSave = ErrStatus.ToString();
+    }
+    if (strMSGforSave != "")
+    {
+        strStyle = "display:block";
+    }
+    else
+    {
+        strStyle = "display:none";
+    }
+}
+
+<div class="form-horizontal col-md-12">
+    <div class="alert alert-warning alert-dismissible" role="alert" style="@strStyle">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        Data Saved Successfully!!!
+    </div>
+</div>
+
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
+        <thead id="tblHeadListViewPost">
+            <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">Role Name</th>
+                <th class="text-center">Organisation</th>
+                @*<th class="text-center">IsSysAdmin</th>*@
+                @*<th class="text-center">IsApprover</th>*@
+                @*<th class="text-center">IsPublisher</th>*@
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Action("LoadRolesData", "Admin")
+        </tbody>
+    </table>
+</div>
+<div class="col-md-12"><br /></div>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <h4>Role Details</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoleName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrgID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.OrgID, Model.OrganisationList, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsSysAdmin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsSysAdmin)
+                    @Html.ValidationMessageFor(model => model.IsSysAdmin, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.IsApprover, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.IsApprover)
+                        @Html.ValidationMessageFor(model => model.IsApprover, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsPublisher, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsPublisher)
+                    @Html.ValidationMessageFor(model => model.IsPublisher, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.isActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.isActive)
+                    @Html.ValidationMessageFor(model => model.isActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="panel panel-default">
+                <div class="panel-heading">Module Permission</div>
+                <div class="panel-body">
+                    @Html.Action("LoadAllModules", "Admin")
+                </div>
+            </div>*@
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <a href="Landing" class="btn btn-default">Back </a>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("input[type='checkbox']").change(function () {
+            $(this).siblings('ul')
+                   .find("input[type='checkbox']")
+                   .prop('checked', this.checked);
+        });
+    });
+</script>
+
