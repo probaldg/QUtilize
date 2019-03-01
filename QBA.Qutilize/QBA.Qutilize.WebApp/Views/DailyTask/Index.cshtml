@@ -1,0 +1,86 @@
+﻿@model QBA.Qutilize.WebApp.Models.DailyTaskModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Daily Task</title>
+</head>
+<body>
+    @{
+        var strMSGforSave = string.Empty;
+        string strStyle = string.Empty;
+
+        var strMsgforErr = string.Empty;
+        var strmsgStyle = string.Empty;
+
+        var errSts = TempData["ErrMsg"];
+
+        var ErrStatus = TempData["ErrStatus"];
+        if (ErrStatus != null)
+        {
+            strMSGforSave = ErrStatus.ToString();
+        }
+        if (strMSGforSave != "")
+        {
+            strStyle = "display:block";
+        }
+        else
+        {
+            strStyle = "display:none";
+        }
+
+    }
+
+    <div class="form-horizontal col-md-12">
+        <div class="alert alert-warning alert-dismissible" role="alert" style="@strStyle">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            Data Saved Successfully!!!
+        </div>
+    </div>
+    <h4>Daily Task</h4>
+    <br />
+
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <table class="table table-bordered table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Task Date </th>
+                    <th>Project</th>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Start time</th>
+                    <th>End time</th>
+                    <th>Hours</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @*@Html.Action("LoadProjectData", "Admin")*@
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                    <td>  @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+
+                    <td colspan="3">
+                        <input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("Create", "User")'" />
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+</html>
