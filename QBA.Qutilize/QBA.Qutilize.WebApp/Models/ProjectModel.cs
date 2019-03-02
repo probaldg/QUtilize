@@ -125,6 +125,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Update]", param);
+                result = true;
             }
             catch (Exception ex)
             {
