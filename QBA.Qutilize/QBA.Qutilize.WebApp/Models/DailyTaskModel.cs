@@ -15,14 +15,19 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public DailyTaskModel()
         {
-            ProjecSelectList = new SelectList(GetAllProjects(), "ProjectID","ProjectName");
+            SetWeekStartDate();
         }
         public int DailyTaskId { get; set; }
-        public int UserID { get; set; }
+        public  int UserID { get; set; }
         public int ProjectID { get; set; }
         public string ProjectName { get; set; }
         public DateTime TaskDate { get; set; }
         public DateTime StartTime { get; set; }
+
+        public string StartTimeToDisplay { get; set; }
+        public string EndTimeToDisplay { get; set; }
+
+
         public DateTime EndTime { get; set; }
         public string TaskName { get; set; }
         public string Description { get; set; }
@@ -45,20 +50,27 @@ namespace QBA.Qutilize.WebApp.Models
         #endregion
 
 
-        public List<Project> GetAllProjects()
+        public List<Project> GetAllProjects( int userId)
         {
             DataTable dt = null;
             List<Project> ProjectsList = new List<Project>();
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]");
+
+                SqlParameter[] param ={
+                    new SqlParameter("@UserId",userId),
+
+                };
+
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Get]",param);
+
                 if (dt.Rows.Count > 0)
                 {
                     foreach (DataRow item in dt.Rows)
                     {
                         Project project = new Project
                         {
-                            ProjectID = Convert.ToInt32(item["Id"]),
+                            ProjectID = Convert.ToInt32(item["ProjectId"]),
                             ProjectName = item["Name"].ToString()
                         };
                         ProjectsList.Add(project);
@@ -110,7 +122,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@StartDateTime", model.StartTime),
                     new SqlParameter("@EndDateTime",model.EndTime),
                     new SqlParameter("@TaskName",model.TaskName),
-                    new SqlParameter("@Description",model.IsActive),
+                    new SqlParameter("@Description",model.Description),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreateDate",model.CreateDate),
                     new SqlParameter("@TaskDate",model.TaskDate),
@@ -214,8 +226,8 @@ namespace QBA.Qutilize.WebApp.Models
             int iVisibleDaysEdit = 0;
             int iVisibleDaysDisplay = 0;
 
-            iVisibleDaysEdit = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysEdit"].Trim());
-            iVisibleDaysDisplay = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysDisplay"].Trim());
+            //iVisibleDaysEdit = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysEdit"].Trim());
+            //iVisibleDaysDisplay = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysDisplay"].Trim());
 
             WeekStartDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
             WeekEndDate = WeekStartDate.AddDays(6 + iVisibleDaysEdit);
