@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12" id="dashBoardDateRange">
+        @Html.Action("GetDateRange", "Home")
+    </div>
+</div>
+<div class="row" id="divLoadDashBoardDataDayWise">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label> Day wise details in minute:</label></div>
+            <div class="panel-body">
+                <canvas id="barChart" width="200" height="30"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label> Day wise details:</label></div>
+            <div class="panel-body" id="divActualData">
+                @Html.Action("GetDataActual", "Home")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label>Project wise details in minute:</label></div>
+            <div class="panel-body">
+                <canvas id="DonutChart" width="200" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        gerBarChartData();
+        gerDonutChartData();
+    });
+    function gerBarChartData() {
+        //-----Single Bar --------------
+        var c = document.getElementById("barChart");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("BarChartData", "Home")');//"/Home/BarChartData"
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: tData,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+    }
+    function gerDonutChartData() {
+        //----Donut Chart---------
+        var c = document.getElementById("DonutChart");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("GetDonutChartData", "Home")');//"/Home/GetDonutChartData"
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: tData,
+        });
+    }
+    function RefreshData() {
+        try {
+            var vStartDate = $('#txtStartDate').val();
+            var vEndDate = $('#txtEndDate').val();
+            $.ajax({
+                url: '@Url.Action("GetRefreshedData", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    startdate: vStartDate, endDate: vEndDate
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        gerBarChartData();
+                        gerDonutChartData();
+                        $("#divActualData").html(response);
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+</script>

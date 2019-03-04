@@ -38,9 +38,9 @@ namespace QBA.Qutilize.WebApp.Models
         //[Display(Name = "Remember me?")]
         //public bool RememberMe { get; set; }
 
-        public DataTable VerifyLogin(string userName, string password)
+        public DataSet VerifyLogin(string userName, string password)
         {
-            DataTable dt = null;
+            DataSet dt = null;
             try
             {
                 dt = DataAccess.VerifyLogin(userName, password);

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/images/marker.png">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap.min.css">
+    <link href="~/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="~/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Content/WebAdmin.css">
+    @*<link rel="stylesheet" type="text/css" href="~/Content/Style.css">*@ 
+    <link href="~/Content/animate.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/respond.js"></script>
+    <link rel="icon" href="~/images/favicon.ico">
+</head>
+<body>
+    <div>
+        @*<div class="col-md-12"  ID="HeaderLogin"></div>*@
+        <div style="padding-top:50px;">
+            <div class="col-md-4"></div>
+            <div class="col-md-4" style="padding-bottom:30px;">
+                <img src="~/images/Qutilize.png" alt=":Logo" class="img-responsive  center-block"  style="width:80%"/>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        @RenderSection("scripts", required: false)
+        @RenderBody()
+
+        <footer ID="footer">
+            <div class="col-md-12">
+                <p align="center">&copy;2019 &nbsp;<b><img src="~/images/smalllogo.png" alt=":Logo" />.&nbsp;</b> &nbsp;All rights reserved. </p>
+            </div>
+
+            @*<div class="container-fluid">
+
+                </div>*@
+        </footer>
+    </div>
+</body>
+</html>

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using QBA.Qutilize.WebApp.DAL;
 using System.Data;
 using QBA.Qutilize.WebApp.Helper;
+using System.Configuration;
 
 namespace QBA.Qutilize.WebApp.Controllers
 {
@@ -22,7 +23,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 strMenu += "<div class='row lien'>" +
                            "<div class='col-md-12'>" +
                            "<a href='" + dr["URL"] + "' class='fa " + dr["DisplayCSS"].ToString() + "'></a> &nbsp;" +
-                           "<a href='" + dr["URL"] + "'>" + dr["DisplayName"].ToString() + "</a>" +
+                           "<a href='" + ConfigurationSettings.AppSettings["SiteAddress"]+ dr["URL"] + "'>" + dr["DisplayName"].ToString() + "</a>" +
                            "<hr>" +
                            "</div>" +
                            "</div>";
