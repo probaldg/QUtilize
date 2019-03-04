@@ -36,6 +36,24 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label> Associated project:</label></div>
+            <div class="panel-body" id="divActualDataProj">
+                @Html.Action("GetProjectsAssociatedWithYou", "Home")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-info">
+            <div class="panel-heading"><label>Reporting User/s:</label></div>
+            <div class="panel-body" id="divActualDataReportee">
+                @Html.Action("GetReporteeList", "Home")
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         gerBarChartData();

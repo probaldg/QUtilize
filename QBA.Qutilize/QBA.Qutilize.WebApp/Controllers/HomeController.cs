@@ -390,5 +390,105 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Json(sbContent.ToString());
         }
+        public ActionResult GetProjectsAssociatedWithYou()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                DataSet ds = (DataSet)Session["DashBoardDetail"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    DataTable uniqueColsProj = ds.Tables[0].DefaultView.ToTable(true, "projectName");
+                    string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    DataTable uniqueColsDate = ds.Tables[0].DefaultView.ToTable(true, "Date");
+                    string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    //sbContent.Append("<div class='panel-body dvBorder form-group'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblAppraisalRating'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Date</th>");
+                    foreach (string strProjName in arrrayProj)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + strProjName + "</th>");
+                    }
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodyDateWiseData'>");
+                    foreach (string stDate in arrrayDate)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + stDate + "</span></td>");
+                        foreach (string stproj in arrrayProj)
+                        {
+                            DataRow[] result = ds.Tables[0].Select("projectName = '" + stproj + "' AND Date = '" + stDate + "'");
+                            if (result.Length > 0)
+                            {
+                                sbContent.Append("<td><span class='control-text'>" + result[0]["hms"] + "</span></td>");
+                            }
+                            else
+                            { sbContent.Append("<td><span class='control-text'> - </span></td>"); }
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetReporteeList()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                DataSet ds = (DataSet)Session["DashBoardDetail"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    DataTable uniqueColsProj = ds.Tables[0].DefaultView.ToTable(true, "projectName");
+                    string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    DataTable uniqueColsDate = ds.Tables[0].DefaultView.ToTable(true, "Date");
+                    string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    //sbContent.Append("<div class='panel-body dvBorder form-group'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblAppraisalRating'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Date</th>");
+                    foreach (string strProjName in arrrayProj)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + strProjName + "</th>");
+                    }
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodyDateWiseData'>");
+                    foreach (string stDate in arrrayDate)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + stDate + "</span></td>");
+                        foreach (string stproj in arrrayProj)
+                        {
+                            DataRow[] result = ds.Tables[0].Select("projectName = '" + stproj + "' AND Date = '" + stDate + "'");
+                            if (result.Length > 0)
+                            {
+                                sbContent.Append("<td><span class='control-text'>" + result[0]["hms"] + "</span></td>");
+                            }
+                            else
+                            { sbContent.Append("<td><span class='control-text'> - </span></td>"); }
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
     }
 }
