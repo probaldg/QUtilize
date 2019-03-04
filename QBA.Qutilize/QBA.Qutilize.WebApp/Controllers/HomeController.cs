@@ -200,7 +200,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                         dss.data = arrData;
                         //"#" + ((1 << 24) * Math.random() | 0).toString(16)
-                        dss.backgroundColor = GetBackColor(arrbg, intColor, arrrayProj.Length);// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
+                        dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length> arrrayProj.Length)? arrrayDate.Length: arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
                         dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
