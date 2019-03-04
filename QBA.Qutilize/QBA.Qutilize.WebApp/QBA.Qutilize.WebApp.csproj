@@ -220,6 +220,8 @@
     <Content Include="Images\LogOut.PNG" />
     <Content Include="Images\marker.png" />
     <Content Include="Images\Qutilize.png" />
+    <Content Include="Images\Qutilize_Old.png" />
+    <Content Include="Images\Qutilize_SM.jpg" />
     <Content Include="Images\smalllogo.png" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -682,7 +684,6 @@
     <Content Include="Views\Admin\ManageUsers.cshtml" />
     <Content Include="Views\Admin\ManageProject.cshtml" />
     <Content Include="Views\Admin\UserProjectMapping.cshtml" />
-<<<<<<< HEAD
     <Content Include="Scripts\bootstrap-notify-master\.gitignore" />
     <Content Include="Scripts\bootstrap-notify-master\bower.json" />
     <Content Include="Scripts\bootstrap-notify-master\composer.json" />
@@ -716,11 +717,9 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
-=======
     <Content Include="Views\Admin\ManageRole.cshtml" />
     <Content Include="Views\Admin\UserRoleMapping.cshtml" />
     <Content Include="Views\Admin\RoleModuleMapping.cshtml" />
->>>>>>> Rahul-FeatureBranch
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -41,9 +41,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 LoginViewModel lvm = new LoginViewModel();
                 model.Password = EncryptionHelper.ConvertStringToMD5(model.Password);
-                DataTable dt = lvm.VerifyLogin(model.UserID, model.Password);
-                if (dt != null && dt.Rows.Count > 0)
+                DataSet ds = lvm.VerifyLogin(model.UserID, model.Password);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
+                    Session.Add("sessUserAllData", ds);
+                    Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
                     return RedirectToAction("DashBoard", new { U = EncryptionHelper.Encryptdata(model.UserID), P = EncryptionHelper.Encryptdata(model.Password) });
                 }
             }
@@ -75,44 +77,45 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 #region Session or Querystring checking for authenticate login
                 LoginViewModel lvm = new LoginViewModel();
-                if (Session["sessUser"] == null)
+                if (Session["sessUserAllData"] == null)
                 {
                     //get value from query string and create session
                     string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                     string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
                     //LoginViewModel lvm = new LoginViewModel();
                     //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
-                    DataTable dt = lvm.VerifyLogin(strUser, strPass);
-                    if (dt != null && dt.Rows.Count > 0)
+                    DataSet ds = lvm.VerifyLogin(strUser, strPass);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                     {
-                        Session.Add("sessUser", dt.Rows[0]["ID"]);
-                        Session.Add("sessUserAllData", dt);
+                        Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
+                        Session.Add("sessUserAllData", ds);
                     }
                 }
                 else
                 {
                     try
                     {
-                        DataTable dt = (DataTable)Session["sessUserAllData"];
+                        DataSet dsSess = (DataSet)Session["sessUserAllData"];
                         string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                         string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
-                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dt.Rows[0]["UserName"]).Trim() != strUser)
+                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dsSess.Tables[0].Rows[0]["UserName"]).Trim() != strUser)
                         {
                             //LoginViewModel lvm = new LoginViewModel();
                             //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
-                            DataTable dt1 = lvm.VerifyLogin(strUser, strPass);
-                            if (dt1 != null && dt1.Rows.Count > 0)
+                            DataSet ds1 = lvm.VerifyLogin(strUser, strPass);
+                            if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0] != null && ds1.Tables[0].Rows.Count > 0)
                             {
-                                Session.Add("sessUser", dt1.Rows[0]["ID"]);
+                                Session.Add("sessUser", Convert.ToString(ds1.Tables[0].Rows[0]["Id"]));
+                                Session.Add("sessUserAllData", ds1);
                             }
                         }
                     }
                     catch (Exception exx)
                     { }
                 }
-                if (Session["sessUser"] != null)
+                if (Session["sessUserAllData"] != null)
                 {
-                    DataSet ds = lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
+                    DataSet ds = (DataSet)Session["sessUserAllData"];// lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
                     Session.Add("Name", ds.Tables[0].Rows[0]["Name"]);
                     Session.Add("Email", ds.Tables[0].Rows[0]["EmailId"]);
                     Session.Add("EmployeeCode", ds.Tables[0].Rows[0]["EmployeeCode"]);
@@ -200,7 +203,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                         dss.data = arrData;
                         //"#" + ((1 << 24) * Math.random() | 0).toString(16)
-                        dss.backgroundColor = GetBackColor(arrbg, intColor, arrrayProj.Length);// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
+                        dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length> arrrayProj.Length)? arrrayDate.Length: arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
                         dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
@@ -386,6 +389,106 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exx) { }
             return Json(sbContent.ToString());
+        }
+        public ActionResult GetProjectsAssociatedWithYou()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                DataSet ds = (DataSet)Session["DashBoardDetail"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    DataTable uniqueColsProj = ds.Tables[0].DefaultView.ToTable(true, "projectName");
+                    string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    DataTable uniqueColsDate = ds.Tables[0].DefaultView.ToTable(true, "Date");
+                    string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    //sbContent.Append("<div class='panel-body dvBorder form-group'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblAppraisalRating'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Date</th>");
+                    foreach (string strProjName in arrrayProj)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + strProjName + "</th>");
+                    }
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodyDateWiseData'>");
+                    foreach (string stDate in arrrayDate)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + stDate + "</span></td>");
+                        foreach (string stproj in arrrayProj)
+                        {
+                            DataRow[] result = ds.Tables[0].Select("projectName = '" + stproj + "' AND Date = '" + stDate + "'");
+                            if (result.Length > 0)
+                            {
+                                sbContent.Append("<td><span class='control-text'>" + result[0]["hms"] + "</span></td>");
+                            }
+                            else
+                            { sbContent.Append("<td><span class='control-text'> - </span></td>"); }
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetReporteeList()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                DataSet ds = (DataSet)Session["DashBoardDetail"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    DataTable uniqueColsProj = ds.Tables[0].DefaultView.ToTable(true, "projectName");
+                    string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    DataTable uniqueColsDate = ds.Tables[0].DefaultView.ToTable(true, "Date");
+                    string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                    //sbContent.Append("<div class='panel-body dvBorder form-group'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblAppraisalRating'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Date</th>");
+                    foreach (string strProjName in arrrayProj)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + strProjName + "</th>");
+                    }
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodyDateWiseData'>");
+                    foreach (string stDate in arrrayDate)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + stDate + "</span></td>");
+                        foreach (string stproj in arrrayProj)
+                        {
+                            DataRow[] result = ds.Tables[0].Select("projectName = '" + stproj + "' AND Date = '" + stDate + "'");
+                            if (result.Length > 0)
+                            {
+                                sbContent.Append("<td><span class='control-text'>" + result[0]["hms"] + "</span></td>");
+                            }
+                            else
+                            { sbContent.Append("<td><span class='control-text'> - </span></td>"); }
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
         }
     }
 }

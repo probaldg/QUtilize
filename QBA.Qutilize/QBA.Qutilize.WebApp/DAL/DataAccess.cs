@@ -9,9 +9,9 @@ namespace QBA.Qutilize.WebApp.DAL
 {
     public static class DataAccess
     {
-        public static DataTable VerifyLogin(string userName, string password)
+        public static DataSet VerifyLogin(string userName, string password)
         {
-            DataTable dt = null;
+            DataSet dt = null;
             try
             {
                 SqlParameter[] param ={
@@ -20,7 +20,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
-                    dt = objSQLHelper.ExecuteDataTable("USPUsers_Get", param);
+                    dt = objSQLHelper.ExecuteDataset("USPUsers_VerifyLogin", param);
                 }
             }
             catch (Exception ex)

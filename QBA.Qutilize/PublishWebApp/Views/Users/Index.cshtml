@@ -1,0 +1,73 @@
+﻿@model QBA.Qutilize.WebApp.Models.UserViewModel
+
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <form method="post" name="Users">
+
+        @{
+            if (Model.Users.Count > 0)
+            {
+                <table id="tblUsers" class="display">
+                    <thead>
+                        <tr>
+                            <td>
+                                ID
+                            </td>
+                            <td>
+                                Name
+                            </td>
+                            <td>
+                                User Name
+                            </td>
+                            <td>Email</td>
+                            <td colspan="2" align="center"></td>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (QBA.Qutilize.Models.User user in Model.Users)
+                        {
+                            <tr>
+                                <td>@user.ID </td>
+                                <td>@user.Name  </td>
+                                <td>@user.UserName  </td>
+                                <td>@user.EmailId  </td>
+                                <td>@Html.ActionLink("Edit ", "Edit", new { ID = @user.ID })</td>
+                                <td>@Html.ActionLink(" Delete", "Delete", new { ID = @user.ID })</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+                <br />
+
+            }
+            else
+            {
+                <span> No records found!!</span>
+
+            }
+        }
+    </form>
+    @*<link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+   <script>
+       $(document).ready(function () {
+           $('#tblUsers').DataTable();
+       });
+   </script>*@
+</body>
+</html>
+
