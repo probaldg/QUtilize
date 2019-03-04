@@ -30,5 +30,66 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(strMenu);
         }
+
+        public ActionResult MyAccount()
+        {
+
+            if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+            {
+                UserModel user = new UserModel();
+                try
+                {
+                    DataTable dt = user.GetMyAccountData(int.Parse(System.Web.HttpContext.Current.Session["sessUser"].ToString()));
+                    if (dt.Rows.Count > 0)
+                    {
+                        user.ID = int.Parse(dt.Rows[0]["Id"].ToString());
+                        user.Name = dt.Rows[0]["Name"].ToString();
+                       
+                        user.EmailId = dt.Rows[0]["EmailId"].ToString();
+                      
+
+                        ViewBag.ID = int.Parse(dt.Rows[0]["ID"].ToString());
+                        ViewBag.Name = dt.Rows[0]["Name"].ToString();
+                        ViewBag.Email = dt.Rows[0]["EmailId"].ToString();
+                        //  ViewBag.OrgName = dt.Rows[0]["orgname"].ToString();
+                        // ViewBag.Designation = dt.Rows[0]["Designation"].ToString();
+                    }
+                    return View(user);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+               
+            }
+            else
+            {
+                return Redirect("/Home/Index");
+            }
+        }
+
+
+        public JsonResult UpdatePassword(int id, string password)
+        {
+            UserModel user = new UserModel();
+            try
+            {
+                password = EncryptionHelper.ConvertStringToMD5(password);
+
+                int editedBy = int.Parse(Session["sessUser"].ToString());
+                DateTime editedTS = DateTime.Now;
+
+                DataTable dt = user.updatePassword(id, password, editedBy, editedTS);
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+           
+            return Json("updated");
+        }
+
     }
 }

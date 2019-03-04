@@ -183,7 +183,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
-
         #region Project managment region"
         //
         public ActionResult LoadProjectData()
@@ -302,8 +301,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 strProjectMapped += "<tr>";
                 strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
                 strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                //strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'>Map</button></td>";
-
                 strProjectMapped += "</td>";
                 i++;
             }
@@ -330,7 +327,57 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(strModules);
         }
+        //public ActionResult LoadAllModules()
+        //{
+        //    UserProjectMappingModel obj = new UserProjectMappingModel();
+        //    DataTable dt = obj.GetAllProjects();
+        //    string strModules = string.Empty;
+        //    strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+        //    strModules += "<tabel Border=1>";
+        //    //foreach (DataRow dr in dt.Rows)
+        //    //{
+        //    //    //strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+        //    //strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
+        //    //                dr["Name"].ToString();
+        //    //strModules += "</li>";
+        //    //}
 
+        //    int columnCount = 3;
+        //    int rowsCount = GetRowAndColumnCount(dt.Rows.Count, columnCount);
+        //    strModules += "<tr>";
+        //    for (int i = 0; i <= rowsCount; i++)
+        //    {
+        //        int dtRowCounter = 0;
+
+        //        int col = 0;
+        //        if (col <= 3 && col % 3 != 0 && col !=0)
+        //        {
+        //            strModules += "<td><li class='limodule' style='list-style: none;margin:10px;'>";
+
+        //            strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dt.Rows[dtRowCounter]["Id"].ToString() + "'>" +
+        //                            dt.Rows[dtRowCounter]["Name"].ToString();
+        //             strModules += "</li>";
+        //            col++;
+        //            dtRowCounter++;
+        //        }
+        //        else
+        //        {
+        //            strModules += "</tr >";
+        //            if (col == 3)
+        //            {
+        //                col = 0;
+        //                rowsCount++;
+        //                strModules += "</tr>";
+        //            }
+        //        }
+
+
+        //    }
+
+        //    strModules += "</tabel>";
+        //    strModules += "</ul>";
+        //    return Content(strModules);
+        //}
         public ActionResult GetProjectMappedToUser(int id)
         {
             UserProjectMappingModel upm = new UserProjectMappingModel();
@@ -679,5 +726,23 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(true);
         }
         #endregion
+
+
+        private int GetRowAndColumnCount(int dtRowsCount, int columnCount)
+        {
+            var divisionResult = dtRowsCount % columnCount;
+            var rowCount = dtRowsCount / columnCount;
+            int rows;
+            if (divisionResult == 0)
+            {
+                rows = rowCount;
+            }
+            else
+            {
+                rows = rowCount + 1;
+            }
+
+            return rows;
+        }
     }
 }

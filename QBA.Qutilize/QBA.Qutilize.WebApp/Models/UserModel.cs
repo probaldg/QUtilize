@@ -179,5 +179,24 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+
+
+        public DataTable GetMyAccountData(int ID)
+        {
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@ID",ID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_GetAccountDetails]", param);
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
+        }
+
     }
 }
