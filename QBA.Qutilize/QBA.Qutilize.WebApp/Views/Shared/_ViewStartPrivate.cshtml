@@ -97,7 +97,7 @@
 </head>
 
 <body>
-    @if (HttpContext.Current.Session["sessUser"] == null)
+    @if (HttpContext.Current.Session["sessUserAllData"] == null)
     {
         Response.Redirect("~/Home/Index");
     }

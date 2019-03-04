@@ -41,9 +41,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 LoginViewModel lvm = new LoginViewModel();
                 model.Password = EncryptionHelper.ConvertStringToMD5(model.Password);
-                DataTable dt = lvm.VerifyLogin(model.UserID, model.Password);
-                if (dt != null && dt.Rows.Count > 0)
+                DataSet ds = lvm.VerifyLogin(model.UserID, model.Password);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
+                    Session.Add("sessUserAllData", ds);
+                    Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
                     return RedirectToAction("DashBoard", new { U = EncryptionHelper.Encryptdata(model.UserID), P = EncryptionHelper.Encryptdata(model.Password) });
                 }
             }
@@ -75,44 +77,45 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 #region Session or Querystring checking for authenticate login
                 LoginViewModel lvm = new LoginViewModel();
-                if (Session["sessUser"] == null)
+                if (Session["sessUserAllData"] == null)
                 {
                     //get value from query string and create session
                     string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                     string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
                     //LoginViewModel lvm = new LoginViewModel();
                     //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
-                    DataTable dt = lvm.VerifyLogin(strUser, strPass);
-                    if (dt != null && dt.Rows.Count > 0)
+                    DataSet ds = lvm.VerifyLogin(strUser, strPass);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                     {
-                        Session.Add("sessUser", dt.Rows[0]["ID"]);
-                        Session.Add("sessUserAllData", dt);
+                        Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
+                        Session.Add("sessUserAllData", ds);
                     }
                 }
                 else
                 {
                     try
                     {
-                        DataTable dt = (DataTable)Session["sessUserAllData"];
+                        DataSet dsSess = (DataSet)Session["sessUserAllData"];
                         string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                         string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
-                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dt.Rows[0]["UserName"]).Trim() != strUser)
+                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dsSess.Tables[0].Rows[0]["UserName"]).Trim() != strUser)
                         {
                             //LoginViewModel lvm = new LoginViewModel();
                             //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
-                            DataTable dt1 = lvm.VerifyLogin(strUser, strPass);
-                            if (dt1 != null && dt1.Rows.Count > 0)
+                            DataSet ds1 = lvm.VerifyLogin(strUser, strPass);
+                            if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0] != null && ds1.Tables[0].Rows.Count > 0)
                             {
-                                Session.Add("sessUser", dt1.Rows[0]["ID"]);
+                                Session.Add("sessUser", Convert.ToString(ds1.Tables[0].Rows[0]["Id"]));
+                                Session.Add("sessUserAllData", ds1);
                             }
                         }
                     }
                     catch (Exception exx)
                     { }
                 }
-                if (Session["sessUser"] != null)
+                if (Session["sessUserAllData"] != null)
                 {
-                    DataSet ds = lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
+                    DataSet ds = (DataSet)Session["sessUserAllData"];// lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
                     Session.Add("Name", ds.Tables[0].Rows[0]["Name"]);
                     Session.Add("Email", ds.Tables[0].Rows[0]["EmailId"]);
                     Session.Add("EmployeeCode", ds.Tables[0].Rows[0]["EmployeeCode"]);
