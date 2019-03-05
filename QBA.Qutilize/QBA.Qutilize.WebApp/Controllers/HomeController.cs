@@ -738,5 +738,230 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(_chart, JsonRequestBehavior.AllowGet);
         }
         #endregion
+
+        #region PM
+        public ActionResult LoadDashBoardPMSummary()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["DashBoardDetail"] != null)
+                {
+                    DataSet ds = (DataSet)Session["DashBoardDetail"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+                    {
+                        #region No of Projects
+                        DataView view = new DataView(ds.Tables[2]);
+                        DataTable distinctValues = view.ToTable(true, "projectID");
+                        sbContent.Append("<div class='col-lg-3 col-xs-6'>");
+                        sbContent.Append("<div class='small-box bg-aqua'>");
+                        sbContent.Append("<div class='inner'>");
+                        sbContent.Append("<h3>" + distinctValues.Rows.Count + "</h3>");
+                        sbContent.Append("<p>No of projects</p>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("<div class='icon'>");
+                        sbContent.Append("<i class='fa fa-archive iconSize'></i>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        #endregion
+                        #region No of User
+                        distinctValues = view.ToTable(true, "userID");
+                        sbContent.Append("<div class='col-lg-3 col-xs-6'>");
+                        sbContent.Append("<div class='small-box bg-green'>");
+                        sbContent.Append("<div class='inner'>");
+                        sbContent.Append("<h3>" + distinctValues.Rows.Count + "</h3>");
+                        sbContent.Append("<p>No of Users</p>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("<div class='icon'>");
+                        sbContent.Append("<i class='fa fa-group iconSize'></i>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        #endregion
+                        #region No of Utilize hr
+                        object sumObject;
+                        sumObject = ds.Tables[2].Compute("Sum(totalSec)", string.Empty);
+                        TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
+                        string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",//:{3:D3}ms
+                                        t.Hours,
+                                        t.Minutes,
+                                        t.Seconds
+                                        );//t.Milliseconds
+                        sbContent.Append("<div class='col-lg-3 col-xs-6'>");
+                        sbContent.Append("<div class='small-box bg-yellow'>");
+                        sbContent.Append("<div class='inner'>");
+                        sbContent.Append("<h3>" + answer + "</h3>");
+                        sbContent.Append("<p>Total Utilized Hour</p>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("<div class='icon'>");
+                        sbContent.Append("<i class='fa fa-clock-o iconSize'></i>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        #endregion
+                        #region Utilize %
+                        distinctValues = view.ToTable(true, "Date");
+                        sbContent.Append("<div class='col-lg-3 col-xs-6'>");
+                        sbContent.Append("<div class='small-box bg-red'>");
+                        sbContent.Append("<div class='inner'>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9 * 60 * 60)) * 100)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<p>Total Utilization</p>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("<div class='icon'>");
+                        sbContent.Append("<i class='fa fa-area-chart iconSize'></i>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        sbContent.Append("</div>");
+                        #endregion
+                    }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public JsonResult GetDonutChartUserWisePM()
+        {
+            Chart _chart = new Chart();
+            try
+            {
+                if (Session["OrgPM"] != null)
+                {
+                    DataSet ds = (DataSet)Session["DashBoardDetail"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+                    {
+                        DataTable uniqueColsProj = ds.Tables[2].DefaultView.ToTable(true, "UserName");
+                        string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        string[] arrData = new string[arrrayProj.Length];
+                        for (int i = 0; i < arrrayProj.Length; i++)
+                        {
+                            try
+                            {
+                                DataTable dtFilter = ds.Tables[2].Select("UserName = '" + arrrayProj[i] + "'").CopyToDataTable();
+                                object sumObject;
+                                sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
+                                int totalSec = Convert.ToInt32(sumObject);
+                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                            }
+                            catch (Exception exo) { arrData[i] = "0"; }
+                        }
+                        _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
+                        _chart.datasets = new List<Datasets>();
+                        List<Datasets> _dataSet = new List<Datasets>();
+                        _dataSet.Add(new Datasets()
+                        {
+                            label = "",
+                            data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
+                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
+                            borderWidth = "1"
+                        });
+                        _chart.datasets = _dataSet;
+                    }
+                }
+            }
+            catch (Exception exx) { }
+            return Json(_chart, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDonutChartProjectWisePM()
+        {
+            Chart _chart = new Chart();
+            try
+            {
+                if (Session["OrgPM"] != null)
+                {
+                    DataSet ds = (DataSet)Session["DashBoardDetail"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+                    {
+                        DataTable uniqueColsProj = ds.Tables[2].DefaultView.ToTable(true, "projectName");
+                        string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        string[] arrData = new string[arrrayProj.Length];
+                        for (int i = 0; i < arrrayProj.Length; i++)
+                        {
+                            try
+                            {
+                                DataTable dtFilter = ds.Tables[2].Select("projectName = '" + arrrayProj[i] + "'").CopyToDataTable();
+                                object sumObject;
+                                sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
+                                int totalSec = Convert.ToInt32(sumObject);
+                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                            }
+                            catch (Exception exo) { arrData[i] = "0"; }
+                        }
+                        _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
+                        _chart.datasets = new List<Datasets>();
+                        List<Datasets> _dataSet = new List<Datasets>();
+                        _dataSet.Add(new Datasets()
+                        {
+                            label = "",
+                            data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
+                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
+                            borderWidth = "1"
+                        });
+                        _chart.datasets = _dataSet;
+                    }
+                }
+            }
+            catch (Exception exx) { }
+            return Json(_chart, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult BarChartDataPM()
+        {
+            Chart _chart = new Chart();
+            try
+            {
+                if (Session["OrgPM"] != null)
+                {
+                    DataSet ds = (DataSet)Session["DashBoardDetail"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+                    {
+                        DataTable uniqueColsProj = ds.Tables[2].DefaultView.ToTable(true, "UserName");
+                        string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        DataTable uniqueColsDate = ds.Tables[2].DefaultView.ToTable(true, "Date");
+                        string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        _chart.labels = arrrayDate;
+                        _chart.datasets = new List<Datasets>();
+                        List<Datasets> _dataSet = new List<Datasets>();
+                        string[] arrbg = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                        int intColor = 0;
+                        foreach (string stproj in arrrayProj)
+                        {
+                            Datasets dss = new Datasets();
+                            dss.label = stproj;
+                            string[] arrData = new string[arrrayDate.Length];
+                            int i = 0;
+                            foreach (string stDate in arrrayDate)
+                            {
+                                try
+                                {
+                                    arrData[i] = "0";
+                                    DataTable dtFilter = ds.Tables[2].Select("UserName = '" + stproj + "' AND Date = '" + stDate + "'").CopyToDataTable();
+                                    object sumObject;
+                                    sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
+                                    int totalSec = Convert.ToInt32(sumObject);
+                                    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                }
+                                catch (Exception exo) { arrData[i] = "0"; }
+                                i++;
+                            }
+                            dss.data = arrData;
+                            //"#" + ((1 << 24) * Math.random() | 0).toString(16)
+                            dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
+                            dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            dss.borderWidth = "1";
+                            _dataSet.Add(dss);
+                            intColor++;
+                        }
+                        _chart.datasets = _dataSet;
+                    }
+                }
+            }
+            catch (Exception exx) { }
+            return Json(_chart, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }
