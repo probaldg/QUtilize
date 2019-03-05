@@ -201,11 +201,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
+
     <Resource Include="Images\Qutilize_Old.png" />
-=======
+
     <Resource Include="Images\Qutilize_old.png" />
->>>>>>> Rahul-FeatureBranch
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
