@@ -110,12 +110,12 @@ namespace QBA.Qutilize.WebApp.Models
                             EndTimeToDisplay = item["EndTime"].ToString(),
                             Hours = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"])),
                             Description = item["Description"].ToString()
-                           
+
                         };
                         taskList.Add(dailyTaskModel);
                     }
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -212,7 +212,7 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        public Boolean DeleteDailyTaskByID(int dailyTaskId)
+        public Boolean DeleteDailyTaskByID(int dailyTaskId, string EditedBy, DateTime EditedOn)
         {
             string str = string.Empty;
             bool result = false;
@@ -222,7 +222,8 @@ namespace QBA.Qutilize.WebApp.Models
 
                 SqlParameter[] param ={
                     new SqlParameter("@DailyTaskId",dailyTaskId),
-
+                    new SqlParameter("@EditedBy",EditedBy),
+                    new SqlParameter("@EditedOn",EditedOn)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[USPDailyTask_Delete]", param);
 

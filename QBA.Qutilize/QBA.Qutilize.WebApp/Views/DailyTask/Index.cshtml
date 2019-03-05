@@ -208,15 +208,18 @@
             var tr = $(this).parents('tr:first');
             tr.find('.display-mode,.edit-mode').toggle();
         });
+
         $('.delete-item').on('click', function () {
             if (confirm("Are you sure to delete this contact?")) {
                 var tr = $(this).parents('tr:first');
                 var ID = $(this).prop('id');
+                alert(ID);
                 $.post(
-                    '/Example/DeleteContact/',
+                    '/DailyTask/DeleteDailyTask/',
                     { ID: ID },
                     function (item) {
                         tr.remove();
+                        alert('Succesfully deleted.')
                     }, "json");
             }
         });

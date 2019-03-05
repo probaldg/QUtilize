@@ -119,6 +119,32 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+
+        [HttpPost]
+        public ActionResult DeleteDailyTask(int ID)
+        {
+            string result = string.Empty;
+            DailyTaskViewModel dailyTaskViewModel = new DailyTaskViewModel();
+            try
+            {
+                //DailyTaskModel dailyTaskModel = new DailyTaskModel();
+                //dailyTaskModel.DailyTaskId = model.DailyTaskId;
+                var editedBy = Convert.ToInt32(Session["sessUser"]);
+                var editedOn = DateTime.Now;
+                bool updateResut = dailyTaskViewModel.DeleteDailyTaskByID(ID, editedBy.ToString(), editedOn);
+                if (updateResut)
+                    result = "Success";
+
+            }
+            catch (Exception)
+            {
+                result = "Error";
+
+                throw;
+            }
+            return Json(result);
+
+        }
         private decimal CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
         {
             try
