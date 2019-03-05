@@ -97,21 +97,35 @@ namespace QBA.Qutilize.WebApp.Models
                 {
                     foreach (DataRow item in dt.Rows)
                     {
-                        DailyTaskModel dailyTaskModel = new DailyTaskModel
-                        {
-                            DailyTaskId = Convert.ToInt32(item["DailyTaskId"]),
-                            ProjectID = Convert.ToInt32(item["ProjectId"]),
-                            ProjectName = item["ProjectName"].ToString(),
-                            TaskDate = Convert.ToDateTime(item["TaskDate"]),
-                            TaskName = item["TaskName"].ToString(),
-                            StartTime = Convert.ToDateTime(item["StartTime"]),
-                            EndTime = Convert.ToDateTime(item["EndTime"]),
-                            StartTimeToDisplay = item["StartTime"].ToString(),
-                            EndTimeToDisplay = item["EndTime"].ToString(),
-                            Hours = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"])),
-                            Description = item["Description"].ToString()
+                        DailyTaskModel dailyTaskModel = new DailyTaskModel();
 
-                        };
+                        dailyTaskModel.DailyTaskId = Convert.ToInt32(item["DailyTaskId"]);
+                        dailyTaskModel.ProjectID = Convert.ToInt32(item["ProjectId"]);
+                        dailyTaskModel.ProjectName = item["ProjectName"].ToString();
+
+                        if (!DBNull.Value.Equals(item["TaskDate"]))
+                        {
+                            dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
+                        }
+                        else
+                            dailyTaskModel.TaskDate = Convert.ToDateTime(item["StartTime"]);
+
+
+                        dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
+
+                        dailyTaskModel.StartTime = Convert.ToDateTime(item["StartTime"]);
+                        dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
+                        if (!DBNull.Value.Equals(item["EndTime"]))
+                        {
+                            dailyTaskModel.EndTime = Convert.ToDateTime(item["EndTime"]);
+                            dailyTaskModel.EndTimeToDisplay = item["EndTime"].ToString();
+                            dailyTaskModel.Hours = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
+                        }
+                      
+                        dailyTaskModel.Description = item["Description"] == null ? "" : item["Description"].ToString();
+
+
+
                         taskList.Add(dailyTaskModel);
                     }
                 }

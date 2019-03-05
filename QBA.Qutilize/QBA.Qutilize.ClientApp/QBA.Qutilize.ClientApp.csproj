@@ -204,7 +204,7 @@
 
     <Resource Include="Images\Qutilize_Old.png" />
 
-    <Resource Include="Images\Qutilize_old.png" />
+   
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

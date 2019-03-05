@@ -55,12 +55,14 @@
         <h4>Daily Task</h4>
         <br />*@
 
-    <div style="width:100%;float:left;padding-bottom:50px;">
+    <div style="width:95%;float:left;">
 
         @{if (Model != null)
             {
-                var grid = new WebGrid(Model.DailyTaskList, canPage: true, rowsPerPage: 50, selectionFieldName: "selectedRow", ajaxUpdateContainerId: "gridContent"); grid.Pager(WebGridPagerModes.NextPrevious);
-                <div id="gridContent" class="articleHeader article_lst">
+                var grid = new WebGrid(Model.DailyTaskList, canPage: false, canSort:false,  ajaxUpdateContainerId: "gridContent");
+                //grid.Pager(WebGridPagerModes.NextPrevious);
+
+                <div id="gridContent" >
 
                     @grid.GetHtml(tableStyle: "table table-hover table-striped",
                     headerStyle: "webgrid-header",
@@ -72,68 +74,68 @@
                      style: "col2",
                      format: @<text>
                             <span id="TaskDate" class="display-mode">@item.TaskDate.ToShortDateString()</span>
-                            @*<span id="TaskDate-Edit" class="edit-mode">@item.TaskDate.ToShortDateString()</span>*@
+                          
                             @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate), new { @class = "edit-mode datepicker" })
 
                     </text>),
+                                 grid.Column("ProjectName",
+                             style: "col2",
+                             format: @<text>
+                                <span id="ProjectName" class="display-mode">@item.ProjectName</span>
+                                <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+
+                            </text>),
+                                grid.Column("TaskName",
+                                     style: "col2",
+                                     format: @<text>
+                                        <span id="TaskName" class="display-mode">@item.TaskName</span>
+
+                                        @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
+                                    </text>), /*second column end*/
 
 
-                                     grid.Column("ProjectName",
-                                 style: "col2",
-                                 format: @<text>
-                                    <span id="ProjectName" class="display-mode">@item.ProjectName</span>
-                                    <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+                                                                    grid.Column("Description",
+                                                                style: "col2",
+                                                                format: @<text>
+                                                                    <span id="Description" class="display-mode">@item.Description</span>
+                                                                    @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
+                                                                </text>),/*fourth column end*/
 
-                                </text>),
-                                        grid.Column("TaskName",
-                                             style: "col2",
-                                             format: @<text>
-                                                <span id="TaskName" class="display-mode">@item.TaskName</span>
+                                                                                              grid.Column("Start Time",
+                                                                                                 style: "col2",
+                                                                                                 format: @<text>
+                                                                                                    <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
+                                                                                                    @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
+                                                                                                </text>),
+                                                                            grid.Column("End Time",
+                                                                                               style: "col2",
+                                                                                               format: @<text>
+                                                                                                <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
+                                                                                                @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
+                                                                                            </text>),
 
-                                                @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
-                                            </text>), /*second column end*/
+                                                                                grid.Column("Hours",
+                                                                                       style: "col2",
+                                                                                       format: @<text>
+                                                                                        <span id="hours" class="display-mode">@item.Hours</span>
 
+                                                                                    </text>),
 
-                                                                                grid.Column("Description",
-                                                                            style: "col2",
-                                                                            format: @<text>
-                                                                                <span id="Description" class="display-mode">@item.Description</span>
-                                                                                @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
-                                                                            </text>),/*fourth column end*/
+                                                                                                                          grid.Column("",
+                                                                                                                              style: "col1",
+                                                                                                                              format: @<text><div style="padding-left:20px; float:right;">
+                                                                                                                                   
 
-                                                                                                             grid.Column("Start Time",
-                                                                                                                style: "col2",
-                                                                                                                format: @<text>
-                                                                                                                    <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
-                                                                                                                    @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
-                                                                                                                </text>),
-                                                                                               grid.Column("End Time",
-                                                                                                                  style: "col2",
-                                                                                                                  format: @<text>
-                                                                                                                    <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
-                                                                                                                    @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
-                                                                                                                </text>),
+                                                                                                                                    <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>
+                                                                                                                                    <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId">Delete</button>
+                                                                                                                                    <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId">Save</button>
+                                                                                                                                    <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
+                                                                                                                                </div>
+                                                                                                                            </text>)) /*End of Coloumns*/
+                                                                                                                                 ) @*end of grid*@
 
-                                                                                                         grid.Column("Hours",
-                                                                                                                style: "col2",
-                                                                                                                format: @<text>
-                                                                                                                    <span id="hours" class="display-mode">@item.Hours</span>
-
-                                                                                                                </text>),
-
-                                                                                                                                                         grid.Column("",
-                                                                                                                                                             style: "col1",
-                                                                                                                                                             format: @<text><div style="padding-left:20px;">
-                                                                                                                                                                    <button class="btn_grid edit-item display-mode" id="@item.DailyTaskId">Edit</button>
-                                                                                                                                                                    <button class="btn_grid display-mode delete-item" id="@item.DailyTaskId">Delete</button>
-                                                                                                                                                                    <button class="btn_grid save-item edit-mode" id="@item.DailyTaskId">Save</button>
-                                                                                                                                                                    <button class="btn_grid cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
-                                                                                                                                                                </div>
-                                                                                                                                                            </text>)) /*End of Coloumns*/
-                                                                                                                                                                     ) @*end of grid*@
-
-                                                                                                                                                                </div>
-                                                                                                                                                            }
+                                                                                                                            </div>
+                                                                                                                        }
         }
     </div>
     <div class="form-horizontal col-md-12">
@@ -142,6 +144,17 @@
         </div>
     </div>
     <table class="table  table-responsive table-hover">
+        <tr style="background-color:gray; color:white; font-weight:bold;">
+            <td>Task Date</td>
+            <td>Projects</td>
+            <td>Task Name</td>
+            <td>Description</td>
+            <td>Start Time</td>
+            <td>End Time</td>
+            <td></td>
+
+        </tr>
+
         <tr>
 
             <td>
@@ -159,7 +172,7 @@
                 <input type="text" class="form-control input-sm" id="DescriptionInsert">
             </td>
             <td>
-                <input type="text" class="form-control input-sm" id="StartTimeInsert">
+                <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}"  id="StartTimeInsert">
             </td>
             <td>
                 <input type="text" class="form-control input-sm" id="EndTimeInsert">
@@ -172,6 +185,13 @@
 
         </tr>
     </table>
+
+    <style>
+        th {
+            background-color: gray;
+            color: white;
+        } 
+    </style>
     <script type="text/javascript">
         var curr = new Date;
         var first = curr.getDate() - curr.getDay();
@@ -190,9 +210,6 @@
 
 
         $(".timePicker").timepicker({ 'scrollDefault': 'now' })
-
-
-
 
         $('.edit-mode').hide();
 
@@ -256,15 +273,15 @@
          $('#btnInsert').click(function () {
 
              var taskDate = $('#TaskDateInsert').val();
-             
+
              var projectID = $('#ProjectsList').val();
 
              var taskName = $('#TaskNameInsert').val();
-            
+
              var startTime = $('#StartTimeInsert').val();
              var endTime = $('#EndTimeInsert').val();
-             var descreption = $('#DescriptionInsert').val();
-
+             var dsec = $('#DescriptionInsert').val();
+           
 
                 if (taskDate == "") {
                     ShowError("Task date is required..")
@@ -289,6 +306,26 @@
                     return false;
                 }
 
+
+             var stt = new Date("November 13, 2013 " + startTime);
+             stt = stt.getTime();
+
+             var endt = new Date("November 13, 2013 " + endTime);
+             endt = endt.getTime();
+
+             var diff = (endt - stt) / 1000;
+             diff /= 3600;
+                
+             if (diff > 8) {
+                 ShowError(" time diffrence can not be greater than 8 hours..");
+                 return false;
+             }
+             if (stt > endt) {
+                 ShowError("start time can not be greater than end time..");
+                 return false;
+             }
+            
+            
                 $.ajax({
                     url: '@Url.Action("InsertDailyTask", "DailyTask")',
                     type: 'POST',
@@ -300,14 +337,15 @@
                         "startTime": startTime,
                         "endTime":endTime,
                         "taskName": taskName,
-                        "descreption": descreption
+                        "descreption": dsec,
                     }), //Data end
                     success: function (response) {
                         alert('Task saved succesfully');
-                        $.ajax({
+                        @*$.ajax({
                             url: '@Url.Action("Index", "DailyTask")',
                             type:'GET'
-                        });
+                        });*@
+                        location.reload();
                     }
                 });// ajax end
         });// button click end
@@ -315,6 +353,14 @@
         function ShowError(message) {
             document.getElementById("errormsg").innerHTML = message;
             document.getElementById("ErrorMsg").style.display = 'block';
+        }
+
+        function diff_inHour(dt2, dt1) {
+
+            var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+            diff /= 3600;
+            return Math.abs(Math.round(diff));
+
         }
     </script>
 </body>

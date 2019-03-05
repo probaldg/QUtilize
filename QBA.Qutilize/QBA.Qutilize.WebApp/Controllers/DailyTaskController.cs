@@ -34,7 +34,8 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
         [HttpPost]
-        public ActionResult InsertDailyTask(int projectID, DateTime startTime, DateTime endTime, string taskName, string Description, string taskDate)
+        public ActionResult InsertDailyTask( string taskDate,int projectID, DateTime startTime, DateTime endTime, string taskName, string descreption)
+
         {
             string result = string.Empty;
             CultureInfo provider = CultureInfo.InvariantCulture;
@@ -48,12 +49,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 model.DailyTaskModel.ProjectID = projectID;
                 model.DailyTaskModel.TaskName = taskName;
-               // model.DailyTaskModel.TaskDate =Convert.ToDateTime(taskDate,);
-                model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" },provider, DateTimeStyles.None);
+                // model.DailyTaskModel.TaskDate =Convert.ToDateTime(taskDate,);
+                model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
 
                 model.DailyTaskModel.StartTime = startTime;
                 model.DailyTaskModel.EndTime = endTime;
-                model.DailyTaskModel.Description = Description;
+                model.DailyTaskModel.Description = descreption;
                 model.DailyTaskModel.CreatedBy = userId.ToString();
                 model.DailyTaskModel.CreateDate = DateTime.Now;
                 model.DailyTaskModel.IsActive = true;
@@ -62,7 +63,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (id > 0)
                     result = "Success";
                 RedirectToAction("Index", "DailyTask");
-               
+
 
             }
             catch (Exception)
