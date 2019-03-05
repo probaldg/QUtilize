@@ -673,6 +673,70 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Json(_chart, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult BarChartDataAdmin()
+        {
+            Chart _chart = new Chart();
+            try
+            {
+                if (Session["OrgAdmin"] != null)
+                {
+                    DataSet ds = (DataSet)Session["DashBoardDetail"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)
+                    {
+                        DataTable uniqueColsProj = ds.Tables[3].DefaultView.ToTable(true, "UserName");
+                        string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        DataTable uniqueColsDate = ds.Tables[3].DefaultView.ToTable(true, "Date");
+                        string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        _chart.labels = arrrayDate;
+                        _chart.datasets = new List<Datasets>();
+                        List<Datasets> _dataSet = new List<Datasets>();
+                        string[] arrbg = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                        int intColor = 0;
+                        foreach (string stproj in arrrayProj)
+                        {
+                            Datasets dss = new Datasets();
+                            dss.label = stproj;
+                            string[] arrData = new string[arrrayDate.Length];
+                            int i = 0;
+                            foreach (string stDate in arrrayDate)
+                            {
+                                try
+                                {
+                                    arrData[i] = "0";
+                                    //DataRow[] result = ds.Tables[0].Select("UserName = '" + stproj + "' AND Date = '" + stDate + "'");
+                                    DataTable dtFilter = ds.Tables[3].Select("UserName = '" + stproj + "' AND Date = '" + stDate + "'").CopyToDataTable();
+                                    object sumObject;
+                                    sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
+                                    int totalSec = Convert.ToInt32(sumObject);
+                                    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    //if (result.Length > 0)
+                                    //{
+                                    //    int totalSec = Convert.ToInt32(result[0]["totalSec"]);
+                                    //    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    //}
+                                    //else
+                                    //{ arrData[i] = "0"; }
+                                }
+                                catch (Exception exo) { arrData[i] = "0"; }
+                                i++;
+                            }
+                            dss.data = arrData;
+                            //"#" + ((1 << 24) * Math.random() | 0).toString(16)
+                            dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
+                            dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
+                            dss.borderWidth = "1";
+                            _dataSet.Add(dss);
+                            intColor++;
+                        }
+                        _chart.datasets = _dataSet;
+                    }
+                }
+            }
+            catch (Exception exx) { }
+            return Json(_chart, JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }

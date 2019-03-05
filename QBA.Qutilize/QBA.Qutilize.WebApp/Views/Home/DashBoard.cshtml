@@ -36,6 +36,16 @@
                         <!-- load header summary -->
                         @Html.Action("LoadDashBoardAdminSummary", "Home")
                     </div>
+                    <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="barChartAdmin" width="200" height="30"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="panel panel-info">
@@ -101,6 +111,7 @@
                     <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
                 </div>
                 <div class="panel-body">
+                    
                     <div class="row" id="divLoadDashBoardDataDayWise">
                         <div class="col-md-12">
                             <div class="panel panel-info">
@@ -142,6 +153,7 @@
         gerDonutChartData();
         gerDonutChartDataUserWiseAdmin();
         gerDonutChartDataProjectWiseAdmin();
+        gerBarChartDataAdmin();
     });
     $(document).on('click', '.panel-heading span.clickable', function (e) {
         var $this = $(this);
@@ -162,6 +174,27 @@
         var c = document.getElementById("barChart");
         var ctx = c.getContext("2d");
         var tData = $.getValues('@Url.Action("BarChartData", "Home")');//"/Home/BarChartData"
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: tData,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+        myBarChart.update();
+    }
+    function gerBarChartDataAdmin() {
+        //-----Single Bar --------------
+        var c = document.getElementById("barChartAdmin");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("BarChartDataAdmin", "Home")');//"/Home/BarChartData"
         var myBarChart = new Chart(ctx, {
             type: 'bar',
             data: tData,
@@ -230,6 +263,7 @@
                         $("#divActualData").html(response);
                         gerDonutChartDataUserWiseAdmin();
                         gerDonutChartDataProjectWiseAdmin();
+                        gerBarChartDataAdmin()
                         $("#DashBoardAdminSummary").load('@Url.Action("LoadDashBoardAdminSummary", "Home")');
                     }
                 }
