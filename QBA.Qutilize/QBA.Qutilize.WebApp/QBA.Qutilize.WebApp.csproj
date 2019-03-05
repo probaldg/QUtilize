@@ -163,12 +163,14 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
     <Compile Include="Models\DailyTaskModel.cs" />
+    <Compile Include="Models\DailyTaskViewModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserProjectMappingModel.cs" />
     <Compile Include="Models\UserRoleMappingModel.cs" />
+    <Compile Include="Models\UserRoleModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -722,11 +724,8 @@
     <Content Include="Views\Admin\ManageRole.cshtml" />
     <Content Include="Views\Admin\UserRoleMapping.cshtml" />
     <Content Include="Views\Admin\RoleModuleMapping.cshtml" />
-<<<<<<< HEAD
-=======
     <Content Include="Views\DailyTask\Index.cshtml" />
     <Content Include="Views\Account\MyAccount.cshtml" />
->>>>>>> Rahul-FeatureBranch
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
