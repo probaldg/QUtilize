@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QBA.Qutilize.WebApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -107,5 +108,224 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return dt;
         }
+
+        #region Organization
+        public static DataTable GetALLOrganisationData()
+        {
+            DataTable dt = null;
+
+            try
+            {
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                { dt = objSQLHelper.ExecuteDataTable("[dbo].[SP_GetAllOrganisation]"); }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
+        }
+
+        public static DataTable GetALLActiveOrganisationData()
+        {
+            DataTable dt = null;
+
+            try
+            {
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[SP_GetAllActiveOrganisation]");
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
+        }
+
+        public static Boolean insert_OrganisationData(OrganisationModel model, out int id)
+        {
+            string str = string.Empty;
+            bool bln = false;
+            DataTable dt = null;
+            id = 0;
+            try
+            {
+                SqlParameter Status = new SqlParameter("@ID", SqlDbType.Int);
+                Status.Direction = ParameterDirection.Output;
+
+                SqlParameter[] param ={Status,
+
+                                        new SqlParameter("@orgname",model.orgname),
+                                        new SqlParameter("@address",model.address),
+                                        new SqlParameter("@url", model.url),
+                                        new SqlParameter("@logo",model.logo),
+                                        new SqlParameter("@wikiurl",model.wikiurl),
+                                        new SqlParameter("@contact_email_id",model.contact_email_id),
+                                        new SqlParameter("@createdTS",model.createdTS),
+                                        new SqlParameter("@createdBy",model.createdBy),
+                                        new SqlParameter("@isActive",model.isActive)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_tblOrganisationInsert]", param);
+                }
+
+                if (!(Status.Value is DBNull))
+                {
+                    id = Convert.ToInt32(Status.Value);
+                    model.id = id;
+
+                    bln = true;
+                }
+                else
+                {
+                    id = 0;
+                    bln = false;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                bln = false;
+            }
+            return bln;
+        }
+
+
+        public static DataTable GetOrganisationDataByID(int id)
+        {
+            bool bln = false;
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                    //new SqlParameter("@ID",model.ID),
+                    new SqlParameter("@id",id),
+
+
+                };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_getOrganisationByID]", param);
+                }
+
+                //model.ISErr = false;
+                //model.ErrString = "Data Saved Successfully!!!";
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public static Boolean updateOrganisation(OrganisationModel model)
+        {
+            string str = string.Empty;
+            bool bln = false;
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                   new SqlParameter("@ID",model.id),
+                   new SqlParameter("@orgname",model.orgname),
+                   new SqlParameter("@address",model.address),
+                   new SqlParameter("@url", model.url),
+                   new SqlParameter("@logo",model.logo),
+                   new SqlParameter("@wikiurl",model.wikiurl),
+                   new SqlParameter("@contact_email_id",model.contact_email_id),
+                   new SqlParameter("@editedTS",model.editedTS),
+                   new SqlParameter("@editedBY",model.editedBy),
+                   new SqlParameter("@isActive",model.isActive)
+                };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_tblOrganisationUpdate]", param);
+                }
+
+                bln = true;
+
+            }
+            catch (Exception ex)
+            {
+
+                bln = false;
+            }
+            return bln;
+        }
+
+        public static DataTable GetOrganisationDataByURL(string url)
+        {
+            bool bln = false;
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                    //new SqlParameter("@ID",model.ID),
+                    new SqlParameter("@url",url),
+
+
+                };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_getOrganisationByURL]", param);
+                }
+                //model.ISErr = false;
+                //model.ErrString = "Data Saved Successfully!!!";
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+
+        public static DataTable GetALLOrganisationForCategory()
+        {
+            DataTable dt = null;
+
+            try
+            {
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[SP_GetAllOrganisationForCategory]");
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dt;
+        }
+
+        public static int GetOrganisationIDByName(string orgName)
+        {
+            int orgId = 0;
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                    new SqlParameter("@OrganizationName",orgName),
+                };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetOrganizationByName]", param);
+                }
+                if (dt.Rows.Count > 0)
+                {
+                    orgId = Convert.ToInt32(dt.Rows[0]["Id"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return orgId;
+        }
+        #endregion
     }
 }

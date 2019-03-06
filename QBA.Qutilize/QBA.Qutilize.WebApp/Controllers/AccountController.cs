@@ -8,6 +8,7 @@ using QBA.Qutilize.WebApp.DAL;
 using System.Data;
 using QBA.Qutilize.WebApp.Helper;
 using System.Configuration;
+using System.Text;
 
 namespace QBA.Qutilize.WebApp.Controllers
 {
@@ -16,19 +17,57 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadSideMenu()
         {
             AccountViewModels obj = new Models.AccountViewModels();
-            string strMenu = string.Empty;
+            StringBuilder strMenu =new StringBuilder();
             DataTable dt = obj.GetDashBoardMenu(Convert.ToInt32(Session["sessUser"]));
-            foreach (DataRow dr in dt.Rows)
+            if (dt != null && dt.Rows.Count > 0)
             {
-                strMenu += "<div class='row lien'>" +
-                           "<div class='col-md-12'>" +
-                           "<a href='" + dr["URL"] + "' class='fa " + dr["DisplayCSS"].ToString() + "'></a> &nbsp;" +
-                           "<a href='" + ConfigurationSettings.AppSettings["SiteAddress"]+ dr["URL"] + "'>" + dr["DisplayName"].ToString() + "</a>" +
-                           "<hr>" +
-                           "</div>" +
-                           "</div>";
+                try {
+                    strMenu.Append(GetSideMenuContent(dt,""));
+                }
+                catch (Exception exx) { }
             }
-            return Content(strMenu);
+            return Content(strMenu.ToString());
+        }
+        public string GetSideMenuContent(DataTable orgDT, string parentID)
+        {
+            StringBuilder strMenu = new StringBuilder();
+            if (parentID.Trim() == "")
+            {
+                DataRow[] drParentAll = orgDT.Select("lvl = 0");
+                if (drParentAll.Length > 0)
+                {
+                    foreach (DataRow dr in drParentAll)
+                    {
+                        strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
+                    }
+                }
+            }
+            else
+            {
+                DataRow[] drParent = orgDT.Select("ID = " + parentID);
+                if (drParent.Length > 0)
+                {
+                    strMenu.Append("<div class='row lien'>");
+                    if (Convert.ToInt32(drParent[0]["lvl"]) == 0)
+                        strMenu.Append("<div class='col-md-12'>");
+                    else
+                    {
+                        int lvl = Convert.ToInt32(drParent[0]["lvl"]);
+                        strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
+                    }
+                    strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "'></a> &nbsp;");
+                    strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
+                    strMenu.Append("<hr>");
+                    strMenu.Append("</div>");
+                    strMenu.Append("</div>");
+                }
+                DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
+                foreach (DataRow dr in dtChild)
+                {
+                    strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
+                }
+            }
+            return strMenu.ToString();
         }
 
         public ActionResult MyAccount()
@@ -68,8 +107,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 return Redirect("/Home/Index");
             }
         }
-
-
         public JsonResult UpdatePassword(int id, string password)
         {
             UserModel user = new UserModel();
