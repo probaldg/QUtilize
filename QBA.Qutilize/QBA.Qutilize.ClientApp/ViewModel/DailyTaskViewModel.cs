@@ -16,6 +16,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         DailyTask _dailyTaskView;
 
         DispatcherTimer checkMaxProjectTimeTimer = new DispatcherTimer();
+        DispatcherTimer TimeElapsedCalculateTimer = new DispatcherTimer();
 
         public DailyTaskViewModel(DailyTask dailyTask, User user)
         {
@@ -23,6 +24,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             checkMaxProjectTimeTimer.Interval = TimeSpan.FromMinutes(1);
             checkMaxProjectTimeTimer.Tick += CheckMaxProjectTimeTimer_Tick;
+
+            TimeElapsedCalculateTimer.Interval = TimeSpan.FromSeconds(10);
+            TimeElapsedCalculateTimer.Tick += TimeElapsedCalculateTimer_Tick;
 
             User = user;
             CreateHeader();
@@ -32,8 +36,23 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             InsertProjectStartTime();
 
             Logger.Log("DailyTaskViewModel", "Info", "Timer started.");
+
+            TimeElapsedCalculateTimer.IsEnabled = true;
+            TimeElapsedCalculateTimer.Start();
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
+        }
+
+        private void TimeElapsedCalculateTimer_Tick(object sender, EventArgs e)
+        {
+            TimeElapsedCalculateTimer.Stop();
+            TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+
+            Project currProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.IsCurrentProject == true);
+            currProject.TimeElapsedHeading = "Time elapsed";
+            currProject.TimeElapsedValue = diffrenceInHours.ToString(@"hh\:mm\:ss");
+            RefreshUI();
+            TimeElapsedCalculateTimer.Start();
         }
 
         private void CheckMaxProjectTimeTimer_Tick(object sender, EventArgs e)
@@ -340,7 +359,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         ProjectName = defaultProj.ProjectName,
                         StrartDateTime = DateTime.Now,
                         IsCurrentProject = true,
-                        MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
+                        MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours,
+
+
                     };
                 }
 

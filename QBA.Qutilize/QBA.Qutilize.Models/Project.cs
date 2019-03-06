@@ -21,5 +21,9 @@ namespace QBA.Qutilize.Models
         public string EditedBy { get; set; }
         public DateTime? EditedDate { get; set; }
         public bool IsActive { get; set; }
+
+        public string TimeElapsedHeading { get; set; }
+        public string TimeElapsedValue { get; set; }
+
     }
 }
