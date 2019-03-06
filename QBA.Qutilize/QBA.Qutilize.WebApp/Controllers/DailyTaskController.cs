@@ -1,7 +1,9 @@
 ﻿using QBA.Qutilize.Models;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -12,58 +14,81 @@ namespace QBA.Qutilize.WebApp.Controllers
 {
     public class DailyTaskController : Controller
     {
+
         // GET: DailyTask
         public ActionResult Index()
         {
             DailyTaskViewModel model = new DailyTaskViewModel();
             if (System.Web.HttpContext.Current.Session["sessUser"] != null)
             {
-                // int userId = Convert.ToInt32(Session["sessUser"]);
                 model.UserId = Convert.ToInt32(Session["sessUser"]);
-                model.GetAllProjects(model.UserId);
-                model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
-                model.ProjectsList = model.GetAllProjects(model.UserId);
-                return View(model);
+                // string url = Request.Url.AbsoluteUri;
+                if (ModuleMappingHelper.IsUserMappedToModule(model.UserId, Request.Url.AbsoluteUri))
+                {
+                    // model.GetAllProjects(model.UserId);
+                    model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
+                    model.ProjectsList = model.GetAllProjects(model.UserId);
+                    return View(model);
+                }
+                else
+                    return RedirectToAction("DashBoard", "Home");
             }
             else
             {
-                return Redirect("/Home/Index");
+                return RedirectToAction("DashBoard", "Home");
             }
 
         }
 
 
         [HttpPost]
-        public ActionResult InsertDailyTask( string taskDate,int projectID, DateTime startTime, DateTime endTime, string taskName, string descreption)
+        public ActionResult InsertDailyTask(string taskDate, int projectID, DateTime startTime, DateTime endTime, string taskName, string descreption)
 
         {
             string result = string.Empty;
             CultureInfo provider = CultureInfo.InvariantCulture;
+            DailyTaskViewModel model = new DailyTaskViewModel();
             try
             {
-
-                int userId = Convert.ToInt32(Session["sessUser"]);
-                DailyTaskViewModel model = new DailyTaskViewModel();
-                if (userId != 0)
-                    model.DailyTaskModel.UserID = userId;
-
-                model.DailyTaskModel.ProjectID = projectID;
-                model.DailyTaskModel.TaskName = taskName;
-                // model.DailyTaskModel.TaskDate =Convert.ToDateTime(taskDate,);
                 model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
 
-                model.DailyTaskModel.StartTime = startTime;
-                model.DailyTaskModel.EndTime = endTime;
-                model.DailyTaskModel.Description = descreption;
-                model.DailyTaskModel.CreatedBy = userId.ToString();
-                model.DailyTaskModel.CreateDate = DateTime.Now;
-                model.DailyTaskModel.IsActive = true;
+                if (startTime.ToShortDateString() != Convert.ToDateTime(taskDate).ToShortDateString())
+                {
+                    var tempStartTime = startTime.TimeOfDay;
+                    var tempEndTime = endTime.TimeOfDay;
+                    DateTime newStartTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, startTime.Second);
+                    DateTime newEndtTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+                    startTime = newStartTime;
+                    endTime = newEndtTime;
+                }
 
-                model.InsertDailyTaskdata(model.DailyTaskModel, out int id);
-                if (id > 0)
-                    result = "Success";
-                RedirectToAction("Index", "DailyTask");
+              if( ValidateMaxTaskTimeInsert(startTime, endTime))
+                {
+                    int userId = Convert.ToInt32(Session["sessUser"]);
+                    
+                    if (userId != 0)
+                        model.DailyTaskModel.UserID = userId;
 
+                    model.DailyTaskModel.ProjectID = projectID;
+                    model.DailyTaskModel.TaskName = taskName;
+
+                    model.DailyTaskModel.StartTime = startTime;
+                    model.DailyTaskModel.EndTime = endTime;
+
+                    model.DailyTaskModel.Description = descreption;
+                    model.DailyTaskModel.CreatedBy = userId.ToString();
+                    model.DailyTaskModel.CreateDate = DateTime.Now;
+                    model.DailyTaskModel.IsActive = true;
+
+                    model.InsertDailyTaskdata(model.DailyTaskModel, out int id);
+                    if (id > 0)
+                        result = "Success";
+                    RedirectToAction("Index", "DailyTask");
+                }
+              else
+                {
+                    result = "Invalid";
+                }
 
             }
             catch (Exception)
@@ -151,12 +176,53 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
-                return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
+                if (ts.Ticks > 0)
+                    return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
+                else
+                    return 0;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+
+        private bool ValidateMaxTaskTimeInsert(DateTime startTime, DateTime endTime)
+        {
+            bool result = false;
+            DailyTaskViewModel model = new DailyTaskViewModel();
+            try
+            {
+                model.UserId = Convert.ToInt32(Session["sessUser"]);
+                model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
+                var dailyTasks = from r in model.DailyTaskList
+                                 where r.StartTime.ToShortDateString() == startTime.ToShortDateString()
+                                 select r;
+                var dateTaskList = dailyTasks.ToList();
+                decimal PreviousTaskSum = 0;
+
+                foreach (var item in dateTaskList)
+                {
+                    var hour = CalculateTimeDiffrence(item.StartTime, item.EndTime);
+                    PreviousTaskSum = PreviousTaskSum + hour;
+                }
+
+                decimal currentTaskSum = CalculateTimeDiffrence(startTime, endTime);
+
+                if (PreviousTaskSum + currentTaskSum > 24)
+                    result = false;
+                else
+                    result = true;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return result;
         }
     }
 }

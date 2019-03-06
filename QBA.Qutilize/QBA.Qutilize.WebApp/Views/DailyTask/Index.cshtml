@@ -4,7 +4,7 @@
 @{
 
 
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Daily Task";
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 
 }
@@ -55,17 +55,32 @@
         <h4>Daily Task</h4>
         <br />*@
 
-    <div style="width:95%;float:left;">
+    <div style="width:100%;float:left; height:auto;">
+
+        <div class="form-group">
+            @Html.Label("Start date", htmlAttributes: new { @class = "control-label col-md-1" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.StartDate)
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
+            @Html.Label("End date", htmlAttributes: new { @class = "control-label col-md-1" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.EndDate)
+            </div>
+        </div>
+        <br />
 
         @{if (Model != null)
             {
-                var grid = new WebGrid(Model.DailyTaskList, canPage: false, canSort:false,  ajaxUpdateContainerId: "gridContent");
+                var grid = new WebGrid(Model.DailyTaskList, canPage: false, canSort: false, ajaxUpdateContainerId: "gridContent");
                 //grid.Pager(WebGridPagerModes.NextPrevious);
 
-                <div id="gridContent" >
+                <div id="gridContent" class="table-responsive">
 
-                    @grid.GetHtml(tableStyle: "table table-hover table-striped",
-                    headerStyle: "webgrid-header",
+                    @grid.GetHtml(tableStyle: "table table-bordered",
+                    headerStyle: "text-center tblHeaderColor",
                     alternatingRowStyle: "webgrid-alternating-row",
                     selectedRowStyle: "select",
                     columns: grid.Columns(
@@ -74,68 +89,68 @@
                      style: "col2",
                      format: @<text>
                             <span id="TaskDate" class="display-mode">@item.TaskDate.ToShortDateString()</span>
-                          
-                            @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate), new { @class = "edit-mode datepicker" })
+
+                            @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToShortDateString(), new { @class = "edit-mode datepicker" })
 
                     </text>),
-                                 grid.Column("ProjectName",
-                             style: "col2",
-                             format: @<text>
-                                <span id="ProjectName" class="display-mode">@item.ProjectName</span>
-                                <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+     grid.Column("ProjectName",
+ style: "col2",
+ format: @<text>
+    <span id="ProjectName" class="display-mode">@item.ProjectName</span>
+    <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
 
-                            </text>),
-                                grid.Column("TaskName",
-                                     style: "col2",
-                                     format: @<text>
-                                        <span id="TaskName" class="display-mode">@item.TaskName</span>
+</text>),
+grid.Column("TaskName",
+style: "col2",
+format: @<text>
+    <span id="TaskName" class="display-mode">@item.TaskName</span>
 
-                                        @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
-                                    </text>), /*second column end*/
+    @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
+</text>), /*second column end*/
 
 
-                                                                    grid.Column("Description",
-                                                                style: "col2",
-                                                                format: @<text>
-                                                                    <span id="Description" class="display-mode">@item.Description</span>
-                                                                    @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
-                                                                </text>),/*fourth column end*/
+          grid.Column("Description",
+      style: "col2",
+      format: @<text>
+        <span id="Description" class="display-mode">@item.Description</span>
+        @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
+    </text>),/*fourth column end*/
 
-                                                                                              grid.Column("Start Time",
-                                                                                                 style: "col2",
-                                                                                                 format: @<text>
-                                                                                                    <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
-                                                                                                    @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
-                                                                                                </text>),
-                                                                            grid.Column("End Time",
-                                                                                               style: "col2",
-                                                                                               format: @<text>
-                                                                                                <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
-                                                                                                @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
-                                                                                            </text>),
+            grid.Column("Start Time",
+               style: "col2",
+               format: @<text>
+                <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
+                @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
+            </text>),
+grid.Column("End Time",
+style: "col2",
+format: @<text>
+    <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
+    @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
+</text>),
 
-                                                                                grid.Column("Hours",
-                                                                                       style: "col2",
-                                                                                       format: @<text>
-                                                                                        <span id="hours" class="display-mode">@item.Hours</span>
+grid.Column("Hours",
+style: "col2",
+format: @<text>
+    <span id="hours" class="display-mode">@item.Hours</span>
 
-                                                                                    </text>),
+</text>),
 
-                                                                                                                          grid.Column("",
-                                                                                                                              style: "col1",
-                                                                                                                              format: @<text><div style="padding-left:20px; float:right;">
-                                                                                                                                   
+                grid.Column("",
+                    style: "col1",
+                    format: @<text><div style="padding-left:20px; float:right;">
 
-                                                                                                                                    <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>
-                                                                                                                                    <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId">Delete</button>
-                                                                                                                                    <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId">Save</button>
-                                                                                                                                    <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
-                                                                                                                                </div>
-                                                                                                                            </text>)) /*End of Coloumns*/
-                                                                                                                                 ) @*end of grid*@
 
-                                                                                                                            </div>
-                                                                                                                        }
+                            <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>
+                            <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId">Delete</button>
+                            <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId">Save</button>
+                            <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
+                        </div>
+                    </text>)) /*End of Coloumns*/
+) @*end of grid*@
+
+</div>
+}
         }
     </div>
     <div class="form-horizontal col-md-12">
@@ -143,8 +158,8 @@
             <span id="errormsg"></span>
         </div>
     </div>
-    <table class="table  table-responsive table-hover">
-        <tr style="background-color:gray; color:white; font-weight:bold;">
+    <table class="table table-bordered">
+        <tr class="text-center tblHeaderColor">
             <td>Task Date</td>
             <td>Projects</td>
             <td>Task Name</td>
@@ -172,7 +187,7 @@
                 <input type="text" class="form-control input-sm" id="DescriptionInsert">
             </td>
             <td>
-                <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}"  id="StartTimeInsert">
+                <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" id="StartTimeInsert">
             </td>
             <td>
                 <input type="text" class="form-control input-sm" id="EndTimeInsert">
@@ -187,10 +202,10 @@
     </table>
 
     <style>
-        th {
+        /*th {
             background-color: gray;
             color: white;
-        } 
+        }*/
     </style>
     <script type="text/javascript">
         var curr = new Date;
@@ -201,12 +216,17 @@
         $('#TaskDateInsert').datepicker({
             format: 'dd-mm-yy',
             minDate: new Date(curr.setDate(first)),
-            maxDate: new Date(curr.setDate(last))
+            maxDate: new Date()
         });
         $("#StartTimeInsert").timepicker({ 'scrollDefault': 'now' })
         $("#EndTimeInsert").timepicker({ 'scrollDefault': 'now' })
 
-        $(".datepicker").datepicker({ format: 'dd-mm-yy', autoclose: true, todayBtn: 'linked' })
+        $(".datepicker").datepicker({
+            format: 'dd-mm-yy',
+            autoclose: true, todayBtn: 'linked',
+            minDate: new Date(curr.setDate(first)),
+            maxDate: new Date()
+        })
 
 
         $(".timePicker").timepicker({ 'scrollDefault': 'now' })
@@ -253,8 +273,24 @@
             var Description = tr.find('#Description-Edit').val();
             var startTime = tr.find('#StartTime-Edit').val();
             var EndTime = tr.find('#EndTime-Edit').val();
-            //var DOB = tr.find('#DOB-Edit').val();
-            //var IsActive = tr.find('#IsActive-Edit').prop("checked");
+
+            var stt = new Date("November 13, 2013 " + startTime);
+            stt = stt.getTime();
+
+            var endt = new Date("November 13, 2013 " + EndTime);
+            endt = endt.getTime();
+
+            var diff = (endt - stt) / 1000;
+            diff /= 3600;
+
+            if (diff >= 24) {
+                ShowError(" time diffrence can not be greater than 8 hours..");
+                return false;
+            }
+            if (stt > endt) {
+                ShowError("start time can not be greater than end time..");
+                return false;
+            }
             $.post(
                 '/DailyTask/UpdateDailyTask/',
                 { DailyTaskId: DailyTaskId, TaskDate: taskDate, TaskName: taskName, Description: Description, StartTime: startTime, EndTime: EndTime},
@@ -268,6 +304,8 @@
 
                 }, "json");
             tr.find('.edit-mode, .display-mode').toggle();
+            $('#ErrorMsg').css("display", "none");
+            //$("#id").css("display", "block");
         });
 
          $('#btnInsert').click(function () {
@@ -279,9 +317,10 @@
              var taskName = $('#TaskNameInsert').val();
 
              var startTime = $('#StartTimeInsert').val();
+
              var endTime = $('#EndTimeInsert').val();
              var dsec = $('#DescriptionInsert').val();
-           
+
 
                 if (taskDate == "") {
                     ShowError("Task date is required..")
@@ -315,8 +354,8 @@
 
              var diff = (endt - stt) / 1000;
              diff /= 3600;
-                
-             if (diff > 8) {
+
+             if (diff >= 24) {
                  ShowError(" time diffrence can not be greater than 8 hours..");
                  return false;
              }
@@ -324,8 +363,8 @@
                  ShowError("start time can not be greater than end time..");
                  return false;
              }
-            
-            
+
+
                 $.ajax({
                     url: '@Url.Action("InsertDailyTask", "DailyTask")',
                     type: 'POST',
@@ -340,12 +379,17 @@
                         "descreption": dsec,
                     }), //Data end
                     success: function (response) {
-                        alert('Task saved succesfully');
-                        @*$.ajax({
-                            url: '@Url.Action("Index", "DailyTask")',
-                            type:'GET'
-                        });*@
-                        location.reload();
+                       
+                        if (response == "Success") {
+                            alert('Task saved succesfully');
+                            location.reload();
+                        }
+                        else if (response == "Invalid") {
+                            ShowError("Task time can not be greater than 24 hours..")
+                            $('#ErrorMsg').css("display", "block");
+                        }
+
+
                     }
                 });// ajax end
         });// button click end

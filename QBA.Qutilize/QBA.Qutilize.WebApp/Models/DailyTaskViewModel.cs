@@ -21,6 +21,8 @@ namespace QBA.Qutilize.WebApp.Models
         }
         public DateTime WeekStartDate { get; set; }
         public DateTime WeekEndDate { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
         public int UserId { get; set; }
         public DailyTaskModel DailyTaskModel { get; set; }
         public SelectList ProjecSelectList { get; set; }
@@ -39,11 +41,12 @@ namespace QBA.Qutilize.WebApp.Models
             int iVisibleDaysEdit = 0;
             int iVisibleDaysDisplay = 0;
 
-            //iVisibleDaysEdit = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysEdit"].Trim());
-            //iVisibleDaysDisplay = Convert.ToInt32(ConfigurationManager.AppSettings["VisibleDaysDisplay"].Trim());
-
             WeekStartDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
             WeekEndDate = WeekStartDate.AddDays(6 + iVisibleDaysEdit);
+
+            DateTime startDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
+            StartDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
+            EndDate = $"{ startDate.AddDays(6 + iVisibleDaysEdit).Day}/{ startDate.AddDays(6 + iVisibleDaysEdit).Month}/{ startDate.AddDays(6 + iVisibleDaysEdit).Year}";
         }
 
         public List<Project> GetAllProjects(int userId)
@@ -113,15 +116,22 @@ namespace QBA.Qutilize.WebApp.Models
 
                         dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
 
-                        dailyTaskModel.StartTime = Convert.ToDateTime(item["StartTime"]);
+
+                        //Start time only contains date part so creating full date time with taskDate
+
+                        var tempStartTime = Convert.ToDateTime(item["StartTime"]).TimeOfDay;
+                        dailyTaskModel.StartTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, tempStartTime.Seconds);
                         dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
+
                         if (!DBNull.Value.Equals(item["EndTime"]))
                         {
-                            dailyTaskModel.EndTime = Convert.ToDateTime(item["EndTime"]);
+                            var tempEndTime = Convert.ToDateTime(item["EndTime"]).TimeOfDay;
+
+                            dailyTaskModel.EndTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
                             dailyTaskModel.EndTimeToDisplay = item["EndTime"].ToString();
                             dailyTaskModel.Hours = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
                         }
-                      
+
                         dailyTaskModel.Description = item["Description"] == null ? "" : item["Description"].ToString();
 
 

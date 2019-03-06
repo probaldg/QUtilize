@@ -160,6 +160,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\EncryptionHelper.cs" />
+    <Compile Include="Helper\ModuleMappingHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
     <Compile Include="Models\DailyTaskModel.cs" />
