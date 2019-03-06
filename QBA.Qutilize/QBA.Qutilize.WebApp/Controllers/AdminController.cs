@@ -3,7 +3,10 @@ using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,6 +14,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 {
     public class AdminController : Controller
     {
+        ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
         // GET: Admin
         public ActionResult Index()
@@ -435,7 +439,10 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             RoleModel obj = new RoleModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
-
+            if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
+            {
+                return RedirectToAction("DashBoard", "Home");
+            }
             if (ID > 0)
             {
                 try
@@ -518,7 +525,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             foreach (DataRow dr in dt.Rows)
             {
                 strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" +
-                                 "<td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                                 "<td class='text-center'>" + dr["isActive"].ToString() + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
             }
             return Content(strUserData);
@@ -744,5 +751,145 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return rows;
         }
+
+        #region Organization 
+        public ActionResult ManageOrganisation(int id = 0)
+        {
+            OrganisationModel org = new OrganisationModel();
+            try
+            {
+                if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri)) {
+                    return RedirectToAction("DashBoard", "Home");
+                }
+                if (id > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = org.GetOrganisationDataByID(id);
+                    org.orgname = dt.Rows[0]["orgname"].ToString();
+                    org.url = dt.Rows[0]["url"].ToString();
+                    org.address = dt.Rows[0]["address"].ToString();
+                    org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
+                    org.logo = dt.Rows[0]["logo"].ToString();
+                    org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
+                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    org.createdTS = DateTime.Now;
+                }
+                else
+                {
+                    org.orgname = "";
+                    org.wikiurl = "";
+                    org.url = "";
+                    org.logo = "";
+                    org.isActive = false;
+                }
+            }
+            catch (Exception exx) { }
+            return View(org);
+        }
+        public ActionResult Organisations()
+        {
+            OrganisationModel Org = new OrganisationModel();
+            string strOrganisation = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                int i = 0;
+                dt = Org.GetALLOrganisationData();
+
+                Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+                string pathQuery = myuri.PathAndQuery;
+                string hostName = myuri.ToString().Replace(pathQuery, "");
+
+                List<OrganisationModel> viewModelList = new List<OrganisationModel>();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["orgname"] + "</td>" + "<td class='text-center'>" + dr["address"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["contact_email_id"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                       "<td  class='text-center'><a href = 'ManageOrganisation?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
+                    i++;
+                }
+            }
+            catch (Exception exc) { }
+            return Content(strOrganisation);
+
+        }
+        [HttpPost]
+        public ActionResult ManageOrganisation(OrganisationModel orgModel)
+        {
+            try
+            {
+                if (orgModel.id > 0)
+                {
+                    var filelogo = Request.Files["logo"];
+                    if (filelogo != null && filelogo.ContentLength > 0)
+                    {
+
+
+                        var logo = Path.GetFileName(filelogo.FileName);
+                        logo = orgModel.orgname + "_logo_" + logo;
+                        var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
+                        Stream strm = filelogo.InputStream;
+                        generateThumbnail.GenerateThumbnails(0.3, strm, path);
+                        //filelogo.SaveAs(path);
+                        orgModel.logo = logo;
+                    }
+                    orgModel.wikiurl = Encrypt(orgModel.url);
+                    orgModel.editedTS = DateTime.Now;
+                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.updateOrganisation(orgModel);
+                }
+                else
+                {
+                    int i;
+                    var filelogo = Request.Files["logo"];
+                    if (filelogo != null && filelogo.ContentLength > 0)
+                    {
+
+
+                        var logo = Path.GetFileName(filelogo.FileName);
+                        logo = orgModel.orgname + "_logo_" + logo;
+                        var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
+                        Stream strm = filelogo.InputStream;
+                        generateThumbnail.GenerateThumbnails(0.3, strm, path);
+                        //filelogo.SaveAs(path);
+                        orgModel.logo = logo;
+                    }
+                    orgModel.wikiurl = Encrypt(orgModel.url);
+                    orgModel.createdTS = DateTime.Now;
+                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.insert_OrganisationData(orgModel, out i);
+                    //ViewData["ErrStatus"] = orgModel.ISErr.ToString();
+                    //ModelState.AddModelError("MSG", orgModel.ErrString);
+                }
+            }
+            catch (Exception exc) { }
+            return RedirectToAction("ManageOrganisation");
+        }
+        private string Encrypt(string clearText)
+        {
+            try
+            {
+                string EncryptionKey = "MAKV2SPBNI99212";
+                byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+                using (Aes encryptor = Aes.Create())
+                {
+                    Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                    encryptor.Key = pdb.GetBytes(32);
+                    encryptor.IV = pdb.GetBytes(16);
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                        {
+                            cs.Write(clearBytes, 0, clearBytes.Length);
+                            cs.Close();
+                        }
+                        clearText = Convert.ToBase64String(ms.ToArray());
+                    }
+                }
+            }
+            catch (Exception exc) { }
+            return clearText;
+        }
+        #endregion
     }
 }
