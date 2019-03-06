@@ -140,6 +140,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
                 EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
                 Description = model.Description,
+                TaskName=model.TaskName,
                 Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
             });
 

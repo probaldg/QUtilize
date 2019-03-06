@@ -250,7 +250,7 @@ format: @<text>
             if (confirm("Are you sure to delete this contact?")) {
                 var tr = $(this).parents('tr:first');
                 var ID = $(this).prop('id');
-                alert(ID);
+               
                 $.post(
                     '/DailyTask/DeleteDailyTask/',
                     { ID: ID },
@@ -297,6 +297,7 @@ format: @<text>
                 function (item) {
                    // alert(item.TaskDate);
                     tr.find('#TaskDate').text(item.TaskDate);
+                    tr.find('#TaskName').text(item.TaskName);
                     tr.find('#Description').text(item.Description);
                     tr.find('#StartTime').text(item.StartTime);
                     tr.find('#EndTime').text(item.EndTime);
