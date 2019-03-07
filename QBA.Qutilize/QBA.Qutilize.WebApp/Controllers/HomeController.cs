@@ -164,9 +164,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbOut.Append("<tr>");
                 sbOut.Append("<td><label>Date range:</label></td>");
                 sbOut.Append("<td><label>Start Date:</label></td>");
-                sbOut.Append("<td><input type='text' id='txtStartDate' value='" + startdate.ToShortDateString() + "' /></td>");
+                sbOut.Append("<td><input type='text' class='form-control input-sm datepicker hasDatepicker' id='txtStartDate' value='" + startdate.ToShortDateString() + "'  /></td>");
                 sbOut.Append("<td><label>End Date:</label></td>");
-                sbOut.Append("<td><input type='text' id='txtEndDate' value='" + endDate.ToShortDateString() + "' /></td>");
+                sbOut.Append("<td><input type='text' class='form-control input-sm datepicker hasDatepicker' id='txtEndDate' value='" + endDate.ToShortDateString() + "' /></td>");
                 sbOut.Append("<td><input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-default' onclick='RefreshData();' /></td>");
                 sbOut.Append("</tr>");
                 sbOut.Append("</table>");

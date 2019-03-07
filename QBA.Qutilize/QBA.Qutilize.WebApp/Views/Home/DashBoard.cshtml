@@ -206,6 +206,24 @@
 
         }
     })
+    $('#txtStartDate').datepicker({
+        format: 'MM/dd/yyyy'
+        //format: 'dd-mm-yy',
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    });
+    $('#txtEndDate').datepicker({
+        format: 'MM/dd/yyyy'
+        //format: 'dd-mm-yy',
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    });
+    $(".datepicker").datepicker({
+        format: 'MM/dd/yyyy',
+        autoclose: true, todayBtn: 'linked'//,
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    })
     function gerBarChartData() {
         try {
         //-----Single Bar --------------

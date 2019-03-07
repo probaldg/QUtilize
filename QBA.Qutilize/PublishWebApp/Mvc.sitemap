@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Home" controller="Home" action="Dashboard">
+      <mvcSiteMapNode title="Admin" controller="Home" action="Dashboard">
+          <mvcSiteMapNode title="User Management"  controller="Admin" action="ManageUsers"/>
+          <mvcSiteMapNode title="Project Management"  controller="Admin" action="ManageProject"/>
+          <mvcSiteMapNode title="User Project Mapping"  controller="Admin" action="UserProjectMapping"/>
+          <mvcSiteMapNode title="Role Management"  controller="Admin" action="ManageRole"/>
+          <mvcSiteMapNode title="User Role Mapping"  controller="Admin" action="UserRoleMapping"/>
+          <mvcSiteMapNode title="Role Module Mapping"  controller="Admin" action="RoleModuleMapping"/>
+          <mvcSiteMapNode title="Organization Management"  controller="Admin" action="ManageOrganisation"/>
+      </mvcSiteMapNode>
+      <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
+      <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
+  </mvcSiteMapNode>
+
+</mvcSiteMap>
