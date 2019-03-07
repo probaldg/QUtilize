@@ -27,10 +27,12 @@ namespace QBA.Qutilize.WebAPI.Controllers
             {
                 return 0;
             }
-           
+
             try
             {
-                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, DateTime.Now, dailyTaskModel.UserId.ToString(), true).ToList();
+
+                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, dailyTaskModel.StartTime, dailyTaskModel.UserId.ToString(), true).ToList();
+
                 _dbContext.SaveChanges();
                 if (queryResult != null && queryResult.Count > 0)
                 {
@@ -59,7 +61,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
             int queryResult;
             try
             {
-                 queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, DateTime.Now);
+                queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, dailyTaskModel.EndTime);
                 _dbContext.SaveChanges();
             }
             catch (System.Exception ex)

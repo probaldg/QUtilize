@@ -25,5 +25,7 @@ namespace QBA.Qutilize.Models
         public string TimeElapsedHeading { get; set; }
         public string TimeElapsedValue { get; set; }
 
+        public string TotalTimeWorkedInProject { get; set; }
+        public TimeSpan PreviousElapsedTime { get; set; }
     }
 }
