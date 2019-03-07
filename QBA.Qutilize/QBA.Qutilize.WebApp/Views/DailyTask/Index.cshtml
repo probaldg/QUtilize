@@ -252,7 +252,7 @@ format: @<text>
                 var ID = $(this).prop('id');
                
                 $.post(
-                    '/DailyTask/DeleteDailyTask/',
+                    '@Url.Action("DeleteDailyTask", "DailyTask")',
                     { ID: ID },
                     function (item) {
                         tr.remove();
@@ -292,7 +292,7 @@ format: @<text>
                 return false;
             }
             $.post(
-                '/DailyTask/UpdateDailyTask/',
+                '@Url.Action("UpdateDailyTask", "DailyTask")',
                 { DailyTaskId: DailyTaskId, TaskDate: taskDate, TaskName: taskName, Description: Description, StartTime: startTime, EndTime: EndTime},
                 function (item) {
                    // alert(item.TaskDate);
