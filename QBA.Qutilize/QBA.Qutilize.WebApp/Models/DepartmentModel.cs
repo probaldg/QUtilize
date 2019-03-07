@@ -1,6 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,20 +11,25 @@ namespace QBA.Qutilize.WebApp.Models
 {
     public class DepartmentModel
     {
+        [Key]
         public int DepartmentID { get; set; }
-      
 
+        [Display(Name = "Department Code")]
         public string DepartmentCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
         public int DepartmentHeadId { get; set; }
+        [Display(Name = "Department Head Name")]
         public string DepartmentHeadName { get; set; }
 
         public int OrganisationID { get; set; }
+
+        [Display(Name = "Organisation Name")]
+
         public string OrganisationName { get; set; }
 
-        public int IsActive { get; set; }
+        public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedTS { get; set; }
         public DateTime EditedTS { get; set; }

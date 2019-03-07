@@ -80,10 +80,10 @@
         <h4>Department Details</h4>
         <hr />
         <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
-           
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.Department.DepartmentID)
-            
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Department.DepartmentID)
+
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Department.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -109,8 +109,24 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Department.OrganisationName, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname", selectedValue: "1"),"Select", new { @class = "form-control" })
-                   
+                    @*@Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), new { @class = "form-control", @disabled = "disabled" })*@
+
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.IsRoleSysAdmin)
+                            {
+                                @Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), "Please select", new { @class = "form-control" })
+
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), new { @class = "form-control", @disabled = "disabled" })
+
+                            }
+                        }
+
+                    }
                     @Html.ValidationMessageFor(model => model.Organisations, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -123,7 +139,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            @*<div class="form-group">
                 @Html.LabelFor(model => model.Department.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     <div class="checkbox">
@@ -131,7 +147,7 @@
                         @Html.ValidationMessageFor(model => model.Department.IsActive, "", new { @class = "text-danger" })
                     </div>
                 </div>
-            </div>
+            </div>*@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
@@ -142,7 +158,21 @@
     }
 
     <script type="text/javascript">
-        $("#tblGridListViewPost").dataTable();
+        $(document).ready(function () {
+            $("#tblGridListViewPost").dataTable();
+
+
+
+           
+        });
+
+
+        function checkUserForm() {
+            alert('test');
+           // return false;
+        }
+
+
     </script>
 </body>
 </html>

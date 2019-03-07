@@ -896,56 +896,39 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region Department managment region
         public ActionResult ManageDepartment(int id = 0)
         {
-            ManageDepartmentViewModel departmentVMModel = new ManageDepartmentViewModel();
-
-            if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+            ManageDepartmentViewModel departmentVMModel= null;
+            if(id> 0)
             {
-                departmentVMModel.UserID = Convert.ToInt32(Session["sessUser"]);
+
             }
-
-            DataTable dtOrganisation = departmentVMModel.GetAllOrganisation();
-            DataTable dtUserInfo = departmentVMModel.GetUserInfo(departmentVMModel.UserID);
-
-            //  departmentModel.IsRoleSysAdmin = departmentModel.IsUserSysAdmin(dtUserInfo);
-
-            ////  TODO get user info.....
-            if (dtOrganisation.Rows.Count > 0)
+            else
             {
-                foreach (DataRow item in dtOrganisation.Rows)
+                if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                 {
-                    OrganisationModel organisationModel = new OrganisationModel();
-                    organisationModel.id = Convert.ToInt32(item["id"]);
-                    organisationModel.orgname = item["orgname"].ToString();
-                    departmentVMModel.Organisations.Add(organisationModel);
+                    departmentVMModel = new ManageDepartmentViewModel(Convert.ToInt32(Session["sessUser"]));
                 }
+                else
+                    RedirectToAction("DashBoard", "Home");
             }
 
-
-            //  if (System.Web.HttpContext.Current.Session["sessUser"] != null)
-            //  {
-            //      departmentModel.UserID = Convert.ToInt32(Session["sessUser"]);
-            //  }
-
-            //  if (departmentModel.DepartmentID > 0)
-            //  {
-
-            //  }
             return View(departmentVMModel);
         }
+
+        [HttpPost]
+        public ActionResult ManageDepartment(ManageDepartmentViewModel model)
+        {
+           return RedirectToAction("ManageDepartment", "Admin");
+        }
+
         public ActionResult LoadDepartmentsData()
         {
             ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
-
             string strUserData = string.Empty;
-
             int i = 0;
-
-          
             DataTable dt = obj.Department.GetAllDepartments();
-
             foreach (DataRow dr in dt.Rows)
             {
-                
+
                 strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["NAME"].ToString() + "</td>" + "<td class='text-center'>" + dr["DESCRIPTION"].ToString() + "</td>" + "<td class='text-center'>" + dr["DepartmentHead"] + "</td>" + "<td class='text-center'>" + dr["OrganisationName"] + "</td>" +
                                      "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
