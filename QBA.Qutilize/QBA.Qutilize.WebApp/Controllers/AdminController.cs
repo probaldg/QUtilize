@@ -635,7 +635,10 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region Role module Mapping region
         public ActionResult RoleModuleMapping()
         {
-
+            if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
+            {
+                return RedirectToAction("DashBoard", "Home");
+            }
             return View();
         }
         public ActionResult LoadALLRoleToBeMappedWithModule()
