@@ -16,13 +16,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         DailyTask _dailyTaskView;
 
         DispatcherTimer checkMaxProjectTimeTimer = new DispatcherTimer();
+        DispatcherTimer TimeElapsedCalculateTimer = new DispatcherTimer();
 
         public DailyTaskViewModel(DailyTask dailyTask, User user)
         {
             _dailyTaskView = dailyTask;
 
-            checkMaxProjectTimeTimer.Interval = TimeSpan.FromMinutes(1);
-            checkMaxProjectTimeTimer.Tick += CheckMaxProjectTimeTimer_Tick;
+
 
             User = user;
             CreateHeader();
@@ -32,8 +32,66 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             InsertProjectStartTime();
 
             Logger.Log("DailyTaskViewModel", "Info", "Timer started.");
+
+            ConfigureTimersForApplication();
+
+        }
+
+        private void ConfigureTimersForApplication()
+        {
+            checkMaxProjectTimeTimer.Interval = TimeSpan.FromMinutes(1);
+            checkMaxProjectTimeTimer.Tick += CheckMaxProjectTimeTimer_Tick;
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
+
+            TimeElapsedCalculateTimer.Interval = TimeSpan.FromSeconds(10);
+            TimeElapsedCalculateTimer.Tick += TimeElapsedCalculateTimer_Tick;
+            TimeElapsedCalculateTimer.IsEnabled = true;
+            TimeElapsedCalculateTimer.Start();
+        }
+
+        private void TimeElapsedCalculateTimer_Tick(object sender, EventArgs e)
+        {
+            StopProjectTimeElapseShowTimer();
+
+            DisplayTimeElapsed();
+
+            RefreshUI();
+            StartProjectTimeElapseShowTimer();
+        }
+
+        private void StartProjectTimeElapseShowTimer()
+        {
+            TimeElapsedCalculateTimer.IsEnabled = true;
+            TimeElapsedCalculateTimer.Start();
+        }
+
+        private void StopProjectTimeElapseShowTimer()
+        {
+            TimeElapsedCalculateTimer.IsEnabled = false;
+            TimeElapsedCalculateTimer.Stop();
+        }
+
+        private void DisplayTimeElapsed()
+        {
+            if (CurrentWorkingProject != null)
+            {
+                TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+                Project currProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.IsCurrentProject == true);
+                currProject.TimeElapsedHeading = "Time elapsed";
+                currProject.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
+
+                if (currProject != null && currProject.PreviousElapsedTime != null)
+                {
+                    currProject.TimeElapsedValue = currProject.PreviousElapsedTime.Add(diffrenceInTime).ToString(@"hh\:mm\:ss");
+                    currProject.PreviousElapsedTime =TimeSpan.Zero;
+                }
+                else
+                {
+                    currProject.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
+                    currProject.PreviousElapsedTime = diffrenceInTime;
+                }
+            }
         }
 
         private void CheckMaxProjectTimeTimer_Tick(object sender, EventArgs e)
@@ -41,7 +99,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             if (checkMaxProjectTimeTimer.IsEnabled)
             {
-                StopTimer();
+                StopProjectMaxTimeCheckingTimer();
                 try
                 {
                     if (CurrentWorkingProject != null)
@@ -53,7 +111,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                             MessageBox.Show(Application.Current.MainWindow, "Time consumtion for this project is more than maximum time.", "Project Time excced", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
                         }
                     }
-                    StartTimer();
+                    StartProjectMaxTimeCheckingTimer();
                 }
                 catch (Exception)
                 {
@@ -64,13 +122,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        private void StartTimer()
+        private void StartProjectMaxTimeCheckingTimer()
         {
             checkMaxProjectTimeTimer.IsEnabled = true;
             checkMaxProjectTimeTimer.Start();
         }
 
-        private void StopTimer()
+        private void StopProjectMaxTimeCheckingTimer()
         {
             checkMaxProjectTimeTimer.IsEnabled = false;
             checkMaxProjectTimeTimer.Stop();
@@ -189,8 +247,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             try
             {
-
-
                 if (CurrentWorkingProject != null)
                 {
                     DailyTaskModel dtm = new DailyTaskModel
@@ -211,7 +267,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     CurrentWorkingProject = null;
                     User = null;
                     ProjectListViewViewModel.SelectedProject = null;
-                    StopTimer();
+                    StopProjectMaxTimeCheckingTimer();
+                    StopProjectTimeElapseShowTimer();
 
                     Login loginView = new Login();
                     Application.Current.MainWindow = loginView;
@@ -219,8 +276,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     loginView.Show();
                     loginView.Activate();
                     _dailyTaskView.Close();
-
-
                 }
             }
             catch (Exception ex)
@@ -245,11 +300,19 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 }
                 else
                 {
-                    ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = false;
+                    //ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = false;
+                    var currProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+                    // Save current time elapsed of the project.
+                    
+                    currProj.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
 
+                    currProj.IsCurrentProject = false;
+                   
                     ////Making the selecedindex to the selected project...
                     ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList()
                         .FindIndex(x => x.ProjectID == Convert.ToInt32(ProjectID));
+
+                   
 
                     RefreshUI();
                     UpdateCurrentTask();
@@ -334,14 +397,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                 if (defaultProj != null)
                 {
+
                     CurrentWorkingProject = new CurrentWorkingProject
                     {
                         ProjectID = defaultProj.ProjectID,
                         ProjectName = defaultProj.ProjectName,
                         StrartDateTime = DateTime.Now,
                         IsCurrentProject = true,
-                        MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours
+                        MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours,
+
                     };
+                    ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Idle Time".ToLower()).TimeElapsedHeading = "Time elapsed";
+                    ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Idle Time".ToLower()).TimeElapsedValue = (DateTime.Now - CurrentWorkingProject.StrartDateTime).ToString(@"hh\:mm\:ss");
                 }
 
                 if (ProjectListViewViewModel.Projects != null)

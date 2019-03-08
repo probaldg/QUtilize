@@ -1,0 +1,175 @@
+﻿@model QBA.Qutilize.WebApp.Models.ManageDepartmentViewModel
+
+@{
+    ViewBag.Title = "Manage Department";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Manage Department</title>
+
+</head>
+<body>
+    @{
+        var strMSGforSave = string.Empty;
+        string strStyle = string.Empty;
+
+        var strMsgforErr = string.Empty;
+        var strmsgStyle = string.Empty;
+
+        var errSts = TempData["ErrMsg"];
+
+        var ErrStatus = TempData["ErrStatus"];
+        if (ErrStatus != null)
+        {
+            strMSGforSave = ErrStatus.ToString();
+        }
+        if (strMSGforSave != "")
+        {
+            strStyle = "display:block";
+        }
+        else
+        {
+            strStyle = "display:none";
+        }
+
+    }
+
+    <div class="form-horizontal col-md-12">
+        <div class="alert alert-warning alert-dismissible" role="alert" style="@strStyle">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            Data Saved Successfully!!!
+        </div>
+    </div>
+    <h4>Manage User</h4>
+    <br />
+
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
+            <thead id="tblHeadListViewPost">
+                <tr>
+                    <th class="text-center">ID</th>
+                    @*<th class="text-center">DepartmentCode</th>*@
+                    <th class="text-center">Department Name</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Department Head</th>
+                    <th class="text-center">Organisation</th>
+                    <th class="text-center">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @Html.Action("LoadDepartmentsData", "Admin")
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12"><br /></div>
+    <div class="form-horizontal col-md-12">
+        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+            <span id="errormsg"></span>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("ManageDepartment", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
+    {
+
+        @Html.AntiForgeryToken()
+        <h4>Department Details</h4>
+        <hr />
+        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Department.DepartmentID)
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Department.Name, new { htmlAttributes = new { @class = "form-control",@Id="DepartmentName" } })
+                    @Html.ValidationMessageFor(model => model.Department.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.DepartmentCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Department.DepartmentCode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Department.DepartmentCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Department.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Department.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.OrganisationName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @*@Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), new { @class = "form-control", @disabled = "disabled" })*@
+
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.IsRoleSysAdmin)
+                            {
+                                @Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), "Please select", new { @class = "form-control" })
+
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(M => M.Organisations, new SelectList(Model.Organisations, "id", "orgname"), new { @class = "form-control", @disabled = "disabled" })
+
+                            }
+                        }
+
+                    }
+                    @Html.ValidationMessageFor(model => model.Organisations, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.DepartmentHeadName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(M => M.Users, new SelectList(Model.Users, "ID", "Name"), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Department.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Department.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Department.IsActive)
+                        @Html.ValidationMessageFor(model => model.Department.IsActive, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tblGridListViewPost").dataTable();
+        });
+
+
+        function checkUserForm() {
+            //var departMentName =$('#')
+            return false;
+        }
+
+
+    </script>
+</body>
+</html>
+

@@ -10,13 +10,13 @@ namespace QBA.Qutilize.Models
     {
         //public Project Project { get; set; }
         public int? ProjectID { get; set; }
-
         public string ProjectName { get; set; }
         public int DailyTaskId { get; set; }
         public DateTime StrartDateTime { get; set; }
         public int EndDateTime { get; set; }
         public bool IsCurrentProject { get; set; }
         public int MaxProjectTimeInHours { get; set; }
-
+        public string TimeElapsedHeading { get; set; }
+        public string TimeElapsedValue { get; set; }
     }
 }

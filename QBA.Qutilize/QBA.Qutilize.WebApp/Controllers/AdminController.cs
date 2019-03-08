@@ -758,7 +758,8 @@ namespace QBA.Qutilize.WebApp.Controllers
             OrganisationModel org = new OrganisationModel();
             try
             {
-                if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri)) {
+                if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
+                {
                     return RedirectToAction("DashBoard", "Home");
                 }
                 if (id > 0)
@@ -891,5 +892,50 @@ namespace QBA.Qutilize.WebApp.Controllers
             return clearText;
         }
         #endregion
+
+        #region Department managment region
+        public ActionResult ManageDepartment(int id = 0)
+        {
+            ManageDepartmentViewModel departmentVMModel= null;
+            if(id> 0)
+            {
+
+            }
+            else
+            {
+                if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+                {
+                    departmentVMModel = new ManageDepartmentViewModel(Convert.ToInt32(Session["sessUser"]));
+                }
+                else
+                    RedirectToAction("DashBoard", "Home");
+            }
+
+            return View(departmentVMModel);
+        }
+
+        [HttpPost]
+        public ActionResult ManageDepartment(ManageDepartmentViewModel model)
+        {
+           return RedirectToAction("ManageDepartment", "Admin");
+        }
+
+        public ActionResult LoadDepartmentsData()
+        {
+            ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
+            string strUserData = string.Empty;
+            int i = 0;
+            DataTable dt = obj.Department.GetAllDepartments();
+            foreach (DataRow dr in dt.Rows)
+            {
+
+                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["NAME"].ToString() + "</td>" + "<td class='text-center'>" + dr["DESCRIPTION"].ToString() + "</td>" + "<td class='text-center'>" + dr["DepartmentHead"] + "</td>" + "<td class='text-center'>" + dr["OrganisationName"] + "</td>" +
+                                     "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                i++;
+            }
+            return Content(strUserData);
+        }
+        #endregion
+
     }
 }

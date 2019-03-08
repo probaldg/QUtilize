@@ -28,7 +28,7 @@
                         <ControlTemplate>
                            
                             <TextBlock 
-                                       FontSize="14"
+                                       FontSize="13"
                                        FontWeight="Normal"
                                        Foreground="White"
                                        Text=" Yes" />
