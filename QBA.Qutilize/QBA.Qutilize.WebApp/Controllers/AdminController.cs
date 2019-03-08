@@ -896,6 +896,87 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
+        #region Module
+        public ActionResult ManageModule(int id = 0)
+        {
+            ModuleModel mm = new ModuleModel();
+            try
+            {
+                if (id > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = mm.GetModuleByID(id);
+                    mm.Name = dt.Rows[0]["Name"].ToString();
+                    mm.URL = dt.Rows[0]["URL"].ToString();
+                    if (dt.Rows[0]["ParentID"].ToString() != "")
+                    {
+                        mm.ParentID = int.Parse(dt.Rows[0]["ParentID"].ToString());
+                    }
+                    else
+                    {
+                        mm.ParentID = 0;
+                    }                    
+                    mm.Description = dt.Rows[0]["Description"].ToString();
+                    mm.DisplayCSS = dt.Rows[0]["DisplayCSS"].ToString();
+                    mm.DisplayIcon = dt.Rows[0]["DisplayIcon"].ToString();
+                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();    
+                    mm.Rank= int.Parse(dt.Rows[0]["Rank"].ToString());
+                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);                   
+                }
+                else
+                {
+                    mm.Name = "";
+                    mm.URL = "";
+                    mm.ParentID= 0;
+                    mm.Description = "";
+                    mm.DisplayName = "";
+                    mm.DisplayCSS = "";
+                    mm.DisplayIcon = "";
+                    
+                }
+            }
+            catch (Exception exx)
+            {
+                
+            }
+
+            return View(mm);
+        }
+
+        public ActionResult Modules()
+        {
+            ModuleModel mm = new ModuleModel();
+            string strOrganisation = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                int i = 0;
+                dt = mm.GetAllModules();
+
+                Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+                string pathQuery = myuri.PathAndQuery;
+                string hostName = myuri.ToString().Replace(pathQuery, "");
+
+                List<OrganisationModel> viewModelList = new List<OrganisationModel>();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>"+"<td class='text-center'><i class='"+ dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                       "<td  class='text-center'><a href = 'ManageModule?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
+                    i++;
+                }
+            }
+            catch (Exception exc) {
+               throw exc;
+            }
+            return Content(strOrganisation);
+
+        }
+
+
+
+        #endregion
+
         #region Department managment region
         public ActionResult ManageDepartment(int id = 0)
         {
