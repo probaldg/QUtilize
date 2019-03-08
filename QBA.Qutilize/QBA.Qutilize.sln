@@ -5,15 +5,15 @@ VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.ClientApp", "QBA.Qutilize.ClientApp\QBA.Qutilize.ClientApp.csproj", "{A974FA3B-6BEF-468E-B777-F475FFC65CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.WebApp", "QBA.Qutilize.WebApp\QBA.Qutilize.WebApp.csproj", "{F688B911-60DA-40A1-8C9E-38416243C2AD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.WebAPI", "QBA.Qutilize.WebAPI\QBA.Qutilize.WebAPI.csproj", "{A284B0A1-E5F0-42D0-9069-7F10AD83AE7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.Models", "QBA.Qutilize.Models\QBA.Qutilize.Models.csproj", "{C96475A4-FB6C-4300-8B9D-D8E0BC5CD4FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.DataAccess", "QBA.Qutilize.DataAccess\QBA.Qutilize.DataAccess.csproj", "{1A438824-E383-484E-BA6B-F656C084A059}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QUtilizeSetup", "QUtilizeSetup\QUtilizeSetup.vdproj", "{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBA.Qutilize.WebApp", "QBA.Qutilize.WebApp\QBA.Qutilize.WebApp.csproj", "{86606F98-677A-48CE-B006-604D319182E7}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "QUtilizeSetup", "QUtilizeSetup\QUtilizeSetup.vdproj", "{E9643DEF-B4AB-467C-99A7-70E5118FD38E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,6 @@ Global
 		{A974FA3B-6BEF-468E-B777-F475FFC65CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A974FA3B-6BEF-468E-B777-F475FFC65CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A974FA3B-6BEF-468E-B777-F475FFC65CE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F688B911-60DA-40A1-8C9E-38416243C2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F688B911-60DA-40A1-8C9E-38416243C2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F688B911-60DA-40A1-8C9E-38416243C2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F688B911-60DA-40A1-8C9E-38416243C2AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A284B0A1-E5F0-42D0-9069-7F10AD83AE7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A284B0A1-E5F0-42D0-9069-7F10AD83AE7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A284B0A1-E5F0-42D0-9069-7F10AD83AE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,8 +37,12 @@ Global
 		{1A438824-E383-484E-BA6B-F656C084A059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A438824-E383-484E-BA6B-F656C084A059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A438824-E383-484E-BA6B-F656C084A059}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}.Debug|Any CPU.ActiveCfg = Debug
-		{F93B1908-865C-4F9B-8AA4-9D24705F4E4B}.Release|Any CPU.ActiveCfg = Release
+		{86606F98-677A-48CE-B006-604D319182E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86606F98-677A-48CE-B006-604D319182E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86606F98-677A-48CE-B006-604D319182E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86606F98-677A-48CE-B006-604D319182E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9643DEF-B4AB-467C-99A7-70E5118FD38E}.Debug|Any CPU.ActiveCfg = Debug
+		{E9643DEF-B4AB-467C-99A7-70E5118FD38E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

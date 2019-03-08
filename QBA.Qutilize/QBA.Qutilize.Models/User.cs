@@ -18,8 +18,6 @@ namespace QBA.Qutilize.Models
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public string Password { get; set; }
-
-        public string EmailId { get; set; }
         public ICollection<Roles> Roles { get; set; }
         public ICollection<Project> Projects { get; set; }
         public string CreatedBy { get; set; }

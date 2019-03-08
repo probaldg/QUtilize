@@ -169,9 +169,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\EncryptionHelper.cs" />
-
     <Compile Include="Helper\ImageCompress.cs" />
-
     <Compile Include="Helper\ModuleMappingHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
@@ -237,6 +235,7 @@
     <Content Include="Images\logo.png" />
     <Content Include="Images\LogOut.PNG" />
     <Content Include="Images\marker.png" />
+    <Content Include="Images\organisation_logo\QBA_logo_logo.png" />
     <Content Include="Images\Qutilize.png" />
     <Content Include="Images\Qutilize_Old.png" />
     <Content Include="Images\Qutilize_SM.jpg" />
