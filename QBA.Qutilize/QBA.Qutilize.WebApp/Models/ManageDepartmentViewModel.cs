@@ -50,34 +50,40 @@ namespace QBA.Qutilize.WebApp.Models
                 if (dt.Rows.Count > 0)
                 {
                     int rowCounter = 0;
-                    UserOrganisationID = Convert.ToInt32(dt.Rows[0]["OrganisationID"]);
+
                     foreach (DataRow item in dt.Rows)
                     {
                         UserRoleIDs = new int[dt.Rows.Count];
-                        UserDepartmentIDs = new int[dt.Rows.Count];
-
                         UserRoleIDs[rowCounter] = Convert.ToInt32(item["RoleId"]);
-                        UserDepartmentIDs[rowCounter] = Convert.ToInt32(item["DepartmentId"]);
                         rowCounter++;
                     }
                     IsRoleSysAdmin = CheckUserIsSysAdmin(UserRoleIDs);
                 }
 
-                DataTable dtOrganisation = GetOrganisation();
-
                 if (!IsRoleSysAdmin)
                 {
-                    if (dtOrganisation != null && dt.Rows.Count > 0)
+                    // if user is not a sys admin, it will hava a organisation
+                    UserOrganisationID = Convert.ToInt32(dt.Rows[0]["OrganisationID"]);
+
+                    Organisations.Add(new OrganisationModel { id = Convert.ToInt32(dt.Rows[0]["OrganisationID"]), orgname = dt.Rows[0]["OrganisationName"].ToString() });
+
+                    UserDepartmentIDs = new int[dt.Rows.Count];
+                    int rowCounter = 0;
+                    foreach (DataRow item in dt.Rows)
                     {
-                        DataRow[] dataRow = dtOrganisation.Select("id=" + UserOrganisationID);
-                        if (dataRow.Length > 0)
-                        {
-                            Organisations.Add(new OrganisationModel { id = Convert.ToInt32(dataRow[0]["id"]), orgname = dataRow[0]["orgname"].ToString() });
-                        }
+                        UserDepartmentIDs[rowCounter] = Convert.ToInt32(item["DepartmentId"]);
+                        rowCounter++;
+                    }
+
+                    DataTable dtUsers = GetUsersByOrganisation(UserOrganisationID);
+                    foreach (DataRow item in dtUsers.Rows)
+                    {
+                        Users.Add(new UserModel { ID = Convert.ToInt32(item["Id"]), Name = item["Name"].ToString() });
                     }
                 }
                 else
                 {
+                    DataTable dtOrganisation = GetOrganisation();
                     if (dtOrganisation != null && dt.Rows.Count > 0)
                     {
                         foreach (DataRow item in dtOrganisation.Rows)
@@ -153,6 +159,26 @@ namespace QBA.Qutilize.WebApp.Models
             }
 
             return result;
+        }
+
+        public static DataTable GetUsersByOrganisation(int orgId)
+        {
+            DataTable dt = null;
+            SqlHelper objSQLHelper = new SqlHelper();
+            try
+            {
+                SqlParameter[] param = {
+
+                    new SqlParameter("@OrgID",orgId)
+
+                };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetByOrganisationID]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
         }
     }
 }

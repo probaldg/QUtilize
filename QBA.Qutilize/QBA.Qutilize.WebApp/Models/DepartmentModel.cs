@@ -34,9 +34,10 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime CreatedTS { get; set; }
         public DateTime EditedTS { get; set; }
         public int EditedBy { get; set; }
-      
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
 
-       
+
 
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
@@ -55,7 +56,7 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
-       
+
         public DataTable GetDepartmentByID(int id)
         {
             DataTable dt = null;
@@ -84,7 +85,18 @@ namespace QBA.Qutilize.WebApp.Models
             {
                 SqlParameter Status = new SqlParameter("@Identity", SqlDbType.Int);
                 Status.Direction = ParameterDirection.Output;
-                SqlParameter[] param ={Status,
+
+                SqlParameter DeptHead = new SqlParameter("@DeptHeadID", SqlDbType.Int);
+                DeptHead.Direction = ParameterDirection.Input;
+                if (model.DepartmentHeadId != 0)
+                {
+                    DeptHead.Value = model.DepartmentHeadId;
+                }
+                else
+                {
+                    DeptHead.Value = null;
+                }
+                SqlParameter[] param ={Status,DeptHead,
                     new SqlParameter("@Code",model.DepartmentCode),
                     new SqlParameter("@Name",model.Name),
                     new SqlParameter("@Description", model.Description),
@@ -100,17 +112,16 @@ namespace QBA.Qutilize.WebApp.Models
                 {
                     id = Convert.ToInt32(Status.Value);
                     model.DepartmentID = id;
-                    //model.ISErr = false;
-
-                    //model.ErrString = "Data Saved Successfully!!!";
+                    model.ISErr = false;
+                    model.ErrString = "Data Saved Successfully!!!";
                     result = true;
                 }
                 else
                 {
                     id = 0;
                     result = false;
-                    //model.ISErr = true;
-                    //model.ErrString = "Error Occured!!!";
+                    model.ISErr = true;
+                    model.ErrString = "Error Occured!!!";
                 }
             }
             catch (Exception ex)
@@ -174,6 +185,6 @@ namespace QBA.Qutilize.WebApp.Models
             return result;
         }
 
-       
+
     }
 }
