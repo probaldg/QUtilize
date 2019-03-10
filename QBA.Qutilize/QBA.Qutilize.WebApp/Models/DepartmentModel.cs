@@ -43,12 +43,21 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetAllDepartments()
+        public DataTable GetAllDepartments(int orgId = 0)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDepartment_Get]");
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDepartment_Get]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDepartment_Get]");
             }
             catch (Exception ex)
             {
