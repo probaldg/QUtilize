@@ -149,7 +149,7 @@
                         {
                             @Html.LabelFor(model => model.Department.DepartmentHeadName, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.DropDownListFor(M => M.Users, new SelectList(Model.Users, "ID", "Name"), new { @class = "form-control" })
+                                @Html.DropDownListFor(M => M.Users, new SelectList(Model.Users, "ID", "Name"), "Please select", new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.Users, "", new { @class = "text-danger" })
                                 @Html.HiddenFor(model => model.Department.DepartmentHeadId)
                             </div>
@@ -180,6 +180,20 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $("#tblGridListViewPost").dataTable();
+
+            var orgId = $('#Department_OrganisationID').val();
+            var DeptHeadId = $('#Department_DepartmentHeadId').val();
+
+
+           // DepartmentHeadId
+            if (orgId > 0) {
+                
+                $('#Organisations').val(orgId);
+            }
+
+            if (DeptHeadId > 0) {
+                $('#Users').val(DeptHeadId)
+            }
         });
 
         $("#Organisations").change(function () {

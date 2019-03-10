@@ -91,6 +91,15 @@ namespace QBA.Qutilize.WebApp.Models
                             Organisations.Add(new OrganisationModel { id = Convert.ToInt32(item["id"]), orgname = item["orgname"].ToString() });
                         }
                     }
+
+
+                    //if (UserOrganisationID > 0)
+                    //{
+                    //    DataTable dtUsers = GetUsersByOrganisation(UserOrganisationID);
+                    //    foreach (DataRow item in dtUsers.Rows)
+                        
+                    //}
+
                 }
             }
             catch (Exception)

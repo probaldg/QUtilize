@@ -43,7 +43,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    um.Update_UserDetails(obj);
+                   // um.Update_UserDetails(obj);
                     TempData["ErrStatus"] = obj.ISErr.ToString();
                 }
                 catch
@@ -228,8 +228,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    obj.Update_ProjectDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    //obj.Update_ProjectDetails(obj);
+                    //TempData["ErrStatus"] = obj.ISErr.ToString();
                 }
                 catch
                 {
@@ -455,8 +455,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    obj.Update_RoleDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    
                 }
                 catch
                 {
@@ -996,12 +995,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     departmentVMModel.Department.Description = dt.Rows[0]["DESCRIPTION"].ToString();
                 }
-                if ( dt.Rows[0]["DeptHeadID"] != System.DBNull.Value)
+                if (dt.Rows[0]["DeptHeadID"] != System.DBNull.Value)
                 {
                     departmentVMModel.Department.DepartmentHeadId = Convert.ToInt32(dt.Rows[0]["DeptHeadID"]);
                 }
-               
+
                 departmentVMModel.Department.OrganisationID = Convert.ToInt32(dt.Rows[0]["ORGID"]);
+                if (departmentVMModel.Department.OrganisationID > 0)
+                {
+                    DataTable dtUsers = ManageDepartmentViewModel.GetUsersByOrganisation(departmentVMModel.Department.OrganisationID);
+
+                    if(dtUsers.Rows.Count>0)
+                    {
+                        foreach (DataRow item in dtUsers.Rows)
+                        {
+                            departmentVMModel.Users.Add(new UserModel { ID = Convert.ToInt32(item["Id"]), Name = item["Name"].ToString() });
+                        }
+                    }
+                   
+                }
+
                 departmentVMModel.Department.IsActive = Convert.ToBoolean(dt.Rows[0]["isACTIVE"].ToString());
                 departmentVMModel.Department.EditedBy = Convert.ToInt32(Session["sessUser"]);
                 departmentVMModel.Department.EditedTS = DateTime.Now;
@@ -1061,10 +1074,21 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult LoadDepartmentsData()
         {
-            ManageDepartmentViewModel obj = new ManageDepartmentViewModel(Convert.ToInt32( System.Web.HttpContext.Current.Session["sessUser"]));
+            ManageDepartmentViewModel obj = new ManageDepartmentViewModel(Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]));
             string strUserData = string.Empty;
             int i = 0;
-            DataTable dt = obj.Department.GetAllDepartments();
+            DataTable dt = new DataTable();
+            if (obj.IsRoleSysAdmin == true)
+            {
+               dt = obj.Department.GetAllDepartments();
+
+            }
+            else
+            {
+               dt = obj.Department.GetAllDepartments(obj.UserOrganisationID);
+
+            }
+
             foreach (DataRow dr in dt.Rows)
             {
 
@@ -1082,10 +1106,10 @@ namespace QBA.Qutilize.WebApp.Controllers
             DataTable dt = ManageDepartmentViewModel.GetUsersByOrganisation(orgId);
 
             string strUserData = string.Empty;
-            strUserData+="<option value = 0>Please select</option>";
+            strUserData += "<option value = 0>Please select</option>";
             foreach (DataRow item in dt.Rows)
             {
-                strUserData += "<option value=" +Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
+                strUserData += "<option value=" + Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
             }
             return Json(strUserData);
         }
