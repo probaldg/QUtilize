@@ -10,22 +10,14 @@
 namespace QBA.Qutilize.DataAccess.DAL
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class DailyTask
+    public partial class USPRoles_Get_Result
     {
-        public int DailyTaskId { get; set; }
-        public int UserID { get; set; }
-        public int ProjectID { get; set; }
-        public System.DateTime StartDateTime { get; set; }
-        public Nullable<System.DateTime> EndDateTime { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreateDate { get; set; }
-        public string EditedBy { get; set; }
-        public Nullable<System.DateTime> EditedDate { get; set; }
         public bool IsActive { get; set; }
-        public string TaskName { get; set; }
-        public string Description { get; set; }
-        public Nullable<System.DateTime> TaskDate { get; set; }
     }
 }

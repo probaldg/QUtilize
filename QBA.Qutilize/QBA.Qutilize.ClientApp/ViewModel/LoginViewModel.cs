@@ -61,6 +61,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                                                                                        UserName = UserID,
                                                                                                        Password = UserPassword,
                                                                                                        IsActive = true
+                                                                                                       
                                                                                                    });
 
                     Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
