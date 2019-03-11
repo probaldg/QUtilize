@@ -775,7 +775,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
                     org.logo = dt.Rows[0]["logo"].ToString();
                     org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
-                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     org.createdTS = DateTime.Now;
                 }
                 else
@@ -839,7 +839,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.editedTS = DateTime.Now;
-                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.updateOrganisation(orgModel);
                 }
                 else
@@ -860,7 +860,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.createdTS = DateTime.Now;
-                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.insert_OrganisationData(orgModel, out i);
                     //ViewData["ErrStatus"] = orgModel.ISErr.ToString();
                     //ModelState.AddModelError("MSG", orgModel.ErrString);
