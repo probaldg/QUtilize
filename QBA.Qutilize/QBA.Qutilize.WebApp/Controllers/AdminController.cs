@@ -1,4 +1,5 @@
-﻿using QBA.Qutilize.WebApp.Helper;
+﻿using Newtonsoft.Json;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    um.Update_UserDetails(obj);
+                   // um.Update_UserDetails(obj);
                     TempData["ErrStatus"] = obj.ISErr.ToString();
                 }
                 catch
@@ -227,8 +228,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    obj.Update_ProjectDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    //obj.Update_ProjectDetails(obj);
+                    //TempData["ErrStatus"] = obj.ISErr.ToString();
                 }
                 catch
                 {
@@ -454,8 +455,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    obj.Update_RoleDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    
                 }
                 catch
                 {
@@ -775,7 +775,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
                     org.logo = dt.Rows[0]["logo"].ToString();
                     org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
-                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     org.createdTS = DateTime.Now;
                 }
                 else
@@ -839,7 +839,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.editedTS = DateTime.Now;
-                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.updateOrganisation(orgModel);
                 }
                 else
@@ -860,7 +860,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.createdTS = DateTime.Now;
-                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.insert_OrganisationData(orgModel, out i);
                     //ViewData["ErrStatus"] = orgModel.ISErr.ToString();
                     //ModelState.AddModelError("MSG", orgModel.ErrString);
@@ -1040,9 +1040,44 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region Department managment region
         public ActionResult ManageDepartment(int id = 0)
         {
-            ManageDepartmentViewModel departmentVMModel= null;
-            if(id> 0)
+            ManageDepartmentViewModel departmentVMModel = null;
+            DepartmentModel departmentModel = new DepartmentModel();
+            if (id > 0)
             {
+                departmentVMModel = new ManageDepartmentViewModel(Convert.ToInt32(Session["sessUser"]));
+                DataTable dt = new DataTable();
+                dt = departmentModel.GetDepartmentByID(id);
+
+                departmentVMModel.Department.DepartmentID = Convert.ToInt32(dt.Rows[0]["ID"]);
+                departmentVMModel.Department.DepartmentCode = dt.Rows[0]["CODE"].ToString();
+                departmentVMModel.Department.Name = dt.Rows[0]["Name"].ToString();
+                if (dt.Rows[0]["DESCRIPTION"] != System.DBNull.Value)
+                {
+                    departmentVMModel.Department.Description = dt.Rows[0]["DESCRIPTION"].ToString();
+                }
+                if (dt.Rows[0]["DeptHeadID"] != System.DBNull.Value)
+                {
+                    departmentVMModel.Department.DepartmentHeadId = Convert.ToInt32(dt.Rows[0]["DeptHeadID"]);
+                }
+
+                departmentVMModel.Department.OrganisationID = Convert.ToInt32(dt.Rows[0]["ORGID"]);
+                if (departmentVMModel.Department.OrganisationID > 0)
+                {
+                    DataTable dtUsers = ManageDepartmentViewModel.GetUsersByOrganisation(departmentVMModel.Department.OrganisationID);
+
+                    if(dtUsers.Rows.Count>0)
+                    {
+                        foreach (DataRow item in dtUsers.Rows)
+                        {
+                            departmentVMModel.Users.Add(new UserModel { ID = Convert.ToInt32(item["Id"]), Name = item["Name"].ToString() });
+                        }
+                    }
+                   
+                }
+
+                departmentVMModel.Department.IsActive = Convert.ToBoolean(dt.Rows[0]["isACTIVE"].ToString());
+                departmentVMModel.Department.EditedBy = Convert.ToInt32(Session["sessUser"]);
+                departmentVMModel.Department.EditedTS = DateTime.Now;
 
             }
             else
@@ -1061,15 +1096,59 @@ namespace QBA.Qutilize.WebApp.Controllers
         [HttpPost]
         public ActionResult ManageDepartment(ManageDepartmentViewModel model)
         {
-           return RedirectToAction("ManageDepartment", "Admin");
+            DepartmentModel dm = new DepartmentModel();
+            try
+            {
+                if (model.Department.DepartmentID > 0)
+                {
+
+                    model.Department.EditedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                    model.Department.EditedTS = DateTime.Now;
+                    dm.UpdateDepartmentDetails(model.Department);
+
+                    TempData["ErrStatus"] = model.ISErr.ToString();
+                }
+                else
+                {
+                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+                    {
+                        model.Department.CreatedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                    }
+                    model.Department.CreatedTS = DateTime.Now;
+                    dm.InsertDepartmentdata(model.Department, out int id);
+
+                    if (id > 0)
+                    {
+
+                    }
+                    TempData["ErrStatus"] = model.Department.ISErr.ToString();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return RedirectToAction("ManageDepartment", "Admin");
         }
 
         public ActionResult LoadDepartmentsData()
         {
-            ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
+            ManageDepartmentViewModel obj = new ManageDepartmentViewModel(Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]));
             string strUserData = string.Empty;
             int i = 0;
-            DataTable dt = obj.Department.GetAllDepartments();
+            DataTable dt = new DataTable();
+            if (obj.IsRoleSysAdmin == true)
+            {
+               dt = obj.Department.GetAllDepartments();
+
+            }
+            else
+            {
+               dt = obj.Department.GetAllDepartments(obj.UserOrganisationID);
+
+            }
+
             foreach (DataRow dr in dt.Rows)
             {
 
@@ -1078,6 +1157,21 @@ namespace QBA.Qutilize.WebApp.Controllers
                 i++;
             }
             return Content(strUserData);
+        }
+
+        public ActionResult GetUserByOrgId(int orgId)
+        {
+            ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
+
+            DataTable dt = ManageDepartmentViewModel.GetUsersByOrganisation(orgId);
+
+            string strUserData = string.Empty;
+            strUserData += "<option value = 0>Please select</option>";
+            foreach (DataRow item in dt.Rows)
+            {
+                strUserData += "<option value=" + Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
+            }
+            return Json(strUserData);
         }
         #endregion
 

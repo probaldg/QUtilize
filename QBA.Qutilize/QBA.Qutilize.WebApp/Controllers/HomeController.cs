@@ -48,6 +48,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
                     return RedirectToAction("DashBoard", new { U = EncryptionHelper.Encryptdata(model.UserID), P = EncryptionHelper.Encryptdata(model.Password) });
                 }
+                else
+                {
+                    ViewData["ErrStatus"] = "N";
+                    ModelState.AddModelError("CustomError", "Invalid login attempt.");
+                }
             }
             catch (Exception ex)
             {

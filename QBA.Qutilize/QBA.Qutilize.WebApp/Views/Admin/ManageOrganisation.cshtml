@@ -168,7 +168,9 @@
 
 }
 <script type="text/javascript">
-    $("#tblGridListViewPost").dataTable();
+    $("#tblGridListViewPost").dataTable({
+        stateSave: true
+    });
     var clipboard = new Clipboard('.btn');
 
     clipboard.on('success', function (e) {
