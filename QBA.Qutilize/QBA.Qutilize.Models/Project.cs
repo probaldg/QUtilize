@@ -27,5 +27,7 @@ namespace QBA.Qutilize.Models
 
         public string TotalTimeWorkedInProject { get; set; }
         public TimeSpan PreviousElapsedTime { get; set; }
+        public int? DifferenceInSecondsInCurrentDate { get; set; }
+
     }
 }

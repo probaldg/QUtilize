@@ -18,5 +18,6 @@ namespace QBA.Qutilize.Models
         public int? MaxProjectTimeInHours { get; set; }
         public string TimeElapsedHeading { get; set; }
         public string TimeElapsedValue { get; set; }
+        public int? DifferenceInSecondsInCurrentDate { get; set; }
     }
 }
