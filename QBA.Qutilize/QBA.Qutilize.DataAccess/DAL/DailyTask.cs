@@ -24,8 +24,5 @@ namespace QBA.Qutilize.DataAccess.DAL
         public string EditedBy { get; set; }
         public Nullable<System.DateTime> EditedDate { get; set; }
         public bool IsActive { get; set; }
-        public string TaskName { get; set; }
-        public string Description { get; set; }
-        public Nullable<System.DateTime> TaskDate { get; set; }
     }
 }

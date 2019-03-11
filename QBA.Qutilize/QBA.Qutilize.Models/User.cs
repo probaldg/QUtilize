@@ -24,6 +24,5 @@ namespace QBA.Qutilize.Models
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
         public DateTime EditedDate { get; set; }
-
     }
 }

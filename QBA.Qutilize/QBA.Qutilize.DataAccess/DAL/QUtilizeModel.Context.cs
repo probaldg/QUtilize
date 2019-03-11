@@ -108,14 +108,5 @@ namespace QBA.Qutilize.DataAccess.DAL
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTask_Get", dailyTaskIDParameter);
         }
-    
-        public virtual ObjectResult<USPRoles_Get_Result> USPRoles_Get(Nullable<int> id)
-        {
-            var idParameter = id.HasValue ?
-                new ObjectParameter("Id", id) :
-                new ObjectParameter("Id", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<USPRoles_Get_Result>("USPRoles_Get", idParameter);
-        }
     }
 }
