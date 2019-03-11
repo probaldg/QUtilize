@@ -902,12 +902,31 @@ namespace QBA.Qutilize.WebApp.Controllers
             ModuleModel mm = new ModuleModel();
             try
             {
+
+                DataTable dts = new DataTable();
+                dts = mm.GetAllModules();
+
+                List<ModuleModel> objModule = new List<ModuleModel>();
+                int o = dts.Rows.Count;
+                objModule.Add(new ModuleModel { ID = 0, Name = "Select" });
+                for (int j = 0; j < o; j++)
+                {
+                    int d3 = Convert.ToInt32(dts.Rows[j]["ID"]);
+                    string d4 = dts.Rows[j]["Name"].ToString();
+                    objModule.Add(new ModuleModel { ID = d3, Name = d4 });
+                }
+                SelectList objListOfModuleToBind = new SelectList(objModule, "ID", "Name", 0);
+                mm.ModuleList = objListOfModuleToBind;
+
                 if (id > 0)
                 {
                     DataTable dt = new DataTable();
                     dt = mm.GetModuleByID(id);
                     mm.Name = dt.Rows[0]["Name"].ToString();
                     mm.URL = dt.Rows[0]["URL"].ToString();
+
+                    
+
                     if (dt.Rows[0]["ParentID"].ToString() != "")
                     {
                         mm.ParentID = int.Parse(dt.Rows[0]["ParentID"].ToString());
@@ -973,6 +992,47 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+
+        [HttpPost]
+        public ActionResult ManageModule(ModuleModel model)
+        {
+            ModuleModel obj = new ModuleModel();
+            if (model.ID > 0)
+            {
+                try
+                {
+                    obj = model;
+                    obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
+                    obj.EditedTS = Convert.ToDateTime( DateTime.Now.ToString());
+                    obj.isActive = Convert.ToBoolean(model.isActive) ;
+
+                    obj.Update_ModuleDetails(obj);
+
+                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+
+                model.AddedBy = int.Parse(Session["sessUser"].ToString());
+                model.AddedTS = DateTime.Now;
+
+                model.isActive = Convert.ToBoolean(model.isActive);
+
+                obj.InsertModuledata(model, out int id);
+                if (id > 0)
+                {
+
+                }
+                TempData["ErrStatus"] = model.ISErr.ToString();
+            }
+            return RedirectToAction("ManageModule", "Admin");
+
+        }
 
 
         #endregion
