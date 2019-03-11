@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
        WindowStyle="ToolWindow"
         Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="2" 
@@ -102,8 +103,13 @@
                          x:Name="lstProject" SelectionMode="Single"
                          HorizontalContentAlignment="Left"
                          SelectedIndex="{Binding ProjectListViewViewModel.SelectedIndex, Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
-                         Margin="1" BorderThickness="0"   >
-
+                         Margin="1" BorderThickness="0"  >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding UpdateCommandFromSelectedProject}"
+                             CommandParameter="{Binding ProjectListViewViewModel.SelectedProject.ProjectID}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
                     <DataTemplate >
                         <Grid  Width="250" Margin="0,0,0,5" HorizontalAlignment="Left">
