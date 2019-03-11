@@ -122,7 +122,7 @@
                                 <ColumnDefinition Width="130"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom" TextTrimming="WordEllipsis" ToolTip="{Binding ProjectName}"/>
                             <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" />
 
                             <ToggleButton Width="45" Height="22" x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="0" Grid.Column="1"
