@@ -1,9 +1,9 @@
 ﻿@model QBA.Qutilize.WebApp.Models.ProjectModel
 @{
-                /**/
+    /**/
 
-                ViewBag.Title = "Manage Project";
-                Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+    ViewBag.Title = "Manage Project";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 
 <!DOCTYPE html>
@@ -55,7 +55,8 @@
                     <th class="text-center">ID</th>
                     <th class="text-center">Project Name</th>
                     <th class="text-center">Description</th>
-                    @*<th class="text-center">Parent Project Name</th>*@
+                    <th class="text-center">Department Name</th>
+                    <th class="text-center">Status</th>
 
                     <th class="text-center">Edit</th>
 
@@ -102,12 +103,22 @@
                 </div>
             </div>
 
-            @*<div class="form-group">
-                    @Html.LabelFor(model => model.ProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.ProjectList, Model.ProjectList, new { @class = "form-control" })
-                    </div>
-                </div>*@
+            <div class="form-group">
+                @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "DisplayTextForCumboWithOrgName"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.DepartmentID)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaxProjectTimeInHours, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MaxProjectTimeInHours, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
             <div class="form-group">
                 @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -129,12 +140,16 @@
     <script type="text/javascript">
         $("#tblGridListViewPost").dataTable();
 
+        var DeptId = $('#DepartmentID').val();
+        if (DeptId > 0) {
+            $('#DepartmentList').val(DeptId);
+        }
+            
         function checkUserForm() {
 
-
             var ProjectName = document.getElementById("ProjectName").value;
-
-
+            var DepartmentId = $("#DepartmentList").val();
+            var MaxProjectTimeInHours = $('#MaxProjectTimeInHours').val();
             if (ProjectName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Project Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -142,9 +157,24 @@
                 return false;
             }
 
-
+            if (DepartmentId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select a department";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
+            if ($.isNumeric(MaxProjectTimeInHours) == false) {
+                document.getElementById("errormsg").innerHTML = "Please enter only numeric value for maximum time for project.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
             return true;
         }
+
+        $("#DepartmentList").change(function () {
+            var departmentId = $("#DepartmentList").val();
+            $('#DepartmentID').val(departmentId);
+
+        });
     </script>
 </body>
 </html>
