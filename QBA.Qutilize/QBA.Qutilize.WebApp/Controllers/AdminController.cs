@@ -685,7 +685,10 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region Role module Mapping region
         public ActionResult RoleModuleMapping()
         {
-
+            if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
+            {
+                return RedirectToAction("DashBoard", "Home");
+            }
             return View();
         }
         public ActionResult LoadALLRoleToBeMappedWithModule()
@@ -822,7 +825,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
                     org.logo = dt.Rows[0]["logo"].ToString();
                     org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
-                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     org.createdTS = DateTime.Now;
                 }
                 else
@@ -886,7 +889,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.editedTS = DateTime.Now;
-                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.editedBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.updateOrganisation(orgModel);
                 }
                 else
@@ -907,7 +910,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     orgModel.wikiurl = Encrypt(orgModel.url);
                     orgModel.createdTS = DateTime.Now;
-                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["ID"]);
+                    orgModel.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                     orgModel.insert_OrganisationData(orgModel, out i);
                     //ViewData["ErrStatus"] = orgModel.ISErr.ToString();
                     //ModelState.AddModelError("MSG", orgModel.ErrString);
@@ -941,6 +944,147 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exc) { }
             return clearText;
         }
+        #endregion
+
+        #region Module
+        public ActionResult ManageModule(int id = 0)
+        {
+            ModuleModel mm = new ModuleModel();
+            try
+            {
+
+                DataTable dts = new DataTable();
+                dts = mm.GetAllModules();
+
+                List<ModuleModel> objModule = new List<ModuleModel>();
+                int o = dts.Rows.Count;
+                objModule.Add(new ModuleModel { ID = 0, Name = "Select" });
+                for (int j = 0; j < o; j++)
+                {
+                    int d3 = Convert.ToInt32(dts.Rows[j]["ID"]);
+                    string d4 = dts.Rows[j]["Name"].ToString();
+                    objModule.Add(new ModuleModel { ID = d3, Name = d4 });
+                }
+                SelectList objListOfModuleToBind = new SelectList(objModule, "ID", "Name", 0);
+                mm.ModuleList = objListOfModuleToBind;
+
+                if (id > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = mm.GetModuleByID(id);
+                    mm.Name = dt.Rows[0]["Name"].ToString();
+                    mm.URL = dt.Rows[0]["URL"].ToString();
+
+                    
+
+                    if (dt.Rows[0]["ParentID"].ToString() != "")
+                    {
+                        mm.ParentID = int.Parse(dt.Rows[0]["ParentID"].ToString());
+                    }
+                    else
+                    {
+                        mm.ParentID = 0;
+                    }                    
+                    mm.Description = dt.Rows[0]["Description"].ToString();
+                    mm.DisplayCSS = dt.Rows[0]["DisplayCSS"].ToString();
+                    mm.DisplayIcon = dt.Rows[0]["DisplayIcon"].ToString();
+                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();    
+                    mm.Rank= int.Parse(dt.Rows[0]["Rank"].ToString());
+                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);                   
+                }
+                else
+                {
+                    mm.Name = "";
+                    mm.URL = "";
+                    mm.ParentID= 0;
+                    mm.Description = "";
+                    mm.DisplayName = "";
+                    mm.DisplayCSS = "";
+                    mm.DisplayIcon = "";
+                    
+                }
+            }
+            catch (Exception exx)
+            {
+                
+            }
+
+            return View(mm);
+        }
+
+        public ActionResult Modules()
+        {
+            ModuleModel mm = new ModuleModel();
+            string strOrganisation = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                int i = 0;
+                dt = mm.GetAllModules();
+
+                Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+                string pathQuery = myuri.PathAndQuery;
+                string hostName = myuri.ToString().Replace(pathQuery, "");
+
+                List<OrganisationModel> viewModelList = new List<OrganisationModel>();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>"+"<td class='text-center'><i class='"+ dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                       "<td  class='text-center'><a href = 'ManageModule?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
+                    i++;
+                }
+            }
+            catch (Exception exc) {
+               throw exc;
+            }
+            return Content(strOrganisation);
+
+        }
+
+
+        [HttpPost]
+        public ActionResult ManageModule(ModuleModel model)
+        {
+            ModuleModel obj = new ModuleModel();
+            if (model.ID > 0)
+            {
+                try
+                {
+                    obj = model;
+                    obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
+                    obj.EditedTS = Convert.ToDateTime( DateTime.Now.ToString());
+                    obj.isActive = Convert.ToBoolean(model.isActive) ;
+
+                    obj.Update_ModuleDetails(obj);
+
+                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+
+                model.AddedBy = int.Parse(Session["sessUser"].ToString());
+                model.AddedTS = DateTime.Now;
+
+                model.isActive = Convert.ToBoolean(model.isActive);
+
+                obj.InsertModuledata(model, out int id);
+                if (id > 0)
+                {
+
+                }
+                TempData["ErrStatus"] = model.ISErr.ToString();
+            }
+            return RedirectToAction("ManageModule", "Admin");
+
+        }
+
+
         #endregion
 
         #region Department managment region

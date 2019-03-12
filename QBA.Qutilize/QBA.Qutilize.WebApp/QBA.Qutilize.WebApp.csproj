@@ -178,6 +178,7 @@
     <Compile Include="Models\DailyTaskViewModel.cs" />
     <Compile Include="Models\DepartmentModel.cs" />
     <Compile Include="Models\ManageDepartmentViewModel.cs" />
+    <Compile Include="Models\ModuleModel.cs" />
     <Compile Include="Models\OrganisationModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
@@ -238,6 +239,7 @@
     <Content Include="Images\logo.png" />
     <Content Include="Images\LogOut.PNG" />
     <Content Include="Images\marker.png" />
+    <Content Include="Images\organisation_logo\QBA_logo_logo.png" />
     <Content Include="Images\Qutilize.png" />
     <Content Include="Images\Qutilize_Old.png" />
     <Content Include="Images\Qutilize_SM.jpg" />
@@ -755,6 +757,7 @@
     <Content Include="Views\Shared\DisplayTemplates\CanonicalHelperModel.cshtml" />
     <Content Include="Views\Admin\ManageOrganisation.cshtml" />
     <Content Include="Views\Admin\ManageDepartment.cshtml" />
+    <Content Include="Views\Admin\ManageModule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

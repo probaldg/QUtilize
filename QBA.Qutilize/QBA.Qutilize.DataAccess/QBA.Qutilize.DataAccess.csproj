@@ -78,9 +78,6 @@
     <Compile Include="DAL\User.cs">
       <DependentUpon>QUtilizeModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\USPRoles_Get_Result.cs">
-      <DependentUpon>QUtilizeModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="DAL\USPUsers_Get_Result.cs">
       <DependentUpon>QUtilizeModel.tt</DependentUpon>
     </Compile>

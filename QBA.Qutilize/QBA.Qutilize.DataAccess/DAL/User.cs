@@ -19,7 +19,6 @@ namespace QBA.Qutilize.DataAccess.DAL
         {
             this.Projects = new HashSet<Project>();
             this.Roles = new HashSet<Role>();
-            this.Projects1 = new HashSet<Project>();
         }
     
         public int Id { get; set; }
@@ -31,16 +30,10 @@ namespace QBA.Qutilize.DataAccess.DAL
         public string EditedBy { get; set; }
         public Nullable<System.DateTime> EditedDate { get; set; }
         public bool IsActive { get; set; }
-        public string EmailId { get; set; }
-        public string UserCode { get; set; }
-        public string Designation { get; set; }
-        public Nullable<int> managerID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Project> Projects { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Role> Roles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Project> Projects1 { get; set; }
     }
 }

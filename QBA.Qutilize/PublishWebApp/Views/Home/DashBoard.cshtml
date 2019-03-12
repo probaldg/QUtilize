@@ -8,40 +8,224 @@
         @Html.Action("GetDateRange", "Home")
     </div>
 </div>
-<div class="row" id="divLoadDashBoardDataDayWise">
-    <div class="col-md-12">
-        <div class="panel panel-info">
-            <div class="panel-heading"><label> Day wise details in minute:</label></div>
-            <div class="panel-body">
-                <canvas id="barChart" width="200" height="30"></canvas>
+@if (HttpContext.Current.Session["SysAdmin"] != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Sys Admin Data details</h3>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                </div>
+                <div class="panel-body">Panel content</div>
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-8">
-        <div class="panel panel-info">
-            <div class="panel-heading"><label> Day wise details:</label></div>
-            <div class="panel-body" id="divActualData">
-                @Html.Action("GetDataActual", "Home")
+}
+@if (HttpContext.Current.Session["OrgAdmin"] != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Admin Data details</h3>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                </div>
+                <div class="panel-body">
+                    <div class="row" id="DashBoardAdminSummary">
+                        <!-- load header summary -->
+                        @Html.Action("LoadDashBoardAdminSummary", "Home")
+                    </div>
+                    <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="barChartAdmin" width="200" height="30"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="panel panel-info">
-            <div class="panel-heading"><label>Project wise details in minute:</label></div>
-            <div class="panel-body">
-                <canvas id="DonutChart" width="200" height="100"></canvas>
+    @*<div class="row">
+            <div class="col-md-8">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><label>Resource Wise Data:</label></div>
+                    <div class="panel-body" id="divActualDataProj">
+                        @Html.Action("GetResourceWiseDataAdmin", "Home")
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><label>Project Wise Data:</label></div>
+                    <div class="panel-body" id="divActualDataReportee">
+                        @Html.Action("GetProjectWiseDataAdmin", "Home")
+                    </div>
+                </div>
+            </div>
+        </div>*@
+}
+@if (HttpContext.Current.Session["OrgPM"] != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Manager data details</h3>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                </div>
+                <div class="panel-body">
+                    <div class="row" id="DashBoardPMSummary">
+                        <!-- load header summary -->
+                        @Html.Action("LoadDashBoardPMSummary", "Home")
+                    </div>
+                    <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="barChartPM" width="200" height="30"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+@if (HttpContext.Current.Session["OrgUser"] != null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Self Data details</h3>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row" id="divLoadDashBoardDataDayWise">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="barChart" width="200" height="30"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details:</label></div>
+                                <div class="panel-body" id="divActualData">
+                                    @Html.Action("GetDataActual", "Home")
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    <canvas id="DonutChart" width="200" height="100"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 <script>
     $(document).ready(function () {
         gerBarChartData();
         gerDonutChartData();
+        gerDonutChartDataUserWiseAdmin();
+        gerDonutChartDataProjectWiseAdmin();
+        gerBarChartDataAdmin();
+        gerDonutChartDataUserWisePM();
+        gerDonutChartDataProjectWisePM();
+        gerBarChartDataPM();
     });
+    $(document).on('click', '.panel-heading span.clickable', function (e) {
+        var $this = $(this);
+        if (!$this.hasClass('panel-collapsed')) {
+            $this.parents('.panel').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+
+        } else {
+            $this.parents('.panel').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+
+        }
+    })
+    $('#txtStartDate').datepicker({
+        format: 'MM/dd/yyyy'
+        //format: 'dd-mm-yy',
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    });
+    $('#txtEndDate').datepicker({
+        format: 'MM/dd/yyyy'
+        //format: 'dd-mm-yy',
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    });
+    $(".datepicker").datepicker({
+        format: 'MM/dd/yyyy',
+        autoclose: true, todayBtn: 'linked'//,
+        //minDate: new Date(curr.setDate(first)),
+        //maxDate: new Date()
+    })
     function gerBarChartData() {
+        try {
         //-----Single Bar --------------
         var c = document.getElementById("barChart");
         var ctx = c.getContext("2d");
@@ -60,8 +244,60 @@
                 }
             }
         });
+            myBarChart.update();
+        }
+        catch (e) { }
+    }
+    function gerBarChartDataAdmin() {
+        try {
+        //-----Single Bar --------------
+        var c = document.getElementById("barChartAdmin");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("BarChartDataAdmin", "Home")');//"/Home/BarChartData"
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: tData,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+            myBarChart.update();
+        }
+        catch (e) { }
+    }
+    function gerBarChartDataPM() {
+        try {
+        //-----Single Bar --------------
+        var c = document.getElementById("barChartPM");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("BarChartDataPM", "Home")');//"/Home/BarChartData"
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: tData,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+        });
+            myBarChart.update();
+        }
+        catch (e) { }
     }
     function gerDonutChartData() {
+        try {
         //----Donut Chart---------
         var c = document.getElementById("DonutChart");
         var ctx = c.getContext("2d");
@@ -70,6 +306,65 @@
             type: 'doughnut',
             data: tData,
         });
+            myPieChart.update();
+        }
+        catch (e) { }
+    }
+    function gerDonutChartDataUserWiseAdmin() {
+        try {
+        //----Donut Chart---------
+        var c = document.getElementById("DonutChartUserWiseAdmin");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("GetDonutChartUserWiseAdmin", "Home")');//"/Home/GetDonutChartData"
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: tData,
+        });
+            myPieChart.update();
+        }
+        catch (e) { }
+    }
+    function gerDonutChartDataProjectWiseAdmin() {
+        try {
+        //----Donut Chart---------
+        var c = document.getElementById("DonutChartProjectWiseAdmin");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("GetDonutChartProjectWiseAdmin", "Home")');//"/Home/GetDonutChartData"
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: tData,
+        });
+            myPieChart.update();
+        }
+        catch (e) { }
+    }
+    function gerDonutChartDataUserWisePM() {
+        try {
+        //----Donut Chart---------
+        var c = document.getElementById("DonutChartUserWisePM");
+        var ctx = c.getContext("2d");
+        var tData = $.getValues('@Url.Action("GetDonutChartUserWisePM", "Home")');//"/Home/GetDonutChartData"
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: tData,
+        });
+            myPieChart.update();
+        }
+        catch (e) { }
+    }
+    function gerDonutChartDataProjectWisePM() {
+        try {
+            //----Donut Chart---------
+            var c = document.getElementById("DonutChartProjectWisePM");
+            var ctx = c.getContext("2d");
+            var tData = $.getValues('@Url.Action("GetDonutChartProjectWisePM", "Home")');//"/Home/GetDonutChartData"
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: tData,
+            });
+                myPieChart.update();
+         }
+        catch (e) {}
     }
     function RefreshData() {
         try {
@@ -88,6 +383,14 @@
                         gerBarChartData();
                         gerDonutChartData();
                         $("#divActualData").html(response);
+                        gerDonutChartDataUserWiseAdmin();
+                        gerDonutChartDataProjectWiseAdmin();
+                        gerBarChartDataAdmin()
+                        $("#DashBoardAdminSummary").load('@Url.Action("LoadDashBoardAdminSummary", "Home")');
+                        gerDonutChartDataUserWisePM();
+                        gerDonutChartDataProjectWisePM();
+                        gerBarChartDataPM();
+                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
                     }
                 }
             });

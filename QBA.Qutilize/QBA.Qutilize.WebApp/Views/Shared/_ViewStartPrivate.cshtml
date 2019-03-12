@@ -103,6 +103,10 @@
     }
     else
     {
+        if (!Request.Url.AbsoluteUri.ToLower().Contains("/Home/DashBoard".ToLower()) && !Request.Url.AbsoluteUri.ToLower().Contains("/Account/MyAccount".ToLower()) && !QBA.Qutilize.WebApp.Helper.ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
+        {
+            Response.Redirect("~/Home/DashBoard"); //return RedirectToAction("DashBoard", "Home");
+        }
         <div class="container-fluid">
             <div class="row panel panel-default" id="header">
                 <div class="panel-body col-md-1 ">
