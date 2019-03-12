@@ -33,21 +33,7 @@ namespace QBA.Qutilize.WebApp.Models
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
-
-        //public DataTable GetAllProjects()
-        //{
-        //    DataTable dt = null;
-        //    try
-        //    {
-        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return dt;
-        //}
-
+        
         public DataTable GetAllProjects(int orgId = 0)
         {
             DataTable dt = null;
@@ -65,12 +51,15 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
-        public DataTable GetAllUsers()
+        public DataTable GetAllUsers(int orgId = 0)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]");
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]",param);
             }
             catch (Exception ex)
             {

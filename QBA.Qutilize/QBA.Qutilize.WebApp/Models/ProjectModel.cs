@@ -1,6 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -15,9 +16,15 @@ namespace QBA.Qutilize.WebApp.Models
         public string ProjectName { get; set; }
         public string Description { get; set; }
         public int? ParentProjectID { get; set; }
-
         public string ParentProjectName { get; set; }
+        [Display(Name = "Maximum Time for Project In Hours")]
         public int MaxProjectTimeInHours { get; set; } = 8;
+        public int DepartmentID { get; set; }
+        public int PMUserID { get; set; }
+
+        [Display(Name = "Department List")]
+        public List<DepartmentModel> DepartmentList { get; set; }
+
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
@@ -30,29 +37,20 @@ namespace QBA.Qutilize.WebApp.Models
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
-        //public DataTable GetAllProjects()
-        //{
-        //    DataTable dt = null;
-        //    try
-        //    {
-        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]");
-        //    }
-        //    catch (Exception ex)
-        //    {
 
-        //    }
-        //    return dt;
-        //}
-
-        public DataTable GetAllProjects(int orgId=0)
+        public ProjectModel()
+        {
+            DepartmentList = new List<DepartmentModel>();
+        }
+        public DataTable GetAllProjects(int orgId = 0)
         {
             DataTable dt = null;
             try
             {
-                    SqlParameter[] param ={
+                SqlParameter[] param ={
                                         new SqlParameter("@OrgID",orgId)
                                       };
-              
+
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]", param);
             }
             catch (Exception ex)
@@ -92,6 +90,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Name",model.ProjectName),
                     new SqlParameter("@Description",model.Description),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
+                    new SqlParameter("@DeptID", model.DepartmentID),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
                     new SqlParameter("@IsActive",model.IsActive),
@@ -137,6 +136,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Name",model.ProjectName),
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
+                      new SqlParameter("@DeptID", model.DepartmentID),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@IsActive",model.IsActive),
@@ -152,5 +152,42 @@ namespace QBA.Qutilize.WebApp.Models
             return result;
         }
 
+        public List<DepartmentModel> GetDepartments(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<DepartmentModel> departments = new List<DepartmentModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDepartment_Get]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDepartment_Get]");
+
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        DepartmentModel department = new DepartmentModel();
+                        department.DepartmentID = Convert.ToInt32(item["ID"]);
+                        department.OrganisationName = item["OrganisationName"].ToString();
+                        department.Name = item["NAME"].ToString();
+                        department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        departments.Add(department);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return departments;
+        }
     }
 }

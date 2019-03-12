@@ -209,29 +209,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             int i = 0;
 
-            //foreach (DataRow dr in dt.Rows)
-            //{
-            //    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>";
-            //    if (Convert.ToBoolean(dr["IsActive"]))
-            //    {
-            //        //strUserData += "<td class='text-center'> <input type='checkbox' class='check' style=' margin: 5px; ' name='chkProjects' onclick='projectActiveOrDeative()' checked =" + Convert.ToBoolean(dr["IsActive"]) + " value=" + Convert.ToInt32(dr["Id"]) + "> Is Active  </ td > " ;
-            //        strUserData += "<td class='text-center'> <input type='checkbox' class='check' style=' margin: 5px; ' name='chkProjects' onclick='projectActiveOrDeative()' checked =" + Convert.ToBoolean(dr["IsActive"]) + " value=" + Convert.ToInt32(dr["Id"]) + "> Is Active  </ td > ";
-
-            //    }
-            //    else
-            //    {
-            //        strUserData += "<td class='text-center'> <input type='checkbox' class='check' style=' margin: 5px; ' name='chkProjects'   value=" + Convert.ToInt32(dr["Id"]) + "> Is Active</td>";
-
-            //    }
-            //    strUserData+= "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-            //    i++;
-            //}
-
             foreach (DataRow dr in dt.Rows)
             {
-                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active"; 
+                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
 
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() +
+                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "<td class='text-center'>" + dr["DepartmentName"].ToString() +
                  "<td class='text-center'>" + status + " </ td > " +
                     "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
@@ -243,6 +225,17 @@ namespace QBA.Qutilize.WebApp.Controllers
             ProjectModel obj = new ProjectModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
 
+            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+          
+            if (userInfo.IsRoleSysAdmin)
+            {
+                obj.DepartmentList = obj.GetDepartments();
+            }
+            else
+            {
+                obj.DepartmentList = obj.GetDepartments(userInfo.UserOrganisationID);
+            }
             if (ID > 0)
             {
                 try
@@ -252,6 +245,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ProjectID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
+                    obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
+                    obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
                     //obj.Update_ProjectDetails(obj);
@@ -264,6 +259,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
+               
 
             }
 
@@ -322,19 +318,33 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadALLUserMapped()
         {
             string strProjectMapped = string.Empty;
+            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
             UserProjectMappingModel USM = new UserProjectMappingModel();
-            DataTable dt = USM.GetAllUsers();
-
-            foreach (DataRow dr in dt.Rows)
+            DataTable dt = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
             {
-                int i = 0;
-
-                strProjectMapped += "<tr>";
-                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
-                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                strProjectMapped += "</td>";
-                i++;
+                dt = USM.GetAllUsers();
             }
+            else
+            {
+                dt = USM.GetAllUsers(userInfo.UserOrganisationID);
+            }
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow dr in dt.Rows)
+                {
+                    int i = 0;
+
+                    strProjectMapped += "<tr>";
+                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                    strProjectMapped += "</td>";
+                    i++;
+                }
+            }
+
 
             return Content(strProjectMapped);
         }

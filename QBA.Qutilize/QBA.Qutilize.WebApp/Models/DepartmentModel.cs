@@ -28,6 +28,7 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Organisation Name")]
 
         public string OrganisationName { get; set; }
+        public string DisplayTextForCumboWithOrgName { get; set; }
 
         public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
