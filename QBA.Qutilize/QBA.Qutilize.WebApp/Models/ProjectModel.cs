@@ -30,12 +30,30 @@ namespace QBA.Qutilize.WebApp.Models
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
-        public DataTable GetAllProjects()
+        //public DataTable GetAllProjects()
+        //{
+        //    DataTable dt = null;
+        //    try
+        //    {
+        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+
+        public DataTable GetAllProjects(int orgId=0)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]");
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgId)
+                                      };
+              
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]", param);
             }
             catch (Exception ex)
             {
@@ -117,7 +135,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param = {
                     new SqlParameter("@Id",model.ProjectID),
                     new SqlParameter("@Name",model.ProjectName),
-                    new SqlParameter("@Description",model.Description),
+                    new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
