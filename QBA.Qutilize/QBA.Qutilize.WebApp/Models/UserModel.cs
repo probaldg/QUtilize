@@ -27,7 +27,13 @@ namespace QBA.Qutilize.WebApp.Models
 
         [Display(Name = "Email Id")]
         public string EmailId { get; set; }
-      
+
+        public string Designation { get; set; }
+
+        public int ManagerId { get; set; }
+
+        public string ManagerName { get; set; }
+        public List<UserModel> UsersList { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
@@ -39,19 +45,67 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetAllUsers()
+        //public DataTable GetAllUsers()
+        //{
+        //    DataTable dt = null;
+        //    try
+        //    {
+        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+
+        public UserModel()
+        {
+            UsersList = new List<UserModel>();
+        }
+        public DataTable GetAllUsers(int orgId = 0)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]");
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]", param);
             }
             catch (Exception ex)
             {
-                
+
             }
             return dt;
         }
+
+        public List<UserModel> GetAllUsersInList(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<UserModel> users = new List<UserModel>();
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]", param);
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    UserModel user = new UserModel();
+                    user.ID = Convert.ToInt32(item["Id"]);
+                    user.Name = item["Name"].ToString();
+                    users.Add(user);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return users;
+        }
+
         public DataTable GetUsersByID(int id)
         {
             DataTable dt = null;
@@ -60,7 +114,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={
                                         new SqlParameter("@Id",id)
                                       };
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]",param);
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]", param);
             }
             catch (Exception ex)
             {
@@ -84,9 +138,12 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Name",model.Name),
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Password",model.Password),
+                    new SqlParameter("@Designation",model.Designation),
+                    new SqlParameter("@ManagerId",model.ManagerId),
+                    new SqlParameter("@IsActive",model.IsActive),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
-                   
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_Insert]", param);
 
@@ -128,6 +185,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Name",model.Name),
                     new SqlParameter("@userName",model.UserName),
                     new SqlParameter("@EmailId", model.EmailId),
+                    new SqlParameter("@Designation", model.Designation??""),
+                    new SqlParameter("@ManagerID", model.ManagerId),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@isActive",model.IsActive)

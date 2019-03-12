@@ -15,6 +15,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 {
     public class AdminController : Controller
     {
+        readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
         // GET: Admin
@@ -28,6 +29,15 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageUsers(int ID = 0)
         {
             UserModel obj = new UserModel();
+
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+                obj.UsersList = obj.GetAllUsersInList();
+            else
+                obj.UsersList= obj.GetAllUsersInList(userInfo.UserOrganisationID);
+
             if (ID > 0)
             {
                 try
@@ -37,14 +47,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.UserName = dt.Rows[0]["UserName"].ToString();
-                    //obj.Password = dt.Rows[0]["Password"].ToString();
-
                     obj.EmailId = dt.Rows[0]["EmailId"].ToString();
-
+                    obj.Designation = dt.Rows[0]["Designation"].ToString();
+                    obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
+                    //obj.ManagerName = dt.Rows[0]["ManagerName"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
                     // um.Update_UserDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    //TempData["ErrStatus"] = obj.ISErr.ToString();
                 }
                 catch
                 {
@@ -66,17 +76,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     dt = um.GetUsersByID(model.ID);
                     model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
                     model.EditedDate = DateTime.Now;
-
-
                     um.Update_UserDetails(model);
                     TempData["ErrStatus"] = model.ISErr.ToString();
                 }
                 else
                 {
-                    int id;
                     if (System.Web.HttpContext.Current.Session["ID"] != null)
                     {
-                        model.CreatedBy = (System.Web.HttpContext.Current.Session["ID"].ToString());
+                        model.CreatedBy = loggedInUser.ToString();
                     }
 
                     model.CreateDate = DateTime.Now;
@@ -85,7 +92,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     model.IsActive = model.IsActive;
                     model.Password = password;
 
-                    um.InsertUserdata(model, out id);
+                    um.InsertUserdata(model, out int id);
                     if (id > 0)
                     {
 
@@ -130,14 +137,23 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strUserData = string.Empty;
 
             int i = 0;
-
-            DataTable dt = obj.GetAllUsers();
-
-
-            foreach (DataRow dr in dt.Rows)
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
             {
+                dtUsers = obj.GetAllUsers();
+            }
+            else
+            {
+                dtUsers = obj.GetAllUsers(userInfo.UserOrganisationID);
+            }
+
+
+            foreach (DataRow dr in dtUsers.Rows)
+            {
+                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
                 strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                 "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                                "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
             }
             return Content(strUserData);
@@ -227,7 +243,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-          
+
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.DepartmentList = obj.GetDepartments();
@@ -259,7 +275,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-               
+
 
             }
 
@@ -975,7 +991,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     mm.Name = dt.Rows[0]["Name"].ToString();
                     mm.URL = dt.Rows[0]["URL"].ToString();
 
-                    
+
 
                     if (dt.Rows[0]["ParentID"].ToString() != "")
                     {
@@ -984,29 +1000,29 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
                         mm.ParentID = 0;
-                    }                    
+                    }
                     mm.Description = dt.Rows[0]["Description"].ToString();
                     mm.DisplayCSS = dt.Rows[0]["DisplayCSS"].ToString();
                     mm.DisplayIcon = dt.Rows[0]["DisplayIcon"].ToString();
-                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();    
-                    mm.Rank= int.Parse(dt.Rows[0]["Rank"].ToString());
-                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);                   
+                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();
+                    mm.Rank = int.Parse(dt.Rows[0]["Rank"].ToString());
+                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
                 }
                 else
                 {
                     mm.Name = "";
                     mm.URL = "";
-                    mm.ParentID= 0;
+                    mm.ParentID = 0;
                     mm.Description = "";
                     mm.DisplayName = "";
                     mm.DisplayCSS = "";
                     mm.DisplayIcon = "";
-                    
+
                 }
             }
             catch (Exception exx)
             {
-                
+
             }
 
             return View(mm);
@@ -1030,13 +1046,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow dr in dt.Rows)
                 {
                     strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>"+"<td class='text-center'><i class='"+ dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>" + "<td class='text-center'><i class='" + dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
                        "<td  class='text-center'><a href = 'ManageModule?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
                     i++;
                 }
             }
-            catch (Exception exc) {
-               throw exc;
+            catch (Exception exc)
+            {
+                throw exc;
             }
             return Content(strOrganisation);
 
@@ -1053,8 +1070,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     obj = model;
                     obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
-                    obj.EditedTS = Convert.ToDateTime( DateTime.Now.ToString());
-                    obj.isActive = Convert.ToBoolean(model.isActive) ;
+                    obj.EditedTS = Convert.ToDateTime(DateTime.Now.ToString());
+                    obj.isActive = Convert.ToBoolean(model.isActive);
 
                     obj.Update_ModuleDetails(obj);
 
