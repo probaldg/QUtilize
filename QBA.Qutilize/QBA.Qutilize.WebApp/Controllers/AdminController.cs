@@ -34,9 +34,21 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             DataTable dtUsers = new DataTable();
             if (userInfo.IsRoleSysAdmin)
-                obj.UsersList = obj.GetAllUsersInList();
+            {
+                obj.OrganisationList = obj.GetAllOrgInList();
+               
+            }
+
             else
-                obj.UsersList= obj.GetAllUsersInList(userInfo.UserOrganisationID);
+            {
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID);
+                obj.OrganisationList.Add(organisation);
+
+                obj.UserOrgId = userInfo.UserOrganisationID;
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID);
+                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID);
+            }
+
 
             if (ID > 0)
             {
@@ -50,13 +62,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.EmailId = dt.Rows[0]["EmailId"].ToString();
                     obj.Designation = dt.Rows[0]["Designation"].ToString();
                     obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
-                    //obj.ManagerName = dt.Rows[0]["ManagerName"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    // um.Update_UserDetails(obj);
-                    //TempData["ErrStatus"] = obj.ISErr.ToString();
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        obj.DepartmentIds.Add(Convert.ToInt32(item["DeptID"]));
+                        obj.DepartmentIdsInString += item["DeptID"].ToString() +",";
+                    }
+
+                    //obj.DepartmentIdsInString.Substring(0, obj.DepartmentIdsInString.LastIndexOf(',') - 1);
+                    obj.DepartmentIdsInString.TrimEnd(',');
                 }
-                catch
+                catch(Exception ex)
                 {
 
                 }
@@ -72,19 +89,27 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 if (model.ID > 0)
                 {
-                    DataTable dt = new DataTable();
-                    dt = um.GetUsersByID(model.ID);
-                    model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                     model.EditedDate = DateTime.Now;
                     um.Update_UserDetails(model);
                     TempData["ErrStatus"] = model.ISErr.ToString();
                 }
                 else
                 {
-                    if (System.Web.HttpContext.Current.Session["ID"] != null)
+                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                     {
-                        model.CreatedBy = loggedInUser.ToString();
+                        model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                     }
+
+                    var department = model.DepartmentIdsInString.Split(',');
+
+                    //if (department.Length >0)
+                    //{
+                    //    foreach (string item in department)
+                    //    {
+                    //        model.DepartmentIds.Add(Convert.ToInt32(item));
+                    //    }
+                    //}
 
                     model.CreateDate = DateTime.Now;
                     string password = model.Password;
@@ -157,6 +182,50 @@ namespace QBA.Qutilize.WebApp.Controllers
                 i++;
             }
             return Content(strUserData);
+        }
+
+        public ActionResult GetManagers(int orgId)
+        {
+            UserModel user = new UserModel();
+            string strUserData = string.Empty;
+            try
+            {
+                var listUsers = user.GetAllUsersInList(orgId);
+                strUserData += "<option value = 0>Please select</option>";
+                foreach (UserModel item in listUsers)
+                {
+                    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+            return Json(strUserData);
+        }
+
+        public ActionResult GetDepartments(int orgId)
+        {
+            UserModel user = new UserModel();
+            string strDeptData = string.Empty;
+            try
+            {
+                var listUsers = user.GetAllDepartmentInList(orgId);
+                strDeptData += "<option value = 0>Please select</option>";
+                foreach (DepartmentModel item in listUsers)
+                {
+                    strDeptData += "<option value=" + Convert.ToInt32(item.DepartmentID) + ">" + item.Name + "</option>";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Json(strDeptData);
         }
 
         public ActionResult Checkemail(string email)
