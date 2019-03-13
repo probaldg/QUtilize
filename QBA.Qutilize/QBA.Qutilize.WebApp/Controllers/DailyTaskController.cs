@@ -53,6 +53,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     var tempStartTime = startTime.TimeOfDay;
                     var tempEndTime = endTime.TimeOfDay;
+
+                    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
+
                     DateTime newStartTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, startTime.Second);
                     DateTime newEndtTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
                     startTime = newStartTime;
