@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -52,6 +50,8 @@ namespace QBA.Qutilize.WebApp.Models
         public string AlterNetContactNo { get; set; }
 
         [Display(Name = "Birth Date")]
+        //[DataType(DataType.Date, ErrorMessage = "Date only")]
+        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? BirthDate { get; set; }
 
 
@@ -282,6 +282,11 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Designation", model.Designation??""),
                     new SqlParameter("@ManagerID", model.ManagerId),
+                    new SqlParameter("@DepartmentIds",model.DepartmentIdsInString),
+                    new SqlParameter("@PhoneNo",model.ContactNo??""),
+                    new SqlParameter("@AlternetPhoneNo",model.AlterNetContactNo??""),
+                    new SqlParameter("@birthDate",model.BirthDate),
+                    new SqlParameter("@Gender",model.Gender??null),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@isActive",model.IsActive)

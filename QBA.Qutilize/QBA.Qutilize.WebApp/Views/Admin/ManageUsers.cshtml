@@ -191,18 +191,21 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" ,Value = Model.BirthDate != null ?
+    Model.BirthDate.Value.Date.ToString("yyyy/MM/dd") : null
+           } })
                 @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <select class="form-control" id="StudentGender" name="StudentGender">
+                <select class="form-control" id="ddlUserGender" name="ddlUserGender">
                     <option>Select Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
                 </select>
+                @Html.HiddenFor(model => model.Gender)
                 @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -279,7 +282,10 @@
         //    });
         //});
         $('#BirthDate').datepicker({
-            format: 'dd-mm-yy',
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "dd/mm/yy",
+            yearRange: "-90:+00",
             maxDate: new Date()
         });
         $("#tblGridListViewPost").dataTable();
@@ -300,6 +306,14 @@
             $('#ManagerId').val(this.value)
         })
 
+        $('#ddlUserGender').change(function () {
+            $('#Gender').val(this.value)
+        })
+        var gender = $('#Gender').val();
+        if (gender != "") {
+            $('#ddlUserGender').val(gender);
+        }
+
         $('#DepartmentList').change(function () {
          
             //var deptIds = $("#DepartmentList option:selected").map(function () { return this.value }).get().join(", ");
@@ -317,7 +331,7 @@
                 var optionVal = selectedOptions[i];
                 $("#DepartmentList").find("option[value=" + optionVal + "]").prop("selected", "selected");
             }
-            $("#DepartmentList").multiselect('reload');
+           // $("#DepartmentList").multiselect('reload');
         }
         
 

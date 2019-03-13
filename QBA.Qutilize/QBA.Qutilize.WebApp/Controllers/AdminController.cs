@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using QBA.Qutilize.WebApp.Helper;
+﻿using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QBA.Qutilize.WebApp.Controllers
@@ -36,7 +34,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.OrganisationList = obj.GetAllOrgInList();
-               
+
             }
 
             else
@@ -62,18 +60,38 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.EmailId = dt.Rows[0]["EmailId"].ToString();
                     obj.Designation = dt.Rows[0]["Designation"].ToString();
                     obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
+                    obj.ContactNo = dt.Rows[0]["PhoneNo"].ToString();
+                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"].ToString();
+
+                    if (dt.Rows[0]["BirthDate"] != DBNull.Value)
+                    {
+                        obj.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).Date;
+                    }
+                    else
+                        obj.BirthDate = null;
+
+                    obj.Gender = dt.Rows[0]["Gender"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
+                    obj.UserOrgId = Convert.ToInt32(dt.Rows[0]["OrgID"]);
 
                     foreach (DataRow item in dt.Rows)
                     {
                         obj.DepartmentIds.Add(Convert.ToInt32(item["DeptID"]));
-                        obj.DepartmentIdsInString += item["DeptID"].ToString() +",";
+                        obj.DepartmentIdsInString += item["DeptID"].ToString() + ",";
                     }
 
-                    //obj.DepartmentIdsInString.Substring(0, obj.DepartmentIdsInString.LastIndexOf(',') - 1);
-                    obj.DepartmentIdsInString.TrimEnd(',');
+
+                    obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
+
+                    var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == obj.UserOrgId);
+                    obj.OrganisationList.Add(organisation);
+
+                    // obj.UserOrgId = userInfo.UserOrganisationID;
+                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
+                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -100,16 +118,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                     }
-
-                    var department = model.DepartmentIdsInString.Split(',');
-
-                    //if (department.Length >0)
-                    //{
-                    //    foreach (string item in department)
-                    //    {
-                    //        model.DepartmentIds.Add(Convert.ToInt32(item));
-                    //    }
-                    //}
 
                     model.CreateDate = DateTime.Now;
                     string password = model.Password;
@@ -202,7 +210,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 throw;
             }
-           
+
             return Json(strUserData);
         }
 
