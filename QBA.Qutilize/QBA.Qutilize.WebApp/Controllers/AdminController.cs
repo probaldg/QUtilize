@@ -30,20 +30,28 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
             DataTable dtUsers = new DataTable();
             if (userInfo.IsRoleSysAdmin)
             {
+                obj.OrganisationList.Clear();
                 obj.OrganisationList = obj.GetAllOrgInList();
+
+
 
             }
 
             else
             {
+                obj.OrganisationList.Clear();
                 var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID);
                 obj.OrganisationList.Add(organisation);
 
                 obj.UserOrgId = userInfo.UserOrganisationID;
+
+                obj.UsersList.Clear();
                 obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID);
+                obj.DepartmentList.Clear();
                 obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID);
             }
 
@@ -54,14 +62,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     DataTable dt = new DataTable();
                     dt = obj.GetUsersByID(ID);
+
                     obj.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.UserName = dt.Rows[0]["UserName"].ToString();
-                    obj.EmailId = dt.Rows[0]["EmailId"].ToString();
+                    obj.EmailId = dt.Rows[0]["EmailId"]?.ToString();
                     obj.Designation = dt.Rows[0]["Designation"].ToString();
-                    obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
-                    obj.ContactNo = dt.Rows[0]["PhoneNo"].ToString();
-                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"].ToString();
+                    if (dt.Rows[0]["ManagerId"] != DBNull.Value)
+                    {
+                        obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
+                    }
+
+                    obj.ContactNo = dt.Rows[0]["PhoneNo"]?.ToString();
+                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
 
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
@@ -70,9 +83,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                         obj.BirthDate = null;
 
-                    obj.Gender = dt.Rows[0]["Gender"].ToString();
+                    obj.Gender = dt.Rows[0]["Gender"]?.ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
-                    obj.UserOrgId = Convert.ToInt32(dt.Rows[0]["OrgID"]);
+
+                    if (dt.Rows[0]["OrgID"] != DBNull.Value)
+                    {
+                        obj.UserOrgId = Convert.ToInt32(dt.Rows[0]["OrgID"]);
+                    }
+
+
+                    obj.UsersList.Clear();
+                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
+                    obj.DepartmentList.Clear();
+                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
 
                     foreach (DataRow item in dt.Rows)
                     {
@@ -83,13 +106,6 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
 
-
-                    var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == obj.UserOrgId);
-                    obj.OrganisationList.Add(organisation);
-
-                    // obj.UserOrgId = userInfo.UserOrganisationID;
-                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
-                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
                 }
                 catch (Exception ex)
                 {
@@ -107,10 +123,14 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 if (model.ID > 0)
                 {
-                    model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
-                    model.EditedDate = DateTime.Now;
-                    um.Update_UserDetails(model);
-                    TempData["ErrStatus"] = model.ISErr.ToString();
+                    if (ValidateRequest)
+                    {
+                        model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        model.EditedDate = DateTime.Now;
+                        um.Update_UserDetails(model);
+                        TempData["ErrStatus"] = model.ISErr.ToString();
+                    }
+
                 }
                 else
                 {
@@ -175,20 +195,27 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dtUsers = obj.GetAllUsers();
+                foreach (DataRow dr in dtUsers.Rows)
+                {
+
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
+                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
             }
             else
             {
                 dtUsers = obj.GetAllUsers(userInfo.UserOrganisationID);
+                foreach (DataRow dr in dtUsers.Rows)
+                {
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
+                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
             }
 
-
-            foreach (DataRow dr in dtUsers.Rows)
-            {
-                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
-            }
             return Content(strUserData);
         }
 
@@ -236,10 +263,10 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(strDeptData);
         }
 
-        public ActionResult Checkemail(string email)
+        public ActionResult Checkemail(string email, int orgId)
         {
             UserModel _um = new UserModel();
-            DataTable dt = _um.checkemail(email);
+            DataTable dt = _um.checkemail(email, orgId);
             string message = string.Empty;
             if (dt.Rows.Count > 0)
             {
@@ -295,22 +322,33 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dt = obj.GetAllProjects();
+                int i = 0;
+                foreach (DataRow item in dt.Rows)
+                {
+
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
+                                   "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
+                                    "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+
+                }
             }
             else
             {
+                int i = 0;
                 dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-            }
-            int i = 0;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "<td class='text-center'>" + dr["DepartmentName"].ToString() +
+                                    "<td class='text-center'>" + status + " </ td > " +
+                                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
 
-            foreach (DataRow dr in dt.Rows)
-            {
-                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "<td class='text-center'>" + dr["DepartmentName"].ToString() +
-                 "<td class='text-center'>" + status + " </ td > " +
-                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
             }
+
             return Content(strUserData);
         }
         public ActionResult ManageProject(int ID = 0)
@@ -448,7 +486,6 @@ namespace QBA.Qutilize.WebApp.Controllers
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
-            //DataTable dt = obj.GetAllProjects();
 
             DataTable dt = new DataTable();
 
@@ -473,6 +510,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 strModules += "</ul>";
 
             }
+
+
             return Content(strModules);
         }
         //public ActionResult LoadAllModules()
@@ -1295,9 +1334,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             foreach (DataRow dr in dt.Rows)
             {
+                var status = string.Empty;
+                if (Convert.ToBoolean(dr["isACTIVE"]))
+                    status = "Active";
+                else
+                    status = "InActive";
 
                 strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["NAME"].ToString() + "</td>" + "<td class='text-center'>" + dr["DESCRIPTION"].ToString() + "</td>" + "<td class='text-center'>" + dr["DepartmentHead"] + "</td>" + "<td class='text-center'>" + dr["OrganisationName"] + "</td>" +
-                                     "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                                        "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
             }
             return Content(strUserData);

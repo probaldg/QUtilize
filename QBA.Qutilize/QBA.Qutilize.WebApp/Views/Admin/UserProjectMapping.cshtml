@@ -74,7 +74,7 @@
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            // data: { id:id },
+
             data: JSON.stringify({
                 "id":id
             }),
@@ -82,7 +82,7 @@
             success: function (response) {
                 console.log(response);
                 $.each(response, function (key, value) {
-                    //$("input[name='" + value.ProjectId + "']").prop('checked', true);
+
                     $("input[value='" + value.ProjectId + "']").prop('checked', true);
 
                 });
@@ -93,14 +93,7 @@
             }
         });
         }
-        //$('#myModalForModule').on('show.bs.modal', function (e) {
-        //    var anim = "slideInRight";
-        //    testAnim(anim);
-        //})
-        //$('#myModalForModule').on('hide.bs.modal', function (e) {
-        //    var anim = "slideOutRight";
-        //    testAnim(anim);
-        //})
+
 
         function showArraylist() {
 
@@ -112,7 +105,7 @@
             var lastpushedModuleid = 0;
 
             $("ul.module > li.limodule  input:checkbox:checked").each(function () {
-                // alert($(this).attr("name"))
+               
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
                 }

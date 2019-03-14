@@ -30,6 +30,8 @@ namespace QBA.Qutilize.WebApp.Models
 
         public int UserOrgId { get; set; }
 
+        public int UserOrgName { get; set; }
+
         public int ManagerId { get; set; }
         public List<int> DepartmentIds { get; set; }
         public string DepartmentIdsInString { get; set; }
@@ -50,8 +52,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string AlterNetContactNo { get; set; }
 
         [Display(Name = "Birth Date")]
-        //[DataType(DataType.Date, ErrorMessage = "Date only")]
-        //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+
         public DateTime? BirthDate { get; set; }
 
 
@@ -301,14 +302,15 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        public DataTable checkemail(string email)
+        public DataTable checkemail(string email, int orgId)
         {
             DataTable dt = null;
 
             try
             {
                 SqlParameter[] param ={
-                                        new SqlParameter("@Email",email)
+                                        new SqlParameter("@Email",email),
+                                        new SqlParameter("@orgId",orgId)
                                       };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_CheckEmail]", param);
             }
