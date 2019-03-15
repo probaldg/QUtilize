@@ -1,10 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Helper
 {
@@ -52,14 +49,15 @@ namespace QBA.Qutilize.WebApp.Helper
 
             try
             {
-                if (dt.Rows.Count > 0)
+                if (dt != null && dt.Rows.Count > 0)
                 {
                     int rowCounter = 0;
 
                     foreach (DataRow item in dt.Rows)
                     {
                         UserRoleIDs = new int[dt.Rows.Count];
-                        UserRoleIDs[rowCounter] = Convert.ToInt32(item["RoleId"]);
+                        if (item["RoleId"] != DBNull.Value)
+                            UserRoleIDs[rowCounter] = Convert.ToInt32(item["RoleId"]);
                         rowCounter++;
                     }
                     IsRoleSysAdmin = CheckUserIsSysAdmin(UserRoleIDs);

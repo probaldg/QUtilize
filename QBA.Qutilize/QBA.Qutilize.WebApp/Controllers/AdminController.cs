@@ -466,10 +466,10 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    int i = 0;
+                    int i = 0; //
 
                     strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
                     strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
                     strProjectMapped += "</td>";
                     i++;
@@ -480,13 +480,44 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strProjectMapped);
         }
 
-        public ActionResult LoadAllModules()
+        //public ActionResult LoadAllModules()
+        //{
+        //    UserProjectMappingModel obj = new UserProjectMappingModel();
+        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+        //    DataTable dt = new DataTable();
+
+        //    if (userInfo.IsRoleSysAdmin)
+        //    {
+        //        dt = obj.GetAllProjects();
+        //    }
+        //    else
+        //    {
+        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+        //    }
+
+        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+        //        strModules += "</div>";
+        //    }
+        //    strModules += @"</div>";
+
+        //    return Content(strModules);
+        //}
+
+
+
+        public ActionResult LoadAllModules(int Userid)
         {
             UserProjectMappingModel obj = new UserProjectMappingModel();
-            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            //var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            //UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
-
+            UserInfoHelper userInfo = new UserInfoHelper(Userid);
             DataTable dt = new DataTable();
 
             if (userInfo.IsRoleSysAdmin)
@@ -497,74 +528,61 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 dt = obj.GetAllProjects(userInfo.UserOrganisationID);
             }
-            string strModules = string.Empty;
 
-            foreach (DataRow dr in dt.Rows)
+
+            if (Session["AllProjectList"] != null)
             {
-                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
-                                dr["Name"].ToString();
-
-                strModules += "</li>";
-                strModules += "</ul>";
-
+                Session.Remove("AllProjectList");
+                Session["AllProjectList"] = dt;
+            }
+            else
+            {
+                Session["AllProjectList"] = dt;
             }
 
 
-            return Content(strModules);
+            string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+            foreach (DataRow dr in dt.Rows)
+            {
+                strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+                strModules += "</div>";
+            }
+            strModules += @"</div>";
+
+            return Json(strModules);
         }
-        //public ActionResult LoadAllModules()
-        //{
-        //    UserProjectMappingModel obj = new UserProjectMappingModel();
-        //    DataTable dt = obj.GetAllProjects();
-        //    string strModules = string.Empty;
-        //    strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-        //    strModules += "<tabel Border=1>";
-        //    //foreach (DataRow dr in dt.Rows)
-        //    //{
-        //    //    //strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-        //    //strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
-        //    //                dr["Name"].ToString();
-        //    //strModules += "</li>";
-        //    //}
-
-        //    int columnCount = 3;
-        //    int rowsCount = GetRowAndColumnCount(dt.Rows.Count, columnCount);
-        //    strModules += "<tr>";
-        //    for (int i = 0; i <= rowsCount; i++)
-        //    {
-        //        int dtRowCounter = 0;
-
-        //        int col = 0;
-        //        if (col <= 3 && col % 3 != 0 && col !=0)
-        //        {
-        //            strModules += "<td><li class='limodule' style='list-style: none;margin:10px;'>";
-
-        //            strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dt.Rows[dtRowCounter]["Id"].ToString() + "'>" +
-        //                            dt.Rows[dtRowCounter]["Name"].ToString();
-        //             strModules += "</li>";
-        //            col++;
-        //            dtRowCounter++;
-        //        }
-        //        else
-        //        {
-        //            strModules += "</tr >";
-        //            if (col == 3)
-        //            {
-        //                col = 0;
-        //                rowsCount++;
-        //                strModules += "</tr>";
-        //            }
-        //        }
 
 
-        //    }
+        public ActionResult SearchProject(string searchFilter)
+        {
+            //ViewBag.ProjectListDataTable
+            string strModules = String.Empty;
+            if (Session["AllProjectList"] != null)
+            {
+                DataTable dataTable = (DataTable)Session["AllProjectList"];
 
-        //    strModules += "</tabel>";
-        //    strModules += "</ul>";
-        //    return Content(strModules);
-        //}
+                if (dataTable.Rows.Count > 0)
+                {
+
+                    var datarow = dataTable.Select("Name like '" + searchFilter + "%'");
+
+                    if (datarow.Length > 0)
+                    {
+                        DataTable dt = datarow.CopyToDataTable();
+                        strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+                            strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+                            strModules += "</div>";
+                        }
+                        strModules += @"</div>";
+                    }
+                }
+            }
+            return Json(strModules);
+        }
         public ActionResult GetProjectMappedToUser(int id)
         {
             UserProjectMappingModel upm = new UserProjectMappingModel();
@@ -607,6 +625,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     mm.ProjectId = i.ProjectId;
                     mm.InsertUserProjectMappingdata(mm);
                 }
+
+                if (Session["AllProjectList"] != null)
+                {
+                    Session.Remove("AllProjectList");
+                }
+
             }
             catch (Exception)
             {

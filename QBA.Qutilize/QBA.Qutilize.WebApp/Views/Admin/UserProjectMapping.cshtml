@@ -26,6 +26,7 @@
                 <tr>
                     <th class="text-center">ID</th>
                     <th class="text-center">Name</th>
+                    <th class="text-center">Organisation</th>
                     <th class="text-center">Map Projects</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
@@ -34,6 +35,7 @@
                 @Html.Action("LoadALLUserMapped", "Admin")
             </tbody>
         </table>
+        <input type="hidden" name="UserID" id="hdnUserID" />
     </div>
     <div class="col-md-12"><br /></div>
 
@@ -48,9 +50,20 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="UserID" id="UserID" />
-                    @Html.Action("LoadAllModules", "Admin")
+                    <form class="navbar-form" role="search">
+                        <div class="input-group add-on">
+                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="btnProjectSearch" ><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="popupBody">
+
+                    </div>
                 </div>
+
 
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-default" onclick="showArraylist()" value="Submit">
@@ -65,11 +78,37 @@
 
     <script type="text/javascript">
         function ShowPermission(id) {
-            var id = id;
-            $('input[name="UserID"]').val(id)
+
+
+            $('#hdnUserID').val('');
+            $('#hdnUserID').val(id);
+
+
             $("input[type='checkbox']").prop('checked', false)
 
-             $.ajax({
+            $.ajax({
+            url: '@Url.Action("LoadAllModules", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "Userid":id
+            }),
+
+                success: function (response) {
+                $('#popupBody').html('');
+                $('#popupBody').append(response);
+            },
+                error: function (response) {
+                    alert(Error);
+                console.log(response);
+            }
+        });
+
+
+
+            $.ajax({
             url: '@Url.Action("GetProjectMappedToUser", "Admin")',
             type: "POST",
             dataType: "json",
@@ -80,7 +119,7 @@
             }),
 
             success: function (response) {
-                console.log(response);
+
                 $.each(response, function (key, value) {
 
                     $("input[value='" + value.ProjectId + "']").prop('checked', true);
@@ -101,20 +140,20 @@
             var moduleid = [];
             var moduleids = [];
 
-            var UserID = document.getElementById("UserID").value;
+            var UserID = document.getElementById("hdnUserID").value;
+
             var lastpushedModuleid = 0;
 
-            $("ul.module > li.limodule  input:checkbox:checked").each(function () {
-               
+            $('#divProjectList input:checked').each(function () {
+                //selected.push($(this).attr('name'));
+
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
                 }
-
                 moduleids.push(moduleid);
+            });
 
-            })
             var length = moduleids.length
-           // alert(length);
 
             for (var i = 0; i < moduleids.length; i++) {
                 if (lastpushedModuleid != moduleids[i]) {
@@ -126,7 +165,6 @@
 
             lastpushedModuleid = moduleids[i];
 
-           // alert(Itemlist.length);
 
              $.ajax({
             url: '@Url.Action("SaveProjectMapping", "Admin")',
@@ -148,6 +186,48 @@
             }
         });
         }
+
+       
+         $('#srch-term').on('input',function () {
+             var searchFilter = $('#srch-term').val();
+             //var searchResult = $("#popupBody :contains(" + searchFilter + ")")
+             //if (searchResult.length > 0) {
+             //    searchResult.each(function (i, item) {
+             //        if (i > 0) {
+             //            item.firstChild.attr('background', 'gray');
+             //        }
+             //    })
+             //}
+             if (searchFilter = "") {
+                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "none");
+             }
+             else {
+                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "none");
+                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "underline");
+             }
+             
+
+            @*$.ajax({
+            url: '@Url.Action("SearchProject", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "searchFilter": searchFilter
+            }),
+
+                success: function (response) {
+                $('#popupBody').html('');
+                $('#popupBody').append(response);
+            },
+                error: function (response) {
+                    alert(Error);
+                console.log(response);
+            }
+        });*@
+        });
+
     </script>
 </body>
 </html>
