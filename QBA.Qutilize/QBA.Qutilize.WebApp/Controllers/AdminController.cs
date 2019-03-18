@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using QBA.Qutilize.WebApp.Helper;
+﻿using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -8,13 +7,13 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QBA.Qutilize.WebApp.Controllers
 {
     public class AdminController : Controller
     {
+        readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
         // GET: Admin
@@ -28,25 +27,87 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageUsers(int ID = 0)
         {
             UserModel obj = new UserModel();
+
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+            {
+                obj.OrganisationList.Clear();
+                obj.OrganisationList = obj.GetAllOrgInList();
+
+
+
+            }
+
+            else
+            {
+                obj.OrganisationList.Clear();
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID);
+                obj.OrganisationList.Add(organisation);
+
+                obj.UserOrgId = userInfo.UserOrganisationID;
+
+                obj.UsersList.Clear();
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID);
+                obj.DepartmentList.Clear();
+                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID);
+            }
+
+
             if (ID > 0)
             {
                 try
                 {
                     DataTable dt = new DataTable();
                     dt = obj.GetUsersByID(ID);
+
                     obj.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.UserName = dt.Rows[0]["UserName"].ToString();
-                    //obj.Password = dt.Rows[0]["Password"].ToString();
+                    obj.EmailId = dt.Rows[0]["EmailId"]?.ToString();
+                    obj.Designation = dt.Rows[0]["Designation"].ToString();
+                    if (dt.Rows[0]["ManagerId"] != DBNull.Value)
+                    {
+                        obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
+                    }
 
-                    obj.EmailId = dt.Rows[0]["EmailId"].ToString();
+                    obj.ContactNo = dt.Rows[0]["PhoneNo"]?.ToString();
+                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
 
+                    if (dt.Rows[0]["BirthDate"] != DBNull.Value)
+                    {
+                        obj.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).Date;
+                    }
+                    else
+                        obj.BirthDate = null;
+
+                    obj.Gender = dt.Rows[0]["Gender"]?.ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    // um.Update_UserDetails(obj);
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                    if (dt.Rows[0]["OrgID"] != DBNull.Value)
+                    {
+                        obj.UserOrgId = Convert.ToInt32(dt.Rows[0]["OrgID"]);
+                    }
+
+
+                    obj.UsersList.Clear();
+                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
+                    obj.DepartmentList.Clear();
+                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
+
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        obj.DepartmentIds.Add(Convert.ToInt32(item["DeptID"]));
+                        obj.DepartmentIdsInString += item["DeptID"].ToString() + ",";
+                    }
+
+
+                    obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
                 }
-                catch
+                catch (Exception ex)
                 {
 
                 }
@@ -62,21 +123,20 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 if (model.ID > 0)
                 {
-                    DataTable dt = new DataTable();
-                    dt = um.GetUsersByID(model.ID);
-                    model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
-                    model.EditedDate = DateTime.Now;
+                    if (ValidateRequest)
+                    {
+                        model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        model.EditedDate = DateTime.Now;
+                        um.Update_UserDetails(model);
+                        TempData["ErrStatus"] = model.ISErr.ToString();
+                    }
 
-
-                    um.Update_UserDetails(model);
-                    TempData["ErrStatus"] = model.ISErr.ToString();
                 }
                 else
                 {
-                    int id;
-                    if (System.Web.HttpContext.Current.Session["ID"] != null)
+                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                     {
-                        model.CreatedBy = (System.Web.HttpContext.Current.Session["ID"].ToString());
+                        model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                     }
 
                     model.CreateDate = DateTime.Now;
@@ -85,7 +145,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     model.IsActive = model.IsActive;
                     model.Password = password;
 
-                    um.InsertUserdata(model, out id);
+                    um.InsertUserdata(model, out int id);
                     if (id > 0)
                     {
 
@@ -130,23 +190,83 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strUserData = string.Empty;
 
             int i = 0;
-
-            DataTable dt = obj.GetAllUsers();
-
-
-            foreach (DataRow dr in dt.Rows)
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
             {
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                 "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
+                dtUsers = obj.GetAllUsers();
+                foreach (DataRow dr in dtUsers.Rows)
+                {
+
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
+                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
             }
+            else
+            {
+                dtUsers = obj.GetAllUsers(userInfo.UserOrganisationID);
+                foreach (DataRow dr in dtUsers.Rows)
+                {
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
+                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
+            }
+
             return Content(strUserData);
         }
 
-        public ActionResult Checkemail(string email)
+        public ActionResult GetManagers(int orgId)
+        {
+            UserModel user = new UserModel();
+            string strUserData = string.Empty;
+            try
+            {
+                var listUsers = user.GetAllUsersInList(orgId);
+                strUserData += "<option value = 0>Please select</option>";
+                foreach (UserModel item in listUsers)
+                {
+                    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Json(strUserData);
+        }
+
+        public ActionResult GetDepartments(int orgId)
+        {
+            UserModel user = new UserModel();
+            string strDeptData = string.Empty;
+            try
+            {
+                var listUsers = user.GetAllDepartmentInList(orgId);
+                strDeptData += "<option value = 0>Please select</option>";
+                foreach (DepartmentModel item in listUsers)
+                {
+                    strDeptData += "<option value=" + Convert.ToInt32(item.DepartmentID) + ">" + item.Name + "</option>";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Json(strDeptData);
+        }
+
+        public ActionResult Checkemail(string email, int orgId)
         {
             UserModel _um = new UserModel();
-            DataTable dt = _um.checkemail(email);
+            DataTable dt = _um.checkemail(email, orgId);
             string message = string.Empty;
             if (dt.Rows.Count > 0)
             {
@@ -202,22 +322,37 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dt = obj.GetAllProjects();
+                int i = 0;
+                foreach (DataRow item in dt.Rows)
+                {
+
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                    var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
+                    strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
+                                   "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
+                                    "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+
+                }
             }
             else
             {
+                int i = 0;
                 dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-            }
-            int i = 0;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
 
-            foreach (DataRow dr in dt.Rows)
-            {
-                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
 
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "<td class='text-center'>" + dr["DepartmentName"].ToString() +
-                 "<td class='text-center'>" + status + " </ td > " +
-                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
+                                    "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
+                                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
+
             }
+
             return Content(strUserData);
         }
         public ActionResult ManageProject(int ID = 0)
@@ -227,7 +362,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-          
+
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.DepartmentList = obj.GetDepartments();
@@ -245,7 +380,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ProjectID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
-                    obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
+                    if (dt.Rows[0]["DepartmentID"] != null)
+                    {
+                        obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
+
+                    }
                     obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
@@ -259,7 +398,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-               
+
 
             }
 
@@ -270,39 +409,48 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageProject(ProjectModel model)
         {
             ProjectModel obj = new ProjectModel();
-            if (model.ProjectID > 0)
+            try
             {
-                try
+                if (model.ProjectID > 0)
                 {
-                    obj = model;
-                    obj.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
-                    obj.EditedDate = DateTime.Now;
-                    obj.IsActive = model.IsActive;
+                    try
+                    {
+                        obj = model;
+                        obj.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                        obj.EditedDate = DateTime.Now;
+                        obj.IsActive = model.IsActive;
 
-                    obj.Update_ProjectDetails(obj);
+                        obj.Update_ProjectDetails(obj);
 
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                        TempData["ErrStatus"] = obj.ISErr.ToString();
+                    }
+                    catch
+                    {
+
+                    }
                 }
-                catch
+                else
                 {
 
+                    model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.CreateDate = DateTime.Now;
+
+                    model.IsActive = model.IsActive;
+
+                    obj.InsertProjectdata(model, out int id);
+                    if (id > 0)
+                    {
+
+                    }
+                    TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
-            else
+            catch (Exception ex)
             {
-
-                model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
-                model.CreateDate = DateTime.Now;
-
-                model.IsActive = model.IsActive;
-
-                obj.InsertProjectdata(model, out int id);
-                if (id > 0)
-                {
-
-                }
                 TempData["ErrStatus"] = model.ISErr.ToString();
+                throw;
             }
+
             return RedirectToAction("ManageProject", "Admin");
 
         }
@@ -335,10 +483,10 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 foreach (DataRow dr in dt.Rows)
                 {
-                    int i = 0;
+                    int i = 0; //
 
                     strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
                     strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
                     strProjectMapped += "</td>";
                     i++;
@@ -349,14 +497,44 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strProjectMapped);
         }
 
-        public ActionResult LoadAllModules()
+        //public ActionResult LoadAllModules()
+        //{
+        //    UserProjectMappingModel obj = new UserProjectMappingModel();
+        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+        //    DataTable dt = new DataTable();
+
+        //    if (userInfo.IsRoleSysAdmin)
+        //    {
+        //        dt = obj.GetAllProjects();
+        //    }
+        //    else
+        //    {
+        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+        //    }
+
+        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+        //        strModules += "</div>";
+        //    }
+        //    strModules += @"</div>";
+
+        //    return Content(strModules);
+        //}
+
+
+
+        public ActionResult LoadAllModules(int Userid)
         {
             UserProjectMappingModel obj = new UserProjectMappingModel();
-            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            //var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            //UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
-            //DataTable dt = obj.GetAllProjects();
-
+            UserInfoHelper userInfo = new UserInfoHelper(Userid);
             DataTable dt = new DataTable();
 
             if (userInfo.IsRoleSysAdmin)
@@ -367,72 +545,61 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 dt = obj.GetAllProjects(userInfo.UserOrganisationID);
             }
-            string strModules = string.Empty;
 
+
+            if (Session["AllProjectList"] != null)
+            {
+                Session.Remove("AllProjectList");
+                Session["AllProjectList"] = dt;
+            }
+            else
+            {
+                Session["AllProjectList"] = dt;
+            }
+
+
+            string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
             foreach (DataRow dr in dt.Rows)
             {
-                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
-                                dr["Name"].ToString();
-
-                strModules += "</li>";
-                strModules += "</ul>";
-
+                strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+                strModules += "</div>";
             }
-            return Content(strModules);
+            strModules += @"</div>";
+
+            return Json(strModules);
         }
-        //public ActionResult LoadAllModules()
-        //{
-        //    UserProjectMappingModel obj = new UserProjectMappingModel();
-        //    DataTable dt = obj.GetAllProjects();
-        //    string strModules = string.Empty;
-        //    strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-        //    strModules += "<tabel Border=1>";
-        //    //foreach (DataRow dr in dt.Rows)
-        //    //{
-        //    //    //strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-        //    //strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
-        //    //                dr["Name"].ToString();
-        //    //strModules += "</li>";
-        //    //}
-
-        //    int columnCount = 3;
-        //    int rowsCount = GetRowAndColumnCount(dt.Rows.Count, columnCount);
-        //    strModules += "<tr>";
-        //    for (int i = 0; i <= rowsCount; i++)
-        //    {
-        //        int dtRowCounter = 0;
-
-        //        int col = 0;
-        //        if (col <= 3 && col % 3 != 0 && col !=0)
-        //        {
-        //            strModules += "<td><li class='limodule' style='list-style: none;margin:10px;'>";
-
-        //            strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dt.Rows[dtRowCounter]["Id"].ToString() + "'>" +
-        //                            dt.Rows[dtRowCounter]["Name"].ToString();
-        //             strModules += "</li>";
-        //            col++;
-        //            dtRowCounter++;
-        //        }
-        //        else
-        //        {
-        //            strModules += "</tr >";
-        //            if (col == 3)
-        //            {
-        //                col = 0;
-        //                rowsCount++;
-        //                strModules += "</tr>";
-        //            }
-        //        }
 
 
-        //    }
+        public ActionResult SearchProject(string searchFilter)
+        {
+            //ViewBag.ProjectListDataTable
+            string strModules = String.Empty;
+            if (Session["AllProjectList"] != null)
+            {
+                DataTable dataTable = (DataTable)Session["AllProjectList"];
 
-        //    strModules += "</tabel>";
-        //    strModules += "</ul>";
-        //    return Content(strModules);
-        //}
+                if (dataTable.Rows.Count > 0)
+                {
+
+                    var datarow = dataTable.Select("Name like '" + searchFilter + "%'");
+
+                    if (datarow.Length > 0)
+                    {
+                        DataTable dt = datarow.CopyToDataTable();
+                        strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+                            strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+                            strModules += "</div>";
+                        }
+                        strModules += @"</div>";
+                    }
+                }
+            }
+            return Json(strModules);
+        }
         public ActionResult GetProjectMappedToUser(int id)
         {
             UserProjectMappingModel upm = new UserProjectMappingModel();
@@ -475,6 +642,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     mm.ProjectId = i.ProjectId;
                     mm.InsertUserProjectMappingdata(mm);
                 }
+
+                if (Session["AllProjectList"] != null)
+                {
+                    Session.Remove("AllProjectList");
+                }
+
             }
             catch (Exception)
             {
@@ -975,7 +1148,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     mm.Name = dt.Rows[0]["Name"].ToString();
                     mm.URL = dt.Rows[0]["URL"].ToString();
 
-                    
+
 
                     if (dt.Rows[0]["ParentID"].ToString() != "")
                     {
@@ -984,29 +1157,29 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
                         mm.ParentID = 0;
-                    }                    
+                    }
                     mm.Description = dt.Rows[0]["Description"].ToString();
                     mm.DisplayCSS = dt.Rows[0]["DisplayCSS"].ToString();
                     mm.DisplayIcon = dt.Rows[0]["DisplayIcon"].ToString();
-                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();    
-                    mm.Rank= int.Parse(dt.Rows[0]["Rank"].ToString());
-                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);                   
+                    mm.DisplayName = dt.Rows[0]["DisplayName"].ToString();
+                    mm.Rank = int.Parse(dt.Rows[0]["Rank"].ToString());
+                    mm.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
                 }
                 else
                 {
                     mm.Name = "";
                     mm.URL = "";
-                    mm.ParentID= 0;
+                    mm.ParentID = 0;
                     mm.Description = "";
                     mm.DisplayName = "";
                     mm.DisplayCSS = "";
                     mm.DisplayIcon = "";
-                    
+
                 }
             }
             catch (Exception exx)
             {
-                
+
             }
 
             return View(mm);
@@ -1030,13 +1203,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow dr in dt.Rows)
                 {
                     strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>"+"<td class='text-center'><i class='"+ dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>" + "<td class='text-center'><i class='" + dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
                        "<td  class='text-center'><a href = 'ManageModule?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
                     i++;
                 }
             }
-            catch (Exception exc) {
-               throw exc;
+            catch (Exception exc)
+            {
+                throw exc;
             }
             return Content(strOrganisation);
 
@@ -1053,8 +1227,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     obj = model;
                     obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
-                    obj.EditedTS = Convert.ToDateTime( DateTime.Now.ToString());
-                    obj.isActive = Convert.ToBoolean(model.isActive) ;
+                    obj.EditedTS = Convert.ToDateTime(DateTime.Now.ToString());
+                    obj.isActive = Convert.ToBoolean(model.isActive);
 
                     obj.Update_ModuleDetails(obj);
 
@@ -1201,9 +1375,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             foreach (DataRow dr in dt.Rows)
             {
+                var status = string.Empty;
+                if (Convert.ToBoolean(dr["isACTIVE"]))
+                    status = "Active";
+                else
+                    status = "InActive";
 
                 strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["NAME"].ToString() + "</td>" + "<td class='text-center'>" + dr["DESCRIPTION"].ToString() + "</td>" + "<td class='text-center'>" + dr["DepartmentHead"] + "</td>" + "<td class='text-center'>" + dr["OrganisationName"] + "</td>" +
-                                     "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                                        "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageDepartment?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                 i++;
             }
             return Content(strUserData);

@@ -45,7 +45,7 @@
             Data Saved Successfully!!!
         </div>
     </div>
-    <h4>Manage User</h4>
+    <h4>Manage Department</h4>
     <br />
 
     <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -58,6 +58,7 @@
                     <th class="text-center">Description</th>
                     <th class="text-center">Department Head</th>
                     <th class="text-center">Organisation</th>
+                     <th class="text-center">Status</th>
                     <th class="text-center">Edit</th>
                 </tr>
             </thead>
@@ -196,6 +197,11 @@
             }
         });
 
+        $('#Users').change(function () {
+            $('#Department_DepartmentHeadId').val(this.value)
+
+        });
+
         $("#Organisations").change(function () {
             $('#Department_OrganisationID').val(this.value)
             //console.log(this.value);
@@ -211,7 +217,7 @@
                         orgId: +orgID
                     }),
                     success: function (result) {
-                        console.log(result);
+                       
                         $("#Users").html("");
                         $("#Users").append(result);
 
@@ -239,7 +245,7 @@
                 return false;
             }
             if (description == "") {
-                ShowError(" Description name is required..");
+                ShowError(" Description  is required..");
                 return false;
             }
 

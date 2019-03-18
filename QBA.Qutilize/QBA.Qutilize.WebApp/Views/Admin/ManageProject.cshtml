@@ -55,9 +55,9 @@
                     <th class="text-center">ID</th>
                     <th class="text-center">Project Name</th>
                     <th class="text-center">Description</th>
-                    <th class="text-center">Department Name</th>
+                    <th class="text-center">Department</th>
+                    <th class="text-center">Organisation</th>
                     <th class="text-center">Status</th>
-
                     <th class="text-center">Edit</th>
 
                 </tr>
@@ -171,7 +171,9 @@
         }
 
         $("#DepartmentList").change(function () {
+           // alert($("#DepartmentList").val());
             var departmentId = $("#DepartmentList").val();
+           
             $('#DepartmentID').val(departmentId);
 
         });
