@@ -327,6 +327,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
 
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                    var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
                     strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
                                    "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
                                     "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
@@ -341,8 +342,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow dr in dt.Rows)
                 {
                     string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "<td class='text-center'>" + dr["DepartmentName"].ToString() +
-                                    "<td class='text-center'>" + status + " </ td > " +
+                    var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
+
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
+
+                                    "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
                                     "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
                     i++;
                 }
@@ -376,7 +380,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ProjectID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
-                    obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
+                    if (dt.Rows[0]["DepartmentID"] != null)
+                    {
+                        obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
+
+                    }
                     obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
@@ -401,39 +409,48 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageProject(ProjectModel model)
         {
             ProjectModel obj = new ProjectModel();
-            if (model.ProjectID > 0)
+            try
             {
-                try
+                if (model.ProjectID > 0)
                 {
-                    obj = model;
-                    obj.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
-                    obj.EditedDate = DateTime.Now;
-                    obj.IsActive = model.IsActive;
+                    try
+                    {
+                        obj = model;
+                        obj.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                        obj.EditedDate = DateTime.Now;
+                        obj.IsActive = model.IsActive;
 
-                    obj.Update_ProjectDetails(obj);
+                        obj.Update_ProjectDetails(obj);
 
-                    TempData["ErrStatus"] = obj.ISErr.ToString();
+                        TempData["ErrStatus"] = obj.ISErr.ToString();
+                    }
+                    catch
+                    {
+
+                    }
                 }
-                catch
+                else
                 {
 
+                    model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.CreateDate = DateTime.Now;
+
+                    model.IsActive = model.IsActive;
+
+                    obj.InsertProjectdata(model, out int id);
+                    if (id > 0)
+                    {
+
+                    }
+                    TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
-            else
+            catch (Exception ex)
             {
-
-                model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
-                model.CreateDate = DateTime.Now;
-
-                model.IsActive = model.IsActive;
-
-                obj.InsertProjectdata(model, out int id);
-                if (id > 0)
-                {
-
-                }
                 TempData["ErrStatus"] = model.ISErr.ToString();
+                throw;
             }
+
             return RedirectToAction("ManageProject", "Admin");
 
         }
