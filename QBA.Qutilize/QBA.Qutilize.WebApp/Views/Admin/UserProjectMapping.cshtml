@@ -53,9 +53,9 @@
                     <form class="navbar-form" role="search">
                         <div class="input-group add-on">
                             <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
-                            <div class="input-group-btn">
+                            @*<div class="input-group-btn">
                                 <button class="btn btn-default" type="button" id="btnProjectSearch" ><i class="glyphicon glyphicon-search"></i></button>
-                            </div>
+                            </div>*@
                         </div>
                     </form>
 
@@ -189,43 +189,36 @@
 
        
          $('#srch-term').on('input',function () {
-             var searchFilter = $('#srch-term').val();
-             //var searchResult = $("#popupBody :contains(" + searchFilter + ")")
-             //if (searchResult.length > 0) {
-             //    searchResult.each(function (i, item) {
-             //        if (i > 0) {
-             //            item.firstChild.attr('background', 'gray');
-             //        }
-             //    })
+             //var searchFilter = $('#srch-term').val();
+             //var searchResult;
+             //if (searchFilter != "") {
+             //    searchResult = $("#divProjectList :contains(" + searchFilter + ")");
+             //    if (searchResult.length > 0) {
+             //        searchResult.each(function (i, item) {
+             //            if (i > 0) {
+             //                searchResult.css({ "color": "white", "background-color": "gray" });
+             //            }
+             //        })
+             //    }
              //}
-             if (searchFilter = "") {
-                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "none");
+             //else {
+             //    if (searchResult != null) {
+             //        searchResult.css({ "color": "black", "background-color": "white" });
+             //    }
+             //    $("#divProjectList").css({ "color": "black", "background-color": "white" });
+                 
+             //}
+            
+             var searchFilter = $('#srch-term').val();
+             
+             if (searchFilter == "") {
+                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
              }
              else {
-                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "none");
-                 $("#popupBody :contains(" + searchFilter + ")").css("text-decoration", "underline");
+                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
+                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
              }
-             
 
-            @*$.ajax({
-            url: '@Url.Action("SearchProject", "Admin")',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-
-            data: JSON.stringify({
-                "searchFilter": searchFilter
-            }),
-
-                success: function (response) {
-                $('#popupBody').html('');
-                $('#popupBody').append(response);
-            },
-                error: function (response) {
-                    alert(Error);
-                console.log(response);
-            }
-        });*@
         });
 
     </script>
