@@ -1,11 +1,8 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -15,7 +12,7 @@ namespace QBA.Qutilize.WebApp.Models
         public int UserId { get; set; }
         public string RoleName { get; set; }
         public int RoleId { get; set; }
-       
+
         public int EditedBy { get; set; }
         public int AddedBy { get; set; }
         public DateTime AddedTS { get; set; }
@@ -45,12 +42,28 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-        public DataTable GetAllRoles()
+        //public DataTable GetAllRoles()
+        //{
+        //    DataTable dt = null;
+        //    try
+        //    {
+        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+        public DataTable GetAllRoles(int? OrgId = null)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]", param);
             }
             catch (Exception ex)
             {
@@ -58,6 +71,7 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+
         public DataTable DeleteAllExistingMapping(int UserID)
         {
             DataTable dt = null;
