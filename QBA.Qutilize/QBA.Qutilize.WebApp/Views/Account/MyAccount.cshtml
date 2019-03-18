@@ -5,8 +5,62 @@
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 
-<h2>My Account</h2>
-
+@*<h3>More on @Html.Raw(Html.AttributeEncode(ViewBag.Name))</h3>*@
+<div class="box box-widget widget-user">
+    <!-- Add the bg color to the header using any of the bg-* classes -->
+    <div class="widget-user-header bg-aqua-active">
+        <h3 class="widget-user-username">@Html.Raw(Html.AttributeEncode(ViewBag.Name))</h3>
+        <h5 class="widget-user-desc">Founder &amp; CEO</h5>
+    </div>
+    <div class="widget-user-image">
+        @*<img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Avatar">*@
+        <span class="glyphicon glyphicon-user icon-size img-circle"></span>
+    </div>
+    <div class="box-footer">
+        <div class="row">
+            <div class="col-sm-4 border-right">
+                <div class="description-block">
+                    <div class="box box-info">
+                        <div class="box-header">
+                            <span class="description-text box-title">Basic Info</span>
+                        </div>
+                        <div class="box-body">
+                            3,200
+                        </div>
+                    </div>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <div class="col-sm-4 border-right">
+                <div class="description-block">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <span class="description-text box-title">Personal Info</span>
+                        </div>
+                        <div class="box-body">
+                            3,200
+                        </div>
+                    </div>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <div class="col-sm-4 border-right">
+                <div class="description-block">
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            <span class="description-text box-title">Work Info</span>
+                        </div>
+                        <div class="box-body">
+                            3,200
+                        </div>
+                    </div>
+                </div>
+                <!-- /.description-block -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+</div>
 <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
     <div class="form-group">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
