@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QBA.Qutilize.WebApp.Models
@@ -106,12 +104,12 @@ namespace QBA.Qutilize.WebApp.Models
                         dailyTaskModel.ProjectID = Convert.ToInt32(item["ProjectId"]);
                         dailyTaskModel.ProjectName = item["ProjectName"].ToString();
 
-                        if (!DBNull.Value.Equals(item["TaskDate"]))
-                        {
-                            dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
-                        }
-                        else
-                            dailyTaskModel.TaskDate = Convert.ToDateTime(item["StartTime"]);
+                        //if (!DBNull.Value.Equals(item["TaskDate"]))
+                        //{
+                        //    dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
+                        //}
+                        //else
+                        dailyTaskModel.TaskDate = Convert.ToDateTime(item["StartTime"]);
 
 
                         dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
