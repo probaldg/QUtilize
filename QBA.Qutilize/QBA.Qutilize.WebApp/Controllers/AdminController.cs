@@ -663,6 +663,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             RoleModel obj = new RoleModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
+            obj.OrganisationList = obj.GetAllOrgInList();
+
             if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
             {
                 return RedirectToAction("DashBoard", "Home");
@@ -677,7 +679,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
-
+                    obj.RolesOrgID = Convert.ToInt32(dt.Rows[0]["OrgId"]);
 
                 }
                 catch
@@ -702,7 +704,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     DataTable dt = new DataTable();
                     dt = um.GetUsersByID(model.Id);
-                    model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                     model.EditedDate = DateTime.Now;
                     rm.Update_RoleDetails(model);
 
@@ -711,9 +713,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else
                 {
                     int id;
-                    if (System.Web.HttpContext.Current.Session["ID"] != null)
+                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                     {
-                        model.CreatedBy = (System.Web.HttpContext.Current.Session["ID"].ToString());
+                        model.CreatedBy = (System.Web.HttpContext.Current.Session["sessUser"].ToString());
                     }
 
                     model.CreateDate = DateTime.Now;
@@ -736,21 +738,38 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         public ActionResult LoadRoleData()
         {
-            RoleModel obj = new RoleModel();
-
+            DataTable dtRoles = new DataTable();
             string strUserData = string.Empty;
-
-            int i = 0;
-
-            DataTable dt = obj.GetAllRoles();
-
-
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" +
-                                 "<td class='text-center'>" + dr["isActive"].ToString() + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                RoleModel obj = new RoleModel();
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dtRoles = obj.GetAllRoles();
+                }
+                else
+                {
+                    dtRoles = obj.GetAllRoles(userInfo.UserOrganisationID);
+                }
+
+                int i = 0;
+
+                foreach (DataRow dr in dtRoles.Rows)
+                {
+                    var Status = Convert.ToBoolean(dr["isActive"]) == true ? "Active" : "InActive";
+
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" +
+                                     "<td class='text-center'>" + Status + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
             return Content(strUserData);
         }
         #endregion

@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -15,7 +13,9 @@ namespace QBA.Qutilize.WebApp.Models
         public string Name { get; set; }
 
         public string Description { get; set; }
+        public List<OrganisationModel> OrganisationList { get; set; }
 
+        public int RolesOrgID { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
@@ -29,11 +29,18 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetAllRoles()
+        public RoleModel()
+        {
+            OrganisationList = new List<OrganisationModel>();
+        }
+        public DataTable GetAllRoles(int? OrgId = null)
         {
             DataTable dt = null;
             try
             {
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
             }
             catch (Exception ex)
@@ -76,7 +83,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Description",model.Description),
                    new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
-                    new SqlParameter("@IsActive",model.IsActive)
+                    new SqlParameter("@IsActive",model.IsActive),
+                    new SqlParameter("@OrgId",model.RolesOrgID)
 
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Insert]", param);
@@ -121,6 +129,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@IsActive",model.IsActive),
+                     new SqlParameter("@OrgId",model.RolesOrgID)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Update]", param);
             }
@@ -129,6 +138,30 @@ namespace QBA.Qutilize.WebApp.Models
                 result = false;
             }
             return result;
+        }
+
+        public List<OrganisationModel> GetAllOrgInList(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<OrganisationModel> Organisations = new List<OrganisationModel>();
+            try
+            {
+
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[SP_GetAllOrganisation]");
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    OrganisationModel organisation = new OrganisationModel();
+                    organisation.id = Convert.ToInt32(item["id"]);
+                    organisation.orgname = item["orgname"].ToString();
+                    Organisations.Add(organisation);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Organisations;
         }
     }
 }
