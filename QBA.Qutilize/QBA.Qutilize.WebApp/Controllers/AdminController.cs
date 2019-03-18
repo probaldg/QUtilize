@@ -961,22 +961,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         #endregion
 
 
-        private int GetRowAndColumnCount(int dtRowsCount, int columnCount)
-        {
-            var divisionResult = dtRowsCount % columnCount;
-            var rowCount = dtRowsCount / columnCount;
-            int rows;
-            if (divisionResult == 0)
-            {
-                rows = rowCount;
-            }
-            else
-            {
-                rows = rowCount + 1;
-            }
-
-            return rows;
-        }
 
         #region Organization 
         public ActionResult ManageOrganisation(int id = 0)
