@@ -1,12 +1,9 @@
-﻿using QBA.Qutilize.Models;
-using QBA.Qutilize.WebApp.Helper;
+﻿using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using DailyTaskModel = QBA.Qutilize.WebApp.Models.DailyTaskModel;
 
@@ -52,7 +49,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
 
-                if (startTime.ToShortDateString() != Convert.ToDateTime(taskDate).ToShortDateString())
+                if (startTime.ToShortDateString() != Convert.ToDateTime(model.DailyTaskModel.TaskDate).ToShortDateString())
                 {
                     var tempStartTime = startTime.TimeOfDay;
                     var tempEndTime = endTime.TimeOfDay;
@@ -62,10 +59,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     endTime = newEndtTime;
                 }
 
-              if( ValidateMaxTaskTimeInsert(startTime, endTime))
+                if (ValidateMaxTaskTimeInsert(startTime, endTime))
                 {
                     int userId = Convert.ToInt32(Session["sessUser"]);
-                    
+
                     if (userId != 0)
                         model.DailyTaskModel.UserID = userId;
 
@@ -85,7 +82,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         result = "Success";
                     RedirectToAction("Index", "DailyTask");
                 }
-              else
+                else
                 {
                     result = "Invalid";
                 }
@@ -140,7 +137,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
                 EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
                 Description = model.Description,
-                TaskName=model.TaskName,
+                TaskName = model.TaskName,
                 Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
             });
 

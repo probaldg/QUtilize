@@ -147,13 +147,13 @@
                             <TextBlock Text="{Binding ProjectName}" FontSize="16" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Bottom"/>
                             <TextBlock Text="{Binding Description}" FontSize="12" FontWeight="Normal" Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Left"  Margin="5,0,0,0" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" />
 
-                            <ToggleButton Width="47" Height="24" x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="0" Grid.Column="1"
+                            <ToggleButton Width="45" Height="22" x:Name="toggleProject" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource SwitchTypeToggleButton}" Grid.Row="0" Grid.Column="1"
                                 Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}"
                                 CommandParameter="{Binding ProjectID}" 
                                 IsChecked="{Binding IsCurrentProject, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}"/>
                             
                             <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding TimeElapsedHeading, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left"  Margin="5,0,0,0"/>
+                                <!--<TextBlock Text="{Binding TimeElapsedHeading, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left"  Margin="5,0,0,0"/>-->
                                 <TextBlock Text="{Binding TimeElapsedValue, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" FontSize="12" FontWeight="Bold"  HorizontalAlignment="Left"   Margin="5,0,0,0"/>
 
                             </StackPanel>

@@ -15,7 +15,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Sys Admin Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                 </div>
                 <div class="panel-body">Panel content</div>
             </div>
@@ -29,7 +29,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Admin Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                 </div>
                 <div class="panel-body">
                     <div class="row" id="DashBoardAdminSummary">
@@ -94,7 +94,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Manager data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                 </div>
                 <div class="panel-body">
                     <div class="row" id="DashBoardPMSummary">
@@ -142,7 +142,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">Self Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down"></i></span>
+                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                 </div>
                 <div class="panel-body">
 
@@ -179,10 +179,12 @@
         </div>
     </div>
 }
-
-
 <script>
     $(document).ready(function () {
+
+        //$(".datepicker").datepicker();
+        $('#txtStartDate').datepicker();
+        $('#txtEndDate').datepicker();
         gerBarChartData();
         gerDonutChartData();
         gerDonutChartDataUserWiseAdmin();
@@ -362,7 +364,7 @@
                 }),
                 success: function (response) {
                     if (response != "") {
-                        gerBarChartData();
+                        @*gerBarChartData();
                         gerDonutChartData();
                         $("#divActualData").html(response);
                         gerDonutChartDataUserWiseAdmin();
@@ -372,7 +374,9 @@
                         gerDonutChartDataUserWisePM();
                         gerDonutChartDataProjectWisePM();
                         gerBarChartDataPM();
-                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
+                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');*@
+                        var url = '@Url.Action("DashBoard", "Home")';
+                        window.location.href = url;
                     }
                 }
             });
