@@ -17,12 +17,13 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadSideMenu()
         {
             AccountViewModels obj = new Models.AccountViewModels();
-            StringBuilder strMenu =new StringBuilder();
+            StringBuilder strMenu = new StringBuilder();
             DataTable dt = obj.GetDashBoardMenu(Convert.ToInt32(Session["sessUser"]));
             if (dt != null && dt.Rows.Count > 0)
             {
-                try {
-                    strMenu.Append(GetSideMenuContent(dt,""));
+                try
+                {
+                    strMenu.Append(GetSideMenuContent(dt, ""));
                 }
                 catch (Exception exx) { }
             }
@@ -78,29 +79,61 @@ namespace QBA.Qutilize.WebApp.Controllers
                 UserModel user = new UserModel();
                 try
                 {
-                    DataTable dt = user.GetMyAccountData(int.Parse(System.Web.HttpContext.Current.Session["sessUser"].ToString()));
-                    if (dt.Rows.Count > 0)
+                    if (Session["sessUserAllData"] != null)
                     {
-                        user.ID = int.Parse(dt.Rows[0]["Id"].ToString());
-                        user.Name = dt.Rows[0]["Name"].ToString();
-                       
-                        user.EmailId = dt.Rows[0]["EmailId"].ToString();
-                      
-
-                        ViewBag.ID = int.Parse(dt.Rows[0]["ID"].ToString());
-                        ViewBag.Name = dt.Rows[0]["Name"].ToString();
-                        ViewBag.Email = dt.Rows[0]["EmailId"].ToString();
-                        //  ViewBag.OrgName = dt.Rows[0]["orgname"].ToString();
-                        // ViewBag.Designation = dt.Rows[0]["Designation"].ToString();
+                        DataSet dsSess = (DataSet)Session["sessUserAllData"];
+                        if (dsSess != null && dsSess.Tables.Count > 0)
+                        {
+                            if (dsSess.Tables[0] != null && dsSess.Tables[0].Rows.Count > 0)
+                            {
+                                user.ID = int.Parse(dsSess.Tables[0].Rows[0]["Id"].ToString());
+                                user.UserName = dsSess.Tables[0].Rows[0]["UserName"]?.ToString();
+                                user.Name = dsSess.Tables[0].Rows[0]["Name"]?.ToString();
+                                user.ManagerId = int.Parse(dsSess.Tables[0].Rows[0]["managerID"]?.ToString());
+                                user.ManagerName = dsSess.Tables[0].Rows[0]["ManagerName"]?.ToString();
+                                user.ManagerEmpCode = dsSess.Tables[0].Rows[0]["ManagerEmpCode"]?.ToString();
+                                user.EmailId = dsSess.Tables[0].Rows[0]["EmailId"]?.ToString();
+                                user.EmployeeCode = dsSess.Tables[0].Rows[0]["EmployeeCode"]?.ToString();
+                                user.Designation = dsSess.Tables[0].Rows[0]["Designation"]?.ToString();
+                                user.ContactNo = dsSess.Tables[0].Rows[0]["PhoneNo"].ToString();
+                                user.AlterNetContactNo = dsSess.Tables[0].Rows[0]["AlternateConatctNo"]?.ToString();
+                                if (dsSess.Tables[0].Rows[0]["BirthDate"] != DBNull.Value)
+                                {
+                                    user.BirthDate = Convert.ToDateTime(dsSess.Tables[0].Rows[0]["BirthDate"]).Date;
+                                }
+                                else
+                                    user.BirthDate = null;
+                                user.Gender = dsSess.Tables[0].Rows[0]["Gender"]?.ToString();
+                            }
+                            if (dsSess.Tables[0] != null && dsSess.Tables[1].Rows.Count > 0)
+                            {
+                                foreach (DataRow drR in dsSess.Tables[1].Rows)
+                                {
+                                    user.RoleName += "<li>"+Convert.ToString(drR["RoleName"])+"</li>";
+                                }
+                            }
+                            else
+                                user.RoleName = string.Empty;
+                        }
                     }
+                    //DataTable dt = user.GetMyAccountData(int.Parse(System.Web.HttpContext.Current.Session["sessUser"].ToString()));
+                    //if (dt.Rows.Count > 0)
+                    //{
+                    //    user.ID = int.Parse(dt.Rows[0]["Id"].ToString());
+                    //    user.Name = dt.Rows[0]["Name"].ToString();
+
+                    //    user.EmailId = dt.Rows[0]["EmailId"].ToString();
+
+
+                    //    ViewBag.ID = int.Parse(dt.Rows[0]["ID"].ToString());
+                    //    ViewBag.Name = dt.Rows[0]["Name"].ToString();
+                    //    ViewBag.Email = dt.Rows[0]["EmailId"].ToString();
+                    //    //  ViewBag.OrgName = dt.Rows[0]["orgname"].ToString();
+                    //    // ViewBag.Designation = dt.Rows[0]["Designation"].ToString();
+                    //}
                     return View(user);
                 }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-               
+                catch (Exception exx) { throw; }
             }
             else
             {
@@ -124,7 +157,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 //throw;
             }
-           
+
             return Json("updated");
         }
 
