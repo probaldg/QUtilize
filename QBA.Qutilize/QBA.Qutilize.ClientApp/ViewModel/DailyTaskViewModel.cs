@@ -84,7 +84,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 if (currProject != null && currProject.PreviousElapsedTime != null)
                 {
                     currProject.TimeElapsedValue = currProject.PreviousElapsedTime.Add(diffrenceInTime).ToString(@"hh\:mm\:ss");
+
                     currProject.PreviousElapsedTime = TimeSpan.Zero;
+
+                    currProject.PreviousElapsedTime = TimeSpan.Zero;
+
                 }
                 else
                 {
@@ -304,13 +308,25 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     var currProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
                     // Save current time elapsed of the project.
 
+
                     currProj.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
 
                     currProj.IsCurrentProject = false;
 
+
+
+                    currProj.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+
+                    currProj.IsCurrentProject = false;
+
+
                     ////Making the selecedindex to the selected project...
                     ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList()
                         .FindIndex(x => x.ProjectID == Convert.ToInt32(ProjectID));
+
+
+
+
 
 
 
