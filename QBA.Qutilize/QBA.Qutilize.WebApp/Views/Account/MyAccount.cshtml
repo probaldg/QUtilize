@@ -24,20 +24,31 @@
                         <div class="box-header">
                             <span class="description-text box-title">Basic Info</span>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body" style="text-align:left;">
                             <div class="form-group row">
                                 @Html.LabelFor(m => m.EmployeeCode, htmlAttributes: new { @class = "control-label col-md-5" })
                                 <div class="col-md-7">
-                                    @Html.DisplayFor(m => m.EmailId)
+                                    @Html.DisplayFor(m => m.EmployeeCode)
                                 </div>
                             </div>
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.ManagerName,htmlAttributes: new { @class = "control-label col-md-5" })
+                                @Html.LabelFor(m => m.ManagerName, htmlAttributes: new { @class = "control-label col-md-5" })
                                 <div class="col-md-7">
-                                    @Html.DisplayFor(m => m.ManagerName);@Html.DisplayFor(m => m.ManagerEmpCode);
+                                    @Html.DisplayFor(m => m.ManagerName)
                                 </div>
                             </div>
-                            
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ManagerEmpCode, htmlAttributes: new { @class = "control-label col-md-5" })
+                                <div class="col-md-7">
+                                   @Html.DisplayFor(m => m.ManagerEmpCode)
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.RoleName, htmlAttributes: new { @class = "control-label col-md-5" })
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.RoleName)</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,7 +60,7 @@
                         <div class="box-header">
                             <span class="description-text box-title">Personal Info</span>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body" style="text-align:left;">
                             <div class="form-group row">
                                 @Html.LabelFor(m => m.BirthDate, htmlAttributes: new { @class = "control-label col-md-5" })
                                 <div class="col-md-7">
@@ -103,8 +114,25 @@
                         <div class="box-header">
                             <span class="description-text box-title">Work Info</span>
                         </div>
-                        <div class="box-body">
-                            3,200
+                        <div class="box-body" style="text-align:left;">
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.OrganisationName, htmlAttributes: new { @class = "control-label col-md-5" })
+                                <div class="col-md-7">
+                                    @Html.DisplayFor(m => m.OrganisationName)
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.DepartmentName, htmlAttributes: new { @class = "control-label col-md-5" })
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.DepartmentName)</ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(m => m.ProjectName, htmlAttributes: new { @class = "control-label col-md-5" })
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.ProjectName)</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -105,7 +105,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     user.BirthDate = null;
                                 user.Gender = dsSess.Tables[0].Rows[0]["Gender"]?.ToString();
                             }
-                            if (dsSess.Tables[0] != null && dsSess.Tables[1].Rows.Count > 0)
+                            if (dsSess.Tables[1] != null && dsSess.Tables[1].Rows.Count > 0)
                             {
                                 foreach (DataRow drR in dsSess.Tables[1].Rows)
                                 {
@@ -114,6 +114,25 @@ namespace QBA.Qutilize.WebApp.Controllers
                             }
                             else
                                 user.RoleName = string.Empty;
+                            if (dsSess.Tables[2] != null && dsSess.Tables[2].Rows.Count > 0)
+                            {
+                                user.OrganisationName = Convert.ToString(dsSess.Tables[2].Rows[0]["OrganisationName"]);
+                                foreach (DataRow drR in dsSess.Tables[2].Rows)
+                                {
+                                    user.DepartmentName += "<li>" + Convert.ToString(drR["DepartmentName"]) + "</li>";
+                                }
+                            }
+                            else
+                            { user.OrganisationName = string.Empty; user.DepartmentName = string.Empty; }
+                            if (dsSess.Tables[3] != null && dsSess.Tables[3].Rows.Count > 0)
+                            {
+                                foreach (DataRow drR in dsSess.Tables[3].Rows)
+                                {
+                                    user.ProjectName += "<li>" + Convert.ToString(drR["ProjectName"]) + "</li>";
+                                }
+                            }
+                            else
+                            { user.ProjectName = string.Empty;  }
                         }
                     }
                     //DataTable dt = user.GetMyAccountData(int.Parse(System.Web.HttpContext.Current.Session["sessUser"].ToString()));
