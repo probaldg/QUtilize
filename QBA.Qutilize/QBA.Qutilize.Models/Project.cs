@@ -13,7 +13,7 @@ namespace QBA.Qutilize.Models
         public string ProjectName { get; set; }
 
         public string Description { get; set; }
-        public Boolean   IsCurrentProject { get; set; }
+        public Boolean IsCurrentProject { get; set; }
         public int? ParentProjectID { get; set; }
 
         public int MaxProjectTimeInHours { get; set; }
@@ -26,7 +26,7 @@ namespace QBA.Qutilize.Models
 
         public string TimeElapsedHeading { get; set; }
         public string TimeElapsedValue { get; set; }
-
+        public int? DifferenceInSecondsInCurrentDate { get; set; }
         public string TotalTimeWorkedInProject { get; set; }
         public TimeSpan PreviousElapsedTime { get; set; }
     }
