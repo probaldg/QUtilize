@@ -37,8 +37,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 obj.OrganisationList.Clear();
                 obj.OrganisationList = obj.GetAllOrgInList();
 
-
-
             }
 
             else
@@ -66,6 +64,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.UserName = dt.Rows[0]["UserName"].ToString();
+                    if (dt.Rows[0]["UserCode"] != null)
+                    {
+                        obj.UserCode = dt.Rows[0]["UserCode"].ToString();
+                    }
+
                     obj.EmailId = dt.Rows[0]["EmailId"]?.ToString();
                     obj.Designation = dt.Rows[0]["Designation"].ToString();
                     if (dt.Rows[0]["ManagerId"] != DBNull.Value)
@@ -663,6 +666,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             RoleModel obj = new RoleModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
+            obj.OrganisationList = obj.GetAllOrgInList();
+
             if (!ModuleMappingHelper.IsUserMappedToModule(Convert.ToInt32(Session["sessUser"]), Request.Url.AbsoluteUri))
             {
                 return RedirectToAction("DashBoard", "Home");
@@ -677,7 +682,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
-
+                    obj.RolesOrgID = Convert.ToInt32(dt.Rows[0]["OrgId"]);
 
                 }
                 catch
@@ -702,7 +707,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     DataTable dt = new DataTable();
                     dt = um.GetUsersByID(model.Id);
-                    model.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                     model.EditedDate = DateTime.Now;
                     rm.Update_RoleDetails(model);
 
@@ -711,9 +716,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else
                 {
                     int id;
-                    if (System.Web.HttpContext.Current.Session["ID"] != null)
+                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                     {
-                        model.CreatedBy = (System.Web.HttpContext.Current.Session["ID"].ToString());
+                        model.CreatedBy = (System.Web.HttpContext.Current.Session["sessUser"].ToString());
                     }
 
                     model.CreateDate = DateTime.Now;
@@ -736,21 +741,38 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         public ActionResult LoadRoleData()
         {
-            RoleModel obj = new RoleModel();
-
+            DataTable dtRoles = new DataTable();
             string strUserData = string.Empty;
-
-            int i = 0;
-
-            DataTable dt = obj.GetAllRoles();
-
-
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" +
-                                 "<td class='text-center'>" + dr["isActive"].ToString() + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                i++;
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                RoleModel obj = new RoleModel();
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dtRoles = obj.GetAllRoles();
+                }
+                else
+                {
+                    dtRoles = obj.GetAllRoles(userInfo.UserOrganisationID);
+                }
+
+                int i = 0;
+
+                foreach (DataRow dr in dtRoles.Rows)
+                {
+                    var Status = Convert.ToBoolean(dr["isActive"]) == true ? "Active" : "InActive";
+
+                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" +
+                                     "<td class='text-center'>" + Status + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                    i++;
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
             return Content(strUserData);
         }
         #endregion
@@ -766,42 +788,69 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             string strProjectMapped = string.Empty;
             UserProjectMappingModel USM = new UserProjectMappingModel();
-            DataTable dt = USM.GetAllUsers();
-
-            foreach (DataRow dr in dt.Rows)
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            DataTable dtUsers = new DataTable();
+            try
             {
-                int i = 0;
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dtUsers = USM.GetAllUsers();
+                }
+                else
+                {
+                    dtUsers = USM.GetAllUsers(userInfo.UserOrganisationID);
+                }
 
-                strProjectMapped += "<tr>";
-                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
-                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                //strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'>Map</button></td>";
+                foreach (DataRow dr in dtUsers.Rows)
+                {
+                    int i = 0;
 
-                strProjectMapped += "</td>";
-                i++;
+                    strProjectMapped += "<tr>";
+                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>" + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowRoleMapped(" + dr["ID"].ToString() + ")'>Map</button></td>";
+
+                    strProjectMapped += "</td>";
+                    i++;
+                }
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
 
             return Content(strProjectMapped);
         }
 
-        public ActionResult LoadAllRoles()
+        public ActionResult LoadAllRoles(int userID)
         {
             UserRoleMappingModel obj = new UserRoleMappingModel();
-            DataTable dt = obj.GetAllRoles();
-            string strModules = string.Empty;
 
-            foreach (DataRow dr in dt.Rows)
+            UserInfoHelper userInfo = new UserInfoHelper(userID);
+
+            DataTable dtRoles = new DataTable();
+
+            if (userInfo.IsRoleSysAdmin)
             {
-                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" +
-                                dr["Name"].ToString();
-
-                strModules += "</li>";
-                strModules += "</ul>";
-
+                dtRoles = obj.GetAllRoles();
             }
-            return Content(strModules);
+            else
+            {
+                dtRoles = obj.GetAllRoles(userInfo.UserOrganisationID);
+            }
+
+
+            string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+            foreach (DataRow dr in dtRoles.Rows)
+            {
+                strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+                strModules += "</div>";
+            }
+            strModules += @"</div>";
+
+            return Json(strModules);
         }
 
         public ActionResult SaveRoleMapping(UserRoleMappingModel[] itemlist)
@@ -867,15 +916,25 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadALLRoleToBeMappedWithModule()
         {
             string strProjectMapped = string.Empty;
+
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
             RoleMouduleMappingModel USM = new RoleMouduleMappingModel();
-            DataTable dt = USM.GetAllRoles();
+            DataTable dt = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+            {
+                dt = USM.GetAllRoles();
+            }
+            else
+            {
+                dt = USM.GetAllRoles(userInfo.UserOrganisationID);
+            }
 
             foreach (DataRow dr in dt.Rows)
             {
                 int i = 0;
 
                 strProjectMapped += "<tr>";
-                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
                 strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
                 strProjectMapped += "</td>";
                 i++;
@@ -944,7 +1003,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     mm.RoleId = i.RoleId;
                     mm.SysModuleId = i.SysModuleId;
-                    mm.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    mm.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                     mm.CreateDate = DateTime.Now;
                     mm.InsertRoleModuleMappingdata(mm);
                 }
@@ -959,24 +1018,6 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(true);
         }
         #endregion
-
-
-        private int GetRowAndColumnCount(int dtRowsCount, int columnCount)
-        {
-            var divisionResult = dtRowsCount % columnCount;
-            var rowCount = dtRowsCount / columnCount;
-            int rows;
-            if (divisionResult == 0)
-            {
-                rows = rowCount;
-            }
-            else
-            {
-                rows = rowCount + 1;
-            }
-
-            return rows;
-        }
 
         #region Organization 
         public ActionResult ManageOrganisation(int id = 0)

@@ -71,6 +71,55 @@
             </div>
         </div>
         <br />
+        <div class="form-horizontal col-md-12">
+            <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+                <span id="errormsg"></span>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tr class="text-center tblHeaderColor">
+                <td>Task Date</td>
+                <td>Projects</td>
+                <td>Task Name</td>
+                <td>Description</td>
+                <td>Start Time</td>
+                <td>End Time</td>
+                <td></td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    @*@Html.EditorFor(model => model.TaskDate, new { htmlAttributes = new { @class = "form-control input-sm" } })*@
+                    <input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">
+                </td>
+
+                @*<td>@Html.DropDownList("ProjectList", Model.ProjecSelectList, new { style = "width:180px; height:30px;" })</td>*@
+                <td> @Html.DropDownListFor(M => M.ProjectsList, new SelectList(Model.ProjectsList, "ProjectID", "ProjectName"), new { @class = "form-control" })</td>
+                <td>
+
+                    <input type="text" class="form-control input-sm" id="TaskNameInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" id="DescriptionInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" id="StartTimeInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" id="EndTimeInsert">
+                </td>
+
+                <td colspan="3">
+                    @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
+                    <input type="submit" value="&#x2b;" class="btn btn-primary glyphicon" id="btnInsert" title="Insert" />
+                </td>
+
+            </tr>
+        </table>
+
+
 
         @{if (Model != null)
             {
@@ -93,113 +142,68 @@
                             @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToShortDateString(), new { @class = "edit-mode datepicker" })
 
                     </text>),
-     grid.Column("ProjectName",
- style: "col2",
- format: @<text>
-    <span id="ProjectName" class="display-mode">@item.ProjectName</span>
-    <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+                 grid.Column("ProjectName",
+                style: "col2",
+                format: @<text>
+                    <span id="ProjectName" class="display-mode">@item.ProjectName</span>
+                    <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
 
-</text>),
-grid.Column("TaskName",
-style: "col2",
-format: @<text>
-    <span id="TaskName" class="display-mode">@item.TaskName</span>
+                </text>),
+             grid.Column("TaskName",
+             style: "col2",
+             format: @<text>
+                <span id="TaskName" class="display-mode">@item.TaskName</span>
 
-    @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
-</text>), /*second column end*/
+                @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
+            </text>), /*second column end*/
 
 
-          grid.Column("Description",
+            grid.Column("Description",
+        style: "col2",
+        format: @<text>
+            <span id="Description" class="display-mode">@item.Description</span>
+            @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
+        </text>),/*fourth column end*/
+
+   grid.Column("Start Time",
       style: "col2",
       format: @<text>
-        <span id="Description" class="display-mode">@item.Description</span>
-        @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
-    </text>),/*fourth column end*/
-
-            grid.Column("Start Time",
-               style: "col2",
-               format: @<text>
-                <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
-                @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
-            </text>),
+        <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
+        @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
+    </text>),
 grid.Column("End Time",
 style: "col2",
 format: @<text>
-    <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
-    @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
-</text>),
+        <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
+        @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
+    </text>),
 
-grid.Column("Hours",
-style: "col2",
-format: @<text>
-    <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>
+   grid.Column("Hours",
+   style: "col2",
+   format: @<text>
+        <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>
 
-</text>),
+    </text>),
 
-                grid.Column("",
-                    style: "col1",
-                    format: @<text><div style="padding-left:20px; float:right;">
+grid.Column("",
+style: "col1",
+format: @<text><div style="padding-left:20px; float:right;">
 
 
-                            <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>
-                            <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId">Delete</button>
-                            <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId">Save</button>
-                            <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
-                        </div>
-                    </text>)) /*End of Coloumns*/
+    @*<button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>*@
+                   <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId" title="Edit"> <span class="glyphicon">&#x270f;</span></button>
+    <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId"><span class="glyphicon" title="Delete">&#xe014;</span></button>
+    <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Update">&#xe013;</span></button>
+    <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Cancel">&#xe014;</span></button>
+</div>
+    </text>)) /*End of Coloumns*/
 ) @*end of grid*@
 
-</div>
+    </div>
 }
         }
     </div>
-    <div class="form-horizontal col-md-12">
-        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
-            <span id="errormsg"></span>
-        </div>
-    </div>
-    <table class="table table-bordered">
-        <tr class="text-center tblHeaderColor">
-            <td>Task Date</td>
-            <td>Projects</td>
-            <td>Task Name</td>
-            <td>Description</td>
-            <td>Start Time</td>
-            <td>End Time</td>
-            <td></td>
-
-        </tr>
-
-        <tr>
-
-            <td>
-                @*@Html.EditorFor(model => model.TaskDate, new { htmlAttributes = new { @class = "form-control input-sm" } })*@
-                <input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">
-            </td>
-
-            @*<td>@Html.DropDownList("ProjectList", Model.ProjecSelectList, new { style = "width:180px; height:30px;" })</td>*@
-            <td> @Html.DropDownListFor(M => M.ProjectsList, new SelectList(Model.ProjectsList, "ProjectID", "ProjectName"), new { @class = "form-control" })</td>
-            <td>
-
-                <input type="text" class="form-control input-sm" id="TaskNameInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" id="DescriptionInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" id="StartTimeInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" id="EndTimeInsert">
-            </td>
-
-            <td colspan="3">
-                @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
-                <input type="submit" value="Insert" class="btn btn-primary" id="btnInsert" />
-            </td>
-
-        </tr>
-    </table>
+   
 
     <style>
         /*th {
@@ -250,7 +254,7 @@ format: @<text>
             if (confirm("Are you sure to delete this contact?")) {
                 var tr = $(this).parents('tr:first');
                 var ID = $(this).prop('id');
-               
+
                 $.post(
                     '@Url.Action("DeleteDailyTask", "DailyTask")',
                     { ID: ID },
@@ -380,7 +384,7 @@ format: @<text>
                         "descreption": dsec,
                     }), //Data end
                     success: function (response) {
-                       
+
                         if (response == "Success") {
                             alert('Task saved succesfully');
                             location.reload();
