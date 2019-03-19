@@ -37,8 +37,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 obj.OrganisationList.Clear();
                 obj.OrganisationList = obj.GetAllOrgInList();
 
-
-
             }
 
             else
@@ -66,6 +64,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.Name = dt.Rows[0]["Name"].ToString();
                     obj.UserName = dt.Rows[0]["UserName"].ToString();
+                    if (dt.Rows[0]["UserCode"] != null)
+                    {
+                        obj.UserCode = dt.Rows[0]["UserCode"].ToString();
+                    }
+
                     obj.EmailId = dt.Rows[0]["EmailId"]?.ToString();
                     obj.Designation = dt.Rows[0]["Designation"].ToString();
                     if (dt.Rows[0]["ManagerId"] != DBNull.Value)

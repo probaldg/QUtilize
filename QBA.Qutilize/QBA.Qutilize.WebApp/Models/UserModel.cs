@@ -26,6 +26,9 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Email Id")]
         public string EmailId { get; set; }
 
+        [Display(Name = "User code")]
+        public string UserCode { get; set; }
+
         public string Designation { get; set; }
 
         public int UserOrgId { get; set; }
@@ -227,6 +230,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={Status,
                     new SqlParameter("@UserName",model.UserName),
                     new SqlParameter("@Name",model.Name),
+                    new SqlParameter("@UserCode",model.UserCode),
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Password",model.Password),
                     new SqlParameter("@Designation",model.Designation??""),
@@ -279,6 +283,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param = {
                     new SqlParameter("@ID",model.ID),
                     new SqlParameter("@Name",model.Name),
+                    new SqlParameter("@userCode",model.UserCode),
                     new SqlParameter("@userName",model.UserName),
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Designation", model.Designation??""),
