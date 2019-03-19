@@ -42,19 +42,7 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-        //public DataTable GetAllRoles()
-        //{
-        //    DataTable dt = null;
-        //    try
-        //    {
-        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return dt;
-        //}
+      
         public DataTable GetAllRoles(int? OrgId = null)
         {
             DataTable dt = null;

@@ -27,6 +27,7 @@
                 <tr>
                     <th class="text-center tblHeaderColor">ID</th>
                     <th class="text-center tblHeaderColor">Role Name</th>
+                    <th class="text-center tblHeaderColor">Organisation</th>
                     <th class="text-center tblHeaderColor">Map Modules</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
@@ -35,6 +36,7 @@
                 @Html.Action("LoadALLRoleToBeMappedWithModule", "Admin")
             </tbody>
         </table>
+        <input type="hidden" value="" name="RoleID" id="RoleID" />
     </div>
     <div class="col-md-12"><br /></div>
 
@@ -49,7 +51,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="RoleID" id="RoleID" />
+                    @*<input type="hidden" value="" name="RoleID" id="RoleID" />*@
                     @Html.Action("LoadAllSysModules", "Admin")
                 </div>
 
@@ -104,7 +106,7 @@
             var moduleid = [];
             var moduleids = [];
 
-             var RoleID = document.getElementById("RoleID").value;
+            var RoleID = document.getElementById("RoleID").value;
             var lastpushedModuleid = 0;
 
             $("ul.module > li.limodule  input:checkbox:checked").each(function () {

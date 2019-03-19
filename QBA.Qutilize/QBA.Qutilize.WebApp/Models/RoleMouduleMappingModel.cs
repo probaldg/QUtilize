@@ -1,10 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -30,12 +27,29 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetAllRoles()
+        //public DataTable GetAllRoles()
+        //{
+        //    DataTable dt = null;
+        //    try
+        //    {
+        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+
+        public DataTable GetAllRoles(int? OrgId = null)
         {
             DataTable dt = null;
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]");
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPRoles_Get]", param);
             }
             catch (Exception ex)
             {

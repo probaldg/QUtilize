@@ -916,15 +916,25 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadALLRoleToBeMappedWithModule()
         {
             string strProjectMapped = string.Empty;
+
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
             RoleMouduleMappingModel USM = new RoleMouduleMappingModel();
-            DataTable dt = USM.GetAllRoles();
+            DataTable dt = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+            {
+                dt = USM.GetAllRoles();
+            }
+            else
+            {
+                dt = USM.GetAllRoles(userInfo.UserOrganisationID);
+            }
 
             foreach (DataRow dr in dt.Rows)
             {
                 int i = 0;
 
                 strProjectMapped += "<tr>";
-                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>";
+                strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
                 strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
                 strProjectMapped += "</td>";
                 i++;
@@ -993,7 +1003,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     mm.RoleId = i.RoleId;
                     mm.SysModuleId = i.SysModuleId;
-                    mm.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    mm.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                     mm.CreateDate = DateTime.Now;
                     mm.InsertRoleModuleMappingdata(mm);
                 }
