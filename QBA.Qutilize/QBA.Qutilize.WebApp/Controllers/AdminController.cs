@@ -1019,8 +1019,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
-
-
         #region Organization 
         public ActionResult ManageOrganisation(int id = 0)
         {
