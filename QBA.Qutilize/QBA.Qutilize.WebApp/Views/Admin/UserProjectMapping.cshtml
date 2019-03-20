@@ -24,10 +24,10 @@
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Organisation</th>
-                    <th class="text-center">Map Projects</th>
+                    <th class="text-center tblHeaderColor sorting">ID</th>
+                    <th class="text-center tblHeaderColor sorting">Name</th>
+                    <th class="text-center tblHeaderColor sorting">Organisation</th>
+                    <th class="text-center tblHeaderColor sorting">Map Projects</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
@@ -75,6 +75,7 @@
     
 
     <script type="text/javascript">
+        $("#tblGridListViewPost").dataTable();
         function ShowPermission(id) {
 
 

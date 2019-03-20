@@ -26,9 +26,10 @@
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Map Roles</th>
+                    <th class="text-center tblHeaderColor sorting">ID</th>
+                    <th class="text-center tblHeaderColor sorting">Name</th>
+                    <th class="text-center tblHeaderColor sorting">Organisation</th>
+                    <th class="text-center tblHeaderColor sorting">Map Roles</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
@@ -39,7 +40,7 @@
     </div>
 
     <div class="col-md-12"><br /></div>
-
+    <input type="hidden" value="" name="hdnUserID" id="hdnUserID" />
     <div id="myModalForModule" class="modal fade" role="dialog">
         <div class="modal-dialog">
 
@@ -51,8 +52,10 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="UserID" id="UserID" />
-                    @Html.Action("LoadAllRoles", "Admin")
+
+                    <div id="popupBody">
+
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -67,13 +70,38 @@
 
 
     <script type="text/javascript">
-        function ShowPermission(id) {
-           
-            var id = id;
-           
-            $('input[name="UserID"]').val(id)
-            $("input[type='checkbox']").prop('checked', false)
-           
+
+        $("#tblGridListViewPost").dataTable();
+
+        function ShowRoleMapped(id) {
+
+
+            $('#hdnUserID').val('');
+            $('#hdnUserID').val(id);
+
+            $("#popupBody input[type='checkbox']").prop('checked', false)
+
+            $.ajax({
+            url: '@Url.Action("LoadAllRoles", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "Userid":id
+            }),
+
+                success: function (response) {
+                $('#popupBody').html('');
+                $('#popupBody').append(response);
+            },
+                error: function (response) {
+                    alert(Error);
+                console.log(response);
+            }
+        });
+
+
              $.ajax({
             url: '@Url.Action("GetRolesMappedToUser", "Admin")',
             type: "POST",
@@ -85,9 +113,8 @@
             }),
 
             success: function (response) {
-                console.log(response);
+
                 $.each(response, function (key, value) {
-                    //$("input[name='" + value.ProjectId + "']").prop('checked', true);
                     $("input[value='" + value.RoleId + "']").prop('checked', true);
 
                 });
@@ -98,14 +125,6 @@
             }
         });
         }
-        //$('#myModalForModule').on('show.bs.modal', function (e) {
-        //    var anim = "slideInRight";
-        //    testAnim(anim);
-        //})
-        //$('#myModalForModule').on('hide.bs.modal', function (e) {
-        //    var anim = "slideOutRight";
-        //    testAnim(anim);
-        //})
 
         function showArraylist() {
 
@@ -113,22 +132,29 @@
             var moduleid = [];
             var moduleids = [];
 
-            var UserID = document.getElementById("UserID").value;
+            var UserID = $('#hdnUserID').val();
             var lastpushedModuleid = 0;
 
-            $("ul.module > li.limodule  input:checkbox:checked").each(function () {
-                // alert($(this).attr("name"))
+            //$("ul.module > li.limodule  input:checkbox:checked").each(function () {
+
+            //    if ($(this).attr("name") == "modules") {
+            //        moduleid = $(this).val();
+
+            //    }
+
+            //    moduleids.push(moduleid);
+
+            //})
+
+            $('#popupBody input:checked').each(function () {
+               
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
-                   
                 }
-
                 moduleids.push(moduleid);
-              
-            })
+            });
             var length = moduleids.length
-           // alert(length);
-
+          
             for (var i = 0; i < moduleids.length; i++) {
                 if (lastpushedModuleid != moduleids[i]) {
                     Item = { userID: UserID, RoleId: moduleids[i] }
@@ -138,8 +164,6 @@
 
 
             lastpushedModuleid = moduleids[i];
-
-           // alert(Itemlist.length);
 
              $.ajax({
             url: '@Url.Action("SaveRoleMapping", "Admin")',
