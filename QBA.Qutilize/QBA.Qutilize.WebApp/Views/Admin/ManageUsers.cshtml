@@ -54,19 +54,19 @@
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">User Name</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Email</th>
-                    <th class="text-center">Designation</th>
-                    <th class="text-center">Manager Name</th>
+                    <th class="text-center tblHeaderColor sorting">ID</th>
+                    <th class="text-center tblHeaderColor sorting">User Name</th>
+                    <th class="text-center tblHeaderColor sorting">Name</th>
+                    <th class="text-center tblHeaderColor sorting">Email</th>
+                    <th class="text-center tblHeaderColor sorting">Designation</th>
+                    <th class="text-center tblHeaderColor sorting">Manager Name</th>
 
                     @if (ViewBag.IsUserSysAdmin)
                     {
-                        <th class="text-center">Organisation</th>
+                        <th class="text-center tblHeaderColor sorting">Organisation</th>
                     }
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Edit</th>
+                    <th class="text-center tblHeaderColor sorting">Status</th>
+                    <th class="text-center tblHeaderColor sorting">Edit</th>
                 </tr>
             </thead>
             <tbody>

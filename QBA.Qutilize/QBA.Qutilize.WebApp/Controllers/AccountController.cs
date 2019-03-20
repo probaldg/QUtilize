@@ -89,7 +89,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 user.ID = int.Parse(dsSess.Tables[0].Rows[0]["Id"].ToString());
                                 user.UserName = dsSess.Tables[0].Rows[0]["UserName"]?.ToString();
                                 user.Name = dsSess.Tables[0].Rows[0]["Name"]?.ToString();
-                                user.ManagerId = int.Parse(dsSess.Tables[0].Rows[0]["managerID"]?.ToString());
+                                int intMGRID = 0;
+                                int.TryParse(dsSess.Tables[0].Rows[0]["managerID"]?.ToString(),out intMGRID);
+                                user.ManagerId = intMGRID;
                                 user.ManagerName = dsSess.Tables[0].Rows[0]["ManagerName"]?.ToString();
                                 user.ManagerEmpCode = dsSess.Tables[0].Rows[0]["ManagerEmpCode"]?.ToString();
                                 user.EmailId = dsSess.Tables[0].Rows[0]["EmailId"]?.ToString();
