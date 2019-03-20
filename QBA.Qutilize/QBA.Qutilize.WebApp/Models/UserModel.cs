@@ -68,6 +68,13 @@ namespace QBA.Qutilize.WebApp.Models
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
 
+        public string ManagerEmpCode { get; set; }
+        public string EmployeeCode { get; set; }
+        public string RoleName { get; set; }
+        public string DepartmentName { get; set; }
+        public string OrganisationName { get; set; }
+        public string ProjectName { get; set; }
+
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
