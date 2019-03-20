@@ -16,28 +16,13 @@
         "Entry"
         {
         "MsmKey" = "8:_006ED95E17DEBC7D6C70BA01D0F66430"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-
-        "MsmKey" = "8:_0EF4D4CDB7D9B59C4CD5ACDE5A1FE715"
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "MsmKey" = "8:_056880FA572745ED85263CF82622D51A"
-        "OwnerKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_0EF4D4CDB7D9B59C4CD5ACDE5A1FE715"
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -49,11 +34,7 @@
         "Entry"
         {
         "MsmKey" = "8:_69274EA6D8D287154FE98F6EF88A469D"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -65,11 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_94C4E6C285ADBF0E5739B0F3508261AA"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -81,17 +58,13 @@
         "Entry"
         {
         "MsmKey" = "8:_B0B8FBE17FD2EA8FF039F97A3BCBC0FD"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B927BCC5C81740D682DFD9455430A329"
+        "MsmKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "OwnerKey" = "8:_UNDEFINED"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -103,31 +76,19 @@
         "Entry"
         {
         "MsmKey" = "8:_D58494A97204B87FA1183F04FA83F93A"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E1262DB8209EDECF4F43104E0C07597A"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E6794906F5F3E5701A899BDF5B40748A"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -145,11 +106,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-
-        "OwnerKey" = "8:_B927BCC5C81740D682DFD9455430A329"
-
-        "OwnerKey" = "8:_056880FA572745ED85263CF82622D51A"
-
+        "OwnerKey" = "8:_BCE9B363BB554561A782CBA44B773274"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -219,14 +176,6 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
-                "Items"
-                {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
-                    {
-                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
-                    }
-                }
             }
         }
         "Release"
@@ -251,14 +200,6 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
-                "Items"
-                {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
-                    {
-                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
-                    }
-                }
             }
         }
     }
@@ -631,7 +572,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:_7DC8730E455845779E8EB4E64DA8BEAF"
+        "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -734,11 +675,7 @@
         }
         "Shortcut"
         {
-
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D0BF8C19BEE4499384CC70F90B8DCEA2"
-
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5AACC9DDD9DE40DFB47CBB0DA2C9549B"
-
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4421AC34875C46C2BB5BB3E9B22964C9"
             {
             "Name" = "8:Qutilize"
             "Arguments" = "8:"
@@ -746,22 +683,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-
-            "Target" = "8:_B927BCC5C81740D682DFD9455430A329"
+            "Target" = "8:_BCE9B363BB554561A782CBA44B773274"
             "Folder" = "8:_F88E375C3AF04159BB10B5FBC46D8FAD"
-
-            "Target" = "8:_056880FA572745ED85263CF82622D51A"
-            "Folder" = "8:_EF4E1CA01CF54489AE43A410768B96A5"
-
             "WorkingFolder" = "8:_D74F6478134041DDB58063E12E4114B7"
             "Icon" = "8:_7DC8730E455845779E8EB4E64DA8BEAF"
             "Feature" = "8:"
             }
-
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_EFC8A15714924176998F3F2701159CA9"
-
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_986CCBE59A4E4AF3A26B15373DA38BC8"
-
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_845DE48937CE4C50B234462E2E555029"
             {
             "Name" = "8:Qutilize"
             "Arguments" = "8:"
@@ -769,13 +697,8 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-
-            "Target" = "8:_B927BCC5C81740D682DFD9455430A329"
+            "Target" = "8:_BCE9B363BB554561A782CBA44B773274"
             "Folder" = "8:_EF4E1CA01CF54489AE43A410768B96A5"
-
-            "Target" = "8:_056880FA572745ED85263CF82622D51A"
-            "Folder" = "8:_F88E375C3AF04159BB10B5FBC46D8FAD"
-
             "WorkingFolder" = "8:_D74F6478134041DDB58063E12E4114B7"
             "Icon" = "8:_7DC8730E455845779E8EB4E64DA8BEAF"
             "Feature" = "8:"
@@ -1179,11 +1102,7 @@
         }
         "ProjectOutput"
         {
-
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B927BCC5C81740D682DFD9455430A329"
-
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_056880FA572745ED85263CF82622D51A"
-
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BCE9B363BB554561A782CBA44B773274"
             {
             "SourcePath" = "8:..\\QBA.Qutilize.ClientApp\\obj\\Debug\\QBA.Qutilize.ClientApp.exe"
             "TargetName" = "8:"

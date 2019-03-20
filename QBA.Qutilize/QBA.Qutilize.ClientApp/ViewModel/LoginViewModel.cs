@@ -2,18 +2,21 @@
 using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace QBA.Qutilize.ClientApp.ViewModel
 {
     public class LoginViewModel : ViewModelBase
     {
-       private Login _loginView;
+        private Login _loginView;
         public LoginViewModel(Login login)
         {
             _loginView = login;
-          
+
         }
         private string _userID;
         private string _password;
@@ -47,24 +50,79 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        private async  void AuthenticatUser()
+        //private async void AuthenticatUser()
+        //{
+
+        //    try
+        //    {
+        //        if (ValidateInput())
+        //        {
+        //            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Begin();
+        //            Logger.Log("AuthenticatUser", "Info", "Calling User authentication API");
+
+        //            var authenticateduser = await WebAPIHelper.CallWebApiForUserAuthentication(new User
+        //            {
+
+        //                UserName = UserID,
+        //                Password = UserPassword,
+        //                IsActive = true
+        //            });
+
+        //            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Stop();
+
+        //            Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
+
+        //            if (authenticateduser != null && authenticateduser.ID != 0)
+        //            {
+        //                Logger.Log("AuthenticatUser", "Info", $"User Authenticated user Name=  {authenticateduser.UserName}");
+        //                ConfigureDailyTaskViewModel(authenticateduser);
+
+        //                _loginView.Close();
+        //            }
+        //            else
+        //            {
+        //                Logger.Log("AuthenticatUser", "Info", "User authentication failed.");
+
+        //                MessageBox.Show("User id/password is not correct.");
+        //            }
+        //        }
+        //        else
+        //            MessageBox.Show("User id or password required.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Log("AuthenticatUser", "Error", $"{ex.ToString()}");
+
+        //        throw ex;
+        //    }
+
+
+        //}
+
+        private async void AuthenticatUser()
         {
 
             try
             {
                 if (ValidateInput())
                 {
+                    StartLoadingAnimation();
+
+                    User authenticateduser = null;
+
                     Logger.Log("AuthenticatUser", "Info", "Calling User authentication API");
-                    var authenticateduser= await WebAPIHelper.CallWebApiForUserAuthentication(new User
-                                                                                                   {
-                        
-                                                                                                       UserName = UserID,
-                                                                                                       Password = UserPassword,
-                                                                                                       IsActive = true
-                                                                                                   });
+
+                    await Task.Run(() =>
+                    {
+                        authenticateduser = WebAPIHelper.CallWebApiForUserAuthentication(
+                            new User { UserName = UserID, Password = UserPassword, IsActive = true }).Result;
+                    });
+
+                    StopLoadingAnimation();
 
                     Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
-                    if (authenticateduser != null && authenticateduser.ID !=0)
+
+                    if (authenticateduser != null && authenticateduser.ID != 0)
                     {
                         Logger.Log("AuthenticatUser", "Info", $"User Authenticated user Name=  {authenticateduser.UserName}");
                         ConfigureDailyTaskViewModel(authenticateduser);
@@ -91,6 +149,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         }
 
+        private void StopLoadingAnimation()
+        {
+            ((TextBlock)_loginView.FindName("Wait")).Visibility = Visibility.Collapsed;
+            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Stop();
+        }
+
+        private void StartLoadingAnimation()
+        {
+            ((TextBlock)_loginView.FindName("Wait")).Visibility = Visibility.Visible;
+            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Begin();
+        }
+
         private static void ConfigureDailyTaskViewModel(User user)
         {
             try
@@ -109,7 +179,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 Logger.Log("ConfigureDailyTaskViewModel", "Error", $"{ex.ToString()}");
                 throw ex;
             }
-          
+
         }
 
         private bool ValidateInput()

@@ -74,6 +74,7 @@
 
     
 
+
     <script type="text/javascript">
         $("#tblGridListViewPost").dataTable();
         function ShowPermission(id) {
@@ -187,6 +188,47 @@
         }
 
 
+
+        // $('#srch-term').on('input',function () {
+
+             //var searchFilter = $('#srch-term').val();
+
+             //if (searchFilter == "") {
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+             //}
+             //else {
+             //    //$("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
+             //    //$("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
+             //    //$("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
+             //    $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+        //     }
+
+        //});
+        $('#srch-term').on("propertychange change keyup paste input", function () {
+
+         
+            var searchFilter = $('#srch-term').val();
+           
+            if (searchFilter == "") {
+                $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
+                $("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
+                $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+            }
+            else {
+
+                $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
+                $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
+                $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+               
+            }
+          
+        });
+
          $('#srch-term').on('input',function () {
              //var searchFilter = $('#srch-term').val();
              //var searchResult;
@@ -219,6 +261,7 @@
              }
 
         });
+
 
     </script>
 </body>

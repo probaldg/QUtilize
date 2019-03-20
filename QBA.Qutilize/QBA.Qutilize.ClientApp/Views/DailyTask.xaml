@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
        WindowStyle="ToolWindow"
         Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="2" 
@@ -68,7 +69,15 @@
 
         </Style>
 
-
+<Storyboard x:Key="WaitStoryboard">
+            <DoubleAnimation
+            Storyboard.TargetName="Wait"
+            Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
+            From="0"
+            To="360"
+            Duration="0:0:2"
+            RepeatBehavior="Forever" />
+        </Storyboard>
     </Window.Resources>
     <!--<Border CornerRadius="5">-->
     <Grid x:Name="uiGridMain" Margin="0">
@@ -103,35 +112,13 @@
                          HorizontalContentAlignment="Left"
                          SelectedIndex="{Binding ProjectListViewViewModel.SelectedIndex, Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
                          Margin="1" BorderThickness="0"  >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding UpdateCommandFromSelectedProject}"
+                                               CommandParameter="{Binding ProjectListViewViewModel.SelectedProject.ProjectID}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-                <!--<ListBox.ItemContainerStyle >
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="AliceBlue" />
-                            <Setter Property="BorderBrush" Value="BlueViolet" />
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="Margin" Value="5" />
-
-                            <Style.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="Selector.IsSelectionActive"  Value="False" />
-                                        <Condition Property="IsSelected" Value="True" />
-                                    </MultiTrigger.Conditions>
-                                    <MultiTrigger.Setters>
-
-                                        <Setter Property="BorderThickness" Value="10,1,1,1" />
-                                        <Setter Property="Margin" Value="5" />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                                        <Setter Property="Foreground" Value="Green" />
-                                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"></Setter>
-
-                                    </MultiTrigger.Setters>
-                                </MultiTrigger>
-
-                            </Style.Triggers>
-
-                        </Style>
-                    </ListBox.ItemContainerStyle>-->
                 <ListBox.ItemTemplate>
                     <DataTemplate >
                         <Grid  Width="250" Margin="0,0,0,5" HorizontalAlignment="Left">
@@ -151,8 +138,8 @@
                                 Command="{Binding DataContext.UpdateCommandFromSelectedProject, ElementName=lstProject}"
                                 CommandParameter="{Binding ProjectID}" 
                                 IsChecked="{Binding IsCurrentProject, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}"/>
-                            
-                            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right">
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right"  VerticalAlignment="Bottom">
                                 <!--<TextBlock Text="{Binding TimeElapsedHeading, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Left"  Margin="5,0,0,0"/>-->
                                 <TextBlock Text="{Binding TimeElapsedValue, Mode=TwoWay, NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}" FontSize="12" FontWeight="Bold"  HorizontalAlignment="Left"   Margin="5,0,0,0"/>
 

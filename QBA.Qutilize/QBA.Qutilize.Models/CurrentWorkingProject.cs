@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QBA.Qutilize.Models
 {
-   public class CurrentWorkingProject
+    public class CurrentWorkingProject
     {
         //public Project Project { get; set; }
         public int? ProjectID { get; set; }
@@ -18,5 +14,8 @@ namespace QBA.Qutilize.Models
         public int MaxProjectTimeInHours { get; set; }
         public string TimeElapsedHeading { get; set; }
         public string TimeElapsedValue { get; set; }
+        public DateTime StartDateTime { get; set; }
+
+        public int? DifferenceInSecondsInCurrentDate { get; set; }
     }
 }

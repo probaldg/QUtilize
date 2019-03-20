@@ -68,6 +68,16 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Storyboard x:Key="WaitStoryboard">
+            <DoubleAnimation
+            Storyboard.TargetName="Wait"
+            Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
+            From="0"
+            To="180"
+            Duration="0:0:2"
+            RepeatBehavior="Forever" />
+        </Storyboard>
     </Window.Resources>
     <Border CornerRadius="5">
         <Grid  x:Name="uiGridMain" Margin="10">
@@ -99,7 +109,18 @@
                     <PasswordBox x:Name="txtUserpassword" PWDH:PasswordHelper.Attach="True" 
                                  PWDH:PasswordHelper.Password="{Binding UserPassword, Mode=TwoWay, NotifyOnTargetUpdated=True,UpdateSourceTrigger=PropertyChanged}"
                                  BorderBrush="#FFCDCDD1"/>
-                    <Button Content="Login" Width="80" IsDefault="True"  HorizontalAlignment="Right" Margin="8,20,0,0" Style="{StaticResource btn}" Command="{Binding Login}" Foreground="White" FontWeight="Bold" Background="#FF0C00FF" Cursor="Hand"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Center"  Name="Wait" FontFamily="/Fonts/#FontAwesome" FontSize="20" Text="&#xf110;" RenderTransformOrigin="0.5, 0.5" Width="50" Height="30" VerticalAlignment="Bottom" Visibility="Collapsed">
+                            <TextBlock.RenderTransform>
+                                <RotateTransform Angle="0" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <Button  Content="Login" Width="80" IsDefault="True"  HorizontalAlignment="Right"  Style="{StaticResource btn}" Command="{Binding Login}" Foreground="White" FontWeight="Bold" Background="#FF0C00FF" Cursor="Hand"/>
+
+                    </StackPanel>
+                    
+                   
                 </StackPanel>
                 <StackPanel  Orientation="Horizontal"  Grid.Row="2" VerticalAlignment="Bottom" Grid.ColumnSpan="2" HorizontalAlignment="Right">
                     <Label Content="A product of" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
