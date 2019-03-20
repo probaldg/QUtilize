@@ -69,7 +69,15 @@
 
         </Style>
 
-
+<Storyboard x:Key="WaitStoryboard">
+            <DoubleAnimation
+            Storyboard.TargetName="Wait"
+            Storyboard.TargetProperty="(TextBlock.RenderTransform).(RotateTransform.Angle)"
+            From="0"
+            To="360"
+            Duration="0:0:2"
+            RepeatBehavior="Forever" />
+        </Storyboard>
     </Window.Resources>
     <!--<Border CornerRadius="5">-->
     <Grid x:Name="uiGridMain" Margin="0">

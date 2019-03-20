@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
+using QBA.Qutilize.DataAccess.DAL;
+using QBA.Qutilize.Models;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
 using User = QBA.Qutilize.Models.User;
-using QBA.Qutilize.DataAccess.DAL;
-using System.Linq;
-using QBA.Qutilize.Models;
 
 namespace QBA.Qutilize.WebAPI.Controllers
 {
@@ -57,7 +57,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
 
                     foreach (var item in dbUser)
                     {
-                        if(item.ProjectID != null)
+                        if (item.ProjectID != null)
                         {
                             userModel.Projects.Add(new Qutilize.Models.Project()
                             {
@@ -65,10 +65,11 @@ namespace QBA.Qutilize.WebAPI.Controllers
                                 ProjectID = item.ProjectID,
                                 ParentProjectID = item.ParentProjectId,
                                 Description = item.ProjectDescription,
+                                DifferenceInSecondsInCurrentDate = item.DifferenceInSecondsInCurrentDate
                             });
                         }
-                       
-                        if(item.RoleID != null)
+
+                        if (item.RoleID != null)
                         {
                             userModel.Roles.Add(new Roles()
                             {
@@ -76,7 +77,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
                                 Name = item.RoleName
                             });
                         }
-                        
+
                     }
                 }
 

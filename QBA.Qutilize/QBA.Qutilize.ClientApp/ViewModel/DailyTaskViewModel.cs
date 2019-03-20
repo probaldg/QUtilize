@@ -4,6 +4,7 @@ using QBA.Qutilize.Models;
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -83,18 +84,16 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     if (currProject.PreviousElapsedTime != TimeSpan.Zero)
                     {
                         currProject.TimeElapsedValue = currProject.PreviousElapsedTime.Add(diffrenceInTime).ToString(@"hh\:mm\:ss");
-
                     }
                     else
                     {
                         currProject.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
                     }
 
-
                 }
                 else
                 {
-                    currProject.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
+                    //currProject.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
                     //currProject.PreviousElapsedTime = diffrenceInTime;
                 }
             }
@@ -320,34 +319,37 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 }
                 else
                 {
-
                     var currProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+                    ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = false;
+
+
+                    //currProj.IsCurrentProject = false;
+
                     // Save current time elapsed of the project.
-
-                    currProj.IsCurrentProject = false;
-
                     if (currProj.PreviousElapsedTime == TimeSpan.Zero)
                     {
                         currProj.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StartDateTime;
                     }
                     else
                     {
-                        currProj.PreviousElapsedTime = currProj.PreviousElapsedTime.Add(DateTime.Now - CurrentWorkingProject.StartDateTime);
+                        TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+                        currProj.PreviousElapsedTime = currProj.PreviousElapsedTime.Add(diffrenceInTime);
                     }
 
 
-                    ////Making the selecedindex to the selected project...
+                    //Making the selecedindex to the selected project...
                     ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList()
                         .FindIndex(x => x.ProjectID == Convert.ToInt32(ProjectID));
 
                     RefreshUI();
                     UpdateCurrentTask();
+
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log("UpdateTask", "Error", ex.ToString());
-                throw;
+                //throw;
             }
         }
 
@@ -356,7 +358,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
         }
 
-        private void UpdateCurrentTask()
+        private async void UpdateCurrentTask()
         {
             try
             {
@@ -372,8 +374,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     };
 
                     Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
+                    int response = 0;
+                    await Task.Run(() =>
+                    {
+                        response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
 
-                    var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                    });
 
                     Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
                     if (response > 0)
@@ -384,47 +390,67 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         MessageBox.Show("Some error occured..");
                     }
-
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log("UpdateCurrentTask", "Error", ex.ToString());
-                throw ex;
+                MessageBox.Show("Some error occured.");
+                // throw ex;
             }
         }
 
         private void SetNewCurrentProjectAndInsertStartTime(Project selectedProject)
         {
-            if (selectedProject != null)
+            try
             {
-                CurrentWorkingProject.ProjectID = selectedProject.ProjectID;
-                CurrentWorkingProject.ProjectName = selectedProject.ProjectName;
-                CurrentWorkingProject.StrartDateTime = DateTime.Now;
-                CurrentWorkingProject.MaxProjectTimeInHours = selectedProject.MaxProjectTimeInHours;
 
-                DailyTaskModel dt = new DailyTaskModel
+                if (selectedProject != null)
                 {
-                    ProjectId = CurrentWorkingProject.ProjectID,
-                    UserId = User.ID,
-                    StartTime = DateTime.Now,
-                };
-                InsertProjectStartTime();
+                    CurrentWorkingProject.ProjectID = selectedProject.ProjectID;
+                    CurrentWorkingProject.ProjectName = selectedProject.ProjectName;
+                    CurrentWorkingProject.StrartDateTime = DateTime.Now;
+                    CurrentWorkingProject.MaxProjectTimeInHours = selectedProject.MaxProjectTimeInHours;
 
-                if (ProjectListViewViewModel.Projects != null)
-                {
-                    if (ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()) != null)
+                    DailyTaskModel dt = new DailyTaskModel
                     {
-                        ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
-                        ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
-                        ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
-                    }
-                }
+                        ProjectId = CurrentWorkingProject.ProjectID,
+                        UserId = User.ID,
+                        StartTime = DateTime.Now,
+                    };
 
-                RefreshUI();
+
+                    InsertProjectStartTime();
+
+                    if (ProjectListViewViewModel.Projects != null)
+                    {
+                        var curProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+                        if (ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()) != null)
+                        {
+
+                            ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
+                            int SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+                            //Removing the project to insert it at the top of the list..
+                            ProjectListViewViewModel.Projects.Remove(curProj);
+                            ProjectListViewViewModel.Projects.Insert(0, curProj);
+
+                            ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+                            ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+                        }
+                    }
+
+                    RefreshUI();
+                }
+                else
+                    MessageBox.Show("No project is selected..");
             }
-            else
-                MessageBox.Show("No project is selected..");
+            catch (Exception ex)
+            {
+                Logger.Log("SetNewCurrentProjectAndInsertStartTime", "Error", ex.ToString());
+                throw ex;
+            }
 
         }
 
@@ -455,8 +481,15 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     if (ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()) != null)
                     {
                         ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).IsCurrentProject = true;
+
+                        //TODO chnge the index of the current project.
+                        ProjectListViewViewModel.Projects.Remove(defaultProj);
+                        ProjectListViewViewModel.Projects.Insert(0, defaultProj);
+
                         ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
                         ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+
                     }
                 }
             }
@@ -487,6 +520,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             try
             {
                 Logger.Log("InsertProjectStartTime", "Info", "Calling insert start time API");
+
+
                 var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
 
                 Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");

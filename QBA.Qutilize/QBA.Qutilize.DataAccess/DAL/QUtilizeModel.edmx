@@ -305,6 +305,7 @@
           <Property Type="String" Name="RoleName" Nullable="true" MaxLength="200" />
           <Property Type="Int32" Name="MaxProjectTimeInHours" Nullable="true" />
           <Property Type="String" Name="Password" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="DifferenceInSecondsInCurrentDate" Nullable="true" />
         </ComplexType>
         <ComplexType Name="USP_Dashboard_Get_Result">
           <Property Type="Int32" Name="projectID" Nullable="false" />
@@ -414,6 +415,7 @@
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
                 <ScalarProperty Name="MaxProjectTimeInHours" ColumnName="MaxProjectTimeInHours" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="DifferenceInSecondsInCurrentDate" ColumnName="DifferenceInSecondsInCurrentDate" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
