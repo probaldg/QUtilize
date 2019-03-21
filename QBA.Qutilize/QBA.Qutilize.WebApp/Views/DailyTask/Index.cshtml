@@ -59,17 +59,22 @@
 
         <div class="form-group">
             @Html.Label("Start date", htmlAttributes: new { @class = "control-label col-md-1" })
-            <div class="col-md-10">
+            <div class="col-md-2">
                 @Html.DisplayFor(model => model.StartDate)
+
             </div>
-        </div>
-        <br />
-        <div class="form-group">
             @Html.Label("End date", htmlAttributes: new { @class = "control-label col-md-1" })
-            <div class="col-md-10">
+            <div class="col-md-3">
                 @Html.DisplayFor(model => model.EndDate)
             </div>
         </div>
+        <br />
+        @*<div class="form-group">
+            @Html.Label("End date", htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.EndDate)
+            </div>
+        </div>*@
         <br />
         <div class="form-horizontal col-md-12">
             <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
@@ -113,7 +118,7 @@
 
                 <td colspan="3">
                     @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
-                    <input type="submit" value="&#x2b;" class="btn btn-primary glyphicon" id="btnInsert" title="Insert" />
+                    <input type="submit" value="&#xe173;" class="btn btn-primary glyphicon glyphicon-floppy-saved" id="btnInsert" title="Insert" />
                 </td>
 
             </tr>

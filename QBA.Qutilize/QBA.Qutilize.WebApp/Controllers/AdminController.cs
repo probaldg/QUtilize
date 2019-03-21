@@ -35,22 +35,21 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.OrganisationList.Clear();
-                obj.OrganisationList = obj.GetAllOrgInList();
-
+                obj.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();
             }
 
             else
             {
                 obj.OrganisationList.Clear();
-                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID);
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
                 obj.OrganisationList.Add(organisation);
 
                 obj.UserOrgId = userInfo.UserOrganisationID;
 
                 obj.UsersList.Clear();
-                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID);
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.DepartmentList.Clear();
-                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID);
+                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
             }
 
 
@@ -228,7 +227,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strUserData = string.Empty;
             try
             {
-                var listUsers = user.GetAllUsersInList(orgId);
+                var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
                 strUserData += "<option value = 0>Please select</option>";
                 foreach (UserModel item in listUsers)
                 {
@@ -250,7 +249,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strDeptData = string.Empty;
             try
             {
-                var listUsers = user.GetAllDepartmentInList(orgId);
+                var listUsers = user.GetAllDepartmentInList(orgId).Where(x => x.IsActive == true).ToList();
                 strDeptData += "<option value = 0>Please select</option>";
                 foreach (DepartmentModel item in listUsers)
                 {
@@ -931,11 +930,21 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             foreach (DataRow dr in dt.Rows)
             {
+                var status = Convert.ToBoolean(dr["IsActive"]);
                 int i = 0;
 
                 strProjectMapped += "<tr>";
                 strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
-                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+                if (status)
+                {
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'  onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+
+                }
+                else
+                {
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' disabled style='background-color:gray; color:white;'  onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+
+                }
                 strProjectMapped += "</td>";
                 i++;
             }
