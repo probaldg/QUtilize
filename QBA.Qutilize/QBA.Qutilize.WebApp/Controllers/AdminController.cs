@@ -951,24 +951,103 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Content(strProjectMapped);
         }
+        //public ActionResult LoadAllSysModules()
+        //{
+        //    RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
+        //    DataTable dt = obj.GetAllModules();
+        //    string strModules = string.Empty;
+
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+        //        strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
+        //                        dr["Name"].ToString();
+
+        //        strModules += "</li>";
+        //        strModules += "</ul>";
+
+        //    }
+        //    return Content(strModules);
+        //}
+
         public ActionResult LoadAllSysModules()
         {
             RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
-            DataTable dt = obj.GetAllModules();
-            string strModules = string.Empty;
+            StringBuilder strModules = new StringBuilder();
 
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
-                                dr["Name"].ToString();
+                DataTable dt = obj.GetAllModules();
 
-                strModules += "</li>";
-                strModules += "</ul>";
+
+                if (dt.Rows.Count > 0)
+                {
+                    List<ModuleModel> moduleList = obj.ConvertModuleDatatableToList(dt);
+
+                    var ParentModules = moduleList.Where(x => x.ParentID == 0).ToList();
+                    var ChildModules = moduleList.Where(x => x.ParentID != 0).ToList();
+
+                    strModules.Append(@"<div id='divModuleList' class='row' style='margin:10px;'>");
+
+                    foreach (ModuleModel item in ParentModules)
+                    {
+
+                        strModules.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                        strModules.Append("<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + item.ID + "'>");
+                        strModules.Append(item.DisplayName);
+
+                        strModules.Append(LoadChildModules(item.ID, ChildModules));
+
+                        strModules.Append("</div>");
+
+                    }
+                    strModules.Append("</div>");
+
+                }
 
             }
-            return Content(strModules);
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Content(strModules.ToString());
+        }
+
+        public string LoadChildModules(int parentId, List<ModuleModel> childModules)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            try
+            {
+                var childs = childModules.Where(x => x.ParentID == parentId).OrderBy(x => x.Rank).ToList();
+                if (childs.Count > 0)
+                {
+                    stringBuilder.Append("<ul class='module' style='list-style: none; margin:5px;'>");
+                    foreach (ModuleModel item in childs)
+                    {
+                        stringBuilder.Append("<li class='limodule' style='list-style: none;margin:2px;'>");
+                        stringBuilder.Append("<input type='checkbox' class='check' style=' margin:2px;' name='modules' value='" + item.ID + "'>" + item.DisplayName);
+
+                        var innerChild = childModules.Where(x => x.ParentID == item.ID).OrderBy(x => x.Rank).ToList();
+                        if (innerChild.Count > 0)
+                        {
+                            LoadChildModules(item.ID, childModules);
+                        }
+                        stringBuilder.Append("</li>");
+                    }
+                    stringBuilder.Append("</ul>");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return stringBuilder.ToString();
         }
         public ActionResult GetModuleMappedToRole(int id)
         {
