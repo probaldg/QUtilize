@@ -122,7 +122,20 @@
                 @Html.HiddenFor(model => model.UserOrgId)
             </div>
         </div>
-
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.DepartmentIdsInString)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UsersList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.UsersList, new SelectList(Model.UsersList, "Id", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.ManagerId)
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.EmailId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -173,20 +186,7 @@
 
 
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "Name"), "Please select", new { @class = "form-control" })
-                @Html.HiddenFor(model => model.DepartmentIdsInString)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.UsersList, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.UsersList, new SelectList(Model.UsersList, "Id", "Name"), "Please select", new { @class = "form-control" })
-                @Html.HiddenFor(model => model.ManagerId)
-            </div>
-        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -309,6 +309,7 @@
 
         if (orgId != 0) {
             $('#OrganisationList').val(orgId);
+
             if ($('#OrganisationList option').length == 2) {
                 $("#OrganisationList").prop("disabled", true);
             }
@@ -502,6 +503,12 @@
             var orgId = $('#OrganisationList').val();
             var managerId = $('#UsersList').val();
             var departmentId = $('#DepartmentList').val();
+
+            var designation = $('#Designation').val();
+            var contactNo = $('#ContactNo').val();
+            var birthDate = $('#BirthDate').val();
+            var gender = $('#ddlUserGender').val();
+            
             if (userName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's User Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -528,7 +535,11 @@
                 document.getElementById("ErrorMsg").style.display = 'block';
                 return false;
             }
-
+            if (departmentId == 0) {
+                document.getElementById("errormsg").innerHTML = "Please select department.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
             if (Email == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's email";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -563,21 +574,12 @@
                 }
             }
 
-            if ($("#ContactNo").val() != "" && $("#AlterNetContactNo").val() != "") {
-                if ($("#ContactNo").val() == $("#AlterNetContactNo").val()) {
-                    document.getElementById("errormsg").innerHTML = "Contact no and alternate no can not be same.";
-                    document.getElementById("ErrorMsg").style.display = 'block';
-
-                    return false;
-                }
-            }
+           
 
 
-            if (departmentId == 0) {
-                document.getElementById("errormsg").innerHTML = "Please select department.";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                return false;
-            }
+            
+
+           
             if (id > 0) {
                 var oldpassword = document.getElementById("oldpassword").value;
                 if (oldpassword == "") {
@@ -637,7 +639,43 @@
             }
 
             //console.log(contactNo.val().length);
+            if (designation == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide designation.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
+            if (contactNo == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide contact no.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
 
+            if ($("#ContactNo").val() != "" && $("#AlterNetContactNo").val() != "") {
+                if ($("#ContactNo").val() == $("#AlterNetContactNo").val()) {
+                    document.getElementById("errormsg").innerHTML = "Contact no and alternate no can not be same.";
+                    document.getElementById("ErrorMsg").style.display = 'block';
+
+                    return false;
+                }
+            }
+
+            if (birthDate == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide date of birth.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
+
+            if (gender == "Select Gender") {
+                document.getElementById("errormsg").innerHTML = "Please select gender.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
+
+            if (managerId == "") {
+                if (confirm("You have not selected  manager from the list.") == false) {
+                    return false;
+                }
+            }
 
 
 
@@ -668,7 +706,8 @@
 
             success: function (response) {
                 //jQuery('#myEditModal').modal('show');
-                    alert(response );
+                alert(response);
+                $('#updatePasswordModal').modal('toggle');
                 //alert(response[0]._id)
             },
             error: function (response) {

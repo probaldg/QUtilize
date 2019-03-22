@@ -26,10 +26,15 @@
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
-                    <th class="text-center tblHeaderColor sorting">ID</th>
-                    <th class="text-center tblHeaderColor sorting">Name</th>
-                    <th class="text-center tblHeaderColor sorting">Organisation</th>
-                    <th class="text-center tblHeaderColor sorting">Map Roles</th>
+
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">UserName- User Code</th>
+                    <th class="text-center">Organisation</th>
+                    <th class="text-center">Designation</th>
+                    <th class="text-center">Department</th>
+                    <th class="text-center">Map Roles</th>
+
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
@@ -147,14 +152,14 @@
             //})
 
             $('#popupBody input:checked').each(function () {
-               
+
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
                 }
                 moduleids.push(moduleid);
             });
             var length = moduleids.length
-          
+
             for (var i = 0; i < moduleids.length; i++) {
                 if (lastpushedModuleid != moduleids[i]) {
                     Item = { userID: UserID, RoleId: moduleids[i] }

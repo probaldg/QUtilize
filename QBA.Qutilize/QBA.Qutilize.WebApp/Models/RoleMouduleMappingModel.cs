@@ -1,5 +1,6 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -137,6 +138,32 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return result;
 
+        }
+
+
+        public List<ModuleModel> ConvertModuleDatatableToList(DataTable dataTable)
+        {
+            var moduleList = new List<ModuleModel>();
+            try
+            {
+                foreach (DataRow item in dataTable.Rows)
+                {
+                    moduleList.Add(new ModuleModel
+                    {
+                        ID = Convert.ToInt32(item["ID"]),
+                        ParentID = Convert.ToInt32(item["ParentID"]),
+                        Name = item["Name"].ToString(),
+                        DisplayName = item["DisplayName"].ToString(),
+                        Rank = Convert.ToInt32(item["Rank"]),
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return moduleList;
         }
     }
 }
