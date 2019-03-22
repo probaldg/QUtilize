@@ -467,7 +467,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult LoadALLUserMapped()
         {
-            string strProjectMapped = string.Empty;
+            StringBuilder strProjectMapped = new StringBuilder();
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
@@ -475,28 +475,58 @@ namespace QBA.Qutilize.WebApp.Controllers
             DataTable dt = new DataTable();
             if (userInfo.IsRoleSysAdmin)
             {
-                dt = USM.GetAllUsers();
+                var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                if (dtActiveUsers.Length > 0)
+                {
+                    dt = dtActiveUsers.CopyToDataTable();
+                }
+
             }
             else
             {
-                dt = USM.GetAllUsers(userInfo.UserOrganisationID);
+                var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                if (dtActiveUsers.Length > 0)
+                {
+                    dt = dtActiveUsers.CopyToDataTable();
+                }
+
             }
             if (dt.Rows.Count > 0)
             {
+                //foreach (DataRow dr in dt.Rows)
+                //{
+                //    int i = 0; //
+
+                //    strProjectMapped += "<tr>";
+                //    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
+                //    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                //    strProjectMapped += "</td>";
+                //    i++;
+                //}
+
                 foreach (DataRow dr in dt.Rows)
                 {
-                    int i = 0; //
+                    //int i = 0;
 
-                    strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
-                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                    strProjectMapped += "</td>";
-                    i++;
+                    strProjectMapped.Append("<tr>");
+                    strProjectMapped.Append("<td align='center'>" + dr["ID"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["Name"].ToString() + "</td>");
+                    if (dr["UserCode"] != DBNull.Value)
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + " - " + dr["UserCode"]?.ToString() + "</td>");
+                    else
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + "</td>");
+
+                    strProjectMapped.Append("<td align='center'>" + dr["Designation"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["DepartmentName"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>");
+                    strProjectMapped.Append("</tr>");
+                    //i++;
                 }
             }
 
 
-            return Content(strProjectMapped);
+            return Content(strProjectMapped.ToString());
         }
 
         //public ActionResult LoadAllModules()
@@ -785,7 +815,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult LoadALLUserRoleToMapped()
         {
-            string strProjectMapped = string.Empty;
+            StringBuilder strProjectMapped = new StringBuilder();
             UserProjectMappingModel USM = new UserProjectMappingModel();
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
             DataTable dtUsers = new DataTable();
@@ -793,23 +823,40 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 if (userInfo.IsRoleSysAdmin)
                 {
-                    dtUsers = USM.GetAllUsers();
+                    var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                    if (dtActiveUsers.Length > 0)
+                    {
+                        dtUsers = dtActiveUsers.CopyToDataTable();
+                    }
                 }
                 else
                 {
-                    dtUsers = USM.GetAllUsers(userInfo.UserOrganisationID);
+                    var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                    if (dtActiveUsers.Length > 0)
+                    {
+                        dtUsers = dtActiveUsers.CopyToDataTable();
+                    }
+
                 }
 
                 foreach (DataRow dr in dtUsers.Rows)
                 {
-                    int i = 0;
+                    //int i = 0;
 
-                    strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>" + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
-                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowRoleMapped(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                    strProjectMapped.Append("<tr>");
+                    strProjectMapped.Append("<td align='center'>" + dr["ID"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["Name"].ToString() + "</td>");
+                    if (dr["UserCode"] != DBNull.Value)
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + " - " + dr["UserCode"]?.ToString() + "</td>");
+                    else
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + "</td>");
 
-                    strProjectMapped += "</td>";
-                    i++;
+                    strProjectMapped.Append("<td align='center'>" + dr["Designation"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["DepartmentName"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowRoleMapped(" + dr["ID"].ToString() + ")'>Map</button></td>");
+                    strProjectMapped.Append("</tr>");
+                    //i++;
                 }
             }
             catch (Exception)
@@ -819,7 +866,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
 
 
-            return Content(strProjectMapped);
+            return Content(strProjectMapped.ToString());
         }
 
         public ActionResult LoadAllRoles(int userID)

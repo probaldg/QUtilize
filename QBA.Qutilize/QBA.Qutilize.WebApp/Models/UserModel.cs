@@ -134,6 +134,7 @@ namespace QBA.Qutilize.WebApp.Models
                     OrganisationModel organisation = new OrganisationModel();
                     organisation.id = Convert.ToInt32(item["id"]);
                     organisation.orgname = item["orgname"].ToString();
+                    organisation.isActive = Convert.ToBoolean(item["IsActive"]);
                     Organisations.Add(organisation);
                 }
             }
@@ -169,6 +170,7 @@ namespace QBA.Qutilize.WebApp.Models
                         UserModel user = new UserModel();
                         user.ID = Convert.ToInt32(item["Id"]);
                         user.Name = item["Name"].ToString();
+                        user.IsActive = Convert.ToBoolean(item["IsActive"]);
                         users.Add(user);
                     }
                 }
@@ -197,6 +199,7 @@ namespace QBA.Qutilize.WebApp.Models
                     DepartmentModel department = new DepartmentModel();
                     department.DepartmentID = Convert.ToInt32(item["Id"]);
                     department.Name = item["Name"].ToString();
+                    department.IsActive = Convert.ToBoolean(item["IsActive"]);
                     departments.Add(department);
                 }
             }
