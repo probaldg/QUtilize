@@ -82,7 +82,7 @@
             </div>
         </div>
         <table class="table table-bordered">
-            <tr class="text-center tblHeaderColor">
+            <tr class="text-center ">
                 <td>Task Date</td>
                 <td>Projects</td>
                 <td>Task Name</td>
@@ -133,8 +133,8 @@
 
                 <div id="gridContent" class="table-responsive">
 
-                    @grid.GetHtml(tableStyle: "table table-bordered",
-                    headerStyle: "text-center tblHeaderColor",
+                    @grid.GetHtml(tableStyle: "table table-striped table-bordered myTable",
+                    headerStyle: "text-center",
                     alternatingRowStyle: "webgrid-alternating-row",
                     selectedRowStyle: "select",
                     columns: grid.Columns(
@@ -416,6 +416,9 @@ format: @<text><div style="padding-left:20px; float:right;">
             return Math.abs(Math.round(diff));
 
         }
+        $(document).ready(function () {
+            $("#gridContent table").dataTable();
+        });  
     </script>
 </body>
 </html>
