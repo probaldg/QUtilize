@@ -65,7 +65,8 @@ namespace QBA.Qutilize.WebAPI.Controllers
                                 ProjectID = item.ProjectID,
                                 ParentProjectID = item.ParentProjectId,
                                 Description = item.ProjectDescription,
-                                DifferenceInSecondsInCurrentDate = item.DifferenceInSecondsInCurrentDate
+                                DifferenceInSecondsInCurrentDate = item.DifferenceInSecondsInCurrentDate,
+                                MaxProjectTimeInHours = item.MaxProjectTimeInHours != null ? item.MaxProjectTimeInHours : 0
                             });
                         }
 
