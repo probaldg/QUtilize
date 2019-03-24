@@ -26,7 +26,8 @@ namespace QBA.Qutilize.WebApp.Models
         public SelectList ProjecSelectList { get; set; }
         public List<Project> ProjectsList { get; set; }
         public List<DailyTaskModel> DailyTaskList { get; set; }
-
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
@@ -35,7 +36,7 @@ namespace QBA.Qutilize.WebApp.Models
         {
 
             DayOfWeek day = DateTime.Now.DayOfWeek;
-            int idays = day - DayOfWeek.Monday;
+            int idays = DayOfWeek.Monday - day;
             int iVisibleDaysEdit = 0;
             int iVisibleDaysDisplay = 0;
 
@@ -127,7 +128,7 @@ namespace QBA.Qutilize.WebApp.Models
 
                             dailyTaskModel.EndTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
                             dailyTaskModel.EndTimeToDisplay = item["EndTime"].ToString();
-                            dailyTaskModel.Hours = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
+                            dailyTaskModel.HoursToDisplay = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
                         }
 
                         dailyTaskModel.Description = item["Description"] == null ? "" : item["Description"].ToString();
@@ -262,12 +263,26 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        private decimal CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
+        //private decimal CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
+        //{
+        //    try
+        //    {
+        //        TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
+        //        return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        private string CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
         {
             try
             {
                 TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
-                return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
+
+                return ts.ToString(@"hh\:mm");
+                //return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
             }
             catch (Exception ex)
             {

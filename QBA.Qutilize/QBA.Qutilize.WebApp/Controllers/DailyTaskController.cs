@@ -79,7 +79,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.InsertDailyTaskdata(model.DailyTaskModel, out int id);
                     if (id > 0)
+                    {
                         result = "Success";
+                        TempData["ErrStatus"] = result;
+
+                    }
+
                     RedirectToAction("Index", "DailyTask");
                 }
                 else
@@ -96,10 +101,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(result);
         }
-        //public ActionResult InsertDailyTask()
-        //{
-        //    return RedirectToAction("Index", "DailyTask");
-        //}
+
 
         [HttpPost]
         public ActionResult UpdateDailyTask(DailyTaskModel model)
@@ -169,15 +171,14 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(result);
 
         }
-        private decimal CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
+        private string CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
         {
             try
             {
                 TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
-                if (ts.Ticks > 0)
-                    return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
-                else
-                    return 0;
+
+                return ts.ToString(@"hh\:mm");
+
             }
             catch (Exception ex)
             {
@@ -198,17 +199,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                                  where r.StartTime.ToShortDateString() == startTime.ToShortDateString()
                                  select r;
                 var dateTaskList = dailyTasks.ToList();
-                decimal PreviousTaskSum = 0;
+                TimeSpan PreviousTaskSum = TimeSpan.Zero;
 
                 foreach (var item in dateTaskList)
                 {
                     var hour = CalculateTimeDiffrence(item.StartTime, item.EndTime);
-                    PreviousTaskSum = PreviousTaskSum + hour;
+                    PreviousTaskSum = PreviousTaskSum.Add(TimeSpan.Parse(hour));
                 }
 
-                decimal currentTaskSum = CalculateTimeDiffrence(startTime, endTime);
+                var currentTaskSum = CalculateTimeDiffrence(startTime, endTime);
 
-                if (PreviousTaskSum + currentTaskSum > 24)
+                if (PreviousTaskSum.Add(TimeSpan.Parse(currentTaskSum)).TotalHours > 24)
                     result = false;
                 else
                     result = true;
