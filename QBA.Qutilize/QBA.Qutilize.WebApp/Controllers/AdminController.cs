@@ -76,7 +76,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
 
                     obj.ContactNo = dt.Rows[0]["PhoneNo"]?.ToString();
-                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
+                    if (dt.Rows[0]["AlternateConatctNo"] != DBNull.Value)
+                    {
+                        obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
+                    }
+
 
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
@@ -95,14 +99,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
                     obj.UsersList.Clear();
-                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
+                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
                     obj.DepartmentList.Clear();
-                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
+                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
 
                     foreach (DataRow item in dt.Rows)
                     {
-                        obj.DepartmentIds.Add(Convert.ToInt32(item["DeptID"]));
-                        obj.DepartmentIdsInString += item["DeptID"].ToString() + ",";
+                        obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
+                        obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
                     }
 
 
@@ -129,30 +133,55 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                         model.EditedDate = DateTime.Now;
-                        um.Update_UserDetails(model);
-                        TempData["ErrStatus"] = model.ISErr.ToString();
+                        bool result = um.Update_UserDetails(model);
+                        if (result)
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+                        else
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+
+
                     }
 
                 }
                 else
                 {
-                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+
+
+
+                    if (ValidateRequest)
                     {
-                        model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+                        {
+                            model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        }
+
+                        model.CreateDate = DateTime.Now;
+                        string password = model.Password;
+                        password = EncryptionHelper.ConvertStringToMD5(password);
+                        model.IsActive = model.IsActive;
+                        model.Password = password;
+
+                        um.InsertUserdata(model, out int id);
+                        if (model.ISErr)
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+                        else
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+
+
                     }
 
-                    model.CreateDate = DateTime.Now;
-                    string password = model.Password;
-                    password = EncryptionHelper.ConvertStringToMD5(password);
-                    model.IsActive = model.IsActive;
-                    model.Password = password;
-
-                    um.InsertUserdata(model, out int id);
-                    if (id > 0)
-                    {
-
-                    }
-                    TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
             catch (Exception)
@@ -189,7 +218,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             UserModel obj = new UserModel();
 
-            string strUserData = string.Empty;
+            StringBuilder strUserData = new StringBuilder();
 
             int i = 0;
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
@@ -197,28 +226,41 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dtUsers = obj.GetAllUsers();
-                foreach (DataRow dr in dtUsers.Rows)
-                {
 
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
             }
             else
             {
                 dtUsers = obj.GetAllUsers(userInfo.UserOrganisationID);
-                foreach (DataRow dr in dtUsers.Rows)
-                {
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
+
             }
 
-            return Content(strUserData);
+
+            foreach (DataRow dr in dtUsers.Rows)
+            {
+
+                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+
+                strUserData.Append("<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["PhoneNo"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["Designation"] + "</td>");
+                if (dr["BirthDate"] != DBNull.Value)
+                {
+                    strUserData.Append("<td class='text-center'>" + Convert.ToDateTime(dr["BirthDate"]).ToShortDateString() + "</td>");
+                }
+                else
+                {
+                    strUserData.Append("<td class='text-center'>" + dr["BirthDate"] + "</td>");
+                }
+                strUserData.Append("<td class='text-center'>" + dr["Gender"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["ManagerName"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["orgname"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + status + "</td>");
+                strUserData.Append("<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td>");
+
+                strUserData.Append("</tr>");
+
+            }
+            return Content(strUserData.ToString());
         }
 
         public ActionResult GetManagers(int orgId)
@@ -298,6 +340,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 um.updatePassword(id, password, editedBy, editedTS);
                 status = "Updated Successfully";
+                TempData["ErrStatus"] = status.ToString();
             }
             catch (Exception)
             {

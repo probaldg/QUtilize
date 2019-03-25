@@ -16,7 +16,7 @@ namespace QBA.Qutilize.Models
         public Boolean IsCurrentProject { get; set; }
         public int? ParentProjectID { get; set; }
 
-        public int MaxProjectTimeInHours { get; set; }
+        public int? MaxProjectTimeInHours { get; set; }
         public ICollection<User> Users { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -28,11 +25,12 @@ namespace QBA.Qutilize.WebApp.Models
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
 
-      
+
         public decimal Hours { get; set; }
 
-     
+        public string HoursToDisplay { get; set; }
 
-       
+
+
     }
 }
