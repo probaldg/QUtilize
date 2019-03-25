@@ -119,7 +119,9 @@
                         </a>
                     </div>
                     <div class="col-md-6">
-                    <img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block"  style="width:500%"/>
+                        <img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block" style="width:500%" />
+                        @if (HttpContext.Current.Session["OrganisationLogo"] != null && HttpContext.Current.Session["OrganisationLogo"].ToString().Trim()!="")
+                        {<img src="~/images/organisation_logo/@HttpContext.Current.Session["OrganisationLogo"].ToString()" alt="Organization:Logo" class="img-responsive img-logo  center-block" style="width:500%" /> }    
                     </div>
                 </div>
                 <!-----Start User Block---->
@@ -147,7 +149,7 @@
 
                                                     <p class="text-left">Reporting Manager</p>
                                                     <p class="text-left small">
-                                                    @HttpContext.Current.Session["ManagerName"].ToString() (@HttpContext.Current.Session["ManagerEmpCode"].ToString())
+                                                        @HttpContext.Current.Session["ManagerName"].ToString() (@HttpContext.Current.Session["ManagerEmpCode"].ToString())
                                                     </p>
 
                                                     <div class="pull-left">
@@ -165,7 +167,7 @@
                                                     <p>
                                                         @*@Html.ActionLink("Log Out!!!!", "Logout", "/Account", null, new { @class="btn btn-danger btn-block" })*@
                                                         @*<a class="btn btn-danger btn-block"  href="@Url.Action("Logout", "/Account/")">Log Out!!!!</a>*@
-                                                        <a class="btn btn-danger btn-block" href="@Url.Action("Logout", "Home")" >Log Out!!!!</a>
+                                                        <a class="btn btn-danger btn-block" href="@Url.Action("Logout", "Home")">Log Out!!!!</a>
                                                     </p>
                                                 </div>
                                             </div>
@@ -206,24 +208,24 @@
         </div>
 
         @*if (Session["EditedBy"].ToString() == "")
-        {
-            @Html.Action("Call_ChangePassword", "Account");
-        }*@
+            {
+                @Html.Action("Call_ChangePassword", "Account");
+            }*@
 
         <div class="container">
             <audio id="jukebox">
                 <source src="~/Content/error.mp3" type="audio/mp3" />
             </audio>
             @*@functions {
-                public int PopupShowDelay
-                {
-                    get
+                    public int PopupShowDelay
                     {
-                        return ((1000 * (Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds))) - 220000);
-                        // return 1000 * (Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds));
+                        get
+                        {
+                            return ((1000 * (Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds))) - 220000);
+                            // return 1000 * (Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds));
+                        }
                     }
-                }
-            }*@
+                }*@
 
 
 
@@ -257,7 +259,7 @@
                     </div>
                     <div class="modal-footer">
                         @*<button type="button" class="btn btn-default btn-sm" onclick="SessionTimeout.sendKeepAlive();">OK</button>
-                        <button type="button" class="btn btn-default btn-sm" onclick="SessionTimeout.hidePopup();">Cancel</button>*@
+                            <button type="button" class="btn btn-default btn-sm" onclick="SessionTimeout.hidePopup();">Cancel</button>*@
                     </div>
                 </div>
 
@@ -363,7 +365,7 @@
 
     </script>
 
-   
+
 </body>
 
 </html>
