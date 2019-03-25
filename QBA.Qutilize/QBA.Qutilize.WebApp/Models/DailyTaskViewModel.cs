@@ -36,7 +36,7 @@ namespace QBA.Qutilize.WebApp.Models
         {
 
             DayOfWeek day = DateTime.Now.DayOfWeek;
-            int idays = DayOfWeek.Monday - day;
+            int idays = day - DayOfWeek.Monday;
             int iVisibleDaysEdit = 0;
             int iVisibleDaysDisplay = 0;
 

@@ -189,7 +189,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             UserModel obj = new UserModel();
 
-            string strUserData = string.Empty;
+            StringBuilder strUserData = new StringBuilder();
 
             int i = 0;
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
@@ -197,28 +197,41 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dtUsers = obj.GetAllUsers();
-                foreach (DataRow dr in dtUsers.Rows)
-                {
 
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
             }
             else
             {
                 dtUsers = obj.GetAllUsers(userInfo.UserOrganisationID);
-                foreach (DataRow dr in dtUsers.Rows)
-                {
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>" +
-                                    "<td class='text-center'>" + dr["Designation"] + "</td>" + "<td class='text-center'>" + dr["ManagerName"] + "</td>" + "<td class='text-center'>" + status + "</td>" + "<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
+
             }
 
-            return Content(strUserData);
+
+            foreach (DataRow dr in dtUsers.Rows)
+            {
+
+                string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+
+                strUserData.Append("<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["UserName"].ToString() + "</td>" + "<td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["EmailId"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["PhoneNo"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["Designation"] + "</td>");
+                if (dr["BirthDate"] != DBNull.Value)
+                {
+                    strUserData.Append("<td class='text-center'>" + Convert.ToDateTime(dr["BirthDate"]).ToShortDateString() + "</td>");
+                }
+                else
+                {
+                    strUserData.Append("<td class='text-center'>" + dr["BirthDate"] + "</td>");
+                }
+                strUserData.Append("<td class='text-center'>" + dr["Gender"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["ManagerName"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + dr["orgname"] + "</td>");
+                strUserData.Append("<td class='text-center'>" + status + "</td>");
+                strUserData.Append("<td class='text-center'><a href = 'ManageUsers?ID=" + dr["ID"].ToString() + "'>Edit </a> </td>");
+
+                strUserData.Append("</tr>");
+
+            }
+            return Content(strUserData.ToString());
         }
 
         public ActionResult GetManagers(int orgId)

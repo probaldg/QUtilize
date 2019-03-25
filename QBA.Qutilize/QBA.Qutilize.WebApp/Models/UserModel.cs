@@ -79,19 +79,6 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        //public DataTable GetAllUsers()
-        //{
-        //    DataTable dt = null;
-        //    try
-        //    {
-        //        dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return dt;
-        //}
 
         public UserModel()
         {
