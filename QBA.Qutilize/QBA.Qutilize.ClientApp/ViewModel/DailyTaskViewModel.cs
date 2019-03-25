@@ -207,7 +207,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 OnPropertyChanged("CurrentWorkingProject");
             }
         }
-        //public string CurrDate { get; set; }
 
         private string _currDate;
 

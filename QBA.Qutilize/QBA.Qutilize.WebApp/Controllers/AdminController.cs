@@ -133,30 +133,55 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                         model.EditedDate = DateTime.Now;
-                        um.Update_UserDetails(model);
-                        TempData["ErrStatus"] = model.ISErr.ToString();
+                        bool result = um.Update_UserDetails(model);
+                        if (result)
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+                        else
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+
+
                     }
 
                 }
                 else
                 {
-                    if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+
+
+
+                    if (ValidateRequest)
                     {
-                        model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+                        {
+                            model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        }
+
+                        model.CreateDate = DateTime.Now;
+                        string password = model.Password;
+                        password = EncryptionHelper.ConvertStringToMD5(password);
+                        model.IsActive = model.IsActive;
+                        model.Password = password;
+
+                        um.InsertUserdata(model, out int id);
+                        if (model.ISErr)
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+                        else
+                        {
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString;
+                        }
+
+
                     }
 
-                    model.CreateDate = DateTime.Now;
-                    string password = model.Password;
-                    password = EncryptionHelper.ConvertStringToMD5(password);
-                    model.IsActive = model.IsActive;
-                    model.Password = password;
-
-                    um.InsertUserdata(model, out int id);
-                    if (id > 0)
-                    {
-
-                    }
-                    TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
             catch (Exception)
@@ -315,6 +340,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 um.updatePassword(id, password, editedBy, editedTS);
                 status = "Updated Successfully";
+                TempData["ErrStatus"] = status.ToString();
             }
             catch (Exception)
             {

@@ -23,6 +23,12 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
 
+        [Display(Name = "New Password")]
+        public string NewPassword { get; set; }
+
+        [Display(Name = "Confirm new Password")]
+        public string ConfirmNewPassword { get; set; }
+
         [Display(Name = "Email Id")]
         public string EmailId { get; set; }
 
@@ -247,10 +253,21 @@ namespace QBA.Qutilize.WebApp.Models
                 if (!(Status.Value is DBNull))
                 {
                     id = Convert.ToInt32(Status.Value);
-                    model.ID = id;
-                    model.ISErr = false;
-                    model.ErrString = "Data Saved Successfully!!!";
-                    result = true;
+                    if (id > 0)
+                    {
+                        model.ID = id;
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully!!!";
+                        result = true;
+                    }
+                    else
+                    {
+                        id = 0;
+                        result = false;
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured!!!";
+                    }
+
                 }
                 else
                 {
@@ -295,9 +312,14 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isActive",model.IsActive)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_Update]", param);
+                model.ISErr = false;
+                model.ErrString = "Data Saved Successfully!!!";
+
             }
             catch (Exception ex)
             {
+                model.ISErr = true;
+                model.ErrString = "Error Occured!!!";
                 result = false;
             }
             return result;
@@ -325,7 +347,7 @@ namespace QBA.Qutilize.WebApp.Models
         public DataTable updatePassword(int ID, string newPwd, int editedBy, DateTime editedTS)
         {
             DataTable dt = null;
-
+            // bool result = false;
             try
             {
                 SqlParameter[] param ={
@@ -336,9 +358,13 @@ namespace QBA.Qutilize.WebApp.Models
 
                                       };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_UpdatePassword]", param);
+                // result = true;
+
             }
             catch (Exception ex)
             {
+                dt = null;
+                // result = false;
             }
             return dt;
         }
