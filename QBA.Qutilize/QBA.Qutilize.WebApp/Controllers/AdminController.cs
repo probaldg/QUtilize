@@ -76,7 +76,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
 
                     obj.ContactNo = dt.Rows[0]["PhoneNo"]?.ToString();
-                    obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
+                    if (dt.Rows[0]["AlternateConatctNo"] != DBNull.Value)
+                    {
+                        obj.AlterNetContactNo = dt.Rows[0]["AlternateConatctNo"]?.ToString();
+                    }
+
 
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
@@ -95,14 +99,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
                     obj.UsersList.Clear();
-                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId);
+                    obj.UsersList = obj.GetAllUsersInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
                     obj.DepartmentList.Clear();
-                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId);
+                    obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
 
                     foreach (DataRow item in dt.Rows)
                     {
-                        obj.DepartmentIds.Add(Convert.ToInt32(item["DeptID"]));
-                        obj.DepartmentIdsInString += item["DeptID"].ToString() + ",";
+                        obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
+                        obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
                     }
 
 

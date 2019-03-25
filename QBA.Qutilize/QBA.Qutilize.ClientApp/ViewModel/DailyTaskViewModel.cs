@@ -53,6 +53,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             StopProjectTimeElapseShowTimer();
 
+
             DisplayTimeElapsed();
 
             RefreshUI();
@@ -73,8 +74,11 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void DisplayTimeElapsed()
         {
+            CurrDate = DateTime.Now.ToString("dddd, dd MMMM yyyy"); // Updating time in the header in every 10 seconds.
+
             if (CurrentWorkingProject != null)
             {
+
                 TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
                 Project currProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.IsCurrentProject == true);
 
@@ -203,7 +207,20 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 OnPropertyChanged("CurrentWorkingProject");
             }
         }
-        public string CurrDate { get; set; }
+        //public string CurrDate { get; set; }
+
+        private string _currDate;
+
+        public string CurrDate
+        {
+            get { return _currDate; }
+            set
+            {
+                _currDate = value;
+                OnPropertyChanged("CurrDate");
+            }
+        }
+
         public string CurrUser { get; set; }
         public ICommand UpdateCommandFromSelectedProject
         {
