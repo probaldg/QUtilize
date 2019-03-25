@@ -35,22 +35,21 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.OrganisationList.Clear();
-                obj.OrganisationList = obj.GetAllOrgInList();
-
+                obj.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();
             }
 
             else
             {
                 obj.OrganisationList.Clear();
-                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID);
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
                 obj.OrganisationList.Add(organisation);
 
                 obj.UserOrgId = userInfo.UserOrganisationID;
 
                 obj.UsersList.Clear();
-                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID);
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.DepartmentList.Clear();
-                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID);
+                obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
             }
 
 
@@ -228,7 +227,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strUserData = string.Empty;
             try
             {
-                var listUsers = user.GetAllUsersInList(orgId);
+                var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
                 strUserData += "<option value = 0>Please select</option>";
                 foreach (UserModel item in listUsers)
                 {
@@ -250,7 +249,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strDeptData = string.Empty;
             try
             {
-                var listUsers = user.GetAllDepartmentInList(orgId);
+                var listUsers = user.GetAllDepartmentInList(orgId).Where(x => x.IsActive == true).ToList();
                 strDeptData += "<option value = 0>Please select</option>";
                 foreach (DepartmentModel item in listUsers)
                 {
@@ -468,7 +467,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult LoadALLUserMapped()
         {
-            string strProjectMapped = string.Empty;
+            StringBuilder strProjectMapped = new StringBuilder();
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
@@ -476,28 +475,58 @@ namespace QBA.Qutilize.WebApp.Controllers
             DataTable dt = new DataTable();
             if (userInfo.IsRoleSysAdmin)
             {
-                dt = USM.GetAllUsers();
+                var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                if (dtActiveUsers.Length > 0)
+                {
+                    dt = dtActiveUsers.CopyToDataTable();
+                }
+
             }
             else
             {
-                dt = USM.GetAllUsers(userInfo.UserOrganisationID);
+                var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                if (dtActiveUsers.Length > 0)
+                {
+                    dt = dtActiveUsers.CopyToDataTable();
+                }
+
             }
             if (dt.Rows.Count > 0)
             {
+                //foreach (DataRow dr in dt.Rows)
+                //{
+                //    int i = 0; //
+
+                //    strProjectMapped += "<tr>";
+                //    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
+                //    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                //    strProjectMapped += "</td>";
+                //    i++;
+                //}
+
                 foreach (DataRow dr in dt.Rows)
                 {
-                    int i = 0; //
+                    //int i = 0;
 
-                    strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
-                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                    strProjectMapped += "</td>";
-                    i++;
+                    strProjectMapped.Append("<tr>");
+                    strProjectMapped.Append("<td align='center'>" + dr["ID"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["Name"].ToString() + "</td>");
+                    if (dr["UserCode"] != DBNull.Value)
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + " - " + dr["UserCode"]?.ToString() + "</td>");
+                    else
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + "</td>");
+
+                    strProjectMapped.Append("<td align='center'>" + dr["Designation"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["DepartmentName"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>");
+                    strProjectMapped.Append("</tr>");
+                    //i++;
                 }
             }
 
 
-            return Content(strProjectMapped);
+            return Content(strProjectMapped.ToString());
         }
 
         //public ActionResult LoadAllModules()
@@ -791,7 +820,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult LoadALLUserRoleToMapped()
         {
-            string strProjectMapped = string.Empty;
+            StringBuilder strProjectMapped = new StringBuilder();
             UserProjectMappingModel USM = new UserProjectMappingModel();
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
             DataTable dtUsers = new DataTable();
@@ -799,23 +828,40 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 if (userInfo.IsRoleSysAdmin)
                 {
-                    dtUsers = USM.GetAllUsers();
+                    var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                    if (dtActiveUsers.Length > 0)
+                    {
+                        dtUsers = dtActiveUsers.CopyToDataTable();
+                    }
                 }
                 else
                 {
-                    dtUsers = USM.GetAllUsers(userInfo.UserOrganisationID);
+                    var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                    if (dtActiveUsers.Length > 0)
+                    {
+                        dtUsers = dtActiveUsers.CopyToDataTable();
+                    }
+
                 }
 
                 foreach (DataRow dr in dtUsers.Rows)
                 {
-                    int i = 0;
+                    //int i = 0;
 
-                    strProjectMapped += "<tr>";
-                    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td>" + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
-                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowRoleMapped(" + dr["ID"].ToString() + ")'>Map</button></td>";
+                    strProjectMapped.Append("<tr>");
+                    strProjectMapped.Append("<td align='center'>" + dr["ID"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["Name"].ToString() + "</td>");
+                    if (dr["UserCode"] != DBNull.Value)
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + " - " + dr["UserCode"]?.ToString() + "</td>");
+                    else
+                        strProjectMapped.Append("<td align='center'>" + dr["UserName"]?.ToString() + "</td>");
 
-                    strProjectMapped += "</td>";
-                    i++;
+                    strProjectMapped.Append("<td align='center'>" + dr["Designation"].ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'>" + dr["DepartmentName"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
+                    strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowRoleMapped(" + dr["ID"].ToString() + ")'>Map</button></td>");
+                    strProjectMapped.Append("</tr>");
+                    //i++;
                 }
             }
             catch (Exception)
@@ -825,7 +871,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
 
 
-            return Content(strProjectMapped);
+            return Content(strProjectMapped.ToString());
         }
 
         public ActionResult LoadAllRoles(int userID)
@@ -936,35 +982,124 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             foreach (DataRow dr in dt.Rows)
             {
+                var status = Convert.ToBoolean(dr["IsActive"]);
                 int i = 0;
 
                 strProjectMapped += "<tr>";
                 strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
-                strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+                if (status)
+                {
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'  onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+
+                }
+                else
+                {
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' disabled style='background-color:gray; color:white;'  onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+
+                }
                 strProjectMapped += "</td>";
                 i++;
             }
 
             return Content(strProjectMapped);
         }
+        //public ActionResult LoadAllSysModules()
+        //{
+        //    RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
+        //    DataTable dt = obj.GetAllModules();
+        //    string strModules = string.Empty;
+
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
+        //        strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
+        //                        dr["Name"].ToString();
+
+        //        strModules += "</li>";
+        //        strModules += "</ul>";
+
+        //    }
+        //    return Content(strModules);
+        //}
+
         public ActionResult LoadAllSysModules()
         {
             RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
-            DataTable dt = obj.GetAllModules();
-            string strModules = string.Empty;
+            StringBuilder strModules = new StringBuilder();
 
-            foreach (DataRow dr in dt.Rows)
+            try
             {
-                strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-                strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
-                                dr["Name"].ToString();
+                DataTable dt = obj.GetAllModules();
 
-                strModules += "</li>";
-                strModules += "</ul>";
+
+                if (dt.Rows.Count > 0)
+                {
+                    List<ModuleModel> moduleList = obj.ConvertModuleDatatableToList(dt);
+
+                    var ParentModules = moduleList.Where(x => x.ParentID == 0).ToList();
+                    var ChildModules = moduleList.Where(x => x.ParentID != 0).ToList();
+
+                    strModules.Append(@"<div id='divModuleList' class='row' style='margin:10px;'>");
+
+                    foreach (ModuleModel item in ParentModules)
+                    {
+
+                        strModules.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                        strModules.Append("<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + item.ID + "'>");
+                        strModules.Append(item.DisplayName);
+
+                        strModules.Append(LoadChildModules(item.ID, ChildModules));
+
+                        strModules.Append("</div>");
+
+                    }
+                    strModules.Append("</div>");
+
+                }
 
             }
-            return Content(strModules);
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Content(strModules.ToString());
+        }
+
+        public string LoadChildModules(int parentId, List<ModuleModel> childModules)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            try
+            {
+                var childs = childModules.Where(x => x.ParentID == parentId).OrderBy(x => x.Rank).ToList();
+                if (childs.Count > 0)
+                {
+                    stringBuilder.Append("<ul class='module' style='list-style: none; margin:5px;'>");
+                    foreach (ModuleModel item in childs)
+                    {
+                        stringBuilder.Append("<li class='limodule' style='list-style: none;margin:2px;'>");
+                        stringBuilder.Append("<input type='checkbox' class='check' style=' margin:2px;' name='modules' value='" + item.ID + "'>" + item.DisplayName);
+
+                        var innerChild = childModules.Where(x => x.ParentID == item.ID).OrderBy(x => x.Rank).ToList();
+                        if (innerChild.Count > 0)
+                        {
+                            LoadChildModules(item.ID, childModules);
+                        }
+                        stringBuilder.Append("</li>");
+                    }
+                    stringBuilder.Append("</ul>");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return stringBuilder.ToString();
         }
         public ActionResult GetModuleMappedToRole(int id)
         {
