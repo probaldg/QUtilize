@@ -13,8 +13,13 @@
         <h5 class="widget-user-desc">@Html.DisplayFor(m => m.Designation)</h5>
     </div>
     <div class="widget-user-image">
-        @*<img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Avatar">*@
-        <span class="glyphicon glyphicon-user icon-size img-circle"></span>
+        @if (Model.Gender.ToLower() == "male")
+        {<img class="img-circle" src="~/Images/img_M.png" alt="User Avatar">}
+        else if (Model.Gender.ToLower() == "female")
+        { <img class="img-circle" src="~/Images/img_F.png" alt="User Avatar">}
+        else
+        {<img class="img-circle" src="~/Images/img_M.png" alt="User Avatar">}
+        @*<span class="glyphicon glyphicon-user icon-size img-circle"></span>*@
     </div>
     <div class="box-footer">
         <div class="row">
