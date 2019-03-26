@@ -14,30 +14,7 @@
 </head>
 <body>
 
-    @*@{
-            var strMSGforSave = string.Empty;
-            string strStyle = string.Empty;
-
-            var strMsgforErr = string.Empty;
-            var strmsgStyle = string.Empty;
-
-            var errSts = TempData["ErrMsg"];
-
-            var ErrStatus = TempData["ErrStatus"];
-            if (ErrStatus != null)
-            {
-                strMSGforSave = ErrStatus.ToString();
-            }
-            if (strMSGforSave != "")
-            {
-                strStyle = "display:block";
-            }
-            else
-            {
-                strStyle = "display:none";
-            }
-
-        }*@
+   
 
     @{
         var strMSGforSave = string.Empty;
@@ -103,18 +80,19 @@
             <thead id="tblHeadListViewPost">
                 <tr>
 
-                    <th class="text-center">ID</th>
-                    <th class="text-center">User Name</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">Email</th>
-                    <th class="text-center">Contact No.</th>
-                    <th class="text-center">Designation</th>
-                    <th class="text-center">Date Of Birth</th>
-                    <th class="text-center">Gender</th>
-                    <th class="text-center">Manager Name</th>
-                    <th class="text-center">Organisation</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Edit</th>
+                    <th class="text-center tblHeaderColor">ID</th>
+                    <th class="text-center tblHeaderColor">User Name</th>
+                    <th class="text-center tblHeaderColor">Name</th>
+                    <th class="text-center tblHeaderColor">Email</th>
+                    <th class="text-center tblHeaderColor">Contact No.</th>
+                    <th class="text-center tblHeaderColor">Designation</th>
+                    <th class="text-center tblHeaderColor">Date Of Birth</th>
+                    <th class="text-center tblHeaderColor">Gender</th>
+                    <th class="text-center tblHeaderColor">Manager Name</th>
+                    <th class="text-center tblHeaderColor">Organisation</th>
+                    <th class="text-center tblHeaderColor">Status</th>
+                    <th class="text-center tblHeaderColor">Edit</th>
+
 
                 </tr>
             </thead>
@@ -734,7 +712,10 @@
             }
 
             if (managerId == "") {
-                if (confirm("You have not selected  manager from the list.") == false) {
+                
+                var result = confirm("You have not selected manager from the list. do you want to continue?");
+                if (result ==false) {
+                   
                     return false;
                 }
             }
