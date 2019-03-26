@@ -13,8 +13,13 @@
         <h5 class="widget-user-desc">@Html.DisplayFor(m => m.Designation)</h5>
     </div>
     <div class="widget-user-image">
-        @*<img class="img-circle" src="../dist/img/user1-128x128.jpg" alt="User Avatar">*@
-        <span class="glyphicon glyphicon-user icon-size img-circle"></span>
+        @if (Model.Gender.ToLower() == "male")
+        {<img class="img-circle" src="~/Images/img_M.png" alt="User Avatar">}
+        else if (Model.Gender.ToLower() == "female")
+        { <img class="img-circle" src="~/Images/img_F.png" alt="User Avatar">}
+        else
+        {<img class="img-circle" src="~/Images/img_M.png" alt="User Avatar">}
+        @*<span class="glyphicon glyphicon-user icon-size img-circle"></span>*@
     </div>
     <div class="box-footer">
         <div class="row">
@@ -24,20 +29,35 @@
                         <div class="box-header">
                             <span class="description-text box-title">Basic Info</span>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body" style="text-align:left;">
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.EmployeeCode, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.EmployeeCode, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Employee Code:</label>
                                 <div class="col-md-7">
-                                    @Html.DisplayFor(m => m.EmailId)
+                                    @Html.DisplayFor(m => m.EmployeeCode)
                                 </div>
                             </div>
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.ManagerName,htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.ManagerName, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Manager Name:</label>
                                 <div class="col-md-7">
-                                    @Html.DisplayFor(m => m.ManagerName);@Html.DisplayFor(m => m.ManagerEmpCode);
+                                    @Html.DisplayFor(m => m.ManagerName)
                                 </div>
                             </div>
-                            
+                            <div class="form-group row">
+                                @*@Html.LabelFor(m => m.ManagerEmpCode, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Manager Emp Code:</label>
+                                <div class="col-md-7">
+                                    @Html.DisplayFor(m => m.ManagerEmpCode)
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*@Html.LabelFor(m => m.RoleName, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Associated Role/s:</label>
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.RoleName)</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,27 +69,31 @@
                         <div class="box-header">
                             <span class="description-text box-title">Personal Info</span>
                         </div>
-                        <div class="box-body">
+                        <div class="box-body" style="text-align:left;">
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.BirthDate, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.BirthDate, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Birth Date:</label>
                                 <div class="col-md-7">
                                     @Html.DisplayFor(m => m.BirthDate)
                                 </div>
                             </div>
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.Gender, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.Gender, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Gender:</label>
                                 <div class="col-md-7">
                                     @Html.DisplayFor(m => m.Gender)
                                 </div>
                             </div>
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.ContactNo, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.ContactNo, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Contact No:</label>
                                 <div class="col-md-7">
                                     @Html.DisplayFor(m => m.ContactNo)
                                 </div>
                             </div>
                             <div class="form-group row">
-                                @Html.LabelFor(m => m.AlterNetContactNo, htmlAttributes: new { @class = "control-label col-md-5" })
+                                @*@Html.LabelFor(m => m.AlterNetContactNo, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Alternet Contact No:</label>
                                 <div class="col-md-7">
                                     @Html.DisplayFor(m => m.AlterNetContactNo)
                                 </div>
@@ -103,8 +127,28 @@
                         <div class="box-header">
                             <span class="description-text box-title">Work Info</span>
                         </div>
-                        <div class="box-body">
-                            3,200
+                        <div class="box-body" style="text-align:left;">
+                            <div class="form-group row">
+                                @*@Html.LabelFor(m => m.OrganisationName, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Organisation Name:</label>
+                                <div class="col-md-7">
+                                    @Html.DisplayFor(m => m.OrganisationName)
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*@Html.LabelFor(m => m.DepartmentName, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Department Name:</label>
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.DepartmentName)</ul>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @*@Html.LabelFor(m => m.ProjectName, htmlAttributes: new { @class = "control-label col-md-5" })*@
+                                <label class="control-label col-md-5">Associated Project/s:</label>
+                                <div class="col-md-7">
+                                    <ul>@Html.Raw(Model.ProjectName)</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

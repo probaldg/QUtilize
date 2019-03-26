@@ -25,9 +25,10 @@
         <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
             <thead id="tblHeadListViewPost">
                 <tr>
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Role Name</th>
-                    <th class="text-center">Map Modules</th>
+                    <th class="text-center tblHeaderColor">ID</th>
+                    <th class="text-center tblHeaderColor">Role Name</th>
+                    <th class="text-center tblHeaderColor">Organisation</th>
+                    <th class="text-center tblHeaderColor">Map Modules</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
@@ -35,6 +36,7 @@
                 @Html.Action("LoadALLRoleToBeMappedWithModule", "Admin")
             </tbody>
         </table>
+        <input type="hidden" value="" name="RoleID" id="RoleID" />
     </div>
     <div class="col-md-12"><br /></div>
 
@@ -49,7 +51,13 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" value="" name="RoleID" id="RoleID" />
+                    @*<input type="hidden" value="" name="RoleID" id="RoleID" />*@
+                    <form class="navbar-form" role="search">
+                        <div class="input-group add-on">
+                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                        </div>
+                    </form>
+
                     @Html.Action("LoadAllSysModules", "Admin")
                 </div>
 
@@ -64,13 +72,14 @@
     </div>
 
     <script type="text/javascript">
+        $("#tblGridListViewPost").dataTable();
         function ShowPermission(id) {
-           
+
             var id = id;
-           
+
             $('input[name="RoleID"]').val(id)
 
-            
+
             $("input[type='checkbox']").prop('checked', false)
 
              $.ajax({
@@ -84,7 +93,7 @@
             }),
 
             success: function (response) {
-                console.log(response);
+               // console.log(response);
                 $.each(response, function (key, value) {
                     $("input[value='" + value.SysModuleId + "']").prop('checked', true);
 
@@ -103,19 +112,27 @@
             var moduleid = [];
             var moduleids = [];
 
-             var RoleID = document.getElementById("RoleID").value;
+            var RoleID = document.getElementById("RoleID").value;
             var lastpushedModuleid = 0;
 
-            $("ul.module > li.limodule  input:checkbox:checked").each(function () {
-                // alert($(this).attr("name"))
-                if ($(this).attr("name") == "modules") {
-                    moduleid = $(this).val();
-                }
+            //$("ul.module > li.limodule  input:checkbox:checked").each(function () {
+            //    // alert($(this).attr("name"))
+            //    if ($(this).attr("name") == "modules") {
+            //        moduleid = $(this).val();
+            //    }
 
-                moduleids.push(moduleid);
+            //    moduleids.push(moduleid);
 
-            })
-            var length = moduleids.length
+            //})
+            //var length = moduleids.length
+
+             $('#divModuleList input:checked').each(function () {
+
+                 if ($(this).attr("name") == "modules") {
+                     moduleid = $(this).val();
+                 }
+                 moduleids.push(moduleid);
+             });
            // alert(length);
 
             for (var i = 0; i < moduleids.length; i++) {
@@ -150,6 +167,21 @@
             }
         });
         }
+
+         $('#srch-term').on('input', function () {
+
+            var searchFilter = $('#srch-term').val();
+           
+            if (searchFilter == "") {
+
+                $("#divModuleList  li:contains(" + searchFilter + ")").css("text-decoration", "none")
+            }
+            else {
+
+                $("#divModuleList  li:contains("+searchFilter+")").css("text-decoration", "underline")
+            }
+
+        });
     </script>
 </body>
 </html>

@@ -44,162 +44,169 @@
         }
     }
 
-    @*<div class="form-horizontal col-md-12">
-            <div class="alert alert-warning alert-dismissible" role="alert" style="@strStyle">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <div class="form-horizontal col-md-12" >
+            <div class="alert alert-success alert-dismissible" role="alert" style="@strStyle">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="saveMsg">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 Data Saved Successfully!!!
             </div>
         </div>
         <h4>Daily Task</h4>
-        <br />*@
+        <br />
 
     <div style="width:100%;float:left; height:auto;">
 
         <div class="form-group">
             @Html.Label("Start date", htmlAttributes: new { @class = "control-label col-md-1" })
-            <div class="col-md-10">
+            <div class="col-md-2">
                 @Html.DisplayFor(model => model.StartDate)
+
             </div>
-        </div>
-        <br />
-        <div class="form-group">
             @Html.Label("End date", htmlAttributes: new { @class = "control-label col-md-1" })
-            <div class="col-md-10">
+            <div class="col-md-3">
                 @Html.DisplayFor(model => model.EndDate)
             </div>
         </div>
         <br />
+       
+        <br />
+        <div class="form-horizontal col-md-12" id="ErrorMsg" name="ErrorMsg" style="display:none">
+            <div class="alert alert-danger alert-dismissable fade in">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="saveMsg">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <span id="errormsg"></span>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tr class="text-center ">
+                <td>Task Date</td>
+                <td>Projects</td>
+                <td>Task Name</td>
+                <td>Description</td>
+                <td>Start Time</td>
+                <td>End Time</td>
+                <td></td>
+
+            </tr>
+
+            <tr>
+
+                <td>
+                    <input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">
+                </td>
+
+                <td> @Html.DropDownListFor(M => M.ProjectsList, new SelectList(Model.ProjectsList, "ProjectID", "ProjectName"), new { @class = "form-control" })</td>
+                <td>
+
+                    <input type="text" class="form-control input-sm" id="TaskNameInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" id="DescriptionInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" id="StartTimeInsert">
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" id="EndTimeInsert">
+                </td>
+
+                <td colspan="3">
+                    @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
+                    <input type="submit" value="&#xe172;" class="btn btn-primary glyphicon " id="btnInsert" title="Insert" />
+                </td>
+
+            </tr>
+        </table>
+
+
 
         @{if (Model != null)
             {
                 var grid = new WebGrid(Model.DailyTaskList, canPage: false, canSort: false, ajaxUpdateContainerId: "gridContent");
                 //grid.Pager(WebGridPagerModes.NextPrevious);
 
-                <div id="gridContent" class="table-responsive">
+        <div id="gridContent" class="table-responsive">
 
-                    @grid.GetHtml(tableStyle: "table table-bordered",
-                    headerStyle: "text-center tblHeaderColor",
-                    alternatingRowStyle: "webgrid-alternating-row",
-                    selectedRowStyle: "select",
-                    columns: grid.Columns(
+            @grid.GetHtml(tableStyle: "table table-striped table-bordered myTable",
+            headerStyle: "text-center",
+            alternatingRowStyle: "webgrid-alternating-row",
+            selectedRowStyle: "select",
+            columns: grid.Columns(
 
-              grid.Column("TaskDate",
-                     style: "col2",
-                     format: @<text>
-                            <span id="TaskDate" class="display-mode">@item.TaskDate.ToShortDateString()</span>
+      grid.Column("TaskDate",
+             style: "col2",
+             format: @<text>
+                    <span id="TaskDate" class="display-mode">@item.TaskDate.ToShortDateString()</span>
 
-                            @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToShortDateString(), new { @class = "edit-mode datepicker" })
+                    @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToShortDateString(), new { @class = "edit-mode datepicker" })
 
-                    </text>),
+            </text>),
      grid.Column("ProjectName",
- style: "col2",
- format: @<text>
-    <span id="ProjectName" class="display-mode">@item.ProjectName</span>
-    <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+    style: "col2",
+    format: @<text>
+            <span id="ProjectName" class="display-mode">@item.ProjectName</span>
+            <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
 
-</text>),
-grid.Column("TaskName",
+        </text>),
+  grid.Column("TaskName",
+  style: "col2",
+  format: @<text>
+            <span id="TaskName" class="display-mode">@item.TaskName</span>
+
+            @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
+        </text>), /*second column end*/
+
+
+    grid.Column("Description",
 style: "col2",
 format: @<text>
-    <span id="TaskName" class="display-mode">@item.TaskName</span>
+            <span id="Description" class="display-mode">@item.Description</span>
+            @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
+        </text>),/*fourth column end*/
 
-    @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode" })
-</text>), /*second column end*/
-
-
-          grid.Column("Description",
-      style: "col2",
-      format: @<text>
-        <span id="Description" class="display-mode">@item.Description</span>
-        @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode" })
-    </text>),/*fourth column end*/
-
-            grid.Column("Start Time",
-               style: "col2",
-               format: @<text>
-                <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
-                @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
-            </text>),
+grid.Column("Start Time",
+   style: "col2",
+   format: @<text>
+            <span id="StartTime" class="display-mode">@item.StartTimeToDisplay</span>
+            @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker" })
+        </text>),
 grid.Column("End Time",
 style: "col2",
 format: @<text>
-    <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
-    @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
-</text>),
+            <span id="EndTime" class="display-mode">@item.EndTimeToDisplay</span>
+            @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker" })
+        </text>),
 
-grid.Column("Hours",
-style: "col2",
-format: @<text>
-    <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>
-
-</text>),
-
-                grid.Column("",
-                    style: "col1",
-                    format: @<text><div style="padding-left:20px; float:right;">
+        grid.Column("Hours",
+        style: "col2",
+        format: @<text>
+            @* <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>*@
+            <span id="hours" class="display-mode">@item.HoursToDisplay</span>
 
 
-                            <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>
-                            <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId">Delete</button>
-                            <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId">Save</button>
-                            <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId">Cancel</button>
-                        </div>
-                    </text>)) /*End of Coloumns*/
-) @*end of grid*@
+        </text>),
 
-</div>
+  grid.Column("",
+  style: "col1",
+  format: @<text><div style="padding-left:20px; float:right;">
+
+
+                @*<button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>*@
+                <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId" title="Edit"> <span class="glyphicon">&#x270f;</span></button>
+                <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId"><span class="glyphicon" title="Delete">&#xe014;</span></button>
+                <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Update">&#xe013;</span></button>
+                <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Cancel">&#xe014;</span></button>
+            </div>
+        </text>)) /*End of Coloumns*/
+     ) @*end of grid*@
+
+        </div>
 }
         }
     </div>
-    <div class="form-horizontal col-md-12">
-        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
-            <span id="errormsg"></span>
-        </div>
-    </div>
-    <table class="table table-bordered">
-        <tr class="text-center tblHeaderColor">
-            <td>Task Date</td>
-            <td>Projects</td>
-            <td>Task Name</td>
-            <td>Description</td>
-            <td>Start Time</td>
-            <td>End Time</td>
-            <td></td>
-
-        </tr>
-
-        <tr>
-
-            <td>
-                @*@Html.EditorFor(model => model.TaskDate, new { htmlAttributes = new { @class = "form-control input-sm" } })*@
-                <input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">
-            </td>
-
-            @*<td>@Html.DropDownList("ProjectList", Model.ProjecSelectList, new { style = "width:180px; height:30px;" })</td>*@
-            <td> @Html.DropDownListFor(M => M.ProjectsList, new SelectList(Model.ProjectsList, "ProjectID", "ProjectName"), new { @class = "form-control" })</td>
-            <td>
-
-                <input type="text" class="form-control input-sm" id="TaskNameInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" id="DescriptionInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" pattern="([01]?[0-9]|2[0-3])(:[0-5][0-9]){2}" id="StartTimeInsert">
-            </td>
-            <td>
-                <input type="text" class="form-control input-sm" id="EndTimeInsert">
-            </td>
-
-            <td colspan="3">
-                @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
-                <input type="submit" value="Insert" class="btn btn-primary" id="btnInsert" />
-            </td>
-
-        </tr>
-    </table>
+   
 
     <style>
         /*th {
@@ -211,6 +218,8 @@ format: @<text>
         var curr = new Date;
         var first = curr.getDate() - curr.getDay();
         var first = first + 1
+        //var first = first 
+
         var last = first + 6;
 
         $('#TaskDateInsert').datepicker({
@@ -250,9 +259,9 @@ format: @<text>
             if (confirm("Are you sure to delete this contact?")) {
                 var tr = $(this).parents('tr:first');
                 var ID = $(this).prop('id');
-               
+
                 $.post(
-                    '/DailyTask/DeleteDailyTask/',
+                    '@Url.Action("DeleteDailyTask", "DailyTask")',
                     { ID: ID },
                     function (item) {
                         tr.remove();
@@ -284,7 +293,7 @@ format: @<text>
             diff /= 3600;
 
             if (diff >= 24) {
-                ShowError(" time diffrence can not be greater than 8 hours..");
+                ShowError(" time diffrence can not be greater than 24 hours..");
                 return false;
             }
             if (stt > endt) {
@@ -292,7 +301,7 @@ format: @<text>
                 return false;
             }
             $.post(
-                '/DailyTask/UpdateDailyTask/',
+                '@Url.Action("UpdateDailyTask", "DailyTask")',
                 { DailyTaskId: DailyTaskId, TaskDate: taskDate, TaskName: taskName, Description: Description, StartTime: startTime, EndTime: EndTime},
                 function (item) {
                    // alert(item.TaskDate);
@@ -357,7 +366,7 @@ format: @<text>
              diff /= 3600;
 
              if (diff >= 24) {
-                 ShowError(" time diffrence can not be greater than 8 hours..");
+                 ShowError(" time diffrence can not be greater than 24 hours..");
                  return false;
              }
              if (stt > endt) {
@@ -380,12 +389,15 @@ format: @<text>
                         "descreption": dsec,
                     }), //Data end
                     success: function (response) {
-                       
+
                         if (response == "Success") {
-                            alert('Task saved succesfully');
+                            console.log(response);
+                            // @strMSGforSave=response.val();
+                           // alert('Task saved succesfully');
                             location.reload();
                         }
                         else if (response == "Invalid") {
+                           // @strMSGforSave=response
                             ShowError("Task time can not be greater than 24 hours..")
                             $('#ErrorMsg').css("display", "block");
                         }
@@ -407,6 +419,9 @@ format: @<text>
             return Math.abs(Math.round(diff));
 
         }
+        $(document).ready(function () {
+            $("#gridContent table").dataTable();
+        });  
     </script>
 </body>
 </html>

@@ -36,7 +36,7 @@
 
     }
     <div class="form-horizontal col-md-12">
-        <div class="alert alert-warning alert-dismissible" role="alert" style="@strStyle">
+        <div class="alert alert-success alert-dismissible" role="alert" style="@strStyle">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -53,6 +53,7 @@
                     <th class="text-center tblHeaderColor">ID</th>
                     <th class="text-center tblHeaderColor">Role Name</th>
                     <th class="text-center tblHeaderColor">Description</th>
+                    <th class="text-center tblHeaderColor">Organisation</th>
                     <th class="text-center tblHeaderColor">Active</th>
                     <th class="text-center tblHeaderColor">Edit</th>
 
@@ -97,7 +98,13 @@
                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                 </div>
             </div>
-
+            <div class="form-group">
+                @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.OrganisationList, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.RolesOrgID)
+                </div>
+            </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -118,11 +125,29 @@
 
     <script type="text/javascript">
         $("#tblGridListViewPost").dataTable();
+        $('#OrganisationList').change(function () {
+            var OrgId = $('#OrganisationList').val();
+            $('#RolesOrgID').val(OrgId)
+
+        });
+
+        var orgId = $('#RolesOrgID').val();
+
+        if (orgId != 0) {
+            $('#OrganisationList').val(orgId);
+            if ($('#OrganisationList option').length == 2) {
+                $("#OrganisationList").prop("disabled", true);
+            }
+
+        }
+
+
+
 
         function checkUserForm() {
 
-
             var RoleName = document.getElementById("Name").value;
+            var OrgId = $('#OrganisationList').val();
             if (RoleName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Role Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -130,6 +155,12 @@
                 return false;
             }
 
+            if (OrgId == "" || OrgId ==0) {
+                document.getElementById("errormsg").innerHTML = "Please select organisation Name";
+                document.getElementById("ErrorMsg").style.display = 'block';
+
+                return false;
+            }
             return true;
         }
     </script>

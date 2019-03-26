@@ -835,7 +835,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var Status = Convert.ToBoolean(dr["isActive"]) == true ? "Active" : "InActive";
 
                     strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" +
-                                     "<td class='text-center'>" + Status + "</td><td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+                                     "<td class='text-center'>" + Status + "</td>";
+                    if(dr["OrgID"].ToString()!="")
+                        strUserData += "<td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td>";
+                    else
+                        strUserData += "<td class='text-center'></td>";
+                    strUserData += "</tr>";
                     i++;
                 }
             }
@@ -1421,7 +1426,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 List<OrganisationModel> viewModelList = new List<OrganisationModel>();
                 foreach (DataRow dr in dt.Rows)
                 {
-                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
+                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["Name"] + "</td><td class='text-center'>" + dr["ParentModule"] + "</td>" + "<td class='text-center'>" + dr["URL"].ToString() + "</td>" +
                         "<td class='text-center'>" + dr["DisplayName"].ToString() + "</td>" + "<td class='text-center'><i class='" + dr["DisplayCSS"].ToString() + "'></i>  " + dr["DisplayCSS"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
                        "<td  class='text-center'><a href = 'ManageModule?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
                     i++;

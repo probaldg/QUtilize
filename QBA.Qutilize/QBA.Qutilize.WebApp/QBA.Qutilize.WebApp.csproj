@@ -169,6 +169,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\EncryptionHelper.cs" />
+    <Compile Include="Helper\ErrorHandle.cs" />
     <Compile Include="Helper\ImageCompress.cs" />
     <Compile Include="Helper\ModuleMappingHelper.cs" />
     <Compile Include="Helper\UserInfoHelper.cs" />
@@ -236,9 +237,12 @@
     <Content Include="Global.asax" />
     <Content Include="Images\favicon.ico" />
     <Content Include="Images\icon.ico" />
+    <Content Include="Images\img_F.png" />
+    <Content Include="Images\img_M.png" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\LogOut.PNG" />
     <Content Include="Images\marker.png" />
+    <Content Include="Images\organisation_logo\IRC Agrochemicals Private Limited_logo_indoramasmlogo.jpg" />
     <Content Include="Images\organisation_logo\QBA_logo_logo.png" />
     <Content Include="Images\Qutilize.png" />
     <Content Include="Images\Qutilize_Old.png" />
@@ -689,7 +693,9 @@
     <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Scripts\util.js" />
     <Content Include="Scripts\utils_chartjs.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

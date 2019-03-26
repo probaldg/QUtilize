@@ -61,7 +61,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string AlterNetContactNo { get; set; }
 
         [Display(Name = "Birth Date")]
-
+        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime? BirthDate { get; set; }
 
 
