@@ -712,7 +712,10 @@
             }
 
             if (managerId == "") {
-                if (confirm("You have not selected  manager from the list.") == false) {
+                
+                var result = confirm("You have not selected manager from the list. do you want to continue?");
+                if (result ==false) {
+                   
                     return false;
                 }
             }
