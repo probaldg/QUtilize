@@ -26,15 +26,13 @@
                 <tr>
 
 
-                    <th class="text-center">ID</th>
-                    <th class="text-center">Name</th>
-                    <th class="text-center">UserName- User Code</th>
-                    <th class="text-center">Designation</th>
-                    <th class="text-center">Department</th>
-                    <th class="text-center">Organisation</th>
-                    <th class="text-center">Map Projects</th>
-
-
+                    <th class="text-center tblHeaderColor">ID</th>
+                    <th class="text-center tblHeaderColor">Name</th>
+                    <th class="text-center tblHeaderColor">UserName- User Code</th>
+                    <th class="text-center tblHeaderColor">Designation</th>
+                    <th class="text-center tblHeaderColor">Department</th>
+                    <th class="text-center tblHeaderColor">Organisation</th>
+                    <th class="text-center tblHeaderColor">Map Projects</th>
                     @*<th class="text-center">IsApprover</th>*@
                 </tr>
             </thead>
@@ -79,12 +77,12 @@
         </div>
     </div>
 
-    
+
 
 
     <script type="text/javascript">
 
-      
+
 
         $("#tblGridListViewPost").dataTable();
 
@@ -223,9 +221,9 @@
         //});
         $('#srch-term').on("propertychange change keyup paste input", function () {
 
-         
+
             var searchFilter = $('#srch-term').val();
-           
+
             if (searchFilter == "") {
                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
                 $("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
@@ -236,13 +234,13 @@
                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
                 $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
                 $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
-               
+
             }
-          
+
         });
 
          $('#srch-term').on('input',function () {
-             
+
              var searchFilter = $('#srch-term').val();
 
              if (searchFilter == "") {
