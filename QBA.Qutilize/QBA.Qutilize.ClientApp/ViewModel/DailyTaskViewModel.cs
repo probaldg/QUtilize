@@ -222,6 +222,49 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         }
 
         public string CurrUser { get; set; }
+
+        public ICommand UpdateCommandFromToggleButton
+        {
+            get
+            {
+                return new CommandHandler((ProjectID) => ChangeSelectedProject(ProjectID));
+            }
+        }
+
+
+
+        private void ChangeSelectedProject(object projectID)
+        {
+            // throw new NotImplementedException();
+
+            try
+            {
+                var selectedProject = ProjectListViewViewModel.SelectedProject;
+
+                if (!projectID.Equals(selectedProject.ProjectID))
+                {
+                    ////Making the selecedindex to the selected project...
+                    ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectID == Convert.ToInt32(projectID));
+
+                }
+                else
+                {
+                    if (CurrentWorkingProject.ProjectID == (int)projectID)
+                    {
+                        ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = true;
+                        RefreshUI();
+                    }
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public ICommand UpdateCommandFromSelectedProject
         {
             get

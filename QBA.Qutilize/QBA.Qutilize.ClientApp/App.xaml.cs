@@ -71,7 +71,7 @@ namespace QBA.Qutilize.ClientApp
             Logger.Log("ExitApplication", "Info", $"Exiting application.");
             _isExit = true;
 
-            LogOutUser();
+            LogOutAndCloseApplication();
 
             MainWindow.Close();
             _notifyIcon.Dispose();
@@ -79,15 +79,24 @@ namespace QBA.Qutilize.ClientApp
             Application.Current.Shutdown(99);
         }
 
-        private void LogOutUser()
+        private void LogOutAndCloseApplication()
         {
-            var vm = MainWindow.DataContext;
-
-            if (vm.GetType().Name == "DailyTaskViewModel")
+            try
             {
-                ((QBA.Qutilize.ClientApp.ViewModel.DailyTaskViewModel)vm).LogoutUser();
+                var vm = MainWindow.DataContext;
 
+                if (vm.GetType().Name == "DailyTaskViewModel")
+                {
+                    ((QBA.Qutilize.ClientApp.ViewModel.DailyTaskViewModel)vm).LogoutUser();
+
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.Log("LogoutUser", "Error", ex.ToString());
+                // throw;
+            }
+
         }
 
         private void ShowAppWindow()
