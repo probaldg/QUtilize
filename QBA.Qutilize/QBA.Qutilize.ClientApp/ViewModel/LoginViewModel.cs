@@ -50,54 +50,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        //private async void AuthenticatUser()
-        //{
-
-        //    try
-        //    {
-        //        if (ValidateInput())
-        //        {
-        //            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Begin();
-        //            Logger.Log("AuthenticatUser", "Info", "Calling User authentication API");
-
-        //            var authenticateduser = await WebAPIHelper.CallWebApiForUserAuthentication(new User
-        //            {
-
-        //                UserName = UserID,
-        //                Password = UserPassword,
-        //                IsActive = true
-        //            });
-
-        //            ((Storyboard)_loginView.FindResource("WaitStoryboard")).Stop();
-
-        //            Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
-
-        //            if (authenticateduser != null && authenticateduser.ID != 0)
-        //            {
-        //                Logger.Log("AuthenticatUser", "Info", $"User Authenticated user Name=  {authenticateduser.UserName}");
-        //                ConfigureDailyTaskViewModel(authenticateduser);
-
-        //                _loginView.Close();
-        //            }
-        //            else
-        //            {
-        //                Logger.Log("AuthenticatUser", "Info", "User authentication failed.");
-
-        //                MessageBox.Show("User id/password is not correct.");
-        //            }
-        //        }
-        //        else
-        //            MessageBox.Show("User id or password required.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Log("AuthenticatUser", "Error", $"{ex.ToString()}");
-
-        //        throw ex;
-        //    }
-
-
-        //}
 
         private async void AuthenticatUser()
         {

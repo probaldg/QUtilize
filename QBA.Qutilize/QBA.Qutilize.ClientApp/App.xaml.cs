@@ -1,5 +1,4 @@
 ﻿using QBA.Qutilize.ClientApp.Helper;
-using QBA.Qutilize.ClientApp.Views;
 using System;
 using System.Threading;
 using System.Windows;
@@ -56,14 +55,39 @@ namespace QBA.Qutilize.ClientApp
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
         }
 
+        //private void ExitApplication()
+        //{
+        //    Logger.Log("ExitApplication", "Info", $"Exiting application.");
+        //    _isExit = true;
+
+        //    MainWindow.Close();
+        //    _notifyIcon.Dispose();
+        //    _notifyIcon = null;
+        //    Application.Current.Shutdown(99);
+        //}
+
         private void ExitApplication()
         {
             Logger.Log("ExitApplication", "Info", $"Exiting application.");
             _isExit = true;
+
+            LogOutUser();
+
             MainWindow.Close();
             _notifyIcon.Dispose();
             _notifyIcon = null;
             Application.Current.Shutdown(99);
+        }
+
+        private void LogOutUser()
+        {
+            var vm = MainWindow.DataContext;
+
+            if (vm.GetType().Name == "DailyTaskViewModel")
+            {
+                ((QBA.Qutilize.ClientApp.ViewModel.DailyTaskViewModel)vm).LogoutUser();
+
+            }
         }
 
         private void ShowAppWindow()
