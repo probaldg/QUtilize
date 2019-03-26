@@ -79,7 +79,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             if (CurrentWorkingProject != null)
             {
 
-                TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+                TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StartDateTime;
                 Project currProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.IsCurrentProject == true);
 
                 if (currProject != null)
@@ -109,7 +109,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     StopProjectMaxTimeCheckingTimer();
                     if (CurrentWorkingProject != null)
                     {
-                        TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StrartDateTime;
+                        TimeSpan diffrenceInHours = DateTime.Now - CurrentWorkingProject.StartDateTime;
 
                         if (diffrenceInHours.Hours > CurrentWorkingProject?.MaxProjectTimeInHours)
                         {
@@ -159,6 +159,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 {
                     TimeSpan ts = TimeSpan.FromSeconds(0);
                     item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+                    item.PreviousElapsedTime = ts;
                 }
                 else
                 {
@@ -272,7 +273,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 return false;
             return tmp.Scheme == Uri.UriSchemeHttp || tmp.Scheme == Uri.UriSchemeHttps;
         }
-        private void LogoutUser()
+
+        public void LogoutUser()
         {
             try
             {
@@ -283,7 +285,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         DailyTaskId = CurrentWorkingProject.DailyTaskId,
                         ProjectId = CurrentWorkingProject.ProjectID,
                         UserId = User.ID,
-                        StartTime = CurrentWorkingProject.StrartDateTime,
+                        StartTime = CurrentWorkingProject.StartDateTime,
                         EndTime = DateTime.Now
 
                     };
@@ -331,6 +333,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 else
                 {
                     CurrentWorkingProject.EndDateTime = DateTime.Now;
+
                     var currProj = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
 
                     // Save current time elapsed of the project.
@@ -340,9 +343,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     }
                     else
                     {
-                        TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StrartDateTime;
+                        TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
                         currProj.PreviousElapsedTime = currProj.PreviousElapsedTime.Add(diffrenceInTime);
                     }
+
                     ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID).IsCurrentProject = false;
 
                     ////Making the selecedindex to the selected project...
@@ -376,7 +380,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         DailyTaskId = CurrentWorkingProject.DailyTaskId,
                         ProjectId = CurrentWorkingProject.ProjectID,
                         UserId = User.ID,
-                        StartTime = CurrentWorkingProject.StrartDateTime,
+                        StartTime = CurrentWorkingProject.StartDateTime,
                         EndTime = CurrentWorkingProject.EndDateTime
                     };
 
@@ -420,7 +424,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         ProjectID = selectedProject.ProjectID,
                         ProjectName = selectedProject.ProjectName,
-                        StrartDateTime = DateTime.Now,
+                        StartDateTime = DateTime.Now,
                         MaxProjectTimeInHours = selectedProject.MaxProjectTimeInHours,
                         DifferenceInSecondsInCurrentDate = selectedProject.DifferenceInSecondsInCurrentDate
                     };
@@ -481,7 +485,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         ProjectID = defaultProj.ProjectID,
                         ProjectName = defaultProj.ProjectName,
-                        StrartDateTime = DateTime.Now,
+                        StartDateTime = DateTime.Now,
                         IsCurrentProject = true,
                         MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours,
                         DifferenceInSecondsInCurrentDate = defaultProj.DifferenceInSecondsInCurrentDate != null ? defaultProj.DifferenceInSecondsInCurrentDate : 0,
@@ -529,7 +533,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 ProjectId = CurrentWorkingProject.ProjectID,
                 UserId = User.ID,
-                StartTime = CurrentWorkingProject.StrartDateTime
+                StartTime = CurrentWorkingProject.StartDateTime
             };
             try
             {
