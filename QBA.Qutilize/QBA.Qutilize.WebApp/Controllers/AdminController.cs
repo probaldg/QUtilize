@@ -355,50 +355,96 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         #region Project managment region"
         //
+        //public ActionResult LoadProjectData()
+        //{
+        //    ProjectModel obj = new ProjectModel();
+        //    string strUserData = string.Empty;
+
+        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+        //    DataTable dt = new DataTable();
+
+        //    if (userInfo.IsRoleSysAdmin)
+        //    {
+        //        dt = obj.GetAllProjects();
+        //        int i = 0;
+        //        foreach (DataRow item in dt.Rows)
+        //        {
+
+        //            string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+        //            var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
+        //            strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
+        //                           "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
+        //                            "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
+        //            i++;
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        int i = 0;
+        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
+        //            var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
+
+        //            strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
+
+        //                            "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
+        //                            "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
+        //            i++;
+        //        }
+
+        //    }
+
+        //    return Content(strUserData);
+        //}
+
         public ActionResult LoadProjectData()
         {
             ProjectModel obj = new ProjectModel();
-            string strUserData = string.Empty;
-
-            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-            DataTable dt = new DataTable();
-
-            if (userInfo.IsRoleSysAdmin)
+            StringBuilder strUserData = new StringBuilder();
+            try
             {
-                dt = obj.GetAllProjects();
-                int i = 0;
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.GetAllProjects();
+                }
+                else
+                {
+                    dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+                }
+
+
                 foreach (DataRow item in dt.Rows)
                 {
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
-                    strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
-                                   "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
-                                    "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
+
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["Id"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["Name"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["Description"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + departmentName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+                    strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
+                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
+                    strUserData.Append("</tr>");
 
                 }
             }
-            else
+            catch (Exception ex)
             {
-                int i = 0;
-                dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-                foreach (DataRow dr in dt.Rows)
-                {
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
 
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
-
-                                    "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
-                                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
-
+                //throw;
             }
-
-            return Content(strUserData);
+            return Content(strUserData.ToString());
         }
         public ActionResult ManageProject(int ID = 0)
         {
@@ -433,8 +479,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    //obj.Update_ProjectDetails(obj);
-                    //TempData["ErrStatus"] = obj.ISErr.ToString();
+
                 }
                 catch
                 {
@@ -485,8 +530,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.InsertProjectdata(model, out int id);
                     if (id > 0)
                     {
-
+                        TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
                     }
+
                     TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
@@ -1046,25 +1092,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Content(strProjectMapped);
         }
-        //public ActionResult LoadAllSysModules()
-        //{
-        //    RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
-        //    DataTable dt = obj.GetAllModules();
-        //    string strModules = string.Empty;
 
-        //    foreach (DataRow dr in dt.Rows)
-        //    {
-        //        strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-        //        strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
-        //                        dr["Name"].ToString();
-
-        //        strModules += "</li>";
-        //        strModules += "</ul>";
-
-        //    }
-        //    return Content(strModules);
-        //}
 
         public ActionResult LoadAllSysModules()
         {
