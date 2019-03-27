@@ -536,8 +536,27 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == "Idle Time".ToLower()).TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(CurrentWorkingProject.DifferenceInSecondsInCurrentDate)).ToString(@"hh\:mm\:ss");
                 }
+                else
+                {
+                    if (ProjectListViewViewModel.Projects.Count > 0)
+                    {
+                        defaultProj = ProjectListViewViewModel.Projects.First();
+                        CurrentWorkingProject = new CurrentWorkingProject
+                        {
+                            ProjectID = defaultProj.ProjectID,
+                            ProjectName = defaultProj.ProjectName,
+                            StartDateTime = DateTime.Now,
+                            IsCurrentProject = true,
+                            MaxProjectTimeInHours = defaultProj.MaxProjectTimeInHours,
+                            DifferenceInSecondsInCurrentDate = defaultProj.DifferenceInSecondsInCurrentDate != null ? defaultProj.DifferenceInSecondsInCurrentDate : 0,
+                        };
 
-                if (ProjectListViewViewModel.Projects != null)
+                        ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()).TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(CurrentWorkingProject.DifferenceInSecondsInCurrentDate)).ToString(@"hh\:mm\:ss");
+                    }
+
+                }
+
+                if (ProjectListViewViewModel.Projects != null && ProjectListViewViewModel.Projects.Count > 0)
                 {
                     if (ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower()) != null)
                     {
