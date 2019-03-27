@@ -95,7 +95,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 Logger.Log("AuthenticatUser", "Error", $"{ex.ToString()}");
 
-                throw ex;
+                //throw ex;
             }
 
 

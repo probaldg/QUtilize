@@ -527,7 +527,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-                var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                var dtActiveUsers = USM.GetAllUsers(userInfo.UserOrganisationID).Select("IsActive=1 AND OrganisationStatus=1");
                 if (dtActiveUsers.Length > 0)
                 {
                     dt = dtActiveUsers.CopyToDataTable();
@@ -836,7 +836,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" +
                                      "<td class='text-center'>" + Status + "</td>";
-                    if(dr["OrgID"].ToString()!="")
+                    if (dr["OrgID"].ToString() != "")
                         strUserData += "<td class='text-center'><a href = 'ManageRole?ID=" + dr["ID"].ToString() + "'>Edit </a> </td>";
                     else
                         strUserData += "<td class='text-center'></td>";
@@ -879,7 +879,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else
                 {
-                    var dtActiveUsers = USM.GetAllUsers().Select("IsActive=1 AND OrganisationStatus=1");
+                    var dtActiveUsers = USM.GetAllUsers(userInfo.UserOrganisationID).Select("IsActive=1 AND OrganisationStatus=1");
                     if (dtActiveUsers.Length > 0)
                     {
                         dtUsers = dtActiveUsers.CopyToDataTable();
