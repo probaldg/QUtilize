@@ -90,6 +90,23 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
+        public DataTable GetAllUserOfOrganisationByProjectID(int? ProjectId = 0)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@ProjectId",ProjectId ==0? null: ProjectId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USP_GetAllUserByProjectID", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
         public DataSet GetTasksData(int? projectId = 0, int? OrgId = 0)
         {
             DataSet dataSet = null;

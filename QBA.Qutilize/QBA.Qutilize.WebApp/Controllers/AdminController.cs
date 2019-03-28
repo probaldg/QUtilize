@@ -518,6 +518,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 taskModel.TaskList.Clear();
                 taskModel.StatusList.Clear();
+                taskModel.UserList.Clear();
                 taskModel.PercentageComplete.Clear();
 
                 if (dsTaskData.Tables["TaskList"].Rows.Count > 0)
@@ -605,6 +606,56 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json("Success");
         }
+
+
+        public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
+        {
+            ProjectTaskModel obj = new ProjectTaskModel();
+
+            DataTable dt = new DataTable();
+
+            dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
+
+
+            // string strModules = @"<div id='divUserList' class='row' style='margin:10px;'>";
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
+            if (dt.Rows.Count > 0)
+            {
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString());
+                    builder.Append(@"</div>");
+                }
+                builder.Append(@"</div>");
+            }
+
+
+            return Json(builder.ToString());
+        }
+
+        public ActionResult SaveProjectUserMapping(UserProjectMappingModel[] itemlist)
+        {
+            // return Content("test");
+
+            foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            {
+                UserProjectMappingModel mm = new UserProjectMappingModel();
+
+                mm.UserId = i.UserId;
+                mm.ProjectId = i.ProjectId;
+                bool result = mm.InsertUserProjectMappingdata(mm);
+                if (!result)
+                {
+                    return Json("Error");
+                }
+            }
+
+            return Json("success");
+        }
         #endregion
 
         #endregion
@@ -644,16 +695,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             if (dt.Rows.Count > 0)
             {
-                //foreach (DataRow dr in dt.Rows)
-                //{
-                //    int i = 0; //
 
-                //    strProjectMapped += "<tr>";
-                //    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
-                //    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                //    strProjectMapped += "</td>";
-                //    i++;
-                //}
 
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -672,7 +714,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
                     strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>");
                     strProjectMapped.Append("</tr>");
-                    //i++;
+
                 }
             }
 
@@ -680,42 +722,12 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strProjectMapped.ToString());
         }
 
-        //public ActionResult LoadAllModules()
-        //{
-        //    UserProjectMappingModel obj = new UserProjectMappingModel();
-        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-
-        //    DataTable dt = new DataTable();
-
-        //    if (userInfo.IsRoleSysAdmin)
-        //    {
-        //        dt = obj.GetAllProjects();
-        //    }
-        //    else
-        //    {
-        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-        //    }
-
-        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
-        //    foreach (DataRow dr in dt.Rows)
-        //    {
-        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
-        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
-        //        strModules += "</div>";
-        //    }
-        //    strModules += @"</div>";
-
-        //    return Content(strModules);
-        //}
-
 
 
         public ActionResult LoadAllModules(int Userid)
         {
             UserProjectMappingModel obj = new UserProjectMappingModel();
-            //var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            //UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
 
             UserInfoHelper userInfo = new UserInfoHelper(Userid);
             DataTable dt = new DataTable();

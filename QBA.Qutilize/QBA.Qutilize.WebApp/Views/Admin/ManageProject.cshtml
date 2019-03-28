@@ -106,7 +106,7 @@
                         </table>
                     </div>
                     <div class="col-md-12"><br /></div>
-                    @using (Html.BeginForm("ManageProjectTask", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
+                    @using (Html.BeginForm())
                     {
                         @Html.AntiForgeryToken()
 
@@ -156,8 +156,11 @@
 
                             <div class="form-group">
                                 @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
+                                <div class="col-md-5" id="divUserDDL">
                                     <select id="ddlUsersAssigned" class="form-control"><option value="0">Select User</option></select>
+                                </div>
+                                <div class="col-md-5" id="divAddUserToAssignProject">
+                                    <input type="button" value="&#xe172;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -214,6 +217,41 @@
 
         </div>
     </div>
+
+
+    <div id="myModalForUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:#626262;">Select Users</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form class="navbar-form" role="search">
+                        <div class="input-group add-on">
+                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                        </div>
+                    </form>
+
+                    <div id="popupUserBody">
+
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
 
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
     {
@@ -360,7 +398,8 @@
                                 $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
                             }
                         }
-
+                        $("#ddlTaskStatus").html('')
+                        $("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
                         if (obj.StatusList.length > 0) {
                             var statusList = obj.StatusList;
                             for (var i = 0; i < statusList.length; i++) {
@@ -369,7 +408,8 @@
                             }
                         }
 
-
+                        $("#ddlParentTask").html('')
+                        $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
                         if (obj.TaskList.length > 0) {
                             var TaskList = obj.TaskList;
                             for (var i = 0; i < TaskList.length; i++) {
@@ -377,12 +417,24 @@
                                 $("#ddlParentTask").append($("<option></option>").val(TaskList[i].TaskID).html(TaskList[i].TaskName));
                             }
                         }
+
+                        $("#ddlUsersAssigned").html('')
+                        $("#ddlUsersAssigned").append($("<option></option>").val(0).html('Select User'));
                         if (obj.UserList.length > 0) {
+
+                            $('#divAddUserToAssignProject').css('display', 'none');
+                            $('#divUserDDL').removeClass('col-md-5');
+                            $('#divUserDDL').addClass('col-md-10') ;
                             var UserList = obj.UserList;
                             for (var i = 0; i < UserList.length; i++) {
 
-                                $("#ddlUsersAssigned").append($("<option></option>").val(TaskList[i].ID).html(TaskList[i].Name));
+                                $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
                             }
+                        }
+                        else {
+                            $('#divUserDDL').removeClass('col-md-10');
+                            $('#divUserDDL').addClass('col-md-5');
+                            $('#divAddUserToAssignProject').css('display', 'block');
                         }
 
                         $('#myModalForTask').modal('show');
@@ -435,6 +487,86 @@
                 });
            // alert('task save');
         })
+
+        $('#btnAddUser').click(function () {
+
+
+            var projectID = $('#SelectedProjectId').val();
+
+            $.ajax({
+                url: '@Url.Action("GetAllUserOfOrganisationByProjectID", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "projectID": projectID
+                }),
+                success: function (response) {
+                    $('#popupUserBody').html('');
+                    $('#popupUserBody').append(response);
+                    $('#myModalForUsers').modal('show');
+                },
+                error: function (response) {
+                    alert('error occured')
+                    console.log(response);
+                }
+            });
+
+        });
+
+        $('#btnSaveUserProjectMapping').click(function () {
+           // alert('mapping clicked');
+
+            var Itemlist = [];
+            var moduleid = [];
+            var moduleids = [];
+
+            var projectID = document.getElementById("SelectedProjectId").value;
+
+            var lastpushedModuleid = 0;
+
+            $('#divUserList input:checked').each(function () {
+
+                if ($(this).attr("name") == "modules") {
+                    moduleid = $(this).val();
+                }
+                moduleids.push(moduleid);
+            });
+
+
+            for (var i = 0; i < moduleids.length; i++) {
+
+                if (lastpushedModuleid != moduleids[i]) {
+                    Item = { ProjectId: projectID, UserId: moduleids[i] }
+                    Itemlist.push(Item);
+                }
+            }
+
+            lastpushedModuleid = moduleids[i];
+
+
+             $.ajax({
+                url: '@Url.Action("SaveProjectUserMapping", "Admin")',
+                dataType: "json",
+                 data: JSON.stringify({ itemlist: Itemlist }),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result == "success") {
+
+                       // alert("Successfully Saved the Data");
+                        $('#myModalForUsers').modal('toggle');
+                        ShowTaskPopup(projectID);
+                    } else {
+                        alert("error");
+                    }
+                },
+                error: function (xhr) {
+                    console.log();
+                }
+            });
+        });
+
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {
