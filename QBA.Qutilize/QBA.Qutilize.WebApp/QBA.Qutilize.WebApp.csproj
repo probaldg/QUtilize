@@ -182,6 +182,7 @@
     <Compile Include="Models\ModuleModel.cs" />
     <Compile Include="Models\OrganisationModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Models\ProjectStatusModel.cs" />
     <Compile Include="Models\ProjectTaskModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />

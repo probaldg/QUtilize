@@ -1,4 +1,5 @@
-﻿using QBA.Qutilize.WebApp.Helper;
+﻿using Newtonsoft.Json;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -354,52 +355,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         #endregion
 
         #region Project managment region"
-        //
-        //public ActionResult LoadProjectData()
-        //{
-        //    ProjectModel obj = new ProjectModel();
-        //    string strUserData = string.Empty;
-
-        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-        //    DataTable dt = new DataTable();
-
-        //    if (userInfo.IsRoleSysAdmin)
-        //    {
-        //        dt = obj.GetAllProjects();
-        //        int i = 0;
-        //        foreach (DataRow item in dt.Rows)
-        //        {
-
-        //            string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
-        //            var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
-        //            strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
-        //                           "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
-        //                            "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
-        //            i++;
-
-        //        }
-        //    }
-        //    else
-        //    {
-        //        int i = 0;
-        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-        //        foreach (DataRow dr in dt.Rows)
-        //        {
-        //            string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-        //            var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
-
-        //            strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
-
-        //                            "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
-        //                            "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-        //            i++;
-        //        }
-
-        //    }
-
-        //    return Content(strUserData);
-        //}
 
         public ActionResult LoadProjectData()
         {
@@ -545,6 +500,113 @@ namespace QBA.Qutilize.WebApp.Controllers
             return RedirectToAction("ManageProject", "Admin");
 
         }
+
+
+        #region Project task managment region"
+        public ActionResult ManageProjectTask(int ProjectId = 0)
+        {
+
+            ProjectTaskModel taskModel = new ProjectTaskModel();
+
+            try
+            {
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataSet dsTaskData = taskModel.GetTasksData(ProjectId, userInfo.UserOrganisationID);
+                dsTaskData.Tables[0].TableName = "TaskList";
+                dsTaskData.Tables[1].TableName = "StatusList";
+                dsTaskData.Tables[2].TableName = "UserList";
+
+                taskModel.TaskList.Clear();
+                taskModel.StatusList.Clear();
+                taskModel.PercentageComplete.Clear();
+
+                if (dsTaskData.Tables["TaskList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["TaskList"].Rows)
+                    {
+                        ProjectTaskModel task = new ProjectTaskModel();
+                        task.TaskName = item["TaskName"].ToString();
+                        task.TaskId = Convert.ToInt32(item["TaskID"]);
+                        task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.TaskList.Add(task);
+
+                    }
+                }
+
+                if (dsTaskData.Tables["StatusList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["StatusList"].Rows)
+                    {
+                        ProjectStatusModel statusModel = new ProjectStatusModel();
+                        statusModel.StatusName = item["StatusName"].ToString();
+                        statusModel.StatusID = Convert.ToInt32(item["StatusID"]);
+                        statusModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.StatusList.Add(statusModel);
+
+                    }
+                }
+
+                if (dsTaskData.Tables["UserList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["UserList"].Rows)
+                    {
+                        UserModel userModel = new UserModel();
+                        userModel.Name = item["Name"].ToString();
+                        userModel.ID = Convert.ToInt32(item["Id"]);
+                        userModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.UserList.Add(userModel);
+
+                    }
+                }
+
+
+                for (int i = 0; i <= 100; i++)
+                {
+                    taskModel.PercentageComplete.Add(i);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Json(JsonConvert.SerializeObject(taskModel));
+
+        }
+
+
+        public ActionResult SaveProjectTask(ProjectTaskModel model)
+        {
+            ProjectTaskModel pm = new ProjectTaskModel();
+            if (model.TaskId > 0)
+            {
+
+            }
+            else
+            {
+                model.AddedBy = loggedInUser;
+                model.AddedTS = DateTime.Now;
+                var result = pm.InsertTaskdata(model, out int id);
+                if (result)
+                {
+                    if (id > 0)
+                    {
+
+                    }
+                }
+                else
+                {
+                    return Json("Error");
+                }
+
+
+            }
+
+            return Json("Success");
+        }
+        #endregion
+
         #endregion
 
         #region User Project Mapping region

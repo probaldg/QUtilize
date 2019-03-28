@@ -1,5 +1,6 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,7 +14,7 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Task Code")]
         public string TaskCode { get; set; }
         [Display(Name = "Task Name")]
-        public string TaskName { get; set; }
+        public string TaskName { get; set; } = "test";
 
         public int ParentTaskId { get; set; }
 
@@ -21,12 +22,12 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Parent Task Name")]
         public string ParentTaskName { get; set; }
 
+
+
         [Display(Name = "Start Date")]
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime TaskStartDate { get; set; }
 
         [Display(Name = "End Date")]
-        [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime TaskEndDate { get; set; }
 
         public int TaskStatusID { get; set; }
@@ -34,10 +35,19 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Status")]
         public string TaskStatusName { get; set; }
 
+        public List<ProjectTaskModel> TaskList { get; set; }
+        public List<ProjectStatusModel> StatusList { get; set; }
+        public List<UserModel> UserList { get; set; }
+        public List<int> PercentageComplete { get; set; }
+
         [Display(Name = "Complete percent")]
         public int CompletePercent { get; set; }
-        public DateTime ActualTaskStartDate { get; set; }
-        public DateTime ActualTaskEndDate { get; set; }
+
+        [Display(Name = "Actual Start Date")]
+        public DateTime? ActualTaskStartDate { get; set; }
+
+        [Display(Name = "Actual End Date")]
+        public DateTime? ActualTaskEndDate { get; set; }
         public bool IsActive { get; set; }
 
         public string UsereIdsInString { get; set; }
@@ -48,6 +58,16 @@ namespace QBA.Qutilize.WebApp.Models
 
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
+
+
+        public ProjectTaskModel()
+        {
+            TaskList = new List<ProjectTaskModel>();
+            StatusList = new List<ProjectStatusModel>();
+            UserList = new List<UserModel>();
+            PercentageComplete = new List<int>();
+        }
+
 
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
@@ -70,7 +90,44 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
-        public Boolean InsertUserdata(ProjectTaskModel model, out int id)
+        public DataSet GetTasksData(int? projectId = 0, int? OrgId = 0)
+        {
+            DataSet dataSet = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId ==0? null: OrgId),
+                                        new SqlParameter("@ProjectId",projectId ==0? null: projectId),
+
+                                      };
+                dataSet = objSQLHelper.ExecuteDataset("USPGetProjectTaskData", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dataSet;
+
+        }
+
+        public DataTable GetStatusList(int OrgId)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USPtblMasterStatus", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public Boolean InsertTaskdata(ProjectTaskModel model, out int id)
         {
             string str = string.Empty;
             bool result = false;
@@ -89,9 +146,9 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@TaskStartDate",model.TaskStartDate),
                     new SqlParameter("@TaskEndDate",model.TaskEndDate),
                     new SqlParameter("@StatusID",model.TaskStatusID),
-                    new SqlParameter("@CompletePercent",0),
-                    new SqlParameter("@TaskStartDateActual",null),
-                    new SqlParameter("@TaskEndDateActual",null),
+                    new SqlParameter("@CompletePercent",model.CompletePercent),
+                    //new SqlParameter("@TaskStartDateActual",null),
+                    //new SqlParameter("@TaskEndDateActual",null),
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),

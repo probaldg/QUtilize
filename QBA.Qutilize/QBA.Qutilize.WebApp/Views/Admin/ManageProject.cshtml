@@ -76,7 +76,7 @@
 
     <div id="myModalForTask" class="modal fade" role="dialog">
         <div class="modal-dialog">
-
+            <input type="hidden" id="SelectedProjectId" />
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -131,6 +131,74 @@
                                     @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
+
+                            <div class="form-group">
+                                @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlParentTask" class="form-control"><option value="0">Select Task</option></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskStartDate, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlUsersAssigned" class="form-control"><option value="0">Select User</option></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlPercentage" class="form-control"><option value="0">Select percentage</option></select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.ProjectTask.IsActive)
+                                        @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     }
@@ -138,7 +206,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-default" value="Submit">
+                    <input type="button" id="btnProjectTaskSave" class="btn btn-default" value="Submit">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
 
@@ -211,8 +279,27 @@
 
 
     <script type="text/javascript">
-        $("#tblGridListViewPost").dataTable();
+        //$(document).ready(function () {
+        //    $('#ddlUsersAssigned').multiselect({
+        //        enableCaseInsensitiveFiltering: true,
+        //        buttonWidth: 300,
+        //        enableFiltering: true
+        //    });
+        //});
 
+        $("#tblGridListViewPost").dataTable();
+        $("#ProjectTask_TaskStartDate").datepicker({
+            format: 'dd-mm-yy',
+            autoclose: true, todayBtn: 'linked',
+
+            maxDate: new Date()
+        })
+
+        $("#ProjectTask_TaskEndDate").datepicker({
+            format: 'dd-mm-yy',
+            autoclose: true, todayBtn: 'linked',
+
+        })
         var DeptId = $('#DepartmentID').val();
         if (DeptId > 0) {
             $('#DepartmentList').val(DeptId);
@@ -253,9 +340,101 @@
 
 
         function ShowTaskPopup(projectId) {
-            // alert(projectId);
-            $('#myModalForTask').modal('show');
+
+            $('#SelectedProjectId').val(projectId);
+
+            $.ajax({
+                url: '@Url.Action("ManageProjectTask", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ "ProjectId": projectId }),
+                    success: function (response) {
+
+                        var obj = JSON.parse(response);
+                        console.log(obj);
+                        if (obj.PercentageComplete.length > 0) {
+                            var percentageArray = obj.PercentageComplete;
+                            for (var i = 0; i < percentageArray.length; i++) {
+
+                                $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
+                            }
+                        }
+
+                        if (obj.StatusList.length > 0) {
+                            var statusList = obj.StatusList;
+                            for (var i = 0; i < statusList.length; i++) {
+
+                                $("#ddlTaskStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
+                            }
+                        }
+
+
+                        if (obj.TaskList.length > 0) {
+                            var TaskList = obj.TaskList;
+                            for (var i = 0; i < TaskList.length; i++) {
+
+                                $("#ddlParentTask").append($("<option></option>").val(TaskList[i].TaskID).html(TaskList[i].TaskName));
+                            }
+                        }
+                        if (obj.UserList.length > 0) {
+                            var UserList = obj.UserList;
+                            for (var i = 0; i < UserList.length; i++) {
+
+                                $("#ddlUsersAssigned").append($("<option></option>").val(TaskList[i].ID).html(TaskList[i].Name));
+                            }
+                        }
+
+                        $('#myModalForTask').modal('show');
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+
         }
+
+        $('#btnProjectTaskSave').click(function () {
+
+            var projectID = $('#SelectedProjectId').val();
+            var taskName = $('#ProjectTask_TaskName').val();
+            var taskCode = $('#ProjectTask_TaskCode').val();
+            var startDate = new Date($('#ProjectTask_TaskStartDate').val());
+            var endDate = new Date($('#ProjectTask_TaskEndDate').val());
+            var actualStartDate = new Date($('#ProjectTask_ActualTaskStartDate').val());
+            var actualEndDate = new Date($('#ProjectTask_ActualTaskEndDate').val());
+
+            var completePercent = $('#ddlPercentage').val();
+            var IsActive = $('#ProjectTask_IsActive').val();
+
+            var data = {
+                "ProjectID": projectID, "TaskName": taskName, "TaskCode": taskCode, "TaskStartDate": startDate,"ActualTaskStartDate": actualStartDate,
+                "ActualTaskEndDate": actualEndDate, "TaskEndDate": endDate, "CompletePercent": completePercent, "IsActive": IsActive
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveProjectTask", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response == "Success") {
+
+                        alert('saved succesfully');
+                    } else {
+                        alert('error occured');
+                    }
+
+
+                    },
+                error: function (response) {
+                    alert('error occured')
+                        console.log(response);
+                    }
+                });
+           // alert('task save');
+        })
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {
