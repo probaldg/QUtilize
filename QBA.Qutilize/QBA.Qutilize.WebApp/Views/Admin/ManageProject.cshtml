@@ -317,13 +317,7 @@
 
 
     <script type="text/javascript">
-        //$(document).ready(function () {
-        //    $('#ddlUsersAssigned').multiselect({
-        //        enableCaseInsensitiveFiltering: true,
-        //        buttonWidth: 300,
-        //        enableFiltering: true
-        //    });
-        //});
+        
 
         $("#tblGridListViewPost").dataTable();
         $("#ProjectTask_TaskStartDate").datepicker({
@@ -430,6 +424,11 @@
 
                                 $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
                             }
+                            $('#ddlUsersAssigned').multiselect({
+                                enableCaseInsensitiveFiltering: true,
+                                buttonWidth: 700,
+                                enableFiltering: true
+                            });
                         }
                         else {
                             $('#divUserDDL').removeClass('col-md-10');
@@ -566,7 +565,13 @@
                 }
             });
         });
-
+        $(document).ready(function () {
+            //$('#ddlUsersAssigned').multiselect({
+            //    enableCaseInsensitiveFiltering: true,
+            //    buttonWidth: 300,
+            //    enableFiltering: true
+            //});
+        });
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {
