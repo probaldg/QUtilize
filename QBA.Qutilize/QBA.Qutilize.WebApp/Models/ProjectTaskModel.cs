@@ -14,7 +14,8 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Task Code")]
         public string TaskCode { get; set; }
         [Display(Name = "Task Name")]
-        public string TaskName { get; set; } = "test";
+        public string TaskName { get; set; }
+
 
         public int ParentTaskId { get; set; }
 
@@ -50,7 +51,8 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime? ActualTaskEndDate { get; set; }
         public bool IsActive { get; set; }
 
-        public string UsereIdsInString { get; set; }
+        public string UserIdsTaskAssigned { get; set; }
+        // public string UsereIdsInString { get; set; }
         public int AddedBy { get; set; }
         public int EditedBy { get; set; }
         public DateTime AddedTS { get; set; }
@@ -169,7 +171,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
-                    new SqlParameter("@UserIds",model.UsereIdsInString)
+                    new SqlParameter("@UserIds",model.UserIdsTaskAssigned)
 
 
                 };
