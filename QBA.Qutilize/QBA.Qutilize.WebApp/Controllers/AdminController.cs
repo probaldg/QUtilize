@@ -526,8 +526,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow item in dsTaskData.Tables["TaskList"].Rows)
                     {
                         ProjectTaskModel task = new ProjectTaskModel();
-                        task.TaskName = item["TaskName"].ToString();
                         task.TaskId = Convert.ToInt32(item["TaskID"]);
+                        task.TaskName = item["TaskName"].ToString();
+                        task.ParentTaskName = item["ParentTaskName"].ToString() ?? "";
+                        task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
+                        task.ProjectName = item["ProjectName"].ToString();
+                        task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
+                        task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
+
+                        task.ActualTaskStartDate = (item["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
+                        task.ActualTaskEndDate = (item["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
+                        task.TaskStatusName = item["StatusName"].ToString() ?? "";
                         task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
                         taskModel.TaskList.Add(task);
 
@@ -576,7 +585,53 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+        public ActionResult GetProjectTaskByID(int taskId)
+        {
+            ProjectTaskModel task = new ProjectTaskModel();
 
+            try
+            {
+
+                DataTable dtTaskData = task.GetProjectTasksByTaskId(taskId);
+                if (dtTaskData.Rows.Count > 0)
+                {
+
+                    task.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
+                    task.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
+                    task.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
+                    task.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
+                    task.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
+                    task.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]);
+                    task.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]);
+
+                    task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
+                    task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
+                    task.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
+                    task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
+
+                    foreach (DataRow item in dtTaskData.Rows)
+                    {
+                        UserModel userModel = new UserModel();
+                        userModel.Name = item["Name"].ToString();
+                        userModel.ID = Convert.ToInt32(item["Id"]);
+                        userModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        task.UserList.Add(userModel);
+
+                    }
+
+                    task.TaskList.Add(task);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Json(JsonConvert.SerializeObject(task));
+
+
+        }
         public ActionResult SaveProjectTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
@@ -600,8 +655,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     return Json("Error");
                 }
-
-
             }
 
             return Json("Success");
