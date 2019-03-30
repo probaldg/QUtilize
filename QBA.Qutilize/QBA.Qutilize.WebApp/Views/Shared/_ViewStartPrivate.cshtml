@@ -97,6 +97,7 @@
 </head>
 
 <body>
+    
     @if (HttpContext.Current.Session["sessUserAllData"] == null)
     {
         Response.Redirect("~/Home/Index");
@@ -292,10 +293,24 @@
     <script type="text/javascript">
         var loginUrl='@Url.Action("Login", "Account", new { area = "" })';
         var logoutUrl='@Url.Action("Lo", "Account", new { area = "" })';
-    var extendMethodUrl='@Url.Action("ExtendSession","Account", new { area = "" })';
+        var extendMethodUrl='@Url.Action("ExtendSession","Account", new { area = "" })';
         $(document).ready(function(){
 
-            //ssionTimeout.schedulePopup();
+            $.ajax
+                ({
+                    url: '@Url.Action("GetUserActivityTracking", "Admin")',
+                    type: 'POST',
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //orgId: +orgID
+                    }),
+                    success: function (result) {
+                    },
+                    error: function () {
+                        //alert("Whooaaa! Something went wrong..")
+                    },
+                });
         });
 
     @*window.SessionTimeout = (function() {

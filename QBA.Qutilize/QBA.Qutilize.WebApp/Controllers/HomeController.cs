@@ -1,4 +1,5 @@
-﻿using QBA.Qutilize.WebApp.Helper;
+﻿//using QBA.Qutilize.WebApp.DAL;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     Session.Add("sessUserAllData", ds);
                     Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
+                    try
+                    {
+                        UserSessionLog mUSL = new UserSessionLog();
+                        mUSL.LoggerId = Guid.NewGuid();
+                        mUSL.LogedUserId = (Session["sessUser"]!=null)?Convert.ToInt32(Session["sessUser"]):0;
+                        mUSL.IPAddress = Request.UserHostAddress;
+                        mUSL.Application = "Web";
+                        mUSL.StartTime = DateTime.Now;
+                        mUSL.EndTime = DateTime.Now;
+                        mUSL.SetUserSessionLog(mUSL);
+                    }
+                    catch (Exception exx) { }
                     return RedirectToAction("DashBoard", new { U = EncryptionHelper.Encryptdata(model.UserID), P = EncryptionHelper.Encryptdata(model.Password) });
                 }
                 else
@@ -70,6 +83,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             //model.logout_time = DateTime.Now;
             //model.id = int.Parse(System.Web.HttpContext.Current.Session["LogID"].ToString());
             //obj.UpdateUserLogOutLog(model);
+            try
+            {
+                UserSessionLog mUSL = new UserSessionLog();
+                mUSL.LogedUserId = (Session["sessUser"] != null) ? Convert.ToInt32(Session["sessUser"]) : 0;
+                mUSL.Application = "Web";
+                mUSL.EndTime = DateTime.Now;
+                mUSL.SetUserSessionLogout(mUSL);
+            }
+            catch (Exception exx) { }
             Session.Clear();
             Session.RemoveAll();
             Session.Abandon();
@@ -94,6 +116,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         Session.Add("sessUser", Convert.ToString(ds.Tables[0].Rows[0]["Id"]));
                         Session.Add("sessUserAllData", ds);
+                        try
+                        {
+                            UserSessionLog mUSL = new UserSessionLog();
+                            mUSL.LoggerId = Guid.NewGuid();
+                            mUSL.LogedUserId = (Session["sessUser"] != null) ? Convert.ToInt32(Session["sessUser"]) : 0;
+                            mUSL.IPAddress = Request.UserHostAddress;
+                            mUSL.Application = "Console2Web";
+                            mUSL.StartTime = DateTime.Now;
+                            mUSL.EndTime = DateTime.Now;
+                            mUSL.SetUserSessionLog(mUSL);
+                        }
+                        catch (Exception exx) { }
                     }
                 }
                 else
@@ -111,6 +145,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                             if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0] != null && ds1.Tables[0].Rows.Count > 0)
                             {
                                 Session.Add("sessUser", Convert.ToString(ds1.Tables[0].Rows[0]["Id"]));
+                                try
+                                {
+                                    UserSessionLog mUSL = new UserSessionLog();
+                                    mUSL.LoggerId = Guid.NewGuid();
+                                    mUSL.LogedUserId = (Session["sessUser"] != null) ? Convert.ToInt32(Session["sessUser"]) : 0;
+                                    mUSL.IPAddress = Request.UserHostAddress;
+                                    mUSL.Application = "Web";
+                                    mUSL.StartTime = DateTime.Now;
+                                    mUSL.EndTime = DateTime.Now;
+                                    mUSL.SetUserSessionLog(mUSL);
+                                }
+                                catch (Exception exx) { }
                                 Session.Add("sessUserAllData", ds1);
                             }
                         }

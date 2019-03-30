@@ -1,10 +1,12 @@
-﻿using QBA.Qutilize.WebApp.Helper;
+﻿using DeviceDetectorNET.Parser;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Mvc;
@@ -1627,6 +1629,54 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(strUserData);
         }
         #endregion
+
+        public ActionResult GetUserActivityTracking()
+        {
+            string strUserData = string.Empty;
+            try
+            {
+                //HttpContext.Request.Browser.. 
+                //PortalLogger aLogger = new PortalLogger()
+                //{
+                //    LoggerId=Guid.NewGuid(),
+                //    LogedUserId =Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
+                //    browser = HttpContext.Request.Browser.Browser +" " + Request.Browser.Platform + Request.UserHostAddress,
+                //    UserAgent = HttpContext.Request.Browser.IsMobileDevice?"Mobile":""
+                    
+                //};
+                //var botParser = new BotParser();
+                //botParser.SetUserAgent(userAgent);
+
+                NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+                for (int j = 0; j <= 1; j++)
+                {
+                    PhysicalAddress address = nics[j].GetPhysicalAddress();
+                    byte[] bytes = address.GetAddressBytes();
+                    string M = nics[j].Name +":";
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        M = M + bytes[i].ToString("X2");
+                        if (i != bytes.Length - 1)
+                        {
+                            M = M + ("-");
+                        }
+                    }
+                }
+            }
+            catch (Exception exx)
+            { }
+            //ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
+
+            //DataTable dt = ManageDepartmentViewModel.GetUsersByOrganisation(orgId);
+
+
+            //strUserData += "<option value = 0>Please select</option>";
+            //foreach (DataRow item in dt.Rows)
+            //{
+            //    strUserData += "<option value=" + Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
+            //}
+            return Json(strUserData);
+        }
 
     }
 }

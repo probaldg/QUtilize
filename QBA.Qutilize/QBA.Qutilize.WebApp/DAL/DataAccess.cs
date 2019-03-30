@@ -31,6 +31,55 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return dt;
         }
+        public static bool SetUserSessionLog(UserSessionLog mUSL)
+        {
+            bool bRetVal = true;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@LoggerId",mUSL.LoggerId),
+                                        new SqlParameter("@LogedUserId",mUSL.LogedUserId),
+                                        new SqlParameter("@IPAddress",mUSL.IPAddress),
+                                        new SqlParameter("@Application",mUSL.Application),
+                                        new SqlParameter("@StartTime",mUSL.StartTime),
+                                        new SqlParameter("@EndTime",mUSL.EndTime),
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    DataSet ds = objSQLHelper.ExecuteDataset("USP_UserSessionLog_Insert", param);
+                    bRetVal = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                bRetVal = false;
+            }
+
+            return bRetVal;
+        }
+        public static bool SetUserSessionLogout(UserSessionLog mUSL)
+        {
+            bool bRetVal = true;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@LogedUserId",mUSL.LogedUserId),
+                                        new SqlParameter("@Application",mUSL.Application),
+                                        new SqlParameter("@EndTime",mUSL.EndTime),
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    DataSet ds = objSQLHelper.ExecuteDataset("USP_UserSessionLog_Update", param);
+                    bRetVal = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                bRetVal = false;
+            }
+
+            return bRetVal;
+        }
         public static DataSet GetDashBoardData(int userID, DateTime startDate, DateTime endDate)
         {
             DataSet ds = null;
@@ -327,5 +376,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return orgId;
         }
         #endregion
+
+        
     }
 }

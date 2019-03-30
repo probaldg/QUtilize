@@ -47,6 +47,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DeviceDetector.NET, Version=3.9.2.1, Culture=neutral, PublicKeyToken=73b5cbe69dbf55fb, processorArchitecture=MSIL">
+      <HintPath>..\packages\DeviceDetector.NET.3.11.4\lib\net45\DeviceDetector.NET.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MvcSiteMapProvider, Version=4.6.26.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.26\lib\net45\MvcSiteMapProvider.dll</HintPath>
@@ -121,6 +124,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="YamlDotNet, Version=6.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.6.0.0\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Diagnostics.DiagnosticSource">
@@ -181,6 +187,7 @@
     <Compile Include="Models\ManageDepartmentViewModel.cs" />
     <Compile Include="Models\ModuleModel.cs" />
     <Compile Include="Models\OrganisationModel.cs" />
+    <Compile Include="Models\PortalLogger.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
@@ -821,7 +828,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\DeviceDetector.NET.3.11.4\build\DeviceDetector.NET.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\DeviceDetector.NET.3.11.4\build\DeviceDetector.NET.targets'))" />
   </Target>
+  <Import Project="..\packages\DeviceDetector.NET.3.11.4\build\DeviceDetector.NET.targets" Condition="Exists('..\packages\DeviceDetector.NET.3.11.4\build\DeviceDetector.NET.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
