@@ -189,6 +189,8 @@
     <Compile Include="Models\OrganisationModel.cs" />
     <Compile Include="Models\PortalLogger.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Models\ProjectStatusModel.cs" />
+    <Compile Include="Models\ProjectTaskModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
     <Compile Include="Models\UserModel.cs" />

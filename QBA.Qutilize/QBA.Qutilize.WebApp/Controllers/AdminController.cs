@@ -1,4 +1,8 @@
+
 ﻿using DeviceDetectorNET.Parser;
+
+﻿using Newtonsoft.Json;
+
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
@@ -105,14 +109,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.DepartmentList.Clear();
                     obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
 
-                    foreach (DataRow item in dt.Rows)
+                    if (obj.DepartmentList.Count > 0)
                     {
-                        obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
-                        obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
+                            obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
+                        }
+                        obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
                     }
 
 
-                    obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
 
                 }
                 catch (Exception ex)
@@ -189,7 +198,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageUsers", "Admin");
         }
@@ -281,7 +290,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
             return Json(strUserData);
@@ -303,7 +312,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
             return Json(strDeptData);
@@ -356,51 +365,51 @@ namespace QBA.Qutilize.WebApp.Controllers
         #endregion
 
         #region Project managment region"
-        //
+
         public ActionResult LoadProjectData()
         {
             ProjectModel obj = new ProjectModel();
-            string strUserData = string.Empty;
-
-            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-            DataTable dt = new DataTable();
-
-            if (userInfo.IsRoleSysAdmin)
+            StringBuilder strUserData = new StringBuilder();
+            try
             {
-                dt = obj.GetAllProjects();
-                int i = 0;
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.GetAllProjects();
+                }
+                else
+                {
+                    dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+                }
+
+
                 foreach (DataRow item in dt.Rows)
                 {
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
-                    strUserData += "<tr><td class='text-center'>" + item["Id"].ToString() + "</td><td class='text-center'>" + item["Name"].ToString() + "</td>" + "<td class='text-center'>" + item["Description"].ToString() + "<td class='text-center'>" + item["DepartmentName"].ToString() +
-                                   "<td class='text-center'>" + item["OrgName"].ToString() + "<td class='text-center'>" + status + " </ td > " +
-                                    "<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
+
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["Id"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["Name"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["Description"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + departmentName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+                    strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
+                    // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
+                    strUserData.Append("</tr>");
 
                 }
             }
-            else
+            catch (Exception ex)
             {
-                int i = 0;
-                dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-                foreach (DataRow dr in dt.Rows)
-                {
-                    string status = Convert.ToBoolean(dr["IsActive"]) == true ? "Active" : "In Active";
-                    var departmentName = (dr["DepartmentName"] == DBNull.Value) ? "" : dr["DepartmentName"].ToString();
 
-                    strUserData += "<tr><td class='text-center'>" + dr["Id"].ToString() + "</td><td class='text-center'>" + dr["Name"].ToString() + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" + "<td class='text-center'>" + departmentName + "</td>" +
-
-                                    "<td class='text-center'>" + dr["OrgName"].ToString() + "<td class='text-center'>" + status + " </td > " +
-                                    "<td class='text-center'><a href = 'ManageProject?ID=" + dr["ID"].ToString() + "'>Edit </a> </td></tr>";
-                    i++;
-                }
-
+                ////throw;
             }
-
-            return Content(strUserData);
+            return Content(strUserData.ToString());
         }
         public ActionResult ManageProject(int ID = 0)
         {
@@ -435,8 +444,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
-                    //obj.Update_ProjectDetails(obj);
-                    //TempData["ErrStatus"] = obj.ISErr.ToString();
+
                 }
                 catch
                 {
@@ -487,20 +495,232 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.InsertProjectdata(model, out int id);
                     if (id > 0)
                     {
-
+                        TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
                     }
+
                     TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
             catch (Exception ex)
             {
                 TempData["ErrStatus"] = model.ISErr.ToString();
-                throw;
+                //throw;
             }
 
             return RedirectToAction("ManageProject", "Admin");
 
         }
+
+
+        #region Project task managment region"
+        public ActionResult ManageProjectTask(int ProjectId = 0)
+        {
+
+            ProjectTaskModel taskModel = new ProjectTaskModel();
+
+            try
+            {
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataSet dsTaskData = taskModel.GetTasksData(ProjectId, userInfo.UserOrganisationID);
+                dsTaskData.Tables[0].TableName = "TaskList";
+                dsTaskData.Tables[1].TableName = "StatusList";
+                dsTaskData.Tables[2].TableName = "UserList";
+
+                taskModel.TaskList.Clear();
+                taskModel.StatusList.Clear();
+                taskModel.UserList.Clear();
+                taskModel.PercentageComplete.Clear();
+
+                if (dsTaskData.Tables["TaskList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["TaskList"].Rows)
+                    {
+                        ProjectTaskModel task = new ProjectTaskModel();
+                        task.TaskId = Convert.ToInt32(item["TaskID"]);
+                        task.TaskName = item["TaskName"].ToString();
+                        task.ParentTaskName = item["ParentTaskName"].ToString() ?? "";
+                        task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
+                        task.ProjectName = item["ProjectName"].ToString();
+                        task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
+                        task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
+
+                        task.ActualTaskStartDate = (item["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
+                        task.ActualTaskEndDate = (item["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
+                        task.TaskStatusName = item["StatusName"].ToString() ?? "";
+                        task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.TaskList.Add(task);
+
+                    }
+                }
+
+                if (dsTaskData.Tables["StatusList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["StatusList"].Rows)
+                    {
+                        ProjectStatusModel statusModel = new ProjectStatusModel();
+                        statusModel.StatusName = item["StatusName"].ToString();
+                        statusModel.StatusID = Convert.ToInt32(item["StatusID"]);
+                        statusModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.StatusList.Add(statusModel);
+
+                    }
+                }
+
+                if (dsTaskData.Tables["UserList"].Rows.Count > 0)
+                {
+                    foreach (DataRow item in dsTaskData.Tables["UserList"].Rows)
+                    {
+                        UserModel userModel = new UserModel();
+                        userModel.Name = item["Name"].ToString();
+                        userModel.ID = Convert.ToInt32(item["Id"]);
+                        userModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        taskModel.UserList.Add(userModel);
+
+                    }
+                }
+
+
+                for (int i = 1; i <= 100; i++)
+                {
+                    taskModel.PercentageComplete.Add(i);
+                }
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
+            return Json(JsonConvert.SerializeObject(taskModel));
+
+        }
+
+        public ActionResult GetProjectTaskByID(int taskId)
+        {
+            ProjectTaskModel task = new ProjectTaskModel();
+
+            try
+            {
+
+                DataTable dtTaskData = task.GetProjectTasksByTaskId(taskId);
+                if (dtTaskData.Rows.Count > 0)
+                {
+
+                    task.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
+                    task.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
+                    task.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
+                    task.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
+                    task.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
+                    task.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]);
+                    task.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]);
+
+                    task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
+                    task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
+                    task.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
+                    task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
+
+                    foreach (DataRow item in dtTaskData.Rows)
+                    {
+                        UserModel userModel = new UserModel();
+                        userModel.Name = item["Name"].ToString();
+                        userModel.ID = Convert.ToInt32(item["Id"]);
+                        userModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        task.UserList.Add(userModel);
+
+                    }
+
+                    task.TaskList.Add(task);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+            return Json(JsonConvert.SerializeObject(task));
+
+
+        }
+        public ActionResult SaveProjectTask(ProjectTaskModel model)
+        {
+            ProjectTaskModel pm = new ProjectTaskModel();
+            if (model.TaskId > 0)
+            {
+
+            }
+            else
+            {
+                model.AddedBy = loggedInUser;
+                model.AddedTS = DateTime.Now;
+                var result = pm.InsertTaskdata(model, out int id);
+                if (result)
+                {
+                    if (id > 0)
+                    {
+
+                    }
+                }
+                else
+                {
+                    return Json("Error");
+                }
+            }
+
+            return Json("Success");
+        }
+
+
+        public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
+        {
+            ProjectTaskModel obj = new ProjectTaskModel();
+
+            DataTable dt = new DataTable();
+
+            dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
+
+
+            // string strModules = @"<div id='divUserList' class='row' style='margin:10px;'>";
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
+            if (dt.Rows.Count > 0)
+            {
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString());
+                    builder.Append(@"</div>");
+                }
+                builder.Append(@"</div>");
+            }
+
+
+            return Json(builder.ToString());
+        }
+
+        public ActionResult SaveProjectUserMapping(UserProjectMappingModel[] itemlist)
+        {
+            // return Content("test");
+
+            foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            {
+                UserProjectMappingModel mm = new UserProjectMappingModel();
+
+                mm.UserId = i.UserId;
+                mm.ProjectId = i.ProjectId;
+                bool result = mm.InsertUserProjectMappingdata(mm);
+                if (!result)
+                {
+                    return Json("Error");
+                }
+            }
+
+            return Json("success");
+        }
+        #endregion
+
         #endregion
 
         #region User Project Mapping region
@@ -538,16 +758,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             if (dt.Rows.Count > 0)
             {
-                //foreach (DataRow dr in dt.Rows)
-                //{
-                //    int i = 0; //
 
-                //    strProjectMapped += "<tr>";
-                //    strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td> " + "<td align='center'>" + dr["orgname"].ToString() + "</td> ";
-                //    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>";
-                //    strProjectMapped += "</td>";
-                //    i++;
-                //}
 
                 foreach (DataRow dr in dt.Rows)
                 {
@@ -566,7 +777,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strProjectMapped.Append("<td align = 'center' > " + dr["orgname"]?.ToString() + "</td>");
                     strProjectMapped.Append("<td align='center'><button data-toggle='modal' data-target='#myModalForModule' onclick='ShowPermission(" + dr["ID"].ToString() + ")'>Map</button></td>");
                     strProjectMapped.Append("</tr>");
-                    //i++;
+
                 }
             }
 
@@ -574,42 +785,12 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strProjectMapped.ToString());
         }
 
-        //public ActionResult LoadAllModules()
-        //{
-        //    UserProjectMappingModel obj = new UserProjectMappingModel();
-        //    var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-        //    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-
-        //    DataTable dt = new DataTable();
-
-        //    if (userInfo.IsRoleSysAdmin)
-        //    {
-        //        dt = obj.GetAllProjects();
-        //    }
-        //    else
-        //    {
-        //        dt = obj.GetAllProjects(userInfo.UserOrganisationID);
-        //    }
-
-        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
-        //    foreach (DataRow dr in dt.Rows)
-        //    {
-        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
-        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
-        //        strModules += "</div>";
-        //    }
-        //    strModules += @"</div>";
-
-        //    return Content(strModules);
-        //}
-
 
 
         public ActionResult LoadAllModules(int Userid)
         {
             UserProjectMappingModel obj = new UserProjectMappingModel();
-            //var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
-            //UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
 
             UserInfoHelper userInfo = new UserInfoHelper(Userid);
             DataTable dt = new DataTable();
@@ -729,7 +910,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -809,7 +990,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageRole", "Admin");
         }
@@ -849,7 +1030,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception ex)
             {
 
-                throw;
+                //throw;
             }
 
             return Content(strUserData);
@@ -912,7 +1093,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
 
@@ -976,7 +1157,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -1048,25 +1229,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Content(strProjectMapped);
         }
-        //public ActionResult LoadAllSysModules()
-        //{
-        //    RoleMouduleMappingModel obj = new RoleMouduleMappingModel();
-        //    DataTable dt = obj.GetAllModules();
-        //    string strModules = string.Empty;
 
-        //    foreach (DataRow dr in dt.Rows)
-        //    {
-        //        strModules += "<ul class='module' style='list-style: none; margin:15px;'>";
-        //        strModules += "<li class='limodule' style='list-style: none;margin:10px;'>";
-        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["ID"].ToString() + "'>" +
-        //                        dr["Name"].ToString();
-
-        //        strModules += "</li>";
-        //        strModules += "</ul>";
-
-        //    }
-        //    return Content(strModules);
-        //}
 
         public ActionResult LoadAllSysModules()
         {
@@ -1106,7 +1269,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception)
             {
-                throw;
+                //throw;
             }
 
             return Content(strModules.ToString());
@@ -1140,7 +1303,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
 
@@ -1198,7 +1361,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -1436,7 +1599,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exc)
             {
-                throw exc;
+                //throw exc;
             }
             return Content(strOrganisation);
 
@@ -1577,7 +1740,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageDepartment", "Admin");
         }

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QBA.Qutilize.WebApp.Models
@@ -37,6 +35,8 @@ namespace QBA.Qutilize.WebApp.Models
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
+
+        public ProjectTaskModel ProjectTask { get; set; }
 
         public ProjectModel()
         {
