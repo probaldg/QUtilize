@@ -92,8 +92,11 @@
 
     <script src="~/Scripts/Chart.js"></script>
     <script src="~/Scripts/Common.js"></script>
-    @*<link rel="stylesheet" href="~/Content/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css">
+    @*<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css">
         <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>*@
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>
 </head>
 
 <body>
@@ -121,8 +124,8 @@
                     </div>
                     <div class="col-md-6">
                         <img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block" style="width:500%" />
-                        @if (HttpContext.Current.Session["OrganisationLogo"] != null && HttpContext.Current.Session["OrganisationLogo"].ToString().Trim()!="")
-                        {<img src="~/images/organisation_logo/@HttpContext.Current.Session["OrganisationLogo"].ToString()" alt="Organization:Logo" class="img-responsive img-logo  center-block" style="width:500%" /> }    
+                        @if (HttpContext.Current.Session["OrganisationLogo"] != null && HttpContext.Current.Session["OrganisationLogo"].ToString().Trim() != "")
+                        {<img src="~/images/organisation_logo/@HttpContext.Current.Session["OrganisationLogo"].ToString()" alt="Organization:Logo" class="img-responsive img-logo  center-block" style="width:500%" />}
                     </div>
                 </div>
                 <!-----Start User Block---->
