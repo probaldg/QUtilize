@@ -104,14 +104,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.DepartmentList.Clear();
                     obj.DepartmentList = obj.GetAllDepartmentInList(obj.UserOrgId).Where(x => x.IsActive == true).ToList();
 
-                    foreach (DataRow item in dt.Rows)
+                    if (obj.DepartmentList.Count > 0)
                     {
-                        obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
-                        obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            obj.DepartmentIds.Add(Convert.ToInt32(item["DepartmentId"]));
+                            obj.DepartmentIdsInString += item["DepartmentId"].ToString() + ",";
+                        }
+                        obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
                     }
 
 
-                    obj.DepartmentIdsInString = obj.DepartmentIdsInString.TrimEnd(',');
+
 
                 }
                 catch (Exception ex)
@@ -188,7 +193,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageUsers", "Admin");
         }
@@ -280,7 +285,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
             return Json(strUserData);
@@ -302,7 +307,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
             return Json(strDeptData);
@@ -389,7 +394,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
-                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
+                    // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -397,7 +402,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception ex)
             {
 
-                //throw;
+                ////throw;
             }
             return Content(strUserData.ToString());
         }
@@ -494,7 +499,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception ex)
             {
                 TempData["ErrStatus"] = model.ISErr.ToString();
-                throw;
+                //throw;
             }
 
             return RedirectToAction("ManageProject", "Admin");
@@ -578,7 +583,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
             return Json(JsonConvert.SerializeObject(taskModel));
@@ -626,7 +631,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(JsonConvert.SerializeObject(task));
 
@@ -900,7 +905,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -980,7 +985,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageRole", "Admin");
         }
@@ -1020,7 +1025,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception ex)
             {
 
-                throw;
+                //throw;
             }
 
             return Content(strUserData);
@@ -1083,7 +1088,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
 
@@ -1147,7 +1152,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -1259,7 +1264,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception)
             {
-                throw;
+                //throw;
             }
 
             return Content(strModules.ToString());
@@ -1293,7 +1298,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
 
 
@@ -1351,7 +1356,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return Json(true);
         }
@@ -1589,7 +1594,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exc)
             {
-                throw exc;
+                //throw exc;
             }
             return Content(strOrganisation);
 
@@ -1730,7 +1735,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception)
             {
 
-                throw;
+                //throw;
             }
             return RedirectToAction("ManageDepartment", "Admin");
         }
