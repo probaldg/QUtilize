@@ -1,7 +1,5 @@
 
-﻿using DeviceDetectorNET.Parser;
-
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
@@ -88,12 +86,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
 
 
+
+
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
-                        obj.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).Date;
+                        var convertedString = dt.Rows[0]["BirthDate"].ToString();
+                        obj.birthDayToDisplay = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).ToShortDateString().Replace('-', '/');
                     }
                     else
-                        obj.BirthDate = null;
+                    {
+                        obj.birthDayToDisplay = "";
+                    }
 
                     obj.Gender = dt.Rows[0]["Gender"]?.ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
@@ -142,6 +145,27 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     if (ValidateRequest)
                     {
+                        if (model.birthDayToDisplay != "")
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.birthDayToDisplay, out dateTimeConverted))
+                            {
+                                model.BirthDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                model.birthDayToDisplay.Replace('-', '/');
+                                var stringDateArray = model.birthDayToDisplay.Split('/');
+
+                                var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newBirthDayString);
+                                model.BirthDate = newDate;
+                            }
+
+
+                        }
+
+
                         model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                         model.EditedDate = DateTime.Now;
                         bool result = um.Update_UserDetails(model);
@@ -170,6 +194,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                         if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                         {
                             model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        }
+
+                        if (model.birthDayToDisplay != "")
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.birthDayToDisplay, out dateTimeConverted))
+                            {
+                                model.BirthDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                var stringDateArray = model.birthDayToDisplay.Split('/');
+                                var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newBirthDayString);
+                                model.BirthDate = newDate;
+                            }
+
                         }
 
                         model.CreateDate = DateTime.Now;
@@ -1805,7 +1846,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 //    LogedUserId =Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
                 //    browser = HttpContext.Request.Browser.Browser +" " + Request.Browser.Platform + Request.UserHostAddress,
                 //    UserAgent = HttpContext.Request.Browser.IsMobileDevice?"Mobile":""
-                    
+
                 //};
                 //var botParser = new BotParser();
                 //botParser.SetUserAgent(userAgent);
@@ -1815,7 +1856,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     PhysicalAddress address = nics[j].GetPhysicalAddress();
                     byte[] bytes = address.GetAddressBytes();
-                    string M = nics[j].Name +":";
+                    string M = nics[j].Name + ":";
                     for (int i = 0; i < bytes.Length; i++)
                     {
                         M = M + bytes[i].ToString("X2");
