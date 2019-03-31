@@ -59,7 +59,7 @@
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
-
+                    @*<th class="text-center tblHeaderColor sorting">Add Task</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -74,8 +74,205 @@
         </div>
     </div>
 
+    <div id="myModalForTask" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <input type="hidden" id="SelectedProjectId" />
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:#626262;">Task List</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+                        <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
+
+                        <table class="table table-striped table-bordered myTable" id="tblTasklist">
+                            <thead id="tblHeadListViewPost">
+                                <tr>
+                                    <th class="text-center tblHeaderColor sorting">ID</th>
+                                    <th class="text-center tblHeaderColor sorting">Task Name</th>
+                                    <th class="text-center tblHeaderColor sorting">Parent task Name</th>
+                                    <th class="text-center tblHeaderColor sorting">Project Name</th>
+                                    <th class="text-center tblHeaderColor sorting">Start Date</th>
+                                    <th class="text-center tblHeaderColor sorting">End Date</th>
+                                    <th class="text-center tblHeaderColor sorting">Actual Start Date</th>
+                                    <th class="text-center tblHeaderColor sorting">Actual End Date</th>
+                                    <th class="text-center tblHeaderColor sorting">Task Status</th>
+                                    <th class="text-center tblHeaderColor sorting">Status</th>
+                                    <th class="text-center tblHeaderColor sorting">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBosyTaskList"></tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12"><br /></div>
+                    <div class="form-horizontal col-md-12">
+                        <div class="alert alert-success alert-dismissible" role="alert" id="divTaskSaveSuccess" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            Data Saved Successfully!!!
+                        </div>
+                    </div>
+                    <div class="form-horizontal col-md-12">
+                        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsgTask" name="ErrorMsgTask" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <span id="errormsgforTask"></span>
+                        </div>
+                    </div>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <h5>Project Task Details</h5>
+
+                        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.ProjectTask.TaskId)
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskCode, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
 
 
+                            <div class="form-group">
+                                @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlParentTask" class="form-control"><option value="0">Select Task</option></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskStartDate, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.TaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.TaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-5" id="divUserDDL">
+                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="0">Select User</option></select>
+                                </div>
+                                <div class="col-md-5" id="divAddUserToAssignProject">
+                                    <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlPercentage" class="form-control"><option value="0">Select percentage</option></select>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.ProjectTask.IsActive)
+                                        @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" id="btnProjectTaskSave" class="btn btn-default" value="Submit">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+       
+    </div>
+
+
+    <div id="myModalForUsers" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:#626262;">Select Users</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form class="navbar-form" role="search">
+                        <div class="input-group add-on">
+                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                        </div>
+                    </form>
+
+                    <div id="popupUserBody">
+
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.DepartmentID)
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
     {
         @Html.AntiForgeryToken()
@@ -137,14 +334,29 @@
         </div>
     }
 
-    <script type="text/javascript">
-        $("#tblGridListViewPost").dataTable();
 
+
+    <script type="text/javascript">
+
+
+        $("#tblGridListViewPost").dataTable();
+        $("#ProjectTask_TaskStartDate").datepicker({
+            format: 'dd-mm-yy',
+            autoclose: true, todayBtn: 'linked',
+
+            maxDate: new Date()
+        })
+
+        $("#ProjectTask_TaskEndDate").datepicker({
+            format: 'dd-mm-yy',
+            autoclose: true, todayBtn: 'linked',
+
+        })
         var DeptId = $('#DepartmentID').val();
         if (DeptId > 0) {
             $('#DepartmentList').val(DeptId);
         }
-            
+
         function checkUserForm() {
 
             var ProjectName = document.getElementById("ProjectName").value;
@@ -171,13 +383,392 @@
         }
 
         $("#DepartmentList").change(function () {
-           // alert($("#DepartmentList").val());
+            // alert($("#DepartmentList").val());
             var departmentId = $("#DepartmentList").val();
-           
+
             $('#DepartmentID').val(departmentId);
 
         });
+
+
+        function ShowTaskPopup(projectId) {
+
+            $('#SelectedProjectId').val(projectId);
+            $("#ddlUsersAssigned").multiselect('destroy');
+            //$("#ddlUsersAssigned").multiselect('refresh');
+            $.ajax({
+                url: '@Url.Action("ManageProjectTask", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ "ProjectId": projectId }),
+                    success: function (response) {
+                        //console.log(response);
+                        var obj = JSON.parse(response);
+
+                        
+
+
+                        if (obj.PercentageComplete.length > 0) {
+                            var percentageArray = obj.PercentageComplete;
+                            for (var i = 0; i < percentageArray.length; i++) {
+
+                                $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
+                            }
+                        }
+                        $("#ddlTaskStatus").html('')
+                        $("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
+                        if (obj.StatusList.length > 0) {
+                            var statusList = obj.StatusList;
+                            for (var i = 0; i < statusList.length; i++) {
+
+                                $("#ddlTaskStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
+                            }
+                        }
+
+                        $("#ddlParentTask").html('')
+                        $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
+                        if (obj.TaskList.length > 0) {
+                            var taskList = obj.TaskList;
+
+
+                            $('#tblTasklist tbody').html('');
+                            for (var i = 0; i < taskList.length; i++) {
+                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : new Date(taskList[i].ActualTaskStartDate).toLocaleDateString();
+                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : new Date(taskList[i].ActualTaskEndDate).toLocaleDateString();
+                                var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';    
+                                
+                                var userListHTML = "<tr><td>" + taskList[i].TaskId + "</td> <td>" + taskList[i].TaskName + "</td> <td>" + taskList[i].ParentTaskName + "</td> <td>" + taskList[i].ProjectName + "</td> <td>" +
+                                    new Date(taskList[i].TaskStartDate).toLocaleDateString()
+                                    + "</td> <td>" + new Date(taskList[i].TaskEndDate).toLocaleDateString() + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
+                                    "</td> <td>" + taskList[i].TaskStatusName + "</td><td>" + activeStatus +
+                                    "</td><td><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + taskList[i].TaskId + ")'>Edit</a></td>"
+                                $('#tblTasklist tbody').append(userListHTML);
+
+                                $("#ddlParentTask").append($("<option></option>").val(taskList[i].TaskId).html(taskList[i].TaskName));
+                            }
+                        }
+
+                        $("#ddlUsersAssigned").html('')
+
+                        if (obj.UserList.length > 0) {
+
+
+                            $('#divAddUserToAssignProject').css('display', 'none');
+                            $('#divUserDDL').removeClass('col-md-5');
+                            $('#divUserDDL').addClass('col-md-10') ;
+                            var UserList = obj.UserList;
+
+                            for (var i = 0; i < UserList.length; i++) {
+
+                                $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
+                            }
+
+                            //$("#ddlUsersAssigned").multiselect('rebuild');
+                            $("#ddlUsersAssigned").multiselect('refresh');
+                            $("#ddlUsersAssigned").multiselect({
+                                enableCaseInsensitiveFiltering: true,
+                                buttonWidth: 550,
+                                enableFiltering: true
+                               });
+
+
+                        }
+                        else {
+                            $('#divUserDDL').removeClass('col-md-10');
+                            $('#divUserDDL').addClass('col-md-5');
+                            $('#divAddUserToAssignProject').css('display', 'block');
+                           
+                            $("#ddlUsersAssigned").multiselect('refresh');
+                            $("#ddlUsersAssigned").multiselect({
+                                enableCaseInsensitiveFiltering: true,
+                                buttonWidth: 550,
+                                enableFiltering: true
+                            });
+
+                        }
+                        $('#tblTasklist').dataTable();
+                       
+                        $('#myModalForTask').modal('show');
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+            });
+           
+
+
+        }
+        $('#ddlUsersAssigned').change(function () {
+
+            var userIds = $("#ddlUsersAssigned option:selected").map(function () { return this.value }).get().join(",");
+            //var deptIds = $("#ddlUsersAssigned option:selected").val();
+
+            $('#UserIdsInString').val(userIds);
+            console.log(userIds);
+
+        })
+        $('#btnProjectTaskSave').click(function () {
+           
+            
+            var projectID = $('#SelectedProjectId').val();
+            var taskName = $('#ProjectTask_TaskName').val();
+            var taskCode = $('#ProjectTask_TaskCode').val();
+            var parentTaskId = $('#ddlParentTask').val();
+            var startDate = new Date($('#ProjectTask_TaskStartDate').val());
+            var endDate = new Date($('#ProjectTask_TaskEndDate').val());
+            var actualStartDate = new Date($('#ProjectTask_ActualTaskStartDate').val());
+            var actualEndDate = new Date($('#ProjectTask_ActualTaskEndDate').val());
+
+            var completePercent = $('#ddlPercentage').val();
+            var IsActive = $('#ProjectTask_IsActive').val();
+            var userIds = $('#UserIdsInString').val();
+            
+           var validationStatus= validateTaskSave()
+
+            if (validationStatus != true)
+                return false;
+
+
+            var data = {
+                "ProjectID": projectID, "TaskName": taskName, "TaskCode": taskCode, "ParentTaskId":parentTaskId, "TaskStartDate": startDate, "ActualTaskStartDate": actualStartDate,
+                "ActualTaskEndDate": actualEndDate, "TaskEndDate": endDate, "CompletePercent": completePercent, "IsActive": IsActive, "UserIdsTaskAssigned": userIds
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveProjectTask", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response == "Success") {
+
+                        $('#divTaskSaveSuccess').css('display', 'block');
+                        clearAllTaskControls();
+                        ShowTaskPopup(projectID);
+                    } else {
+                        
+                        ShowTaskErrorMessage('Error occured.')
+                      
+                    }
+
+
+                    },
+                error: function (response) {
+                    //alert('error occured')
+                    ShowTaskErrorMessage('Error occured.')
+                       //console.log(response);
+                    }
+            });
+           
+           // alert('task save');
+        })
+
+        $('#btnAddUser').click(function () {
+
+
+            var projectID = $('#SelectedProjectId').val();
+
+            $.ajax({
+                url: '@Url.Action("GetAllUserOfOrganisationByProjectID", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "projectID": projectID
+                }),
+                success: function (response) {
+                    $('#popupUserBody').html('');
+                    $('#popupUserBody').append(response);
+                    $('#myModalForUsers').modal('show');
+                },
+                error: function (response) {
+                    alert('error occured')
+                    console.log(response);
+                }
+            });
+
+        });
+
+
+        function EditProjectTask(taskID) {
+           // alert('task is :'+ taskID);
+
+             $.ajax({
+                url: '@Url.Action("GetProjectTaskByID", "Admin")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    "taskId": taskID
+                }),
+                success: function (response) {
+                    //$('#popupUserBody').html('');
+                    //$('#popupUserBody').append(response);
+                    //$('#myModalForUsers').modal('show');
+
+                    //TODO get the response object and bind with the controls to update the value.
+                },
+                error: function (response) {
+                    alert('error occured')
+                   // console.log(response);
+                }
+            });
+
+
+        }
+        function clearAllTaskControls() {
+            $('#ProjectTask_TaskName').val('');
+            $('#ProjectTask_TaskCode').val('');
+            $('#ProjectTask_TaskStartDate').val('');
+            $('#ProjectTask_TaskEndDate').val('');
+            $('#ProjectTask_ActualTaskStartDate').val('');
+            $('#ProjectTask_ActualTaskEndDate').val('');
+            $('#ddlUsersAssigned').val(0);
+            $('#ddlUsersAssigned').multiselect('deselectAll', false);
+            $('#ddlUsersAssigned').multiselect('updateButtonText');
+            $('#ddlParentTask').val(0);
+            $('#ddlPercentage').val(0);
+            $('#ddlTaskStatus').val(0);
+            $('#ProjectTask_IsActive').val(false);
+            $('#ProjectTask_IsActive').prop("checked", false);
+        }
+
+        function validateTaskSave() {
+            var projectID = $('#SelectedProjectId').val();
+            var taskName = $('#ProjectTask_TaskName').val();
+            var taskCode = $('#ProjectTask_TaskCode').val();
+            var startDate = $('#ProjectTask_TaskStartDate').val();
+            var endDate = $('#ProjectTask_TaskEndDate').val();
+           
+            var userIds = $('#UserIdsInString').val();
+            var taskStatus = $('#ddlTaskStatus').val();
+            if (taskName == "") {
+                ShowTaskErrorMessage('Task name is required..')
+                return false;
+            }
+            else {
+                HideTaskErrorMessage();
+            }
+            if (taskCode == "") {
+                ShowTaskErrorMessage('Task code is required..')
+                return false;
+            } else {
+                HideTaskErrorMessage();
+            }
+
+            if (startDate == "") {
+                ShowTaskErrorMessage('Start date is required..')
+                return false;
+            } else {
+                HideTaskErrorMessage();
+            }
+            if (endDate == "") {
+                ShowTaskErrorMessage('End date is required..')
+                return false;
+            } else {
+                HideTaskErrorMessage();
+            }
+
+            if (userIds == "") {
+                ShowTaskErrorMessage('Please select a user to assign task')
+                return false;
+            } else {
+                HideTaskErrorMessage();
+            }
+            if (taskStatus == 0) {
+                ShowTaskErrorMessage('Please select task status')
+                return false;
+            } else {
+                HideTaskErrorMessage();
+            }
+            return true;
+        }
+
+
+        function ShowTaskErrorMessage( message) {
+            $('#errormsgforTask').append(message);
+            $('#ErrorMsgTask').css('display', 'block');
+        }
+
+
+        function HideTaskErrorMessage() {
+            $('#errormsgforTask').text('');
+            $('#ErrorMsgTask').css('display', 'none');
+        }
+
+        $('#btnSaveUserProjectMapping').click(function () {
+
+            var Itemlist = [];
+            var moduleid = [];
+            var moduleids = [];
+
+            var projectID = document.getElementById("SelectedProjectId").value;
+
+            var lastpushedModuleid = 0;
+
+            $('#divUserList input:checked').each(function () {
+
+                if ($(this).attr("name") == "modules") {
+                    moduleid = $(this).val();
+                }
+                moduleids.push(moduleid);
+            });
+
+
+            for (var i = 0; i < moduleids.length; i++) {
+
+                if (lastpushedModuleid != moduleids[i]) {
+                    Item = { ProjectId: projectID, UserId: moduleids[i] }
+                    Itemlist.push(Item);
+                }
+            }
+
+            lastpushedModuleid = moduleids[i];
+
+
+             $.ajax({
+                url: '@Url.Action("SaveProjectUserMapping", "Admin")',
+                dataType: "json",
+                 data: JSON.stringify({ itemlist: Itemlist }),
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    if (result == "success") {
+
+                       // alert("Successfully Saved the Data");
+                        $('#myModalForUsers').modal('toggle');
+                        ShowTaskPopup(projectID);
+                    } else {
+                        alert("error");
+                    }
+                },
+                error: function (xhr) {
+                    console.log();
+                }
+            });
+        });
+        $('#srch-term').on('input', function () {
+
+            var searchFilter = $('#srch-term').val();
+
+            if (searchFilter == "") {
+                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "none");
+            }
+            else {
+                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "none");
+                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "underline");
+            }
+
+        });
     </script>
+    @if (TempData["JavaScriptFunction"] != null)
+    {
+        <script type="text/javascript">
+            @Html.Raw(TempData["JavaScriptFunction"].ToString())
+        </script>
+    }
 </body>
 </html>
 

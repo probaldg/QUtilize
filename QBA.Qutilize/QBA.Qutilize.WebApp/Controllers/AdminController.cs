@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+
+using Newtonsoft.Json;
+
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
@@ -6,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.Mvc;
@@ -83,12 +86,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
 
 
+
+
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
-                        obj.BirthDate = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).Date;
+                        var convertedString = dt.Rows[0]["BirthDate"].ToString();
+                        obj.birthDayToDisplay = Convert.ToDateTime(dt.Rows[0]["BirthDate"]).ToShortDateString().Replace('-', '/');
                     }
                     else
-                        obj.BirthDate = null;
+                    {
+                        obj.birthDayToDisplay = "";
+                    }
 
                     obj.Gender = dt.Rows[0]["Gender"]?.ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
@@ -137,6 +145,27 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     if (ValidateRequest)
                     {
+                        if (model.birthDayToDisplay != "")
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.birthDayToDisplay, out dateTimeConverted))
+                            {
+                                model.BirthDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                model.birthDayToDisplay.Replace('-', '/');
+                                var stringDateArray = model.birthDayToDisplay.Split('/');
+
+                                var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newBirthDayString);
+                                model.BirthDate = newDate;
+                            }
+
+
+                        }
+
+
                         model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
                         model.EditedDate = DateTime.Now;
                         bool result = um.Update_UserDetails(model);
@@ -165,6 +194,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                         if (System.Web.HttpContext.Current.Session["sessUser"] != null)
                         {
                             model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
+                        }
+
+                        if (model.birthDayToDisplay != "")
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.birthDayToDisplay, out dateTimeConverted))
+                            {
+                                model.BirthDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                var stringDateArray = model.birthDayToDisplay.Split('/');
+                                var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newBirthDayString);
+                                model.BirthDate = newDate;
+                            }
+
                         }
 
                         model.CreateDate = DateTime.Now;
@@ -1787,6 +1833,54 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(strUserData);
         }
         #endregion
+
+        public ActionResult GetUserActivityTracking()
+        {
+            string strUserData = string.Empty;
+            try
+            {
+                //HttpContext.Request.Browser.. 
+                //PortalLogger aLogger = new PortalLogger()
+                //{
+                //    LoggerId=Guid.NewGuid(),
+                //    LogedUserId =Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
+                //    browser = HttpContext.Request.Browser.Browser +" " + Request.Browser.Platform + Request.UserHostAddress,
+                //    UserAgent = HttpContext.Request.Browser.IsMobileDevice?"Mobile":""
+
+                //};
+                //var botParser = new BotParser();
+                //botParser.SetUserAgent(userAgent);
+
+                NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+                for (int j = 0; j <= 1; j++)
+                {
+                    PhysicalAddress address = nics[j].GetPhysicalAddress();
+                    byte[] bytes = address.GetAddressBytes();
+                    string M = nics[j].Name + ":";
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        M = M + bytes[i].ToString("X2");
+                        if (i != bytes.Length - 1)
+                        {
+                            M = M + ("-");
+                        }
+                    }
+                }
+            }
+            catch (Exception exx)
+            { }
+            //ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
+
+            //DataTable dt = ManageDepartmentViewModel.GetUsersByOrganisation(orgId);
+
+
+            //strUserData += "<option value = 0>Please select</option>";
+            //foreach (DataRow item in dt.Rows)
+            //{
+            //    strUserData += "<option value=" + Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
+            //}
+            return Json(strUserData);
+        }
 
     }
 }

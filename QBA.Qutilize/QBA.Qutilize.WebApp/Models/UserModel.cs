@@ -64,6 +64,8 @@ namespace QBA.Qutilize.WebApp.Models
         [DisplayFormat(DataFormatString = "{0:dd MMM yyyy}")]
         public DateTime? BirthDate { get; set; }
 
+        [Display(Name = "Birth Date")]
+        public string birthDayToDisplay { get; set; }
 
         public string Gender { get; set; }
 
