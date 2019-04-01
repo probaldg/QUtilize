@@ -197,59 +197,64 @@
         });
         }
 
+        //$.extend($.expr[":"], {
+        //    "containsIN": function (elem, i, match, array) {
+        //        return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+        //    }
+        //});
 
+        $.extend($.expr[":"], {
+            "containsIN": function (elem, i, match, array) {
+                return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
 
-        // $('#srch-term').on('input',function () {
+           
+        });
+        //$('#srch-term').keyup(function () {
 
-             //var searchFilter = $('#srch-term').val();
+        //    $("#divProjectList div").css("text-decoration", "none");
+        //    $("#divProjectList div").css("background", "white");
+        //    $("#divProjectList div").css("color", "black");
 
-             //if (searchFilter == "") {
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
-             //}
-             //else {
-             //    //$("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
-             //    //$("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
-             //    //$("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+        //    var searchFilter = $(this).val();
 
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
-             //    $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
-        //     }
+        //    if (searchFilter == "") {
+               
+        //        $("#divProjectList div").css("text-decoration", "none");
+        //        $("#divProjectList div").css("background", "white");
+        //        $("#divProjectList div").css("color", "black");
+        //    }
+        //    else {
+
+        //        $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
+        //        $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
+        //        $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+
+        //    }
 
         //});
-        $('#srch-term').on("propertychange change keyup paste input", function () {
 
+        $('#srch-term').keyup(function () {
 
-            var searchFilter = $('#srch-term').val();
+            $("#divProjectList div").css("text-decoration", "none");
+            $("#divProjectList div").css("background", "white");
+            $("#divProjectList div").css("color", "black");
+
+            var searchFilter = $(this).val();
 
             if (searchFilter == "") {
-                $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
-                $("#divProjectList :contains(" + searchFilter + ")").css("background", "white");
-                $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+
+                $("#divProjectList div").css("text-decoration", "none");
+                $("#divProjectList div").css("background", "white");
+                $("#divProjectList div").css("color", "black");
             }
             else {
 
-                $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
-                $("#divProjectList :contains(" + searchFilter + ")").css("background", "#42f4eb");
-                $("#divProjectList :contains(" + searchFilter + ")").css("color", "black");
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("text-decoration", "underline");
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("background", "#42f4eb");
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("color", "black");
 
             }
-
-        });
-
-         $('#srch-term').on('input',function () {
-
-             var searchFilter = $('#srch-term').val();
-
-             if (searchFilter == "") {
-                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
-             }
-             else {
-                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "none");
-                 $("#divProjectList :contains(" + searchFilter + ")").css("text-decoration", "underline");
-             }
 
         });
 

@@ -59,7 +59,7 @@
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
-                    @*<th class="text-center tblHeaderColor sorting">Add Task</th>*@
+                    <th class="text-center tblHeaderColor sorting">Add Task</th>
                 </tr>
             </thead>
             <tbody>
@@ -154,7 +154,7 @@
                             <div class="form-group">
                                 @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="ddlParentTask" class="form-control"><option value="0">Select Task</option></select>
+                                    <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -175,7 +175,7 @@
                             <div class="form-group">
                                 @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-5" id="divUserDDL">
-                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="0">Select User</option></select>
+                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                                 </div>
                                 <div class="col-md-5" id="divAddUserToAssignProject">
                                     <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
@@ -185,7 +185,7 @@
                             <div class="form-group">
                                 @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="ddlPercentage" class="form-control"><option value="0">Select percentage</option></select>
+                                    <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
                                 </div>
                             </div>
 
@@ -341,16 +341,27 @@
 
         $("#tblGridListViewPost").dataTable();
         $("#ProjectTask_TaskStartDate").datepicker({
-            format: 'dd-mm-yy',
+            dateFormat: "dd/mm/yy",
             autoclose: true, todayBtn: 'linked',
-
-            maxDate: new Date()
+            minDate: new Date()
         })
 
-        $("#ProjectTask_TaskEndDate").datepicker({
-            format: 'dd-mm-yy',
+       
+        $("#ProjectTask_ActualTaskStartDate").datepicker({
+            dateFormat: "dd/mm/yy",
             autoclose: true, todayBtn: 'linked',
+            minDate: new Date()
+        })
+        $("#ProjectTask_TaskEndDate").datepicker({
+            dateFormat: "dd/mm/yy",
+            autoclose: true, todayBtn: 'linked',
+            minDate: new Date()
+        })
 
+        $("#ProjectTask_ActualTaskEndDate").datepicker({
+            dateFormat: "dd/mm/yy",
+            autoclose: true, todayBtn: 'linked',
+            minDate: new Date()
         })
         var DeptId = $('#DepartmentID').val();
         if (DeptId > 0) {
@@ -417,7 +428,7 @@
                             }
                         }
                         $("#ddlTaskStatus").html('')
-                        $("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
+                        //$("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
                         if (obj.StatusList.length > 0) {
                             var statusList = obj.StatusList;
                             for (var i = 0; i < statusList.length; i++) {
@@ -427,7 +438,7 @@
                         }
 
                         $("#ddlParentTask").html('')
-                        $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
+                        //$("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
                         if (obj.TaskList.length > 0) {
                             var taskList = obj.TaskList;
 
@@ -603,10 +614,32 @@
                 data: JSON.stringify({
                     "taskId": taskID
                 }),
-                success: function (response) {
-                    //$('#popupUserBody').html('');
-                    //$('#popupUserBody').append(response);
-                    //$('#myModalForUsers').modal('show');
+                 success: function (response) {
+                     console.log(response);
+
+                     var taskObj = JSON.parse(response);
+                     $('#ProjectTask_TaskId').val(taskObj.TaskId)
+                     $('#ProjectTask_TaskName').val(taskObj.TaskName);
+                     $('#ProjectTask_TaskCode').val(taskObj.TaskCode);
+
+                     $('#ddlParentTask').val(taskObj.ParentTaskId)
+                     $('#ProjectTask_TaskStartDate').val(formatDateInDD_MM_yyyy(taskObj.TaskStartDate));
+                     $('#ProjectTask_TaskEndDate').val(formatDateInDD_MM_yyyy(taskObj.TaskEndDate));
+                   
+                     $('#ddlPercentage').val(taskObj.CompletePercent);
+                     $('#ProjectTask_ActualTaskStartDate').val(taskObj.TaskStartDateActual);
+                     $('#ProjectTask_ActualTaskEndDate').val(taskObj.TaskEndDateActual);
+                     $('#ddlTaskStatus').val(taskObj.TaskStatusID);
+                     $('#ProjectTask_IsActive').prop('checked', taskObj.IsActive);
+
+                     var userIds = taskObj.UserIdsTaskAssigned;
+                     var selectedOptions = userIds.split(',');
+                     for (var i in selectedOptions) {
+                         var optionVal = selectedOptions[i];
+                         $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
+                     }
+           // $("#DepartmentList").multiselect('reload');
+                     // TODO need to check the user name in ddlUsersAssigned dropdown
 
                     //TODO get the response object and bind with the controls to update the value.
                 },
@@ -617,6 +650,24 @@
             });
 
 
+        }
+
+
+        function formatDateInDD_MM_yyyy(yourUnformattedDate) {
+            var formattedDate = new Date(yourUnformattedDate);
+            var day = formattedDate.getDate();
+            var month = formattedDate.getMonth();
+            month += 1;  // JavaScript months are 0-11
+            var year = formattedDate.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+            return (day + "/" + month + "/" + year);
+
+            
         }
         function clearAllTaskControls() {
             $('#ProjectTask_TaskName').val('');
