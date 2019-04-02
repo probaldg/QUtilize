@@ -1834,23 +1834,37 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
-        public ActionResult GetUserActivityTracking()
+        public ActionResult GetUserActivityTracking(string userAgent, string absURL)
         {
-            string strUserData = string.Empty;
+            string strRet = string.Empty;
             try
             {
-                //HttpContext.Request.Browser.. 
-                //PortalLogger aLogger = new PortalLogger()
-                //{
-                //    LoggerId=Guid.NewGuid(),
-                //    LogedUserId =Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
-                //    browser = HttpContext.Request.Browser.Browser +" " + Request.Browser.Platform + Request.UserHostAddress,
-                //    UserAgent = HttpContext.Request.Browser.IsMobileDevice?"Mobile":""
-
-                //};
+                UserActivityLog aLogger = new UserActivityLog()
+                {
+                    LoggerId = Guid.NewGuid(),
+                    LogedUserId = Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
+                    IPAddress = Request.UserHostAddress,
+                    UrlAccessed = absURL,
+                    UserAgent=userAgent,
+                    IsMobileDevice = HttpContext.Request.Browser.IsMobileDevice ? "Mobile" : "Desktop",
+                    Browser = HttpContext.Request.Browser.Browser ,
+                    MACAddress= GetMACID(),
+                    Platform = Request.Browser.Platform,
+                    AccessDateTime=DateTime.Now
+                };
+                aLogger.SetUserActivityLog(aLogger);
                 //var botParser = new BotParser();
                 //botParser.SetUserAgent(userAgent);
-
+            }
+            catch (Exception exx)
+            { }
+            return Json(strRet);
+        }
+        private string GetMACID()
+        {
+            string strMAC = string.Empty;
+            try
+            {
                 NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
                 for (int j = 0; j <= 1; j++)
                 {
@@ -1865,22 +1879,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                             M = M + ("-");
                         }
                     }
+                    strMAC= M;
                 }
             }
             catch (Exception exx)
-            { }
-            //ManageDepartmentViewModel obj = new ManageDepartmentViewModel();
-
-            //DataTable dt = ManageDepartmentViewModel.GetUsersByOrganisation(orgId);
-
-
-            //strUserData += "<option value = 0>Please select</option>";
-            //foreach (DataRow item in dt.Rows)
-            //{
-            //    strUserData += "<option value=" + Convert.ToInt32(item["Id"]) + ">" + item["Name"].ToString() + "</option>";
-            //}
-            return Json(strUserData);
+            { strMAC = string.Empty; }
+            return strMAC;
         }
-
     }
 }

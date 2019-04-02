@@ -14,7 +14,7 @@
 </head>
 <body>
 
-   
+
 
     @{
         var strMSGforSave = string.Empty;
@@ -70,7 +70,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
 
-           @strMsgforErr
+            @strMsgforErr
         </div>
     </div>
     <h4>Manage User</h4>
@@ -234,13 +234,21 @@
                 </div>
             </div>
 
+            @*<div class="form-group">
+                        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" ,Value = Model.BirthDate != null ?
+                Model.BirthDate.Value.Date.ToString("yyyy/MM/dd") : null
+                       } })
+                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
             <div class="form-group">
-                @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.birthDayToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" ,Value = Model.BirthDate != null ?
-        Model.BirthDate.Value.Date.ToString("yyyy/MM/dd") : null
-               } })
-                    @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.birthDayToDisplay, new { htmlAttributes = new { @class = "form-control" }  })
+                    @Html.ValidationMessageFor(model => model.birthDayToDisplay, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="form-group">
@@ -333,7 +341,7 @@
         //        enableFiltering: true
         //    });
         //});
-        $('#BirthDate').datepicker({
+        $('#birthDayToDisplay').datepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: "dd/mm/yy",
@@ -544,7 +552,7 @@
 
             var designation = $('#Designation').val();
             var contactNo = $('#ContactNo').val();
-            var birthDate = $('#BirthDate').val();
+            var birthDate = $('#birthDayToDisplay').val();
             var gender = $('#ddlUserGender').val();
 
             if (userName == "") {
@@ -678,7 +686,7 @@
                 //}
             }
 
-            
+
             if (designation == "") {
                 document.getElementById("errormsg").innerHTML = "Please provide designation.";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -712,10 +720,10 @@
             }
 
             if (managerId == "") {
-                
+
                 var result = confirm("You have not selected manager from the list. do you want to continue?");
                 if (result ==false) {
-                   
+
                     return false;
                 }
             }
@@ -762,7 +770,7 @@
             success: function (response) {
                 //jQuery('#myEditModal').modal('show');
                 alert(response);
-               
+
                 $('#updatePasswordModal').modal('toggle');
                 //alert(response[0]._id)
             },
