@@ -25,12 +25,17 @@ namespace QBA.Qutilize.WebApp.Models
 
 
 
-        [Display(Name = "Start Date")]
+
         public DateTime TaskStartDate { get; set; }
 
-        [Display(Name = "End Date")]
+        [Display(Name = "Start Date")]
+        public string TaskStartDateDisplay { get; set; }
+
+
         public DateTime TaskEndDate { get; set; }
 
+        [Display(Name = "End Date")]
+        public string TaskEndDateDisplay { get; set; }
         public int TaskStatusID { get; set; }
 
         [Display(Name = "Status")]
@@ -44,11 +49,17 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Complete percent")]
         public int CompletePercent { get; set; }
 
-        [Display(Name = "Actual Start Date")]
+
         public DateTime? ActualTaskStartDate { get; set; }
 
-        [Display(Name = "Actual End Date")]
+        [Display(Name = "Actual Start Date")]
+        public string ActualTaskStartDateDisplay { get; set; }
+
+
         public DateTime? ActualTaskEndDate { get; set; }
+
+        [Display(Name = "Actual End Date")]
+        public string ActualTaskEndDateDisplay { get; set; }
         public bool IsActive { get; set; }
 
         public string UserIdsTaskAssigned { get; set; }
@@ -184,8 +195,6 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@TaskEndDate",model.TaskEndDate),
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
-                    //new SqlParameter("@TaskStartDateActual",null),
-                    //new SqlParameter("@TaskEndDateActual",null),
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
@@ -226,6 +235,43 @@ namespace QBA.Qutilize.WebApp.Models
             {
                 model.ISErr = true;
                 model.ErrString = "Error Occured!!!";
+                result = false;
+            }
+            return result;
+
+        }
+
+        public Boolean UpdateTaskdata(ProjectTaskModel model)
+        {
+            string str = string.Empty;
+            bool result = false;
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param ={
+                    new SqlParameter("@TaskID",model.TaskId),
+                    new SqlParameter("@TaskCode",model.TaskCode),
+                    new SqlParameter("@TaskName",model.TaskName),
+                    new SqlParameter("@ParentTaskID", model.ParentTaskId),
+                    new SqlParameter("@TaskStartDate",model.TaskStartDate),
+                    new SqlParameter("@TaskEndDate",model.TaskEndDate),
+                    new SqlParameter("@StatusID",model.TaskStatusID),
+                    new SqlParameter("@CompletePercent",model.CompletePercent),
+                    new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate),
+                    new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate),
+                    new SqlParameter("@isACTIVE",model.IsActive),
+                    new SqlParameter("@EditedBY",model.EditedBy),
+                    new SqlParameter("@EditedTS",model.EditedTS),
+                    new SqlParameter("@UserIds",model.UserIdsTaskAssigned)
+                };
+                dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTask_Update", param);
+
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
                 result = false;
             }
             return result;

@@ -676,7 +676,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ",";
                         task.UserList.Add(userModel);
                     }
-                    task.UserIdsTaskAssigned.TrimEnd(',');
+                    task.UserIdsTaskAssigned = task.UserIdsTaskAssigned.TrimEnd(',');
                     // task.TaskList.Add(task);
                 }
 
@@ -699,11 +699,67 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 if (model.TaskId > 0)
                 {
-                    result = "Success";
+
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+                    if (model.TaskStartDateDisplay != null)
+                    {
+                        model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.TaskStartDateDisplay);
+                    }
+                    if (model.TaskEndDateDisplay != null)
+                    {
+                        model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.TaskEndDateDisplay);
+                    }
+                    if (model.ActualTaskStartDateDisplay != null)
+                    {
+                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskStartDateDisplay);
+                    }
+                    if (model.ActualTaskEndDateDisplay != null)
+                    {
+                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplay);
+
+                    }
+
+
+                    var updateStatus = pm.UpdateTaskdata(model);
+
+                    if (updateStatus)
+                    {
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully!!!";
+                        result = "Success";
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured!!!";
+                        result = "Error";
+                    }
+
                 }
 
                 else
                 {
+                    //TODO check the time format and the insert
+                    if (model.TaskStartDateDisplay != null)
+                    {
+                        model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.TaskStartDateDisplay);
+                    }
+                    if (model.TaskEndDateDisplay != null)
+                    {
+                        model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.TaskEndDateDisplay);
+                    }
+                    if (model.ActualTaskStartDateDisplay != null)
+                    {
+                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskStartDateDisplay);
+                    }
+                    if (model.ActualTaskEndDateDisplay != null)
+                    {
+                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplay);
+
+                    }
+
+
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
                     var insertStatus = pm.InsertTaskdata(model, out int id);
