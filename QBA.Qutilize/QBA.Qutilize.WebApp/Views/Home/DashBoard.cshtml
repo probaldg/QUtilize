@@ -145,7 +145,6 @@
                     <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                 </div>
                 <div class="panel-body">
-
                     <div class="row" id="divLoadDashBoardDataDayWise">
                         <div class="col-md-12">
                             <div class="panel panel-info">
@@ -208,7 +207,7 @@
 
         }
     })
-    function gerBarChartData() {
+    function gerBarChartData(){
         try {
         //-----Single Bar --------------
         var c = document.getElementById("barChart");
@@ -225,14 +224,22 @@
                     yAxes: [{
                         stacked: true
                     }]
+                },
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
                 }
             }
         });
             myBarChart.update();
         }
         catch (e) { }
-    }
-    function gerBarChartDataAdmin() {
+    };
+    function gerBarChartDataAdmin(){
         try {
         //-----Single Bar --------------
         var c = document.getElementById("barChartAdmin");
@@ -242,6 +249,7 @@
             type: 'bar',
             data: tData,
             options: {
+                responsive: true,
                 scales: {
                     xAxes: [{
                         stacked: true
@@ -249,14 +257,21 @@
                     yAxes: [{
                         stacked: true
                     }]
+                },
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
                 }
             }
         });
             myBarChart.update();
         }
         catch (e) { }
-    }
-    function gerBarChartDataPM() {
+    };
+    function gerBarChartDataPM(){
         try {
         //-----Single Bar --------------
         var c = document.getElementById("barChartPM");
@@ -273,13 +288,21 @@
                     yAxes: [{
                         stacked: true
                     }]
+                },
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
                 }
             }
         });
             myBarChart.update();
         }
         catch (e) { }
-    }
+    };
     function gerDonutChartData() {
         try {
         //----Donut Chart---------
@@ -289,6 +312,16 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: tData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
         });
             myPieChart.update();
         }
@@ -303,6 +336,16 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: tData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
         });
             myPieChart.update();
         }
@@ -317,6 +360,16 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: tData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
         });
             myPieChart.update();
         }
@@ -345,6 +398,16 @@
             var myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: tData,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true,
+                        position: 'right'
+                    },
+                    tooltips: {
+                        enabled: true
+                    }
+                }
             });
                 myPieChart.update();
          }
