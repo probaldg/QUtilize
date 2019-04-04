@@ -114,8 +114,8 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
 
-                DateTime startTime = new DateTime();
-                DateTime endTime = new DateTime();
+                DateTime startTime = model.StartTime;
+                DateTime endTime = model.EndTime;
 
                 if (model.StartTime.ToShortDateString() != Convert.ToDateTime(model.TaskDate).ToShortDateString())
                 {
