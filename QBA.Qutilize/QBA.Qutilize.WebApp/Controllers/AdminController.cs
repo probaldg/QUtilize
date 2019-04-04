@@ -440,7 +440,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
-                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
+                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -621,7 +621,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
 
 
-                for (int i = 1; i <= 100; i++)
+                for (int i = 0; i <= 100; i++)
                 {
                     taskModel.PercentageComplete.Add(i);
                 }
@@ -800,7 +800,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow dr in dt.Rows)
                 {
                     builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
-                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString());
+                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>");
+
+                    builder.Append("<span id='span_" + dr["Id"].ToString() + "'> " + dr["Name"].ToString() + "</span>");
+
                     builder.Append(@"</div>");
                 }
                 builder.Append(@"</div>");
@@ -1944,12 +1947,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     LogedUserId = Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
                     IPAddress = Request.UserHostAddress,
                     UrlAccessed = absURL,
-                    UserAgent=userAgent,
+                    UserAgent = userAgent,
                     IsMobileDevice = HttpContext.Request.Browser.IsMobileDevice ? "Mobile" : "Desktop",
-                    Browser = HttpContext.Request.Browser.Browser ,
-                    MACAddress= GetMACID(),
+                    Browser = HttpContext.Request.Browser.Browser,
+                    MACAddress = GetMACID(),
                     Platform = Request.Browser.Platform,
-                    AccessDateTime=DateTime.Now
+                    AccessDateTime = DateTime.Now
                 };
                 aLogger.SetUserActivityLog(aLogger);
                 //var botParser = new BotParser();
@@ -1978,7 +1981,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             M = M + ("-");
                         }
                     }
-                    strMAC= M;
+                    strMAC = M;
                 }
             }
             catch (Exception exx)
