@@ -31,6 +31,36 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return dt;
         }
+        public static bool SetUserActivityLog(UserActivityLog mUSL)
+        {
+            bool bRetVal = true;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@LoggerId",mUSL.LoggerId),
+                                        new SqlParameter("@LogedUserId",mUSL.LogedUserId),
+                                        new SqlParameter("@IPAddress",mUSL.IPAddress),
+                                        new SqlParameter("@UrlAccessed",mUSL.UrlAccessed),
+                                        new SqlParameter("@UserAgent",mUSL.UserAgent),
+                                        new SqlParameter("@IsMobileDevice",mUSL.IsMobileDevice),
+                                        new SqlParameter("@Browser",mUSL.Browser),
+                                        new SqlParameter("@MACAddress",mUSL.MACAddress),
+                                        new SqlParameter("@Platform",mUSL.Platform),
+                                        new SqlParameter("@AccessDateTime",mUSL.AccessDateTime)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    DataSet ds = objSQLHelper.ExecuteDataset("USP_UserActivityLog_Update", param);
+                    bRetVal = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                bRetVal = false;
+            }
+
+            return bRetVal;
+        }
         public static bool SetUserSessionLog(UserSessionLog mUSL)
         {
             bool bRetVal = true;
