@@ -53,6 +53,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     var tempStartTime = startTime.TimeOfDay;
                     var tempEndTime = endTime.TimeOfDay;
+
+                    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
+
                     DateTime newStartTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, startTime.Second);
                     DateTime newEndtTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
                     startTime = newStartTime;
@@ -111,12 +114,29 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
 
+                DateTime startTime = new DateTime();
+                DateTime endTime = new DateTime();
+
+                if (model.StartTime.ToShortDateString() != Convert.ToDateTime(model.TaskDate).ToShortDateString())
+                {
+                    var tempStartTime = model.StartTime.TimeOfDay;
+                    var tempEndTime = model.EndTime.TimeOfDay;
+
+                    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
+
+                    DateTime newStartTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, model.StartTime.Second);
+                    DateTime newEndtTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+                    startTime = newStartTime;
+                    endTime = newEndtTime;
+                }
+
+
                 DailyTaskModel taskModel = new DailyTaskModel();
                 taskModel.DailyTaskId = model.DailyTaskId;
                 taskModel.TaskDate = model.TaskDate;
                 taskModel.TaskName = model.TaskName;
-                taskModel.StartTime = model.StartTime;
-                taskModel.EndTime = model.EndTime;
+                taskModel.StartTime = startTime;
+                taskModel.EndTime = endTime;
                 taskModel.Description = model.Description;
                 taskModel.EditedBy = Session["sessUser"].ToString();
                 taskModel.EditedDate = DateTime.Now;

@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <div id="myModalForTask" class="modal fade" role="dialog">
+    @*<div id="myModalForTask" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <input type="hidden" id="SelectedProjectId" />
             <!-- Modal content-->
@@ -270,9 +270,9 @@
             </div>
 
         </div>
-    </div>
+    </div>*@
 
-    @Html.HiddenFor(model => model.DepartmentID)
+    @*@Html.HiddenFor(model => model.DepartmentID)*@
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
     {
         @Html.AntiForgeryToken()
@@ -383,7 +383,7 @@
         }
 
         $("#DepartmentList").change(function () {
-            // alert($("#DepartmentList").val());
+            //alert($("#DepartmentList").val());
             var departmentId = $("#DepartmentList").val();
 
             $('#DepartmentID').val(departmentId);

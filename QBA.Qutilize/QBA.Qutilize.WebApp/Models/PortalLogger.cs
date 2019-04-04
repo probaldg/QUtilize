@@ -13,9 +13,26 @@ namespace QBA.Qutilize.WebApp.Models
         public Guid LoggerId { get; set; }
         public string LogedUserId { get; set; }
         public string IPAddress { get; set; }
-        public string AreaAccessed { get; set; }
+        public string UrlAccessed { get; set; }
         public string UserAgent { get; set; }
-        public string browser { get; set; }
+        public string IsMobileDevice { get; set; }
+        public string Browser { get; set; }
+        public string MACAddress { get; set; }
+        public string Platform { get; set; }
+        public DateTime AccessDateTime { get; set; }
+        public bool SetUserActivityLog(UserActivityLog mUSL)
+        {
+            bool bRetVal = true;
+            try
+            {
+                return DataAccess.SetUserActivityLog(mUSL);
+            }
+            catch (Exception ex)
+            {
+                bRetVal = false;
+            }
+            return bRetVal;
+        }
     }
     public class UserSessionLog
     {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
+using System.Globalization;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -104,15 +105,7 @@ namespace QBA.Qutilize.WebApp.Models
                         dailyTaskModel.DailyTaskId = Convert.ToInt32(item["DailyTaskId"]);
                         dailyTaskModel.ProjectID = Convert.ToInt32(item["ProjectId"]);
                         dailyTaskModel.ProjectName = item["ProjectName"].ToString();
-
-                        //if (!DBNull.Value.Equals(item["TaskDate"]))
-                        //{
-                        //    dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
-                        //}
-                        //else
-                        dailyTaskModel.TaskDate = Convert.ToDateTime(item["StartTime"]);
-
-
+                        dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
                         dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
 
 
