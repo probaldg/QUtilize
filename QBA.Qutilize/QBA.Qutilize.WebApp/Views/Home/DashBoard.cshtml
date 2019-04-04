@@ -101,6 +101,10 @@
                         <!-- load header summary -->
                         @Html.Action("LoadDashBoardPMSummary", "Home")
                     </div>
+
+
+
+
                     <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
                         <div class="col-md-12">
                             <div class="panel panel-info">
@@ -111,6 +115,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                <div class="panel-body" id="divDataDayWiseDetailsInMinute">
+                                    @*@Html.Action("GetDataActual", "Home")*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                <div class="panel-body">
+                                    @*<canvas id="DonutChart" width="200" height="100"></canvas>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="panel panel-info">
