@@ -60,10 +60,14 @@ namespace QBA.Qutilize.WebApp.Models
         }
         public DataTable GetAllModules()
         {
-            DataTable dt = null;
+            DataTable dt = new DataTable();
             try
             {
-                dt = objSQLHelper.ExecuteDataTable("USPModules_Get");
+                var dataRows = objSQLHelper.ExecuteDataTable("USPModules_Get").Select("isACTIVE=1");
+                if (dataRows.Length > 0)
+                {
+                    dt = dataRows.CopyToDataTable();
+                }
             }
             catch (Exception ex)
             {

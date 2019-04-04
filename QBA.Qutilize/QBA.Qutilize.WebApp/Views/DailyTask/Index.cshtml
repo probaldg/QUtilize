@@ -224,7 +224,6 @@
         var last = first + 6;
 
         $('#TaskDateInsert').datepicker({
-            format: 'dd-mm-yy',
             minDate: new Date(curr.setDate(first)),
             maxDate: new Date()
         });
@@ -232,7 +231,6 @@
         $("#EndTimeInsert").timepicker({ 'scrollDefault': 'now' })
 
         $(".datepicker").datepicker({
-            format: 'dd-mm-yy',
             autoclose: true, todayBtn: 'linked',
             minDate: new Date(curr.setDate(first)),
             maxDate: new Date()

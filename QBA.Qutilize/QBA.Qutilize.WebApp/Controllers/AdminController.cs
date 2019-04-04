@@ -233,8 +233,8 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
                     }
-
                 }
+
             }
             catch (Exception)
             {
@@ -440,7 +440,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
-                    // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["ID"].ToString() + ");> Add Task </a> </td>");
+                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -621,7 +621,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
 
 
-                for (int i = 1; i <= 100; i++)
+                for (int i = 0; i <= 100; i++)
                 {
                     taskModel.PercentageComplete.Add(i);
                 }
@@ -648,6 +648,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
 
                     task.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
+                    task.TaskCode = dtTaskData.Rows[0]["TaskCode"].ToString() ?? "";
                     task.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
                     task.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
                     task.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
@@ -658,19 +659,25 @@ namespace QBA.Qutilize.WebApp.Controllers
                     task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
                     task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
                     task.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
+                    task.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
                     task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
+                    task.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
 
                     foreach (DataRow item in dtTaskData.Rows)
                     {
-                        UserModel userModel = new UserModel();
-                        userModel.Name = item["Name"].ToString();
-                        userModel.ID = Convert.ToInt32(item["Id"]);
-                        userModel.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        UserModel userModel = new UserModel
+                        {
+                            ID = Convert.ToInt32(item["UserID"]),
+                            Name = item["UserName"].ToString(),
+                            IsActive = Convert.ToBoolean(item["IsUserActive"])
+
+                        };
+
+                        task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ",";
                         task.UserList.Add(userModel);
-
                     }
-
-                    task.TaskList.Add(task);
+                    task.UserIdsTaskAssigned = task.UserIdsTaskAssigned.TrimEnd(',');
+                    // task.TaskList.Add(task);
                 }
 
             }
@@ -686,29 +693,96 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult SaveProjectTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
-            if (model.TaskId > 0)
+            string result = "";
+            try
             {
 
-            }
-            else
-            {
-                model.AddedBy = loggedInUser;
-                model.AddedTS = DateTime.Now;
-                var result = pm.InsertTaskdata(model, out int id);
-                if (result)
+                if (model.TaskId > 0)
                 {
-                    if (id > 0)
+
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+                    if (model.TaskStartDateDisplay != null)
                     {
+                        model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.TaskStartDateDisplay);
+                    }
+                    if (model.TaskEndDateDisplay != null)
+                    {
+                        model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.TaskEndDateDisplay);
+                    }
+                    if (model.ActualTaskStartDateDisplay != null)
+                    {
+                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskStartDateDisplay);
+                    }
+                    if (model.ActualTaskEndDateDisplay != null)
+                    {
+                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplay);
 
                     }
+
+
+                    var updateStatus = pm.UpdateTaskdata(model);
+
+                    if (updateStatus)
+                    {
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully!!!";
+                        result = "Success";
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured!!!";
+                        result = "Error";
+                    }
+
                 }
+
                 else
                 {
-                    return Json("Error");
+                    //TODO check the time format and the insert
+                    if (model.TaskStartDateDisplay != null)
+                    {
+                        model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.TaskStartDateDisplay);
+                    }
+                    if (model.TaskEndDateDisplay != null)
+                    {
+                        model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.TaskEndDateDisplay);
+                    }
+                    if (model.ActualTaskStartDateDisplay != null)
+                    {
+                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskStartDateDisplay);
+                    }
+                    if (model.ActualTaskEndDateDisplay != null)
+                    {
+                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplay);
+
+                    }
+
+
+                    model.AddedBy = loggedInUser;
+                    model.AddedTS = DateTime.Now;
+                    var insertStatus = pm.InsertTaskdata(model, out int id);
+                    if (insertStatus)
+                    {
+                        if (id > 0)
+                        {
+                            result = "Success";
+                        }
+                    }
+                    else
+                    {
+                        result = "Success";
+                    }
                 }
             }
+            catch (Exception)
+            {
+                result = "Error";
+                return Json(result);
 
-            return Json("Success");
+            }
+            return Json(result);
         }
 
 
@@ -717,12 +791,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             ProjectTaskModel obj = new ProjectTaskModel();
 
             DataTable dt = new DataTable();
-
             dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
-
-
-            // string strModules = @"<div id='divUserList' class='row' style='margin:10px;'>";
-
             StringBuilder builder = new StringBuilder();
             builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
             if (dt.Rows.Count > 0)
@@ -731,12 +800,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow dr in dt.Rows)
                 {
                     builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
-                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString());
+                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>");
+
+                    builder.Append("<span id='span_" + dr["Id"].ToString() + "'> " + dr["Name"].ToString() + "</span>");
+
                     builder.Append(@"</div>");
                 }
                 builder.Append(@"</div>");
             }
-
 
             return Json(builder.ToString());
         }
@@ -838,11 +909,20 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             if (userInfo.IsRoleSysAdmin)
             {
-                dt = obj.GetAllProjects();
+
+                var dataRows = obj.GetAllProjects().Select("IsActive=1");
+                if (dataRows.Length > 0)
+                {
+                    dt = dataRows.CopyToDataTable();
+                }
             }
             else
             {
-                dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+                var dataRows = obj.GetAllProjects(userInfo.UserOrganisationID).Select("IsActive=1");
+                if (dataRows.Length > 0)
+                {
+                    dt = dataRows.CopyToDataTable();
+                }
             }
 
 
@@ -1151,11 +1231,22 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             if (userInfo.IsRoleSysAdmin)
             {
-                dtRoles = obj.GetAllRoles();
+                var dataRows = obj.GetAllRoles().Select("IsActive=1"); ;
+
+                if (dataRows.Length > 0)
+                {
+                    dtRoles = dataRows.CopyToDataTable();
+                }
             }
             else
             {
-                dtRoles = obj.GetAllRoles(userInfo.UserOrganisationID);
+                var dataRows = obj.GetAllRoles(userInfo.UserOrganisationID).Select("IsActive=1"); ;
+
+                if (dataRows.Length > 0)
+                {
+                    dtRoles = dataRows.CopyToDataTable();
+                }
+
             }
 
 
@@ -1241,10 +1332,21 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 dt = USM.GetAllRoles();
+                //var datarow = USM.GetAllRoles().Select("IsActive=1");
+                //if (datarow.Length > 0)
+                //{
+                //    dt = datarow.CopyToDataTable();
+                //}
             }
             else
             {
                 dt = USM.GetAllRoles(userInfo.UserOrganisationID);
+
+                //var datarow = USM.GetAllRoles(userInfo.UserOrganisationID).Select("IsActive=1");
+                //if (datarow.Length > 0)
+                //{
+                //    dt = datarow.CopyToDataTable();
+                //}
             }
 
             foreach (DataRow dr in dt.Rows)
@@ -1296,8 +1398,8 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         strModules.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
                         strModules.Append("<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + item.ID + "'>");
-                        strModules.Append(item.DisplayName);
-
+                        //strModules.Append(item.DisplayName);
+                        strModules.Append("<span>" + item.DisplayName + "</span>");
                         strModules.Append(LoadChildModules(item.ID, ChildModules));
 
                         strModules.Append("</div>");
@@ -1845,12 +1947,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     LogedUserId = Convert.ToString(((DataSet)Session["sessUserAllData"]).Tables[0].Rows[0]["Id"]),
                     IPAddress = Request.UserHostAddress,
                     UrlAccessed = absURL,
-                    UserAgent=userAgent,
+                    UserAgent = userAgent,
                     IsMobileDevice = HttpContext.Request.Browser.IsMobileDevice ? "Mobile" : "Desktop",
-                    Browser = HttpContext.Request.Browser.Browser ,
-                    MACAddress= GetMACID(),
+                    Browser = HttpContext.Request.Browser.Browser,
+                    MACAddress = GetMACID(),
                     Platform = Request.Browser.Platform,
-                    AccessDateTime=DateTime.Now
+                    AccessDateTime = DateTime.Now
                 };
                 aLogger.SetUserActivityLog(aLogger);
                 //var botParser = new BotParser();
@@ -1879,7 +1981,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             M = M + ("-");
                         }
                     }
-                    strMAC= M;
+                    strMAC = M;
                 }
             }
             catch (Exception exx)

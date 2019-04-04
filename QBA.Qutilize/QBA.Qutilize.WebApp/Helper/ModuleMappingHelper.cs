@@ -1,9 +1,6 @@
 ﻿using QBA.Qutilize.WebApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.Helper
 {
