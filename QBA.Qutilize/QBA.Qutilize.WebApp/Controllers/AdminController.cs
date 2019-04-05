@@ -440,7 +440,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
-                    strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
+                    if (Convert.ToBoolean(item["IsActive"]))
+                    {
+                        strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
+
+                    }
+                    else
+                    {
+                        strUserData.Append("<td class='text-center'></td>");
+
+                    }
                     strUserData.Append("</tr>");
 
                 }
@@ -512,7 +521,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     try
                     {
                         obj = model;
-                        obj.EditedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                        obj.EditedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                         obj.EditedDate = DateTime.Now;
                         obj.IsActive = model.IsActive;
 
@@ -528,7 +537,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else
                 {
 
-                    model.CreatedBy = System.Web.HttpContext.Current.Session["ID"]?.ToString();
+                    model.CreatedBy = System.Web.HttpContext.Current.Session["sessUser"]?.ToString();
                     model.CreateDate = DateTime.Now;
 
                     model.IsActive = model.IsActive;
@@ -772,7 +781,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     else
                     {
-                        result = "Success";
+                        result = "Error";
                     }
                 }
             }

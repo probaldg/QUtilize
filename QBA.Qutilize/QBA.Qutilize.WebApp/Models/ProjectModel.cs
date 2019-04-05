@@ -136,7 +136,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Name",model.ProjectName),
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
-                      new SqlParameter("@DeptID", model.DepartmentID),
+                    new SqlParameter("@DeptID", model.DepartmentID),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@IsActive",model.IsActive),

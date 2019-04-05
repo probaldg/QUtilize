@@ -369,25 +369,25 @@
 
         $("#tblGridListViewPost").dataTable();
         $("#ProjectTask_TaskStartDateDisplay").datepicker({
-            dateFormat: "dd/mm/yy",
+          
             autoclose: true
 
         })
 
 
         $("#ProjectTask_ActualTaskStartDateDisplay").datepicker({
-            dateFormat: "dd/mm/yy",
+           
             autoclose: true
 
         })
         $("#ProjectTask_TaskEndDateDisplay").datepicker({
-            dateFormat: "dd/mm/yy",
+          
             autoclose: true
 
         })
 
         $("#ProjectTask_ActualTaskEndDateDisplay").datepicker({
-            dateFormat: "dd/mm/yy",
+            
             autoclose: true
 
         })
@@ -444,10 +444,7 @@
                     success: function (response) {
                         //console.log(response);
                         var obj = JSON.parse(response);
-
-
-
-
+                        
                         if (obj.PercentageComplete.length > 0) {
                             var percentageArray = obj.PercentageComplete;
                             $("#ddlPercentage").html('');
@@ -477,16 +474,17 @@
 
                         $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
                         if (obj.TaskList.length > 0) {
+                            $('#ddlParentTask').attr("disabled", false);
                             var taskList = obj.TaskList;
 
                             for (var i = 0; i < taskList.length; i++) {
-                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInDD_MM_yyyy(new Date(taskList[i].ActualTaskStartDate));
-                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInDD_MM_yyyy(new Date(taskList[i].ActualTaskEndDate).toLocaleDateString());
+                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY(new Date(taskList[i].ActualTaskStartDate));
+                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY(new Date(taskList[i].ActualTaskEndDate).toLocaleDateString());
                                 var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
 
                                 var userListHTML = "<tr><td>" + taskList[i].TaskId + "</td> <td>" + taskList[i].TaskName + "</td> <td>" + taskList[i].ParentTaskName + "</td> <td>" + taskList[i].ProjectName + "</td> <td>" +
-                                    formatDateInDD_MM_yyyy(new Date(taskList[i].TaskStartDate))
-                                    + "</td> <td>" + formatDateInDD_MM_yyyy(new Date(taskList[i].TaskEndDate)) + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
+                                    formatDateInMM_DD_YYYY(new Date(taskList[i].TaskStartDate))
+                                    + "</td> <td>" + formatDateInMM_DD_YYYY(new Date(taskList[i].TaskEndDate)) + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
                                     "</td> <td>" + taskList[i].TaskStatusName + "</td><td>" + activeStatus +
                                     "</td><td><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + taskList[i].TaskId + ")'>Edit</a></td>"
                                 $('#tblTasklist tbody').append(userListHTML);
@@ -496,6 +494,7 @@
                         }
                         else {
                             $('#tblTasklist tbody').html('');
+                            $('#ddlParentTask').attr("disabled", "disabled");
                         }
 
                         $("#ddlUsersAssigned").html('')
@@ -534,10 +533,6 @@
                             });
 
                         }
-
-
-
-
 
                         $('#tblTasklist').dataTable();
 
@@ -612,6 +607,7 @@
                     if (response == "Success") {
 
                         $('#divTaskSaveSuccess').css('display', 'block');
+                        response = null;
                         clearAllTaskControls();
                         ShowTaskPopup(projectID);
                     } else {
@@ -666,7 +662,23 @@
 
 
         function EditProjectTask(taskID) {
-           // alert('task is :'+ taskID);
+          
+            var taskid = taskID;
+
+            if ($("#ddlParentTask option").length <= 2) {
+                $("#ddlParentTask option").attr("disabled", "disabled");
+            } else {
+                $("#ddlParentTask option").each(function (i) {
+
+                    if ($(this).val() == taskID) {
+                        $(this).attr("disabled", "disabled");
+                    }
+                    else {
+                        $(this).attr("disabled", false);
+                    }
+                })
+            }
+           
             var position = $('#divForm').position();
             $("#myModalForTask").scrollTop(position.top);
              $.ajax({
@@ -686,20 +698,21 @@
                      $('#ProjectTask_TaskCode').val(taskObj.TaskCode);
 
                      $('#ddlParentTask').val(taskObj.ParentTaskId)
-                     $('#ProjectTask_TaskStartDateDisplay').val(formatDateInDD_MM_yyyy(taskObj.TaskStartDate));
-                     $('#ProjectTask_TaskEndDateDisplay').val(formatDateInDD_MM_yyyy(taskObj.TaskEndDate));
+                     
+                     $('#ProjectTask_TaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskStartDate));
+                     $('#ProjectTask_TaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskEndDate));
 
                      $('#ddlPercentage').val(taskObj.CompletePercent);
 
 
                      if (taskObj.ActualTaskStartDate != null) {
-                         $('#ProjectTask_ActualTaskStartDateDisplay').val(formatDateInDD_MM_yyyy(taskObj.ActualTaskStartDate));
+                         $('#ProjectTask_ActualTaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.ActualTaskStartDate));
                      }
                      else {
                          $('#ProjectTask_ActualTaskStartDateDisplay').val('');
                      }
                      if (taskObj.ActualTaskEndDate != null) {
-                         $('#ProjectTask_ActualTaskEndDateDisplay').val(formatDateInDD_MM_yyyy(taskObj.ActualTaskEndDate));
+                         $('#ProjectTask_ActualTaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.ActualTaskEndDate));
                      }
                      else {
                          $('#ProjectTask_ActualTaskEndDateDisplay').val('');
@@ -746,7 +759,7 @@
         //    $("#ddlUsersAssigned").multiselect('reload');
         //}
 
-        function formatDateInDD_MM_yyyy(yourUnformattedDate) {
+        function formatDateInMM_DD_YYYY(yourUnformattedDate) {
             var formattedDate = new Date(yourUnformattedDate);
             var day = formattedDate.getDate();
             var month = formattedDate.getMonth();
@@ -758,11 +771,12 @@
             if (month < 10) {
                 month = "0" + month;
             }
-            return (day + "/" + month + "/" + year);
-
+           // return (day + "/" + month + "/" + year);
+            return (month + "/" + day + "/" + year);
 
         }
         function clearAllTaskControls() {
+            $('#ProjectTask_TaskId').val('');
             $('#ProjectTask_TaskName').val('');
             $('#ProjectTask_TaskCode').val('');
             $('#ProjectTask_TaskStartDateDisplay').val('');
@@ -831,14 +845,24 @@
                 else {
                     //validation for lesser end date
 
-                    var splitstartDate = startDate.split('/');
-                    var startdateFormat = splitstartDate[1] + '/' + splitstartDate[0] + '/' + splitstartDate[2];
-                    var start = new Date(startdateFormat);
+                    //var splitstartDate = startDate.split('/');
+                    //var startdateFormat = splitstartDate[0] + '/' + splitstartDate[1] + '/' + splitstartDate[2];
+                    //var start = new Date(startdateFormat);
 
 
-                    var splitEndtDate = endDate.split('/');
-                    var enddateFormat = splitEndtDate[1] + '/' + splitEndtDate[0] + '/' + splitEndtDate[2];
-                    var end = new Date(enddateFormat);
+                    //var splitEndtDate = endDate.split('/');
+                    //var enddateFormat = splitEndtDate[0] + '/' + splitEndtDate[1] + '/' + splitEndtDate[2];
+                    //var end = new Date(enddateFormat);
+
+                    var startmonthfield = startDate.split("/")[0]
+                    var startdayfield = startDate.split("/")[1]
+                    var startyearfield = startDate.split("/")[2]
+                    var start = new Date(startyearfield, startmonthfield - 1, startdayfield)
+
+                    var endmonthfield = endDate.split("/")[0]
+                    var enddayfield = endDate.split("/")[1]
+                    var endyearfield = endDate.split("/")[2]
+                    var end = new Date(endyearfield, endmonthfield - 1, enddayfield)
 
                     if (start > end) {
                         ShowTaskErrorMessage('End time can not be less than start time..')
@@ -869,18 +893,33 @@
                 }
                 else {
 
-                    var splitStartDate = startDate.split('/');
-                    var startdateFormat = splitStartDate[1] + '/' + splitStartDate[0] + '/' + splitStartDate[2];
-                    var start = new Date(startdateFormat);
-
-                    var splitActualStartDate = actualStartDate.split('/');
-                    var ActualstartdateFormat = splitActualStartDate[1] + '/' + splitActualStartDate[0] + '/' + splitActualStartDate[2];
+                    //var splitStartDate = startDate.split('/');
+                    //var startdateFormat = splitStartDate[1] + '/' + splitStartDate[0] + '/' + splitStartDate[2];
                     //var start = new Date(startdateFormat);
-                    var actualStart = new Date(ActualstartdateFormat);
 
-                    var splitActualEndDate = actualEndDate.split('/');
-                    var ActualEnddateFormat = splitActualEndDate[1] + '/' + splitActualEndDate[0] + '/' + splitActualEndDate[2];
-                    var actualEnd = new Date(ActualEnddateFormat);
+                    //var splitActualStartDate = actualStartDate.split('/');
+                    //var ActualstartdateFormat = splitActualStartDate[1] + '/' + splitActualStartDate[0] + '/' + splitActualStartDate[2];
+                    ////var start = new Date(startdateFormat);
+                    //var actualStart = new Date(ActualstartdateFormat);
+
+                    //var splitActualEndDate = actualEndDate.split('/');
+                    //var ActualEnddateFormat = splitActualEndDate[1] + '/' + splitActualEndDate[0] + '/' + splitActualEndDate[2];
+                    //var actualEnd = new Date(ActualEnddateFormat);
+
+                    var startmonthfield = startDate.split("/")[0]
+                    var startdayfield = startDate.split("/")[1]
+                    var startyearfield = startDate.split("/")[2]
+                    var start = new Date(startyearfield, startmonthfield - 1, startdayfield)
+
+                    var actualStartmonthfield = actualStartDate.split("/")[0]
+                    var actualStartdayfield = actualStartDate.split("/")[1]
+                    var actualStartyearfield = actualStartDate.split("/")[2]
+                    var actualStart = new Date(actualStartyearfield, actualStartmonthfield - 1, actualStartdayfield)
+
+                    var actualEndmonthfield = actualEndDate.split("/")[0]
+                    var actualEnddayfield = actualEndDate.split("/")[1]
+                    var actualEndyearfield = actualEndDate.split("/")[2]
+                    var actualEnd = new Date(actualEndyearfield, actualEndmonthfield - 1, actualEnddayfield)
 
                     if (actualStart > actualEnd || start > actualEnd) {
                         ShowTaskErrorMessage('Actual end time can not be less than actual start time/Start time..')
@@ -1064,8 +1103,27 @@
 
 
         function validateDate(date) {
-            var dateRegex = /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
-            return dateRegex.test(date);
+          
+            var validformat = /^\d{2}\/\d{2}\/\d{4}$/ //Basic check for format validity
+            var returnval = false
+            if (!validformat.test(date)) {
+              
+                returnval = false;
+            }
+            else { //Detailed check for valid date ranges
+                var monthfield = date.split("/")[0]
+                var dayfield = date.split("/")[1]
+                var yearfield = date.split("/")[2]
+                var dayobj = new Date(yearfield, monthfield - 1, dayfield)
+                if ((dayobj.getMonth() + 1 != monthfield) ||
+                    (dayobj.getDate() != dayfield) || (dayobj.getFullYear() != yearfield))
+                   
+                    returnval = false;
+                else
+                    returnval = true
+            }
+         
+            return returnval
         }
 
 
