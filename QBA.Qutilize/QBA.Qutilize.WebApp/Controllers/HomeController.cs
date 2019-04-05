@@ -219,7 +219,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 LoginViewModel lvm = new LoginViewModel();
                 DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate);
-                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) || (ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0) || (ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0) || (ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)))
                 {
                     Session.Add("DashBoardDetail", ds);
                 }
@@ -243,6 +243,69 @@ namespace QBA.Qutilize.WebApp.Controllers
             { }
             return Content(sbOut.ToString());
         }
+
+        public ActionResult GetTableForDaywisedetailsinMinuteForAdmin()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>User Wise details in minute:</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableuserWiseDetailsInMinutes' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>Employee</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Total Hours(HH:MM:SS)</th><th style='display: none;'>Total Sec</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
+                
+                for(int i = 0; i < ds.Tables[3].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[3].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["hms"] + "</span></td><td style='display: none;'>" + ds.Tables[3].Rows[i]["totalSec"] + "</td>");
+                    sbContent.Append("</tr>");
+                }
+                
+                
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
+            return Content(sbContent.ToString());
+        }
+
+        public ActionResult GetTableForDaywisedetailsinMinuteForPM()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>User Wise details in minute:</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableuserWiseDetailsInMinutesForPM' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>Employee</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Total Hours(HH:MM:SS)</th><th style='display: none;'>Total Sec</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
+
+                for (int i = 0; i < ds.Tables[2].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[2].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[2].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + ds.Tables[2].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>" + ds.Tables[2].Rows[i]["hms"] + "</span></td><td style='display: none;'>" + ds.Tables[2].Rows[i]["totalSec"] + "</td>");
+                    sbContent.Append("</tr>");
+                }
+
+
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
+            return Content(sbContent.ToString());
+        }
+
         public JsonResult BarChartData()
         {
             Chart _chart = new Chart();
