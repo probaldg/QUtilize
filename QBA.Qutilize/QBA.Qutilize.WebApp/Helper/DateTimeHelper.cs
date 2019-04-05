@@ -9,19 +9,13 @@ namespace QBA.Qutilize.WebApp.Helper
             DateTime date = new DateTime();
             if (date != null)
             {
-                if (DateTime.TryParse(strDate, out DateTime dateTimeConverted))
-                {
-                    date = dateTimeConverted;
-                }
-                else
-                {
-                    strDate.Replace('-', '/');
-                    var stringDateArray = strDate.Split('/');
+                var stringDateArray = strDate.Split('/');
+                var monthPart = Convert.ToInt16(stringDateArray[0]);
+                var dayPart = Convert.ToInt16(stringDateArray[1]);
+                var yearPart = Convert.ToInt32(stringDateArray[2]);
 
-                    var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
-                    DateTime newDate = Convert.ToDateTime(newBirthDayString);
-                    date = newDate;
-                }
+                date = new DateTime(yearPart, monthPart, dayPart);
+
             }
 
             return date;
