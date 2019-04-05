@@ -83,7 +83,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string OrganisationName { get; set; }
         public string ProjectName { get; set; }
 
-        //public string OrgName_UserNameForCombo { get; set; }
+        public string OrgName_UserNameForCombo { get; set; }
 
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();

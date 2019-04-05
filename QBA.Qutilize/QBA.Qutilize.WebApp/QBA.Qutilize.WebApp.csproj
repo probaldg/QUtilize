@@ -182,6 +182,7 @@
     <Compile Include="Helper\UserInfoHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
+    <Compile Include="Models\ClientModel.cs" />
     <Compile Include="Models\DailyTaskModel.cs" />
     <Compile Include="Models\DailyTaskViewModel.cs" />
     <Compile Include="Models\DepartmentModel.cs" />

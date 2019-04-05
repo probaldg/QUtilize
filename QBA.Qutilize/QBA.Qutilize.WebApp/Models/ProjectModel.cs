@@ -19,10 +19,18 @@ namespace QBA.Qutilize.WebApp.Models
         public int MaxProjectTimeInHours { get; set; } = 8;
         public int DepartmentID { get; set; }
         public int PMUserID { get; set; }
-
+        public int ClientD { get; set; }
         [Display(Name = "Department List")]
         public List<DepartmentModel> DepartmentList { get; set; }
 
+
+        [Display(Name = "Manager List")]
+        public List<UserModel> UserList { get; set; }
+
+        [Display(Name = "Client List")]
+        public List<ClientModel> ClientList { get; set; }
+
+        public int ManagerID { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
@@ -41,6 +49,7 @@ namespace QBA.Qutilize.WebApp.Models
         public ProjectModel()
         {
             DepartmentList = new List<DepartmentModel>();
+            UserList = new List<UserModel>();
         }
         public DataTable GetAllProjects(int orgId = 0)
         {
@@ -91,6 +100,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Description",model.Description),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),
+                    new SqlParameter("@ManagerID", model.PMUserID),
+                    new SqlParameter("@ClientID", model.ClientD),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
                     new SqlParameter("@IsActive",model.IsActive),
@@ -137,13 +148,25 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),
+                    new SqlParameter("@ManagerID", model.PMUserID),
+                    new SqlParameter("@ClientID", model.ClientD),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@IsActive",model.IsActive),
                     new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Update]", param);
-                result = true;
+                if (dt != null)
+                {
+
+                    result = true;
+                }
+                else
+                {
+
+                    result = false;
+                }
+
             }
             catch (Exception ex)
             {
@@ -178,7 +201,9 @@ namespace QBA.Qutilize.WebApp.Models
                         department.DepartmentID = Convert.ToInt32(item["ID"]);
                         department.OrganisationName = item["OrganisationName"].ToString();
                         department.Name = item["NAME"].ToString();
-                        department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        department.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["NAME"].ToString();
+
                         departments.Add(department);
                     }
                 }
@@ -189,5 +214,83 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return departments;
         }
+
+
+        public List<UserModel> GetManagers(int orgID = 0)
+        {
+            DataTable dt = null;
+            List<UserModel> userModelsList = new List<UserModel>();
+            try
+            {
+                if (orgID != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgID)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]");
+
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        UserModel user = new UserModel();
+                        user.ID = Convert.ToInt32(item["Id"]);
+                        user.OrganisationName = item["orgname"].ToString();
+                        user.Name = item["Name"].ToString();
+                        user.OrgName_UserNameForCombo = item["orgname"].ToString() + "-" + item["Name"].ToString();
+                        userModelsList.Add(user);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return userModelsList;
+        }
+
+        public List<ClientModel> GetClients(int orgID = 0)
+        {
+            DataTable dt = null;
+            List<ClientModel> clientsList = new List<ClientModel>();
+            try
+            {
+                if (orgID != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgID)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPtblMasterClient_Get]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPtblMasterClient_Get]");
+
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        ClientModel client = new ClientModel();
+                        client.ClientID = Convert.ToInt32(item["ClientID"]);
+                        client.OrganisationName = item["orgname"].ToString();
+                        client.ClientName = item["ClientName"].ToString();
+                        client.OrgName_ClientNameForCombo = item["orgname"].ToString() + "-" + item["ClientName"].ToString();
+                        clientsList.Add(client);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return clientsList;
+        }
+
     }
 }
