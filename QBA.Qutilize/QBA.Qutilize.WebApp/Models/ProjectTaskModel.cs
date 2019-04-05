@@ -193,6 +193,9 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ParentTaskID", model.ParentTaskId),
                     new SqlParameter("@TaskStartDate",model.TaskStartDate),
                     new SqlParameter("@TaskEndDate",model.TaskEndDate),
+
+                     new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate != null? model.ActualTaskStartDate: null),
+                    new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate!= null?model.ActualTaskEndDate:null),
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@isACTIVE",model.IsActive),
