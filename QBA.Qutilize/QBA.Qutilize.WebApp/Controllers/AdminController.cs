@@ -471,12 +471,22 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             if (userInfo.IsRoleSysAdmin)
             {
-                obj.DepartmentList = obj.GetDepartments();
+                obj.DepartmentList = obj.GetDepartments().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.UserList = obj.GetManagers().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+
+                UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
+                obj.UserList.Remove(sysAdmin);
+
+                obj.ClientList = obj.GetClients().OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
             }
             else
             {
                 obj.DepartmentList = obj.GetDepartments(userInfo.UserOrganisationID);
+                obj.UserList = obj.GetManagers(userInfo.UserOrganisationID).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.ClientList = obj.GetClients(userInfo.UserOrganisationID).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
+
             }
+
             if (ID > 0)
             {
                 try
@@ -486,7 +496,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ProjectID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
-                    if (dt.Rows[0]["DepartmentID"] != null)
+                    if (dt.Rows[0]["PMUserID"] != System.DBNull.Value)
+                    {
+                        obj.PMUserID = Convert.ToInt32(dt.Rows[0]["PMUserID"]);
+                    }
+                    else
+                    {
+                        obj.PMUserID = 0;
+                    }
+                    if (dt.Rows[0]["ClientID"] != System.DBNull.Value)
+                    {
+                        obj.ClientD = Convert.ToInt32(dt.Rows[0]["ClientID"]);
+                    }
+                    else
+                    {
+                        obj.ClientD = 0;
+                    }
+                    // obj.ClientD = Convert.ToInt32(dt.Rows[0]["ClientID"]);
+                    if (dt.Rows[0]["DepartmentID"] != System.DBNull.Value)
                     {
                         obj.DepartmentID = Convert.ToInt32(dt.Rows[0]["DepartmentID"]);
 
@@ -525,9 +552,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                         obj.EditedDate = DateTime.Now;
                         obj.IsActive = model.IsActive;
 
-                        obj.Update_ProjectDetails(obj);
+                        bool result = obj.Update_ProjectDetails(obj);
+                        if (result)
+                        {
+                            obj.ISErr = false;
+                            obj.ErrString = "Data Saved Successfully!!!";
+                            TempData["ErrStatus"] = obj.ErrString.ToString();
+                        }
+                        else
+                        {
+                            obj.ISErr = true;
+                            obj.ErrString = "Error occured!!!";
+                        }
 
-                        TempData["ErrStatus"] = obj.ISErr.ToString();
+
                     }
                     catch
                     {

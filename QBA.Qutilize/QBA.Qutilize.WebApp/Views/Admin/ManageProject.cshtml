@@ -337,6 +337,21 @@
             </div>
 
             <div class="form-group">
+                @Html.LabelFor(model => model.UserList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.UserList, new SelectList(Model.UserList, "ID", "OrgName_UserNameForCombo"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.PMUserID)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.ClientList, new SelectList(Model.ClientList, "ClientID", "OrgName_ClientNameForCombo"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.ClientD)
+                </div>
+            </div>
+
+            <div class="form-group">
                 @Html.LabelFor(model => model.MaxProjectTimeInHours, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control" } })
@@ -396,6 +411,14 @@
             $('#DepartmentList').val(DeptId);
         }
 
+        var managerId = $('#PMUserID').val();
+        if (managerId > 0) {
+            $('#UserList').val(managerId);
+        }
+        var clientID = $('#ClientD').val();
+        if (clientID > 0) {
+            $('#ClientList').val(clientID);
+        }
         function checkUserForm() {
 
             var ProjectName = document.getElementById("ProjectName").value;
@@ -422,14 +445,25 @@
         }
 
         $("#DepartmentList").change(function () {
-            //alert($("#DepartmentList").val());
+           
             var departmentId = $("#DepartmentList").val();
 
             $('#DepartmentID').val(departmentId);
 
         });
+        $("#UserList").change(function () {
+            var managerID = $("#UserList").val();
+            $('#PMUserID').val(managerID);
 
+        });
 
+        $("#ClientList").change(function () {
+            //alert($("#DepartmentList").val());
+            var clientID = $("#ClientList").val();
+
+            $('#ClientD').val(clientID);
+
+        });
         function ShowTaskPopup(projectId) {
 
             $('#SelectedProjectId').val(projectId);
@@ -478,8 +512,8 @@
                             var taskList = obj.TaskList;
 
                             for (var i = 0; i < taskList.length; i++) {
-                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY(new Date(taskList[i].ActualTaskStartDate));
-                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY(new Date(taskList[i].ActualTaskEndDate).toLocaleDateString());
+                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
+                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
                                 var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
 
                                 var userListHTML = "<tr><td>" + taskList[i].TaskId + "</td> <td>" + taskList[i].TaskName + "</td> <td>" + taskList[i].ParentTaskName + "</td> <td>" + taskList[i].ProjectName + "</td> <td>" +
