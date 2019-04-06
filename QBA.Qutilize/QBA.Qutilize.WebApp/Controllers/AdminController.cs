@@ -471,7 +471,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             if (userInfo.IsRoleSysAdmin)
             {
-                obj.DepartmentList = obj.GetDepartments();
+                obj.DepartmentList = obj.GetDepartments().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.UserList = obj.GetManagers().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
 
                 UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
