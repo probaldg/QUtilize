@@ -30,8 +30,16 @@ namespace QBA.Qutilize.DataAccess.DAL
         public Nullable<System.DateTime> EditedDate { get; set; }
         public bool IsActive { get; set; }
         public Nullable<int> MaxProjectTimeInHours { get; set; }
+        public string ProjectCode { get; set; }
+        public Nullable<int> DeptID { get; set; }
+        public Nullable<int> PMUserID { get; set; }
+        public Nullable<int> SPOCID { get; set; }
+        public Nullable<int> ClientID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
+        public virtual Project Projects1 { get; set; }
+        public virtual Project Project1 { get; set; }
+        public virtual User User { get; set; }
     }
 }

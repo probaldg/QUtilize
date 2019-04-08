@@ -14,20 +14,28 @@
           <Property Name="ProjectID" Type="int" Nullable="false" />
           <Property Name="StartDateTime" Type="datetime" Nullable="false" />
           <Property Name="EndDateTime" Type="datetime" />
+          <Property Name="TaskName" Type="nvarchar" MaxLength="500" />
+          <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="EditedBy" Type="nvarchar(max)" />
           <Property Name="EditedDate" Type="datetime" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="TaskDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Projects">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectCode" Type="varchar" MaxLength="50" />
           <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" />
           <Property Name="ParentProjectId" Type="int" />
+          <Property Name="DeptID" Type="int" />
+          <Property Name="PMUserID" Type="int" />
+          <Property Name="SPOCID" Type="int" />
+          <Property Name="ClientID" Type="int" />
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="EditedBy" Type="nvarchar(max)" />
@@ -47,6 +55,7 @@
           <Property Name="EditedBy" Type="nvarchar(max)" />
           <Property Name="EditedDate" Type="datetime" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="OrgId" Type="int" />
         </EntityType>
         <EntityType Name="UserProjects">
           <Key>
@@ -71,7 +80,18 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Password" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="UserCode" Type="nvarchar" MaxLength="200" />
           <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Designation" Type="nvarchar" MaxLength="200" />
+          <Property Name="managerID" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="50" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="25" />
+          <Property Name="AlternateConatctNo" Type="nvarchar" MaxLength="25" />
+          <Property Name="whatsappNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="BirthDate" Type="date" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="AnniversaryDate" Type="date" />
+          <Property Name="SkypeID" Type="nvarchar" MaxLength="100" />
           <Property Name="CreatedBy" Type="nvarchar(max)" />
           <Property Name="CreateDate" Type="datetime" Nullable="false" />
           <Property Name="EditedBy" Type="nvarchar(max)" />
@@ -134,6 +154,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Projects_Projects">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="Projects1" Type="Self.Projects" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects1">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Projects_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="PMUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="USP_Dashboard_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserID" Type="int" Mode="In" />
           <Parameter Name="StartDate" Type="date" Mode="In" />
@@ -144,7 +188,7 @@
         </Function>
         <Function Name="USPDailyTask_UpdateEndTaskTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="DailyTaskId" Type="int" Mode="In" />
-          <Parameter Name="StartDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="EndDateTime" Type="datetime" Mode="In" />
         </Function>
         <Function Name="USPDailyTasks_InsertTaskStartTime" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserID" Type="int" Mode="In" />
@@ -180,6 +224,14 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="UserProjects" EntitySet="UserProjects" />
           </AssociationSet>
+          <AssociationSet Name="FK_Projects_Projects" Association="Self.FK_Projects_Projects">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="Projects1" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Projects_Users" Association="Self.FK_Projects_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -199,6 +251,9 @@
           <Property Name="EditedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EditedDate" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="TaskName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TaskDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Project">
           <Key>
@@ -215,6 +270,14 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.UserProjects" FromRole="Projects" ToRole="Users" />
           <Property Name="MaxProjectTimeInHours" Type="Int32" />
+          <Property Name="ProjectCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DeptID" Type="Int32" />
+          <Property Name="PMUserID" Type="Int32" />
+          <Property Name="SPOCID" Type="Int32" />
+          <Property Name="ClientID" Type="Int32" />
+          <NavigationProperty Name="Projects1" Relationship="DB_A05603_qUtilizeModel.FK_Projects_Projects" FromRole="Project" ToRole="Project1" />
+          <NavigationProperty Name="Project1" Relationship="DB_A05603_qUtilizeModel.FK_Projects_Projects" FromRole="Project1" ToRole="Project" />
+          <NavigationProperty Name="User" Relationship="DB_A05603_qUtilizeModel.FK_Projects_Users" FromRole="Project" ToRole="User" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -229,6 +292,7 @@
           <Property Name="EditedDate" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="Self.UserRoles" FromRole="Roles" ToRole="Users" />
+          <Property Name="OrgId" Type="Int32" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -245,6 +309,18 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Projects" Relationship="Self.UserProjects" FromRole="Users" ToRole="Projects" />
           <NavigationProperty Name="Roles" Relationship="Self.UserRoles" FromRole="Users" ToRole="Roles" />
+          <Property Name="UserCode" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Designation" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="managerID" Type="Int32" />
+          <Property Name="EmailId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNo" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="AlternateConatctNo" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="whatsappNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="AnniversaryDate" Type="DateTime" Precision="0" />
+          <Property Name="SkypeID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Projects1" Relationship="DB_A05603_qUtilizeModel.FK_Projects_Users" FromRole="User" ToRole="Project" />
         </EntityType>
         <Association Name="UserProjects">
           <End Role="Projects" Type="Self.Project" Multiplicity="*" />
@@ -269,7 +345,7 @@
           </AssociationSet>
           <FunctionImport Name="USPDailyTask_UpdateEndTaskTime">
             <Parameter Name="DailyTaskId" Mode="In" Type="Int32" />
-            <Parameter Name="StartDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDateTime" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="USPDailyTasks_InsertTaskStartTime" ReturnType="Collection(Decimal)">
             <Parameter Name="UserID" Mode="In" Type="Int32" />
@@ -290,6 +366,14 @@
           <FunctionImport Name="USPDailyTask_Get">
           <Parameter Name="DailyTaskID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <AssociationSet Name="FK_Projects_Projects" Association="DB_A05603_qUtilizeModel.FK_Projects_Projects">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="Project1" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Projects_Users" Association="DB_A05603_qUtilizeModel.FK_Projects_Users">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Project" EntitySet="Projects" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="USPUsers_Get_Result">
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="200" />
@@ -314,6 +398,30 @@
           <Property Type="Int32" Name="totalSec" Nullable="true" />
           <Property Type="String" Name="hms" Nullable="true" MaxLength="17" />
         </ComplexType>
+        <Association Name="FK_Projects_Projects">
+          <End Type="DB_A05603_qUtilizeModel.Project" Role="Project" Multiplicity="1" />
+          <End Type="DB_A05603_qUtilizeModel.Project" Role="Project1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Project1">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Projects_Users">
+          <End Type="DB_A05603_qUtilizeModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="DB_A05603_qUtilizeModel.Project" Role="Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Project">
+              <PropertyRef Name="PMUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -323,6 +431,9 @@
           <EntitySetMapping Name="DailyTasks">
             <EntityTypeMapping TypeName="DB_A05603_qUtilizeModel.DailyTask">
               <MappingFragment StoreEntitySet="DailyTasks">
+                <ScalarProperty Name="TaskDate" ColumnName="TaskDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="TaskName" ColumnName="TaskName" />
                 <ScalarProperty Name="DailyTaskId" ColumnName="DailyTaskId" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
@@ -339,6 +450,11 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="DB_A05603_qUtilizeModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="SPOCID" ColumnName="SPOCID" />
+                <ScalarProperty Name="PMUserID" ColumnName="PMUserID" />
+                <ScalarProperty Name="DeptID" ColumnName="DeptID" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
                 <ScalarProperty Name="MaxProjectTimeInHours" ColumnName="MaxProjectTimeInHours" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -355,6 +471,7 @@
           <EntitySetMapping Name="Roles">
             <EntityTypeMapping TypeName="DB_A05603_qUtilizeModel.Role">
               <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="OrgId" ColumnName="OrgId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -369,6 +486,17 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DB_A05603_qUtilizeModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="SkypeID" ColumnName="SkypeID" />
+                <ScalarProperty Name="AnniversaryDate" ColumnName="AnniversaryDate" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="whatsappNo" ColumnName="whatsappNo" />
+                <ScalarProperty Name="AlternateConatctNo" ColumnName="AlternateConatctNo" />
+                <ScalarProperty Name="PhoneNo" ColumnName="PhoneNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="managerID" ColumnName="managerID" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="UserCode" ColumnName="UserCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

@@ -11,6 +11,8 @@
         <EntityTypeShape EntityType="DB_A05603_qUtilizeModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="DB_A05603_qUtilizeModel.UserProjects" ManuallyRouted="false" />
         <AssociationConnector Association="DB_A05603_qUtilizeModel.UserRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_A05603_qUtilizeModel.FK_Projects_Projects" />
+        <AssociationConnector Association="DB_A05603_qUtilizeModel.FK_Projects_Users" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
