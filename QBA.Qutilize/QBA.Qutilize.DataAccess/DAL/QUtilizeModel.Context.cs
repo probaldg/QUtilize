@@ -32,20 +32,20 @@ namespace QBA.Qutilize.DataAccess.DAL
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
     
-        public virtual int USPDailyTask_UpdateEndTaskTime(Nullable<int> dailyTaskId, Nullable<System.DateTime> endDateTime)
+        public virtual int USPDailyTask_UpdateEndTaskTime(Nullable<int> dailyTaskId, string endDateTime)
         {
             var dailyTaskIdParameter = dailyTaskId.HasValue ?
                 new ObjectParameter("DailyTaskId", dailyTaskId) :
                 new ObjectParameter("DailyTaskId", typeof(int));
     
-            var endDateTimeParameter = endDateTime.HasValue ?
+            var endDateTimeParameter = endDateTime != null ?
                 new ObjectParameter("EndDateTime", endDateTime) :
-                new ObjectParameter("EndDateTime", typeof(System.DateTime));
+                new ObjectParameter("EndDateTime", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("USPDailyTask_UpdateEndTaskTime", dailyTaskIdParameter, endDateTimeParameter);
         }
     
-        public virtual ObjectResult<Nullable<decimal>> USPDailyTasks_InsertTaskStartTime(Nullable<int> userID, Nullable<int> projectId, Nullable<System.DateTime> startDateTime, string createdby, Nullable<bool> isActive)
+        public virtual ObjectResult<Nullable<decimal>> USPDailyTasks_InsertTaskStartTime(Nullable<int> userID, Nullable<int> projectId, string startDateTime, string createdby, Nullable<bool> isActive)
         {
             var userIDParameter = userID.HasValue ?
                 new ObjectParameter("UserID", userID) :
@@ -55,9 +55,9 @@ namespace QBA.Qutilize.DataAccess.DAL
                 new ObjectParameter("ProjectId", projectId) :
                 new ObjectParameter("ProjectId", typeof(int));
     
-            var startDateTimeParameter = startDateTime.HasValue ?
+            var startDateTimeParameter = startDateTime != null ?
                 new ObjectParameter("StartDateTime", startDateTime) :
-                new ObjectParameter("StartDateTime", typeof(System.DateTime));
+                new ObjectParameter("StartDateTime", typeof(string));
     
             var createdbyParameter = createdby != null ?
                 new ObjectParameter("Createdby", createdby) :
