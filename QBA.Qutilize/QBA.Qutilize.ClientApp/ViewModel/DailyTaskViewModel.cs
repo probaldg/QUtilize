@@ -3,8 +3,9 @@ using QBA.Qutilize.ClientApp.Views;
 using QBA.Qutilize.Models;
 using System;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -412,8 +413,55 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
         }
 
-        private async void UpdateCurrentTask()
+        //private async void UpdateCurrentTask()
+        //{
+        //    try
+        //    {
+        //        if (CurrentWorkingProject != null)
+        //        {
+        //            DailyTaskModel dtm = new DailyTaskModel
+        //            {
+        //                DailyTaskId = CurrentWorkingProject.DailyTaskId,
+        //                ProjectId = CurrentWorkingProject.ProjectID,
+        //                UserId = User.ID,
+        //                StartTime = CurrentWorkingProject.StartDateTime,
+        //                EndTime = CurrentWorkingProject.EndDateTime
+        //            };
+
+        //            Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
+        //            int response = 0;
+        //            await Task.Run(() =>
+        //            {
+        //                response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+
+        //            });
+
+        //            Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
+        //            if (response > 0)
+        //            {
+        //                CurrentWorkingProject = null;
+
+        //                SetNewCurrentProjectAndInsertStartTime(ProjectListViewViewModel.SelectedProject);
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("Some error occured..");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Log("UpdateCurrentTask", "Error", ex.ToString());
+        //        MessageBox.Show("Some error occured.");
+        //        // throw ex;
+        //    }
+        //}
+
+
+        private void UpdateCurrentTask()
         {
+            string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+            SqlConnection sqlCon = new SqlConnection(conStr);
             try
             {
                 if (CurrentWorkingProject != null)
@@ -429,13 +477,26 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
                     int response = 0;
-                    await Task.Run(() =>
+                    //await Task.Run(() =>
+                    //{
+                    //    response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+
+                    //});
+
+                    //Update new code
+                    var sqlCmd = new SqlCommand("USPDailyTask_UpdateEndTaskTime", sqlCon)
                     {
-                        response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                        CommandType = System.Data.CommandType.StoredProcedure
+                    };
 
-                    });
+                    sqlCmd.Parameters.AddWithValue("@DailyTaskId", dtm.DailyTaskId);
+                    sqlCmd.Parameters.AddWithValue("@EndDateTime", dtm.EndTime);
 
-                    Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
+                    sqlCon.Open();
+                    response = sqlCmd.ExecuteNonQuery();
+                    sqlCon.Close();
+
+                    // Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
                     if (response > 0)
                     {
                         CurrentWorkingProject = null;
@@ -452,10 +513,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 Logger.Log("UpdateCurrentTask", "Error", ex.ToString());
                 MessageBox.Show("Some error occured.");
+                sqlCon.Close();
                 // throw ex;
             }
         }
-
         private void SetNewCurrentProjectAndInsertStartTime(Project selectedProject)
         {
             try
@@ -590,6 +651,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             if (CurrentWorkingProject == null)
                 return;
+            string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+            SqlConnection sqlCon = new SqlConnection(conStr);
+
 
             DailyTaskModel dtm = new DailyTaskModel
             {
@@ -602,18 +666,49 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 Logger.Log("InsertProjectStartTime", "Info", "Calling insert start time API");
 
 
-                var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
+                //  var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
+                DataTable dt = new DataTable();
 
-                Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");
-                if (response != null)
+                //SqlConnection sqlCon = new SqlConnection(conStr);
+                var sqlCmd = new SqlCommand("USPDailyTasks_InsertTaskStartTime", sqlCon)
                 {
-                    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                sqlCmd.Parameters.AddWithValue("@UserID", dtm.UserId);
+                sqlCmd.Parameters.AddWithValue("@ProjectId", dtm.ProjectId);
+                sqlCmd.Parameters.AddWithValue("@StartDateTime", dtm.StartTime);
+                sqlCmd.Parameters.AddWithValue("@Createdby", dtm.UserId.ToString());
+                sqlCmd.Parameters.AddWithValue("@IsActive", true);
+                sqlCon.Open();
+                SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
+                da.Fill(dt);
+
+                sqlCon.Close();
+                if (dt.Rows.Count > 0)
+                {
+                    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(dt.Rows[0]["DailyTaskId"]);
+
                 }
+                else
+                {
+                    CurrentWorkingProject.DailyTaskId = 0;
+
+                }
+
+
+                //Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");
+                //if (response != null)
+                //{
+                //    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
+                //}
             }
             catch (Exception ex)
             {
                 Logger.Log("InsertProjectStartTime", "Error", ex.ToString());
+                sqlCon.Close();
                 throw ex;
+
+
             }
 
         }
