@@ -2,7 +2,6 @@
 using QBA.Qutilize.DataAccess.DAL;
 using QBA.Qutilize.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -31,7 +30,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
             try
             {
 
-                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, dailyTaskModel.StartTime, dailyTaskModel.UserId.ToString(), true).ToList();
+                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, dailyTaskModel.StartTime.ToString(), dailyTaskModel.UserId.ToString(), true).ToList();
 
                 _dbContext.SaveChanges();
                 if (queryResult != null && queryResult.Count > 0)
@@ -61,7 +60,7 @@ namespace QBA.Qutilize.WebAPI.Controllers
             int queryResult;
             try
             {
-                queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, dailyTaskModel.EndTime);
+                queryResult = _dbContext.USPDailyTask_UpdateEndTaskTime(dailyTaskModel.DailyTaskId, dailyTaskModel.EndTime.ToString());
                 _dbContext.SaveChanges();
             }
             catch (System.Exception ex)
