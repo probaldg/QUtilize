@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -320,6 +321,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         public void LogoutUser()
         {
+            string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+            SqlConnection sqlCon = new SqlConnection(conStr);
+
+            int response = 0;
             try
             {
                 if (CurrentWorkingProject != null)
@@ -336,22 +341,41 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     Logger.Log("LogoutUser", "Info", "Calling update end time API when user logout");
 
-                    var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                    // var response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
 
-                    Logger.Log("LogoutUser", "Info", "successfully called update end time API when user logout");
+                    var sqlCmd = new SqlCommand("USPDailyTask_UpdateEndTaskTime", sqlCon)
+                    {
+                        CommandType = System.Data.CommandType.StoredProcedure
+                    };
 
-                    CurrentWorkingProject = null;
-                    User = null;
-                    //ProjectListViewViewModel = null;
-                    StopProjectMaxTimeCheckingTimer();
-                    StopProjectTimeElapseShowTimer();
+                    sqlCmd.Parameters.AddWithValue("@DailyTaskId", dtm.DailyTaskId);
+                    sqlCmd.Parameters.AddWithValue("@EndDateTime", dtm.EndTime);
 
-                    Login loginView = new Login();
-                    Application.Current.MainWindow = loginView;
+                    sqlCon.Open();
+                    response = sqlCmd.ExecuteNonQuery();
+                    sqlCon.Close();
+                    if (response > 0)
+                    {
+                        Logger.Log("LogoutUser", "Info", "successfully called update end time API when user logout");
 
-                    loginView.Show();
-                    loginView.Activate();
-                    _dailyTaskView.Close();
+                        CurrentWorkingProject = null;
+                        User = null;
+
+                        StopProjectMaxTimeCheckingTimer();
+                        StopProjectTimeElapseShowTimer();
+
+                        Login loginView = new Login();
+                        Application.Current.MainWindow = loginView;
+
+                        loginView.Show();
+                        loginView.Activate();
+                        _dailyTaskView.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Some error occured..");
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -458,7 +482,68 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         //}
 
 
-        private void UpdateCurrentTask()
+        //private void UpdateCurrentTask()
+        //{
+        //    string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+        //    SqlConnection sqlCon = new SqlConnection(conStr);
+        //    try
+        //    {
+        //        if (CurrentWorkingProject != null)
+        //        {
+        //            DailyTaskModel dtm = new DailyTaskModel
+        //            {
+        //                DailyTaskId = CurrentWorkingProject.DailyTaskId,
+        //                ProjectId = CurrentWorkingProject.ProjectID,
+        //                UserId = User.ID,
+        //                StartTime = CurrentWorkingProject.StartDateTime,
+        //                EndTime = CurrentWorkingProject.EndDateTime
+        //            };
+
+        //            Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
+        //            int response = 0;
+        //            //await Task.Run(() =>
+        //            //{
+        //            //    response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+
+        //            //});
+
+        //            //Update new code
+        //            var sqlCmd = new SqlCommand("USPDailyTask_UpdateEndTaskTime", sqlCon)
+        //            {
+        //                CommandType = System.Data.CommandType.StoredProcedure
+        //            };
+
+        //            sqlCmd.Parameters.AddWithValue("@DailyTaskId", dtm.DailyTaskId);
+        //            sqlCmd.Parameters.AddWithValue("@EndDateTime", dtm.EndTime);
+
+        //            sqlCon.Open();
+        //            response = sqlCmd.ExecuteNonQuery();
+        //            sqlCon.Close();
+
+        //            // Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
+        //            if (response > 0)
+        //            {
+        //                CurrentWorkingProject = null;
+
+        //                SetNewCurrentProjectAndInsertStartTime(ProjectListViewViewModel.SelectedProject);
+        //            }
+        //            else
+        //            {
+        //                MessageBox.Show("Some error occured..");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Log("UpdateCurrentTask", "Error", ex.ToString());
+        //        MessageBox.Show("Some error occured.");
+        //        sqlCon.Close();
+        //        // throw ex;
+        //    }
+        //}
+
+
+        private async void UpdateCurrentTask()
         {
             string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
             SqlConnection sqlCon = new SqlConnection(conStr);
@@ -477,24 +562,25 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     Logger.Log("UpdateCurrentTask", "Info", "Calling API to update end time for the current project .");
                     int response = 0;
-                    //await Task.Run(() =>
-                    //{
-                    //    response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                    await Task.Run(() =>
+                    {
+                        //response = WebAPIHelper.UpdateEndTimeForTheCurrentWorkingProject(dtm).Result;
+                        var sqlCmd = new SqlCommand("USPDailyTask_UpdateEndTaskTime", sqlCon)
+                        {
+                            CommandType = System.Data.CommandType.StoredProcedure
+                        };
 
-                    //});
+                        sqlCmd.Parameters.AddWithValue("@DailyTaskId", dtm.DailyTaskId);
+                        sqlCmd.Parameters.AddWithValue("@EndDateTime", dtm.EndTime);
+
+                        sqlCon.Open();
+                        response = sqlCmd.ExecuteNonQuery();
+                        sqlCon.Close();
+
+                    });
 
                     //Update new code
-                    var sqlCmd = new SqlCommand("USPDailyTask_UpdateEndTaskTime", sqlCon)
-                    {
-                        CommandType = System.Data.CommandType.StoredProcedure
-                    };
 
-                    sqlCmd.Parameters.AddWithValue("@DailyTaskId", dtm.DailyTaskId);
-                    sqlCmd.Parameters.AddWithValue("@EndDateTime", dtm.EndTime);
-
-                    sqlCon.Open();
-                    response = sqlCmd.ExecuteNonQuery();
-                    sqlCon.Close();
 
                     // Logger.Log("UpdateCurrentTask", "Info", "successfully called API to update end time for the current project .");
                     if (response > 0)
