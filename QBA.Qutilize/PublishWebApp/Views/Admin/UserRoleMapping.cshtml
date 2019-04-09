@@ -55,7 +55,11 @@
                 </div>
 
                 <div class="modal-body">
-
+                    <form class="navbar-form" role="search">
+                        <div class="input-group add-on">
+                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                        </div>
+                    </form>
                     <div id="popupBody">
 
                     </div>
@@ -188,6 +192,38 @@
             }
         });
         }
+
+      
+
+        $('#srch-term').keyup(function () {
+
+            $("#divProjectList div").css("text-decoration", "none");
+            $("#divProjectList div").css("background", "white");
+            $("#divProjectList div").css("color", "black");
+
+            var searchFilter = $(this).val();
+
+            if (searchFilter == "") {
+
+                $("#divProjectList div").css("text-decoration", "none");
+                $("#divProjectList div").css("background", "white");
+                $("#divProjectList div").css("color", "black");
+            }
+            else {
+
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("text-decoration", "underline");
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("background", "#42f4eb");
+                $("#divProjectList :containsIN(" + searchFilter + ")").css("color", "black");
+
+            }
+
+        });
+
+        $.extend($.expr[":"], {
+            "containsIN": function (elem, i, match, array) {
+                return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+        });
     </script>
 </body>
 </html>
