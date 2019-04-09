@@ -753,6 +753,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
 
                 //  var response = WebAPIHelper.CallInserStartTimeWebApi(dtm);
+                //Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");
+                //if (response != null)
+                //{
+                //    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
+                //}
+
                 DataTable dt = new DataTable();
 
                 //SqlConnection sqlCon = new SqlConnection(conStr);
@@ -782,11 +788,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 }
 
 
-                //Logger.Log("InsertProjectStartTime", "Info", "successfully called insert start time API ");
-                //if (response != null)
-                //{
-                //    CurrentWorkingProject.DailyTaskId = Convert.ToInt32(response.Result.Value);
-                //}
+
             }
             catch (Exception ex)
             {
