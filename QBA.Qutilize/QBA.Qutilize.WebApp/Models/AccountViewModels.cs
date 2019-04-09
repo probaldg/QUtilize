@@ -80,7 +80,34 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        
+        public DataSet getSessionHistory(int userID, int limit=0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.getSessionHistory(userID,limit);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet getActivityHistory(int userID, int limit = 0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.getActivityHistory(userID, limit);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
     }
     
 }

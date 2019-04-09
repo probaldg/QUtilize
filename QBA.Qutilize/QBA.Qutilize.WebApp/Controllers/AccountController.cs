@@ -181,6 +181,89 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json("updated");
         }
-
+        public ActionResult LoadSessionHistoryLast10()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.getSessionHistory(Convert.ToInt32(Session["sessUser"]),10);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblSessionHistory'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>IP Address</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Application</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Start Date Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>End Date Time</th>");
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodySessionHistoryData'>");
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["userName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IPAddress"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Application"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDateTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDateTime"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult LoadActivityHistoryLast10()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.getActivityHistory(Convert.ToInt32(Session["sessUser"]), 10);
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblSessionHistory'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Access Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Device</th>");
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>MAC ID</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Browser</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>IP Address</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Url Accessed</th>");
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodySessionHistoryData'>");
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["userName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDateTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IsMobileDevice"]) + "</span></td>");
+                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["MACAddress"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Browser"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IPAddress"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["UrlAccessed"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
     }
 }
