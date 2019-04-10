@@ -17,5 +17,6 @@
       </mvcSiteMapNode>
       <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
       <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
+      <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
   </mvcSiteMapNode>
 </mvcSiteMap>
