@@ -6,7 +6,7 @@ using System.Web.Configuration;
 
 namespace QBA.Qutilize.WebApp.DAL
 {
-    public class SqlHelper:IDisposable
+    public class SqlHelper : IDisposable
     {
         public SqlHelper()
         {

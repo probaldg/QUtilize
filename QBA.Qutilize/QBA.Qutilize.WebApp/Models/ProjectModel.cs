@@ -12,6 +12,8 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int ProjectID { get; set; }
         public string ProjectName { get; set; }
+        public string ProjectCode { get; set; }
+
         public string Description { get; set; }
         public int? ParentProjectID { get; set; }
         public string ParentProjectName { get; set; }
@@ -97,10 +99,11 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@Name",model.ProjectName),
+                    new SqlParameter("@projectCode",model.ProjectCode),
                     new SqlParameter("@Description",model.Description),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),
-                    new SqlParameter("@ManagerID", model.PMUserID),
+                    new SqlParameter("@ManagerID", (model.PMUserID ==0)?(int?)null:model.PMUserID),
                     new SqlParameter("@ClientID", model.ClientD),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
@@ -112,23 +115,23 @@ namespace QBA.Qutilize.WebApp.Models
                 if (!(Status.Value is DBNull))
                 {
                     id = Convert.ToInt32(Status.Value);
-                    model.ProjectID = id;
-                    model.ISErr = false;
-                    model.ErrString = "Data Saved Successfully!!!";
+                    //model.ProjectID = id;
+                    //model.ISErr = false;
+                    //model.ErrString = "Data Saved Successfully!!!";
                     result = true;
                 }
                 else
                 {
                     id = 0;
                     result = false;
-                    model.ISErr = true;
-                    model.ErrString = "Error Occured!!!";
+                    //model.ISErr = true;
+                    //model.ErrString = "Error Occured!!!";
                 }
             }
             catch (Exception ex)
             {
-                model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                //model.ISErr = true;
+                //model.ErrString = "Error Occured!!!";
                 result = false;
             }
             return result;
@@ -145,6 +148,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param = {
                     new SqlParameter("@Id",model.ProjectID),
                     new SqlParameter("@Name",model.ProjectName),
+                    new SqlParameter("@projectCode",model.ProjectCode??""),
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),

@@ -431,18 +431,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
+                    var ManagerName = (item["ProjectManagerName"] == DBNull.Value) ? "" : item["ProjectManagerName"].ToString();
+                    var clientName = (item["ClientName"] == DBNull.Value) ? "" : item["ClientName"].ToString();
 
                     strUserData.Append("<tr>");
                     strUserData.Append("<td class='text-center'>" + item["Id"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["Name"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" + item["Description"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + departmentName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + ManagerName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + clientName + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
                     if (Convert.ToBoolean(item["IsActive"]))
                     {
                         strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
+                        // string param = item["Id"].ToString() + ",'" + item["Name"].ToString() + "'";
+                        // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ",'" + item["Name"].ToString() + "');> Add Task </a> </td>");
+                        // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick='ShowTaskPopup(" + param + ")';> Add Task </a> </td>");
 
                     }
                     else
@@ -495,6 +503,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     dt = obj.GetProjectByID(ID);
                     obj.ProjectID = Convert.ToInt32(dt.Rows[0]["ID"]);
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
+                    obj.ProjectCode = dt.Rows[0]["ProjectCode"]?.ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
                     if (dt.Rows[0]["PMUserID"] != System.DBNull.Value)
                     {
@@ -557,12 +566,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             obj.ISErr = false;
                             obj.ErrString = "Data Saved Successfully!!!";
-                            TempData["ErrStatus"] = obj.ErrString.ToString();
+                            TempData["ErrStatus"] = obj.ISErr;
+                            TempData["ErrMsg"] = obj.ErrString.ToString();
+                            //obj.ISErr = true;
+                            //obj.ErrString = "Error occured!!!";
+                            //TempData["ErrStatus"] = obj.ISErr;
+                            //TempData["ErrMsg"] = obj.ErrString.ToString();
                         }
                         else
                         {
                             obj.ISErr = true;
                             obj.ErrString = "Error occured!!!";
+                            TempData["ErrStatus"] = obj.ISErr;
+                            TempData["ErrMsg"] = obj.ErrString.ToString();
+
+                            //obj.ISErr = false;
+                            //obj.ErrString = "Data Saved Successfully!!!";
+                            //TempData["ErrStatus"] = obj.ISErr;
+                            //TempData["ErrMsg"] = obj.ErrString.ToString();
                         }
 
 
@@ -579,14 +600,34 @@ namespace QBA.Qutilize.WebApp.Controllers
                     model.CreateDate = DateTime.Now;
 
                     model.IsActive = model.IsActive;
-
-                    obj.InsertProjectdata(model, out int id);
-                    if (id > 0)
+                    //TODO need to test.....
+                    bool result = obj.InsertProjectdata(model, out int id);
+                    if (result && id > 0)
                     {
+                        obj.ISErr = false;
+                        obj.ErrString = "Data Saved Successfully!!!";
+                        TempData["ErrStatus"] = model.ISErr.ToString();
+                        TempData["ErrMsg"] = obj.ErrString.ToString();
                         TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
                     }
+                    else
+                    {
+                        obj.ISErr = true;
+                        obj.ErrString = "Error occured!!!";
+                        TempData["ErrStatus"] = obj.ISErr;
+                        TempData["ErrMsg"] = obj.ErrString.ToString();
+                    }
+                    //if (id > 0)
+                    //{
+                    //    TempData["ErrStatus"] = model.ISErr.ToString();
+                    //    TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
+                    //}
+                    //else
+                    //{
 
-                    TempData["ErrStatus"] = model.ISErr.ToString();
+                    //}
+
+                    //TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
             catch (Exception ex)
@@ -1983,6 +2024,139 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         #endregion
 
+
+        #region Client managment region
+        public ActionResult ManageClient(int ID = 0)
+        {
+            ClientModel clientModel = new ClientModel();
+            try
+            {
+
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                clientModel.OrganisationList.Clear();
+
+                if (!userInfo.IsRoleSysAdmin)
+                {
+                    var organisation = clientModel.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
+                    clientModel.OrganisationList.Add(organisation);
+                    clientModel.ClientOrganisationID = userInfo.UserOrganisationID;
+                }
+                else
+                {
+                    var list = clientModel.GetAllOrgInList().Where(x => x.isActive == true).ToList();
+                    if (list.Count > 0)
+                        clientModel.OrganisationList = list;
+
+                }
+                if (ID > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = clientModel.GetClientByID(ID);
+                    if (dt.Rows.Count > 0)
+                    {
+                        clientModel.ClientID = ID;
+                        clientModel.ClientName = dt.Rows[0]["ClientName"].ToString();
+                        clientModel.ClientCode = dt.Rows[0]["ClientCode"].ToString();
+                        clientModel.ClientOrganisationID = Convert.ToInt32(dt.Rows[0]["ORGID"]);
+                        clientModel.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                TempData["ErrStatus"] = true;
+            }
+
+            return View(clientModel);
+        }
+
+        [HttpPost]
+        public ActionResult ManageClient(ClientModel model)
+        {
+
+            ClientModel cm = new ClientModel();
+
+            try
+            {
+                if (model.ClientID > 0)
+                {
+                    model.EditedBy = loggedInUser.ToString();
+                    model.EditedDate = DateTime.Now;
+                    var insertResult = cm.UpdateClientdata(model);
+                    if (insertResult)
+                    {
+                        TempData["ErrStatus"] = false;
+                    }
+                    else
+                    {
+                        TempData["ErrStatus"] = true;
+                    }
+                }
+                else
+                {
+                    model.CreateDate = DateTime.Now;
+                    model.CreatedBy = loggedInUser.ToString();
+
+                    var insertResult = cm.InsertClientdata(model, out int clientID);
+                    if (insertResult && clientID > 0)
+                    {
+                        TempData["ErrStatus"] = false;
+                    }
+                    else
+                    {
+                        TempData["ErrStatus"] = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrStatus"] = true;
+            }
+            return RedirectToAction("ManageClient", "Admin");
+        }
+        public ActionResult LoadClientData()
+        {
+            ClientModel obj = new ClientModel();
+            StringBuilder strClienData = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.GetAllClients();
+                }
+                else
+                {
+                    dt = obj.GetAllClients(userInfo.UserOrganisationID);
+                }
+
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                    strClienData.Append("<tr>");
+                    strClienData.Append("<td class='text-center'>" + item["ClientID"].ToString() + "</td>");
+                    strClienData.Append("<td class='text-center'>" + item["ClientCode"].ToString() + "</td>");
+                    strClienData.Append(" <td class='text-center'>" + item["ClientName"].ToString() + "</td>");
+                    strClienData.Append("<td class='text-center'>" + item["orgname"].ToString() + "</td>");
+                    strClienData.Append("<td class='text-center'>" + status + "</td>");
+                    strClienData.Append("<td class='text-center'><a href = 'ManageClient?ID=" + item["ClientID"].ToString() + "'>Edit </a> </td>");
+                    strClienData.Append("</tr>");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrStatus"] = true;
+                ////throw;
+            }
+            return Content(strClienData.ToString());
+        }
+        #endregion
         public ActionResult GetUserActivityTracking(string userAgent, string absURL)
         {
             string strRet = string.Empty;

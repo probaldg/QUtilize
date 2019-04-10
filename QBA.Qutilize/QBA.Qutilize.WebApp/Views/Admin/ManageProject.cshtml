@@ -16,6 +16,7 @@
     @{
         var strMSGforSave = string.Empty;
         string strStyle = string.Empty;
+        string strErrorStyle = string.Empty;
 
         var strMsgforErr = string.Empty;
         var strmsgStyle = string.Empty;
@@ -23,18 +24,41 @@
         var errSts = TempData["ErrMsg"];
 
         var ErrStatus = TempData["ErrStatus"];
-        if (ErrStatus != null)
+        //if (ErrStatus != null)
+        //{
+        //    strMSGforSave = ErrStatus.ToString();
+        //}
+        //if (strMSGforSave != "")
+        //{
+        //    strStyle = "display:block";
+        //}
+        //else
+        //{
+        //    strStyle = "display:none";
+        //}
+        strStyle = "display:none";
+        strErrorStyle = "display:none";
+        if (ErrStatus != null && Convert.ToBoolean(ErrStatus) == false)
         {
-            strMSGforSave = ErrStatus.ToString();
-        }
-        if (strMSGforSave != "")
-        {
+            strMSGforSave = errSts.ToString();
             strStyle = "display:block";
+            strErrorStyle = "display:none";
         }
-        else
+        else if(ErrStatus != null && Convert.ToBoolean(ErrStatus) == true)
         {
+            strMSGforSave= errSts.ToString();
             strStyle = "display:none";
+            strErrorStyle = "display:block";
         }
+        //if (strMSGforSave != "")
+        //{
+        //    strStyle = "display:block";
+        //}
+        //else
+        //{
+        //    strStyle = "display:none";
+        //}
+
 
     }
 
@@ -46,6 +70,15 @@
             Data Saved Successfully!!!
         </div>
     </div>
+
+    <div class="form-horizontal col-md-12">
+        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg1" name="ErrorMsg1" style="@strErrorStyle">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="errormsg1">@strMSGforSave</span>
+        </div>
+    </div>
     <h4>Manage Project</h4>
     <br />
     <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -54,8 +87,11 @@
                 <tr>
                     <th class="text-center tblHeaderColor sorting">ID</th>
                     <th class="text-center tblHeaderColor sorting">Project Name</th>
+                    <th class="text-center tblHeaderColor sorting">Project Code</th>
                     <th class="text-center tblHeaderColor sorting">Description</th>
                     <th class="text-center tblHeaderColor sorting">Department</th>
+                    <th class="text-center tblHeaderColor sorting">Manager Name</th>
+                    <th class="text-center tblHeaderColor sorting">Client Name</th>
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
@@ -71,6 +107,7 @@
     <div class="col-md-12"><br /></div>
     <div class="form-horizontal col-md-12">
         <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+
             <span id="errormsg"></span>
         </div>
     </div>
@@ -82,7 +119,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;">Task List</h4>
+                    <h4 class="modal-title" style="color:#626262;"><span id="projectNameHeader"></span> Task List</h4>
                 </div>
 
                 <div class="modal-body">
@@ -319,7 +356,13 @@
                     @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
                 </div>
             </div>
-
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProjectCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -384,25 +427,25 @@
 
         $("#tblGridListViewPost").dataTable();
         $("#ProjectTask_TaskStartDateDisplay").datepicker({
-          
+
             autoclose: true
 
         })
 
 
         $("#ProjectTask_ActualTaskStartDateDisplay").datepicker({
-           
+
             autoclose: true
 
         })
         $("#ProjectTask_TaskEndDateDisplay").datepicker({
-          
+
             autoclose: true
 
         })
 
         $("#ProjectTask_ActualTaskEndDateDisplay").datepicker({
-            
+
             autoclose: true
 
         })
@@ -422,6 +465,7 @@
         function checkUserForm() {
 
             var ProjectName = document.getElementById("ProjectName").value;
+            var projectCode = document.getElementById("ProjectCode").value;
             var DepartmentId = $("#DepartmentList").val();
             var MaxProjectTimeInHours = $('#MaxProjectTimeInHours').val();
             if (ProjectName == "") {
@@ -430,7 +474,12 @@
 
                 return false;
             }
+            if (projectCode == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project code";
+                document.getElementById("ErrorMsg").style.display = 'block';
 
+                return false;
+            }
             if (DepartmentId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select a department";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -445,7 +494,7 @@
         }
 
         $("#DepartmentList").change(function () {
-           
+
             var departmentId = $("#DepartmentList").val();
 
             $('#DepartmentID').val(departmentId);
@@ -466,6 +515,7 @@
         });
         function ShowTaskPopup(projectId) {
 
+            //alert(projectname);
             $('#SelectedProjectId').val(projectId);
             $("#ddlUsersAssigned").multiselect('destroy');
 
@@ -478,7 +528,7 @@
                     success: function (response) {
                         //console.log(response);
                         var obj = JSON.parse(response);
-                        
+
                         if (obj.PercentageComplete.length > 0) {
                             var percentageArray = obj.PercentageComplete;
                             $("#ddlPercentage").html('');
@@ -606,7 +656,7 @@
             var completePercent = $('#ddlPercentage').val();
             var taskStatusId = $('#ddlTaskStatus').val();
             var IsActive = $('#ProjectTask_IsActive').is(':checked');
-            
+
             var userIds = $('#UserIdsInString').val();
 
            var validationStatus= validateTaskSave()
@@ -696,7 +746,7 @@
 
 
         function EditProjectTask(taskID) {
-          
+
             var taskid = taskID;
 
             if ($("#ddlParentTask option").length <= 2) {
@@ -712,7 +762,7 @@
                     }
                 })
             }
-           
+
             var position = $('#divForm').position();
             $("#myModalForTask").scrollTop(position.top);
              $.ajax({
@@ -732,7 +782,7 @@
                      $('#ProjectTask_TaskCode').val(taskObj.TaskCode);
 
                      $('#ddlParentTask').val(taskObj.ParentTaskId)
-                     
+
                      $('#ProjectTask_TaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskStartDate));
                      $('#ProjectTask_TaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskEndDate));
 
@@ -1064,7 +1114,7 @@
                             enableFiltering: true
                         });
 
-                    
+
                         var selectedOptions = userIds.split(',');
                         for (i = 0; i < selectedOptions.length; i++) {
                             $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
@@ -1076,7 +1126,7 @@
                         $('#divUserDDL').removeClass('col-md-7');
                         $('#divUserDDL').addClass('col-md-10');
 
-                        
+
                     } else {
                         alert("error");
                     }
@@ -1137,11 +1187,11 @@
 
 
         function validateDate(date) {
-          
+
             var validformat = /^\d{2}\/\d{2}\/\d{4}$/ //Basic check for format validity
             var returnval = false
             if (!validformat.test(date)) {
-              
+
                 returnval = false;
             }
             else { //Detailed check for valid date ranges
@@ -1151,12 +1201,12 @@
                 var dayobj = new Date(yearfield, monthfield - 1, dayfield)
                 if ((dayobj.getMonth() + 1 != monthfield) ||
                     (dayobj.getDate() != dayfield) || (dayobj.getFullYear() != yearfield))
-                   
+
                     returnval = false;
                 else
                     returnval = true
             }
-         
+
             return returnval
         }
 
