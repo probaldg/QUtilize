@@ -61,6 +61,7 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Actual End Date")]
         public string ActualTaskEndDateDisplay { get; set; }
         public bool IsActive { get; set; }
+        public bool? IsMilestone { get; set; }
 
         public string UserIdsTaskAssigned { get; set; }
         // public string UsereIdsInString { get; set; }
@@ -193,8 +194,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ParentTaskID", model.ParentTaskId),
                     new SqlParameter("@TaskStartDate",model.TaskStartDate),
                     new SqlParameter("@TaskEndDate",model.TaskEndDate),
-
-                     new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate != null? model.ActualTaskStartDate: null),
+                    new SqlParameter("@isMilestone",model.IsMilestone),
+                    new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate != null? model.ActualTaskStartDate: null),
                     new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate!= null?model.ActualTaskEndDate:null),
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
@@ -259,6 +260,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ParentTaskID", model.ParentTaskId),
                     new SqlParameter("@TaskStartDate",model.TaskStartDate),
                     new SqlParameter("@TaskEndDate",model.TaskEndDate),
+                    new SqlParameter("@IsMilestone",model.IsMilestone),
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate),

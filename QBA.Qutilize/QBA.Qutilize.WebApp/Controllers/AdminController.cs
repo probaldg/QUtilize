@@ -447,10 +447,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
                     if (Convert.ToBoolean(item["IsActive"]))
                     {
-                        strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
-                        // string param = item["Id"].ToString() + ",'" + item["Name"].ToString() + "'";
-                        // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ",'" + item["Name"].ToString() + "');> Add Task </a> </td>");
-                        // strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick='ShowTaskPopup(" + param + ")';> Add Task </a> </td>");
+                        //strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
+                        // var functionString=
+                        //strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + Convert.ToInt32(item["Id"]) + " , '" + item["Name"].ToString() + "');> Add Task </a> </td>");
+                        strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskPopup({0},'{1}');""> Add Task </a> </td>", item["Id"].ToString(), item["Name"].ToString());
 
                     }
                     else
@@ -608,7 +608,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                         obj.ErrString = "Data Saved Successfully!!!";
                         TempData["ErrStatus"] = model.ISErr.ToString();
                         TempData["ErrMsg"] = obj.ErrString.ToString();
-                        TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
+                        //TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
+                        TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}','{model.ProjectName}');";
                     }
                     else
                     {
@@ -667,6 +668,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         ProjectTaskModel task = new ProjectTaskModel();
                         task.TaskId = Convert.ToInt32(item["TaskID"]);
                         task.TaskName = item["TaskName"].ToString();
+                        task.TaskCode = item["TaskCode"].ToString();
                         task.ParentTaskName = item["ParentTaskName"].ToString() ?? "";
                         task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
                         task.ProjectName = item["ProjectName"].ToString();
@@ -676,6 +678,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                         task.ActualTaskStartDate = (item["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
                         task.ActualTaskEndDate = (item["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
                         task.TaskStatusName = item["StatusName"].ToString() ?? "";
+                        task.IsMilestone = (item["isMilestone"] != DBNull.Value) ? Convert.ToBoolean(item["isMilestone"]) : (bool?)null;
+                        task.CompletePercent = Convert.ToInt32(item["CompletePercent"]);
                         task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
                         taskModel.TaskList.Add(task);
 
@@ -743,7 +747,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     task.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
                     task.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]);
                     task.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]);
-
+                    task.IsMilestone = (dtTaskData.Rows[0]["isMilestone"] != System.DBNull.Value) ? Convert.ToBoolean(dtTaskData.Rows[0]["isMilestone"]) : (bool?)null;
                     task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
                     task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
                     task.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
@@ -894,6 +898,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     builder.Append(@"</div>");
                 }
+                builder.Append(@"</div>");
+            }
+            else
+            {
+                builder.Append(@"<div style='float: left;width: 100%; padding: 5px;'>");
+                builder.Append("<h5 >" + "No users available" + "</h5>");
                 builder.Append(@"</div>");
             }
 
