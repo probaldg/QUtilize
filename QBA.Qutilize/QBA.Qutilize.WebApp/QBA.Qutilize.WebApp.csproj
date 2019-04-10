@@ -168,6 +168,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\DailyTaskController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DAL\DataAccess.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
@@ -778,6 +779,7 @@
     <Content Include="Views\Admin\ManageDepartment.cshtml" />
     <Content Include="Views\Admin\ManageModule.cshtml" />
     <Content Include="Views\Admin\ManageClient.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
