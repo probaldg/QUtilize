@@ -132,6 +132,31 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
+
+        public static DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",Convert.ToInt32(userID)),
+                                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
+                                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
+                                        new SqlParameter("@ProjectID",ProjectID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndUserAndProject", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+
         public static DataSet GetUserDetailData(int userID)
         {
             DataSet ds = null;
@@ -187,7 +212,9 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return dt;
         }
-        public static DataSet getSessionHistory(int userID, int limit=0)
+
+
+        public static DataSet getSessionHistory(int userID, int limit = 0)
         {
             DataSet ds = null;
             try
@@ -223,6 +250,8 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
+
+
         #region Organization
         public static DataTable GetALLOrganisationData()
         {

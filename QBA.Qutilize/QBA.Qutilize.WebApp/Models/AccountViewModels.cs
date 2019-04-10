@@ -80,12 +80,13 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet getSessionHistory(int userID, int limit=0)
+
+        public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.getSessionHistory(userID,limit);
+                ds = DataAccess.GetReportData(userID, startDate, endDate,ProjectID);
             }
             catch (Exception ex)
             {
@@ -94,20 +95,7 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet getActivityHistory(int userID, int limit = 0)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.getActivityHistory(userID, limit);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
+        
     }
     
 }

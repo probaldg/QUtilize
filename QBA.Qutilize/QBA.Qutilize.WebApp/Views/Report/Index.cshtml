@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12" id="dashBoardDateRange">
+        @Html.Action("GetDateRange", "Report")
+    </div>
+</div>
+
+<div class="row">
+    <div class="row">
+        <div class="table-responsive" id="reportSection">
+            
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(function () {
+        $("#txtStartDate").datepicker({
+            minDate: '-365'
+            // dateFormat: "dd-mm-yy"
+        });
+    });
+
+    $(function () {
+        $("#txtEndDate").datepicker({
+            minDate: '-365'
+            // dateFormat: "dd-mm-yy"
+        });
+    });
+
+    function RefreshData() {
+    try {
+    var vStartDate = $('#txtStartDate').val();
+        var vEndDate = $('#txtEndDate').val();
+        var vUserID = $('#ddlUsers').val();
+        var vProjectID = $('#ddlProjects').val();
+
+        if (vUserID != "0" && vProjectID != "0") {
+            $.ajax({
+                url: '@Url.Action("GetReportData", "Report")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    startdate: vStartDate, endDate: vEndDate, userid: vUserID, projectID: vProjectID
+                }),
+                success: function (response) {
+
+                    if (response != "") {
+
+                        $('#reportSection').html('');
+                        $('#reportSection').html(response);
+
+                        $('#tableReportData').dataTable({
+                            // ... skipped ...
+                            "aaSorting": [],
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    text: 'Download Report',
+                                    extend: 'csvHtml5',
+                                    title: 'Day wise details',
+                                    exportOptions: {
+                                        columns: 'th:not(.noExport)'
+                                    }
+                                },
+                                {
+                                    extend: 'pdfHtml5',
+                                    title: 'Data export'
+                                }
+                            ],
+
+                            "columnDefs": [{
+                                "targets": 'no-sort',
+                                "orderable": false,
+                            }]
+                        });
+
+                    }
+                }
+            });
+        } else {
+            
+            if (vUserID == "0") {
+                alert("Please select a User.");
+                return false;
+            }
+            if (vProjectID == "0") {
+                alert("Please select a Project.");
+                return false;
+            }
+            
+        }
+
+   
+    }
+    catch (e) {
+    alert(e);
+    }
+    }
+</script>
