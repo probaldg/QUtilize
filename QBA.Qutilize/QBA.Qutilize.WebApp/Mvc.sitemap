@@ -15,6 +15,7 @@
       <mvcSiteMapNode title="Module Management"  controller="Admin" action="ManageModule"/>
       <mvcSiteMapNode title="Department Management"  controller="Admin" action="ManageDepartment"/>
       <mvcSiteMapNode title="Client Management"  controller="Admin" action="ManageClient"/>
+      <mvcSiteMapNode title="Project Status Management"  controller="Admin" action="ManageTaskStatus"/>
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
     <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
