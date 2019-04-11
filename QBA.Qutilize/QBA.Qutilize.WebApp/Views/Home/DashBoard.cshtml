@@ -46,6 +46,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin","Home")                                
+                        </div>
+                        
+                    </div>
+
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="panel panel-info">
@@ -64,6 +73,10 @@
                             </div>
                         </div>
                     </div>
+
+
+
+
                 </div>
             </div>
         </div>
@@ -117,21 +130,9 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
-                                <div class="panel-body" id="divDataDayWiseDetailsInMinute">
-                                    @*@Html.Action("GetDataActual", "Home")*@
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    @*<canvas id="DonutChart" width="200" height="100"></canvas>*@
-                                </div>
-                            </div>
+
+                        <div class="col-md-12">
+                            @Html.Action("GetTableForDaywisedetailsinMinuteForPM", "Home")
                         </div>
                     </div>
 
@@ -262,6 +263,118 @@
 
 
         });
+        $('#TableuserWiseDetailsInMinutes').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            //buttons: [{
+            //    extend: 'pdfHtml5',
+            //    pageSize: 'LEGAL',
+            //    header: true,
+            //    message: vMSG, // Date Range
+            //    title: vReportName, // Report Name should be go here.
+
+            //    //orientation: 'landscape',
+            //    customize: function (doc) {
+            //        doc.defaultStyle.fontSize = 10; //<-- set fontsize to 16 instead of 10
+            //    }
+            //},
+            //{
+            //    extend: 'excelHtml5',
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //},
+            //{
+            //    extend: 'print',//,
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //},
+            //{
+            //    extend: 'csv',
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //}
+            //],
+            //buttons: [
+            //     'copy', 'csv', 'excel', 'pdf'
+            //],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableuserWiseDetailsInMinutesForPM').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details For Project Manager',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            //buttons: [{
+            //    extend: 'pdfHtml5',
+            //    pageSize: 'LEGAL',
+            //    header: true,
+            //    message: vMSG, // Date Range
+            //    title: vReportName, // Report Name should be go here.
+
+            //    //orientation: 'landscape',
+            //    customize: function (doc) {
+            //        doc.defaultStyle.fontSize = 10; //<-- set fontsize to 16 instead of 10
+            //    }
+            //},
+            //{
+            //    extend: 'excelHtml5',
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //},
+            //{
+            //    extend: 'print',//,
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //},
+            //{
+            //    extend: 'csv',
+            //    message: vMSG, // Date Range
+            //    title: vReportName // Report Name should be go here.
+            //}
+            //],
+            //buttons: [
+            //     'copy', 'csv', 'excel', 'pdf'
+            //],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
     })
 
 
@@ -278,6 +391,7 @@
         gerDonutChartDataUserWisePM();
         gerDonutChartDataProjectWisePM();
         gerBarChartDataPM();
+        getDayWiseDetailsinMinutesForAdmin();
     });
     $(document).on('click', '.panel-heading span.clickable', function (e) {
         var $this = $(this);
@@ -357,6 +471,31 @@
         }
         catch (e) { }
     };
+
+
+    function getDayWiseDetailsinMinutesForAdmin() {
+         try {
+         
+            $.ajax({
+                url: '@Url.Action("BarChartDataAdmin", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        console.log(JSON.stringify(response));
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+
     function gerBarChartDataPM(){
         try {
         //-----Single Bar --------------
@@ -470,6 +609,16 @@
         var myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: tData,
+            options: {
+                responsive: true,
+                legend: {
+                    display: true,
+                    position: 'right'
+                },
+                tooltips: {
+                    enabled: true
+                }
+            }
         });
             myPieChart.update();
         }
@@ -487,8 +636,8 @@
                 options: {
                     responsive: true,
                     legend: {
-                        display: true,
-                        position: 'right'
+                        display: false,
+                        position: 'bottom'
                     },
                     tooltips: {
                         enabled: true

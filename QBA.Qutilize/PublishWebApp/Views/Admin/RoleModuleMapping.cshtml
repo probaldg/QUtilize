@@ -168,20 +168,61 @@
         });
         }
 
-         $('#srch-term').on('input', function () {
+        
+        $('#srch-term').keyup(function () {
+            $("#divModuleList div ").css("background", "white");
+            $("#divModuleList div div").css("background", "white");
+            $("#divModuleList div ul").css("background", "white");
+            $("#divModuleList div li").css("background", "white");
+            $("#divModuleList span").css("background", "white");
+            $("#divModuleList div li").css("text-decoration", "none");
+            $("#divModuleList div li").css("color", "black");
 
-            var searchFilter = $('#srch-term').val();
-           
+
+            var searchFilter = $(this).val();
+
             if (searchFilter == "") {
 
+               
+                $("#divModuleList div ").css("background", "white");
+                $("#divModuleList div div").css("background", "white");
+                $("#divModuleList div ul").css("background", "white");
+                $("#divModuleList div li").css("background", "white");
+                $("#divModuleList span").css("background", "white");
+                $("#divModuleList div li").css("text-decoration", "none");
+                $("#divModuleList div li").css("background", "white");
+                $("#divModuleList div li").css("color", "black");
                 $("#divModuleList  li:contains(" + searchFilter + ")").css("text-decoration", "none")
             }
             else {
 
-                $("#divModuleList  li:contains("+searchFilter+")").css("text-decoration", "underline")
+                var container = $("#divModuleList :containsIN(" + searchFilter + ")")
+
+                container.each(function (index, item) {
+
+                    if (item.tagName == "LI") {
+
+                        $(item).css("text-decoration", "underline");
+                        $(item).css("background", "#42f4eb");
+                    }
+                    if (item.tagName == "SPAN") {
+
+                        $(item).css("text-decoration", "underline");
+                        $(item).css("background", "#42f4eb");
+                    }
+                });
+                
+               
             }
 
         });
+
+        $.extend($.expr[":"], {
+            "containsIN": function (elem, i, match, array) {
+                return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+        });
+
     </script>
 </body>
 </html>

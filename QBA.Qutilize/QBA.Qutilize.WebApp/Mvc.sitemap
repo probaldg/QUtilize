@@ -4,6 +4,7 @@
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
   <mvcSiteMapNode title="Home" controller="Home" action="Dashboard">
+
     <mvcSiteMapNode title="Admin" controller="Home" action="Dashboard">
       <mvcSiteMapNode title="User Management"  controller="Admin" action="ManageUsers"/>
       <mvcSiteMapNode title="Project Management"  controller="Admin" action="ManageProject"/>
@@ -19,5 +20,7 @@
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
     <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
+    <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
+
   </mvcSiteMapNode>
 </mvcSiteMap>

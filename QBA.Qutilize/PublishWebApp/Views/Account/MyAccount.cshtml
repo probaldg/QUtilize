@@ -155,9 +155,40 @@
                 <!-- /.description-block -->
             </div>
         </div>
-        <!-- /.row -->
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="description-block">
+                    <div class="box box-danger">
+                        <div class="box-header">
+                            <span class="description-text box-title">Session History</span>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                @Html.Action("LoadSessionHistoryLast10", "Account")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <div class="col-sm-8">
+                <div class="description-block">
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            <span class="description-text box-title">Activity History</span>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                @Html.Action("LoadActivityHistoryLast10", "Account")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.description-block -->
+            </div>
+            <!-- /.row -->
+        </div>
     </div>
-</div>
 @*<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
     <div class="form-group">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })

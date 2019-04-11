@@ -16,6 +16,7 @@
     @{
         var strMSGforSave = string.Empty;
         string strStyle = string.Empty;
+        string strErrorStyle = string.Empty;
 
         var strMsgforErr = string.Empty;
         var strmsgStyle = string.Empty;
@@ -23,18 +24,41 @@
         var errSts = TempData["ErrMsg"];
 
         var ErrStatus = TempData["ErrStatus"];
-        if (ErrStatus != null)
+        //if (ErrStatus != null)
+        //{
+        //    strMSGforSave = ErrStatus.ToString();
+        //}
+        //if (strMSGforSave != "")
+        //{
+        //    strStyle = "display:block";
+        //}
+        //else
+        //{
+        //    strStyle = "display:none";
+        //}
+        strStyle = "display:none";
+        strErrorStyle = "display:none";
+        if (ErrStatus != null && Convert.ToBoolean(ErrStatus) == false)
         {
-            strMSGforSave = ErrStatus.ToString();
-        }
-        if (strMSGforSave != "")
-        {
+            strMSGforSave = errSts.ToString();
             strStyle = "display:block";
+            strErrorStyle = "display:none";
         }
-        else
+        else if(ErrStatus != null && Convert.ToBoolean(ErrStatus) == true)
         {
+            strMSGforSave= errSts.ToString();
             strStyle = "display:none";
+            strErrorStyle = "display:block";
         }
+        //if (strMSGforSave != "")
+        //{
+        //    strStyle = "display:block";
+        //}
+        //else
+        //{
+        //    strStyle = "display:none";
+        //}
+
 
     }
 
@@ -46,6 +70,15 @@
             Data Saved Successfully!!!
         </div>
     </div>
+
+    <div class="form-horizontal col-md-12">
+        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg1" name="ErrorMsg1" style="@strErrorStyle">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="errormsg1">@strMSGforSave</span>
+        </div>
+    </div>
     <h4>Manage Project</h4>
     <br />
     <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -54,34 +87,39 @@
                 <tr>
                     <th class="text-center tblHeaderColor sorting">ID</th>
                     <th class="text-center tblHeaderColor sorting">Project Name</th>
+                    <th class="text-center tblHeaderColor sorting">Project Code</th>
                     <th class="text-center tblHeaderColor sorting">Description</th>
                     <th class="text-center tblHeaderColor sorting">Department</th>
+                    <th class="text-center tblHeaderColor sorting">Manager Name</th>
+                    <th class="text-center tblHeaderColor sorting">Client Name</th>
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
-                    @*<th class="text-center tblHeaderColor sorting">Add Task</th>*@
+                    <th class="text-center tblHeaderColor sorting">Add Task</th>
                 </tr>
             </thead>
             <tbody>
                 @Html.Action("LoadProjectData", "Admin")
             </tbody>
         </table>
+        @*<input type="hidden" id="UserIdsInString" name="UserIdsInString" />*@
     </div>
     <div class="col-md-12"><br /></div>
     <div class="form-horizontal col-md-12">
         <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+
             <span id="errormsg"></span>
         </div>
     </div>
 
-    @*<div id="myModalForTask" class="modal fade" role="dialog">
+    <div id="myModalForTask" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <input type="hidden" id="SelectedProjectId" />
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;">Task List</h4>
+                    <h4 class="modal-title" style="color:#626262;"><span id="projectNameHeader"></span> Task List</h4>
                 </div>
 
                 <div class="modal-body">
@@ -154,55 +192,82 @@
                             <div class="form-group">
                                 @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="ddlParentTask" class="form-control"><option value="0">Select Task</option></select>
+                                    <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskStartDate, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                @Html.LabelFor(model => model.ProjectTask.TaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDate, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.TaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDateDisplay, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.ProjectTask.TaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDate, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-5" id="divUserDDL">
-                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="0">Select User</option></select>
-                                </div>
-                                <div class="col-md-5" id="divAddUserToAssignProject">
-                                    <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
+                                <div class="col-md-7" id="divUserDDL">
+                                    @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
 
+                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                                 </div>
+                                <div class="col-md-1" id="divAddUserToAssignProject">
+                                    <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
+                                </div>
+
+                                @*<div class="col-md-2"></div>*@
                             </div>
+                            <div class="col-md-12"><br /></div>
+                            <div class="form-group">
+                                <div class="col-md-2"></div>
+                                <div id="divUserList" style="display:none;" class="col-md-10">
+
+                                    <form class="navbar-form" role="search">
+                                        <div class="input-group add-on">
+                                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                        </div>
+                                    </form>
+
+                                    <div id="popupUserBody">
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
+                                        <button type="button" id="btnCloseUserList" class="btn btn-default">Close</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
                             <div class="form-group">
                                 @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="ddlPercentage" class="form-control"><option value="0">Select percentage</option></select>
+                                    <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
                                 </div>
                             </div>
 
 
 
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDate, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDate, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplay, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDate, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDate, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplay, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -235,7 +300,7 @@
             </div>
 
         </div>
-       
+
     </div>
 
 
@@ -256,9 +321,9 @@
                         </div>
                     </form>
 
-                    <div id="popupUserBody">
+                    @*<div id="popupUserBody">
 
-                    </div>
+                        </div>*@
                 </div>
 
 
@@ -270,7 +335,7 @@
             </div>
 
         </div>
-    </div>*@
+    </div>
 
     @*@Html.HiddenFor(model => model.DepartmentID)*@
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
@@ -278,7 +343,7 @@
         @Html.AntiForgeryToken()
         <h4>Project Details</h4>
         <hr />
-        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px" id="divForm">
 
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -291,7 +356,13 @@
                     @Html.ValidationMessageFor(model => model.ProjectName, "", new { @class = "text-danger" })
                 </div>
             </div>
-
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProjectCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -305,6 +376,21 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "DisplayTextForCumboWithOrgName"), "Select", new { @class = "form-control" })
                     @Html.HiddenFor(model => model.DepartmentID)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.UserList, new SelectList(Model.UserList, "ID", "OrgName_UserNameForCombo"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.PMUserID)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.ClientList, new SelectList(Model.ClientList, "ClientID", "OrgName_ClientNameForCombo"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.ClientD)
                 </div>
             </div>
 
@@ -340,16 +426,27 @@
 
 
         $("#tblGridListViewPost").dataTable();
-        $("#ProjectTask_TaskStartDate").datepicker({
-            format: 'dd-mm-yy',
-            autoclose: true, todayBtn: 'linked',
+        $("#ProjectTask_TaskStartDateDisplay").datepicker({
 
-            maxDate: new Date()
+            autoclose: true
+
         })
 
-        $("#ProjectTask_TaskEndDate").datepicker({
-            format: 'dd-mm-yy',
-            autoclose: true, todayBtn: 'linked',
+
+        $("#ProjectTask_ActualTaskStartDateDisplay").datepicker({
+
+            autoclose: true
+
+        })
+        $("#ProjectTask_TaskEndDateDisplay").datepicker({
+
+            autoclose: true
+
+        })
+
+        $("#ProjectTask_ActualTaskEndDateDisplay").datepicker({
+
+            autoclose: true
 
         })
         var DeptId = $('#DepartmentID').val();
@@ -357,9 +454,18 @@
             $('#DepartmentList').val(DeptId);
         }
 
+        var managerId = $('#PMUserID').val();
+        if (managerId > 0) {
+            $('#UserList').val(managerId);
+        }
+        var clientID = $('#ClientD').val();
+        if (clientID > 0) {
+            $('#ClientList').val(clientID);
+        }
         function checkUserForm() {
 
             var ProjectName = document.getElementById("ProjectName").value;
+            var projectCode = document.getElementById("ProjectCode").value;
             var DepartmentId = $("#DepartmentList").val();
             var MaxProjectTimeInHours = $('#MaxProjectTimeInHours').val();
             if (ProjectName == "") {
@@ -368,7 +474,12 @@
 
                 return false;
             }
+            if (projectCode == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project code";
+                document.getElementById("ErrorMsg").style.display = 'block';
 
+                return false;
+            }
             if (DepartmentId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select a department";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -383,19 +494,31 @@
         }
 
         $("#DepartmentList").change(function () {
-            //alert($("#DepartmentList").val());
+
             var departmentId = $("#DepartmentList").val();
 
             $('#DepartmentID').val(departmentId);
 
         });
+        $("#UserList").change(function () {
+            var managerID = $("#UserList").val();
+            $('#PMUserID').val(managerID);
 
+        });
 
+        $("#ClientList").change(function () {
+            //alert($("#DepartmentList").val());
+            var clientID = $("#ClientList").val();
+
+            $('#ClientD').val(clientID);
+
+        });
         function ShowTaskPopup(projectId) {
 
+            //alert(projectname);
             $('#SelectedProjectId').val(projectId);
             $("#ddlUsersAssigned").multiselect('destroy');
-            //$("#ddlUsersAssigned").multiselect('refresh');
+
             $.ajax({
                 url: '@Url.Action("ManageProjectTask", "Admin")',
                 type: "POST",
@@ -406,18 +529,16 @@
                         //console.log(response);
                         var obj = JSON.parse(response);
 
-                        
-
-
                         if (obj.PercentageComplete.length > 0) {
                             var percentageArray = obj.PercentageComplete;
+                            $("#ddlPercentage").html('');
                             for (var i = 0; i < percentageArray.length; i++) {
 
                                 $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
                             }
                         }
                         $("#ddlTaskStatus").html('')
-                        $("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
+                        //$("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
                         if (obj.StatusList.length > 0) {
                             var statusList = obj.StatusList;
                             for (var i = 0; i < statusList.length; i++) {
@@ -427,20 +548,27 @@
                         }
 
                         $("#ddlParentTask").html('')
+
+                        if ($.fn.DataTable.isDataTable('#tblTasklist')) {
+                            $('#tblTasklist').DataTable().destroy();
+                        }
+
+                        $('#tblTasklist tbody').html('');
+
+
                         $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
                         if (obj.TaskList.length > 0) {
+                            $('#ddlParentTask').attr("disabled", false);
                             var taskList = obj.TaskList;
 
-
-                            $('#tblTasklist tbody').html('');
                             for (var i = 0; i < taskList.length; i++) {
-                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : new Date(taskList[i].ActualTaskStartDate).toLocaleDateString();
-                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : new Date(taskList[i].ActualTaskEndDate).toLocaleDateString();
-                                var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';    
-                                
+                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
+                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
+                                var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
+
                                 var userListHTML = "<tr><td>" + taskList[i].TaskId + "</td> <td>" + taskList[i].TaskName + "</td> <td>" + taskList[i].ParentTaskName + "</td> <td>" + taskList[i].ProjectName + "</td> <td>" +
-                                    new Date(taskList[i].TaskStartDate).toLocaleDateString()
-                                    + "</td> <td>" + new Date(taskList[i].TaskEndDate).toLocaleDateString() + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
+                                    formatDateInMM_DD_YYYY(new Date(taskList[i].TaskStartDate))
+                                    + "</td> <td>" + formatDateInMM_DD_YYYY(new Date(taskList[i].TaskEndDate)) + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
                                     "</td> <td>" + taskList[i].TaskStatusName + "</td><td>" + activeStatus +
                                     "</td><td><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + taskList[i].TaskId + ")'>Edit</a></td>"
                                 $('#tblTasklist tbody').append(userListHTML);
@@ -448,14 +576,17 @@
                                 $("#ddlParentTask").append($("<option></option>").val(taskList[i].TaskId).html(taskList[i].TaskName));
                             }
                         }
+                        else {
+                            $('#tblTasklist tbody').html('');
+                            $('#ddlParentTask').attr("disabled", "disabled");
+                        }
 
                         $("#ddlUsersAssigned").html('')
 
                         if (obj.UserList.length > 0) {
 
-
                             $('#divAddUserToAssignProject').css('display', 'none');
-                            $('#divUserDDL').removeClass('col-md-5');
+                            $('#divUserDDL').removeClass('col-md-7');
                             $('#divUserDDL').addClass('col-md-10') ;
                             var UserList = obj.UserList;
 
@@ -464,22 +595,21 @@
                                 $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
                             }
 
-                            //$("#ddlUsersAssigned").multiselect('rebuild');
-                            $("#ddlUsersAssigned").multiselect('refresh');
+
+                            //$("#ddlUsersAssigned").multiselect('refresh');
                             $("#ddlUsersAssigned").multiselect({
                                 enableCaseInsensitiveFiltering: true,
                                 buttonWidth: 550,
                                 enableFiltering: true
                                });
 
-
                         }
                         else {
                             $('#divUserDDL').removeClass('col-md-10');
-                            $('#divUserDDL').addClass('col-md-5');
+                            $('#divUserDDL').addClass('col-md-7');
                             $('#divAddUserToAssignProject').css('display', 'block');
-                           
-                            $("#ddlUsersAssigned").multiselect('refresh');
+
+                            //$("#ddlUsersAssigned").multiselect('refresh');
                             $("#ddlUsersAssigned").multiselect({
                                 enableCaseInsensitiveFiltering: true,
                                 buttonWidth: 550,
@@ -487,43 +617,48 @@
                             });
 
                         }
+
                         $('#tblTasklist').dataTable();
-                       
+
                         $('#myModalForTask').modal('show');
                     },
                     error: function (response) {
                         console.log(response);
                     }
             });
-           
+
 
 
         }
         $('#ddlUsersAssigned').change(function () {
 
             var userIds = $("#ddlUsersAssigned option:selected").map(function () { return this.value }).get().join(",");
-            //var deptIds = $("#ddlUsersAssigned option:selected").val();
+
 
             $('#UserIdsInString').val(userIds);
             console.log(userIds);
 
         })
         $('#btnProjectTaskSave').click(function () {
-           
-            
+
+            var taskID = $('#ProjectTask_TaskId').val();
             var projectID = $('#SelectedProjectId').val();
             var taskName = $('#ProjectTask_TaskName').val();
             var taskCode = $('#ProjectTask_TaskCode').val();
             var parentTaskId = $('#ddlParentTask').val();
-            var startDate = new Date($('#ProjectTask_TaskStartDate').val());
-            var endDate = new Date($('#ProjectTask_TaskEndDate').val());
-            var actualStartDate = new Date($('#ProjectTask_ActualTaskStartDate').val());
-            var actualEndDate = new Date($('#ProjectTask_ActualTaskEndDate').val());
+
+            var startDate = $('#ProjectTask_TaskStartDateDisplay').val();
+            var endDate = $('#ProjectTask_TaskEndDateDisplay').val();
+
+            var actualStartDate =$('#ProjectTask_ActualTaskStartDateDisplay').val();
+            var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplay').val();
 
             var completePercent = $('#ddlPercentage').val();
-            var IsActive = $('#ProjectTask_IsActive').val();
+            var taskStatusId = $('#ddlTaskStatus').val();
+            var IsActive = $('#ProjectTask_IsActive').is(':checked');
+
             var userIds = $('#UserIdsInString').val();
-            
+
            var validationStatus= validateTaskSave()
 
             if (validationStatus != true)
@@ -531,8 +666,19 @@
 
 
             var data = {
-                "ProjectID": projectID, "TaskName": taskName, "TaskCode": taskCode, "ParentTaskId":parentTaskId, "TaskStartDate": startDate, "ActualTaskStartDate": actualStartDate,
-                "ActualTaskEndDate": actualEndDate, "TaskEndDate": endDate, "CompletePercent": completePercent, "IsActive": IsActive, "UserIdsTaskAssigned": userIds
+                "TaskId": taskID,
+                "ProjectID": projectID,
+                "TaskName": taskName,
+                "TaskCode": taskCode,
+                "ParentTaskId": parentTaskId,
+                "TaskStartDateDisplay": startDate,
+                "TaskEndDateDisplay": endDate,
+                "ActualTaskStartDateDisplay": actualStartDate,
+                "ActualTaskEndDateDisplay": actualEndDate,
+                "CompletePercent": completePercent,
+                "IsActive": IsActive,
+                "TaskStatusID": taskStatusId,
+                "UserIdsTaskAssigned": userIds
             };
 
             $.ajax({
@@ -545,23 +691,24 @@
                     if (response == "Success") {
 
                         $('#divTaskSaveSuccess').css('display', 'block');
+                        response = null;
                         clearAllTaskControls();
                         ShowTaskPopup(projectID);
                     } else {
-                        
-                        ShowTaskErrorMessage('Error occured.')
-                      
-                    }
 
+                        ShowTaskErrorMessage('Error occured.')
+                        $('#divTaskSaveSuccess').css('display', 'none');
+
+                    }
 
                     },
                 error: function (response) {
-                    //alert('error occured')
+
                     ShowTaskErrorMessage('Error occured.')
-                       //console.log(response);
+
                     }
             });
-           
+
            // alert('task save');
         })
 
@@ -581,7 +728,13 @@
                 success: function (response) {
                     $('#popupUserBody').html('');
                     $('#popupUserBody').append(response);
-                    $('#myModalForUsers').modal('show');
+
+                    $('#divUserList').css('display', 'block');
+
+
+
+
+                   // $('#myModalForUsers').modal('show');
                 },
                 error: function (response) {
                     alert('error occured')
@@ -593,8 +746,25 @@
 
 
         function EditProjectTask(taskID) {
-           // alert('task is :'+ taskID);
 
+            var taskid = taskID;
+
+            if ($("#ddlParentTask option").length <= 2) {
+                $("#ddlParentTask option").attr("disabled", "disabled");
+            } else {
+                $("#ddlParentTask option").each(function (i) {
+
+                    if ($(this).val() == taskID) {
+                        $(this).attr("disabled", "disabled");
+                    }
+                    else {
+                        $(this).attr("disabled", false);
+                    }
+                })
+            }
+
+            var position = $('#divForm').position();
+            $("#myModalForTask").scrollTop(position.top);
              $.ajax({
                 url: '@Url.Action("GetProjectTaskByID", "Admin")',
                 type: "POST",
@@ -603,12 +773,54 @@
                 data: JSON.stringify({
                     "taskId": taskID
                 }),
-                success: function (response) {
-                    //$('#popupUserBody').html('');
-                    //$('#popupUserBody').append(response);
-                    //$('#myModalForUsers').modal('show');
+                 success: function (response) {
+                    // console.log(response);
+                    ///$("#ddlParentTask option[value='+taskID+']").remove();
+                     var taskObj = JSON.parse(response);
+                     $('#ProjectTask_TaskId').val(taskObj.TaskId)
+                     $('#ProjectTask_TaskName').val(taskObj.TaskName);
+                     $('#ProjectTask_TaskCode').val(taskObj.TaskCode);
 
-                    //TODO get the response object and bind with the controls to update the value.
+                     $('#ddlParentTask').val(taskObj.ParentTaskId)
+
+                     $('#ProjectTask_TaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskStartDate));
+                     $('#ProjectTask_TaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskEndDate));
+
+                     $('#ddlPercentage').val(taskObj.CompletePercent);
+
+
+                     if (taskObj.ActualTaskStartDate != null) {
+                         $('#ProjectTask_ActualTaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.ActualTaskStartDate));
+                     }
+                     else {
+                         $('#ProjectTask_ActualTaskStartDateDisplay').val('');
+                     }
+                     if (taskObj.ActualTaskEndDate != null) {
+                         $('#ProjectTask_ActualTaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.ActualTaskEndDate));
+                     }
+                     else {
+                         $('#ProjectTask_ActualTaskEndDateDisplay').val('');
+                     }
+                     $('#ddlTaskStatus').val(taskObj.TaskStatusID);
+                     $('#ProjectTask_IsActive').prop('checked', taskObj.IsActive);
+                     $('#ProjectTask_UserIdsTaskAssigned').val(taskObj.UserIdsTaskAssigned);
+
+
+                     $('#ddlUsersAssigned').multiselect('deselectAll', false);
+                     $('#ddlUsersAssigned').multiselect('updateButtonText');
+
+                     var userIds = taskObj.UserIdsTaskAssigned;
+                     var selectedOptions = taskObj.UserIdsTaskAssigned.split(',');
+                     for (i = 0; i < selectedOptions.length; i++) {
+
+                         $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
+                     }
+
+                     $('#UserIdsInString').val(userIds);
+
+                     $('#ddlTaskStatus').val(taskObj.TaskStatusID);
+
+
                 },
                 error: function (response) {
                     alert('error occured')
@@ -618,13 +830,43 @@
 
 
         }
+
+        //if ($('#ProjectTask_UserIdsTaskAssigned').val() != "") {
+
+        //    var AllselectedOptions = $('#UserIdsTaskAssigned').val();
+        //    var selectedOptions = AllselectedOptions.split(',');
+
+        //    for (var i in selectedOptions) {
+        //        var optionVal = selectedOptions[i];
+        //        $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
+        //    }
+        //    $("#ddlUsersAssigned").multiselect('reload');
+        //}
+
+        function formatDateInMM_DD_YYYY(yourUnformattedDate) {
+            var formattedDate = new Date(yourUnformattedDate);
+            var day = formattedDate.getDate();
+            var month = formattedDate.getMonth();
+            month += 1;  // JavaScript months are 0-11
+            var year = formattedDate.getFullYear();
+            if (day < 10) {
+                day = "0" + day;
+            }
+            if (month < 10) {
+                month = "0" + month;
+            }
+           // return (day + "/" + month + "/" + year);
+            return (month + "/" + day + "/" + year);
+
+        }
         function clearAllTaskControls() {
+            $('#ProjectTask_TaskId').val('');
             $('#ProjectTask_TaskName').val('');
             $('#ProjectTask_TaskCode').val('');
-            $('#ProjectTask_TaskStartDate').val('');
-            $('#ProjectTask_TaskEndDate').val('');
-            $('#ProjectTask_ActualTaskStartDate').val('');
-            $('#ProjectTask_ActualTaskEndDate').val('');
+            $('#ProjectTask_TaskStartDateDisplay').val('');
+            $('#ProjectTask_TaskEndDateDisplay').val('');
+            $('#ProjectTask_ActualTaskStartDateDisplay').val('');
+            $('#ProjectTask_ActualTaskEndDateDisplay').val('');
             $('#ddlUsersAssigned').val(0);
             $('#ddlUsersAssigned').multiselect('deselectAll', false);
             $('#ddlUsersAssigned').multiselect('updateButtonText');
@@ -639,9 +881,12 @@
             var projectID = $('#SelectedProjectId').val();
             var taskName = $('#ProjectTask_TaskName').val();
             var taskCode = $('#ProjectTask_TaskCode').val();
-            var startDate = $('#ProjectTask_TaskStartDate').val();
-            var endDate = $('#ProjectTask_TaskEndDate').val();
-           
+            var startDate = $('#ProjectTask_TaskStartDateDisplay').val();
+            var endDate = $('#ProjectTask_TaskEndDateDisplay').val();
+
+            var actualStartDate = $('#ProjectTask_ActualTaskStartDateDisplay').val();
+            var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplay').val();
+
             var userIds = $('#UserIdsInString').val();
             var taskStatus = $('#ddlTaskStatus').val();
             if (taskName == "") {
@@ -662,14 +907,116 @@
                 ShowTaskErrorMessage('Start date is required..')
                 return false;
             } else {
-                HideTaskErrorMessage();
+
+                if (!validateDate(startDate)) {
+                    ShowTaskErrorMessage('Invalid start date..')
+                    return false;
+                }
+                else {
+                    HideTaskErrorMessage();
+                }
+
             }
             if (endDate == "") {
                 ShowTaskErrorMessage('End date is required..')
                 return false;
             } else {
-                HideTaskErrorMessage();
+
+                if (!validateDate(endDate)) {
+                    ShowTaskErrorMessage('Invalid end date..')
+                    return false;
+                }
+                else {
+                    //validation for lesser end date
+
+                    //var splitstartDate = startDate.split('/');
+                    //var startdateFormat = splitstartDate[0] + '/' + splitstartDate[1] + '/' + splitstartDate[2];
+                    //var start = new Date(startdateFormat);
+
+
+                    //var splitEndtDate = endDate.split('/');
+                    //var enddateFormat = splitEndtDate[0] + '/' + splitEndtDate[1] + '/' + splitEndtDate[2];
+                    //var end = new Date(enddateFormat);
+
+                    var startmonthfield = startDate.split("/")[0]
+                    var startdayfield = startDate.split("/")[1]
+                    var startyearfield = startDate.split("/")[2]
+                    var start = new Date(startyearfield, startmonthfield - 1, startdayfield)
+
+                    var endmonthfield = endDate.split("/")[0]
+                    var enddayfield = endDate.split("/")[1]
+                    var endyearfield = endDate.split("/")[2]
+                    var end = new Date(endyearfield, endmonthfield - 1, enddayfield)
+
+                    if (start > end) {
+                        ShowTaskErrorMessage('End time can not be less than start time..')
+                        return false;
+                    }
+                    else {
+                        HideTaskErrorMessage();
+                    }
+
+                }
             }
+
+            if (actualStartDate != "") {
+                if (!validateDate(actualStartDate)) {
+                    ShowTaskErrorMessage('Invalid Actual start date..')
+                    return false;
+                }
+                else {
+                    HideTaskErrorMessage();
+                }
+
+            }
+
+            if (actualEndDate != "") {
+                if (!validateDate(actualEndDate)) {
+                    ShowTaskErrorMessage('Invalid Actual end date..')
+                    return false;
+                }
+                else {
+
+                    //var splitStartDate = startDate.split('/');
+                    //var startdateFormat = splitStartDate[1] + '/' + splitStartDate[0] + '/' + splitStartDate[2];
+                    //var start = new Date(startdateFormat);
+
+                    //var splitActualStartDate = actualStartDate.split('/');
+                    //var ActualstartdateFormat = splitActualStartDate[1] + '/' + splitActualStartDate[0] + '/' + splitActualStartDate[2];
+                    ////var start = new Date(startdateFormat);
+                    //var actualStart = new Date(ActualstartdateFormat);
+
+                    //var splitActualEndDate = actualEndDate.split('/');
+                    //var ActualEnddateFormat = splitActualEndDate[1] + '/' + splitActualEndDate[0] + '/' + splitActualEndDate[2];
+                    //var actualEnd = new Date(ActualEnddateFormat);
+
+                    var startmonthfield = startDate.split("/")[0]
+                    var startdayfield = startDate.split("/")[1]
+                    var startyearfield = startDate.split("/")[2]
+                    var start = new Date(startyearfield, startmonthfield - 1, startdayfield)
+
+                    var actualStartmonthfield = actualStartDate.split("/")[0]
+                    var actualStartdayfield = actualStartDate.split("/")[1]
+                    var actualStartyearfield = actualStartDate.split("/")[2]
+                    var actualStart = new Date(actualStartyearfield, actualStartmonthfield - 1, actualStartdayfield)
+
+                    var actualEndmonthfield = actualEndDate.split("/")[0]
+                    var actualEnddayfield = actualEndDate.split("/")[1]
+                    var actualEndyearfield = actualEndDate.split("/")[2]
+                    var actualEnd = new Date(actualEndyearfield, actualEndmonthfield - 1, actualEnddayfield)
+
+                    if (actualStart > actualEnd || start > actualEnd) {
+                        ShowTaskErrorMessage('Actual end time can not be less than actual start time/Start time..')
+                        return false;
+                    }
+                    else {
+                        HideTaskErrorMessage();
+                    }
+
+                }
+
+            }
+
 
             if (userIds == "") {
                 ShowTaskErrorMessage('Please select a user to assign task')
@@ -703,8 +1050,11 @@
             var Itemlist = [];
             var moduleid = [];
             var moduleids = [];
-
+            var userName = [];
+            var userNames = [];
+            var userList = [];
             var projectID = document.getElementById("SelectedProjectId").value;
+            $("#ddlUsersAssigned").multiselect('destroy');
 
             var lastpushedModuleid = 0;
 
@@ -712,8 +1062,12 @@
 
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
+                    userName = $(this).next('span').text();
+
                 }
+
                 moduleids.push(moduleid);
+                userNames.push(userName);
             });
 
 
@@ -722,6 +1076,14 @@
                 if (lastpushedModuleid != moduleids[i]) {
                     Item = { ProjectId: projectID, UserId: moduleids[i] }
                     Itemlist.push(Item);
+                }
+            }
+
+            for (var i = 0; i < moduleids.length; i++) {
+
+                if (lastpushedModuleid != moduleids[i]) {
+                    Item = { UserName: userNames[i], UserId: moduleids[i] }
+                    userList.push(Item);
                 }
             }
 
@@ -737,9 +1099,34 @@
                 success: function (result) {
                     if (result == "success") {
 
-                       // alert("Successfully Saved the Data");
-                        $('#myModalForUsers').modal('toggle');
-                        ShowTaskPopup(projectID);
+
+                        $('#divUserList').css('display', 'none');
+                        $("#ddlUsersAssigned").html('');
+                        var userIds=""
+                        for (var i = 0; i < userList.length; i++) {
+                            userIds += userList[i].UserId + ",";
+                            $("#ddlUsersAssigned").append($("<option></option>").val(userList[i].UserId).html(userList[i].UserName));
+                        }
+                        userIds = userIds.substr(0, userIds.length - 1);
+                        $("#ddlUsersAssigned").multiselect({
+                            enableCaseInsensitiveFiltering: true,
+                            buttonWidth: 550,
+                            enableFiltering: true
+                        });
+
+
+                        var selectedOptions = userIds.split(',');
+                        for (i = 0; i < selectedOptions.length; i++) {
+                            $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
+                        }
+
+                        $('#UserIdsInString').val(userIds);
+
+                        $('#divAddUserToAssignProject').css('display', 'none');
+                        $('#divUserDDL').removeClass('col-md-7');
+                        $('#divUserDDL').addClass('col-md-10');
+
+
                     } else {
                         alert("error");
                     }
@@ -749,18 +1136,83 @@
                 }
             });
         });
-        $('#srch-term').on('input', function () {
 
-            var searchFilter = $('#srch-term').val();
+        $.extend($.expr[":"], {
+            "containsIN": function (elem, i, match, array) {
+                return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+            }
+
+
+        });
+
+
+        $('#srch-term').keyup(function () {
+            //alert('test');
+
+            $("#divUserList div").css("text-decoration", "none");
+            $("#divUserList div").css("background", "white");
+            $("#divUserList span").css("background", "white");
+            $("#divUserList span").css("text-decoration", "none");
+            $("#divUserList div").css("color", "black");
+
+            var searchFilter = $(this).val();
 
             if (searchFilter == "") {
-                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "none");
+
+                $("#divUserList div").css("text-decoration", "none");
+                $("#divUserList div").css("background", "white");
+                $("#divUserList span").css("background", "white");
+                $("#divUserList span").css("text-decoration", "none");
+                $("#divUserList div").css("color", "black");
             }
             else {
-                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "none");
-                $("#divUserList :contains(" + searchFilter + ")").css("text-decoration", "underline");
+
+                //$("#divUserList div:containsIN(" + searchFilter + ")").css("text-decoration", "underline");
+                //$("#divUserList div:containsIN(" + searchFilter + ")").css("background", "#42f4eb");
+                //$("#divUserList div:containsIN(" + searchFilter + ")").css("color", "black");
+
+                var container = $("#divUserList :containsIN(" + searchFilter + ")")
+                container.each(function (index, item) {
+
+                    if (item.tagName == "SPAN") {
+
+                        $(item).css("text-decoration", "underline");
+                        $(item).css("background", "#42f4eb");
+                    }
+
+                });
             }
 
+        });
+
+
+        function validateDate(date) {
+
+            var validformat = /^\d{2}\/\d{2}\/\d{4}$/ //Basic check for format validity
+            var returnval = false
+            if (!validformat.test(date)) {
+
+                returnval = false;
+            }
+            else { //Detailed check for valid date ranges
+                var monthfield = date.split("/")[0]
+                var dayfield = date.split("/")[1]
+                var yearfield = date.split("/")[2]
+                var dayobj = new Date(yearfield, monthfield - 1, dayfield)
+                if ((dayobj.getMonth() + 1 != monthfield) ||
+                    (dayobj.getDate() != dayfield) || (dayobj.getFullYear() != yearfield))
+
+                    returnval = false;
+                else
+                    returnval = true
+            }
+
+            return returnval
+        }
+
+
+        $('#btnCloseUserList').click(function () {
+            $('#divUserList').css('display', 'none');
         });
     </script>
     @if (TempData["JavaScriptFunction"] != null)
