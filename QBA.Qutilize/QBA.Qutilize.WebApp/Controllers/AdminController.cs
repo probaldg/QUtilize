@@ -2167,6 +2167,142 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strClienData.ToString());
         }
         #endregion
+
+        #region Task Status managment region
+        public ActionResult ManageTaskStatus(int ID = 0)
+        {
+            TaskStatusModel statusModel = new TaskStatusModel();
+            try
+            {
+
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                statusModel.OrganisationList.Clear();
+
+                if (!userInfo.IsRoleSysAdmin)
+                {
+                    //var organisation = statusModel.GetOrgInList(userInfo.UserOrganisationID).FirstOrDefault(x => x.isActive == true);
+                    var organisation = statusModel.GetOrgInList(userInfo.UserOrganisationID);
+                    statusModel.OrganisationList = organisation;
+
+                    statusModel.StatusOrgId = userInfo.UserOrganisationID;
+                }
+                else
+                {
+                    var list = statusModel.GetOrgInList();
+                    if (list.Count > 0)
+                        statusModel.OrganisationList = list;
+
+                }
+                if (ID > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = statusModel.GetTaskStatus(0, ID);
+                    if (dt.Rows.Count > 0)
+                    {
+                        statusModel.StatusId = ID;
+                        statusModel.StatusName = dt.Rows[0]["StatusName"].ToString();
+                        statusModel.StatusCode = dt.Rows[0]["StatusCode"].ToString();
+                        statusModel.Rank = Convert.ToInt32(dt.Rows[0]["Rank"]);
+                        statusModel.StatusOrgId = Convert.ToInt32(dt.Rows[0]["ORGID"]);
+                        statusModel.IsActive = Convert.ToBoolean(dt.Rows[0]["isACTIVE"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                TempData["ErrStatus"] = true;
+            }
+
+            return View(statusModel);
+        }
+
+        [HttpPost]
+        public ActionResult ManageTaskStatus(TaskStatusModel model)
+        {
+            TaskStatusModel tm = new TaskStatusModel();
+            try
+            {
+                if (model.StatusId > 0)
+                {
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+                    var result = tm.UpdateTaskStatusData(model);
+                    if (result == true)
+                    {
+                        TempData["ErrStatus"] = false;
+                    }
+                    else
+                    {
+                        TempData["ErrStatus"] = true;
+                    }
+                }
+                else
+                {
+                    model.AddedBy = loggedInUser;
+                    model.AddedTS = DateTime.Now;
+                    var result = tm.InsertTaskStatusData(model, out int id);
+                    if (result == true && id > 0)
+                    {
+                        TempData["ErrStatus"] = false;
+                    }
+                    else
+                    {
+                        TempData["ErrStatus"] = true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                TempData["ErrStatus"] = true;
+            }
+
+            return RedirectToAction("ManageTaskStatus", "Admin");
+        }
+
+        public ActionResult LoadTaskStatusData()
+        {
+            TaskStatusModel taskStatusModel = new TaskStatusModel();
+            StringBuilder stringBuilder = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = taskStatusModel.GetTaskStatus(0, 0);
+                }
+                else
+                {
+                    dt = taskStatusModel.GetTaskStatus(userInfo.UserOrganisationID);
+                }
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["isACTIVE"]) == true ? "Active" : "In Active";
+                    stringBuilder.Append("<tr>");
+                    stringBuilder.Append("<td class='text-center'>" + item["StatusID"].ToString() + "</td>");
+                    stringBuilder.Append("<td class='text-center'>" + item["StatusCode"].ToString() + "</td>");
+                    stringBuilder.Append(" <td class='text-center'>" + item["StatusName"].ToString() + "</td>");
+                    stringBuilder.Append(" <td class='text-center'>" + item["Rank"].ToString() + "</td>");
+                    stringBuilder.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
+                    stringBuilder.Append("<td class='text-center'>" + status + "</td>");
+                    stringBuilder.Append("<td class='text-center'><a href = 'ManageTaskStatus?ID=" + item["StatusID"].ToString() + "'>Edit </a> </td>");
+                    stringBuilder.Append("</tr>");
+
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Content(stringBuilder.ToString());
+        }
+        #endregion
         public ActionResult GetUserActivityTracking(string userAgent, string absURL)
         {
             string strRet = string.Empty;

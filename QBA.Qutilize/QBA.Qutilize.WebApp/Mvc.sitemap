@@ -4,19 +4,23 @@
             xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
 
   <mvcSiteMapNode title="Home" controller="Home" action="Dashboard">
-      <mvcSiteMapNode title="Admin" controller="Home" action="Dashboard">
-          <mvcSiteMapNode title="User Management"  controller="Admin" action="ManageUsers"/>
-          <mvcSiteMapNode title="Project Management"  controller="Admin" action="ManageProject"/>
-          <mvcSiteMapNode title="User Project Mapping"  controller="Admin" action="UserProjectMapping"/>
-          <mvcSiteMapNode title="Role Management"  controller="Admin" action="ManageRole"/>
-          <mvcSiteMapNode title="User Role Mapping"  controller="Admin" action="UserRoleMapping"/>
-          <mvcSiteMapNode title="Role Module Mapping"  controller="Admin" action="RoleModuleMapping"/>
-          <mvcSiteMapNode title="Organization Management"  controller="Admin" action="ManageOrganisation"/>
-          <mvcSiteMapNode title="Module Management"  controller="Admin" action="ManageModule"/>
-          <mvcSiteMapNode title="Department Management"  controller="Admin" action="ManageDepartment"/>
-      </mvcSiteMapNode>
-      <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
-      <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
-      <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
+
+    <mvcSiteMapNode title="Admin" controller="Home" action="Dashboard">
+      <mvcSiteMapNode title="User Management"  controller="Admin" action="ManageUsers"/>
+      <mvcSiteMapNode title="Project Management"  controller="Admin" action="ManageProject"/>
+      <mvcSiteMapNode title="User Project Mapping"  controller="Admin" action="UserProjectMapping"/>
+      <mvcSiteMapNode title="Role Management"  controller="Admin" action="ManageRole"/>
+      <mvcSiteMapNode title="User Role Mapping"  controller="Admin" action="UserRoleMapping"/>
+      <mvcSiteMapNode title="Role Module Mapping"  controller="Admin" action="RoleModuleMapping"/>
+      <mvcSiteMapNode title="Organization Management"  controller="Admin" action="ManageOrganisation"/>
+      <mvcSiteMapNode title="Module Management"  controller="Admin" action="ManageModule"/>
+      <mvcSiteMapNode title="Department Management"  controller="Admin" action="ManageDepartment"/>
+      <mvcSiteMapNode title="Client Management"  controller="Admin" action="ManageClient"/>
+      <mvcSiteMapNode title="Project Status Management"  controller="Admin" action="ManageTaskStatus"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
+    <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
+    <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
+
   </mvcSiteMapNode>
 </mvcSiteMap>
