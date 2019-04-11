@@ -133,7 +133,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID)
+        public static DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID,int MainUser,string Role)
         {
             DataSet ds = null;
             try
@@ -142,7 +142,9 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@UserID",Convert.ToInt32(userID)),
                                         new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
                                         new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-                                        new SqlParameter("@ProjectID",ProjectID)
+                                        new SqlParameter("@ProjectID",ProjectID),
+                                        new SqlParameter("@MainUser",MainUser),
+                                        new SqlParameter("@Role",Role)
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {

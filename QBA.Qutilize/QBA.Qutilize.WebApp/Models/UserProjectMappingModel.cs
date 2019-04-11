@@ -68,6 +68,23 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
+        public DataTable GetAllUsersByManagerID(int ManagerID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@ManagerID",ManagerID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_GetUsersByManagerID]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
         public DataTable GetAllProjectByUserID(int UserID)
         {
             DataTable dt = null;
@@ -78,6 +95,25 @@ namespace QBA.Qutilize.WebApp.Models
 
                                       };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Get]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+
+        public DataTable GetAllProjectByManagerID(int ManagerID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@ManagerID",ManagerID),
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_GetForManager]", param);
             }
             catch (Exception ex)
             {

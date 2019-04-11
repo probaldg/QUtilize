@@ -135,6 +135,45 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                 }
+                else if (HttpContext.Session["OrgPM"] != null)
+                {
+                    UserProjectMappingModel USM = new UserProjectMappingModel();
+                    DataTable dt = new DataTable();
+                    sbOut.Append("<div class='col-md-2'>");
+                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers'>");
+                    sbOut.Append("<option value='0'>Select</option>");
+
+                    var dtActiveUsers = USM.GetAllUsersByManagerID(int.Parse(HttpContext.Session["UserID"].ToString())).Select("IsActive=1");
+                    if (dtActiveUsers.Length > 0)
+                    {
+                        dt = dtActiveUsers.CopyToDataTable();
+                        for (int i = 0; i < dtActiveUsers.Length; i++)
+                        {
+
+                            sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "'>" + dt.Rows[i]["Name"] + "</option>");
+
+                        }
+                    }
+                    sbOut.Append("</select>");
+                    sbOut.Append("</div>");
+
+                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
+                    UserProjectMappingModel UPM = new UserProjectMappingModel();
+                    DataTable dtAllProjects = new DataTable();
+                    dtAllProjects = UPM.GetAllProjectByManagerID(int.Parse(HttpContext.Session["UserID"].ToString()));
+                    sbOut.Append("<div class='col-md-2'>");
+                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                    sbOut.Append("<option value='0'>Select</option>");
+                    if (dtAllProjects.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dtAllProjects.Rows.Count; i++)
+                        {
+                            sbOut.Append("<option value='" + dtAllProjects.Rows[i]["Id"] + "'>" + dtAllProjects.Rows[i]["ProjectName"] + "</option>");
+                        }
+                    }
+                    sbOut.Append("</select>");
+                    sbOut.Append("</div>");
+                }
                 else
                 {
                     sbOut.Append("<div class='col-md-2'>");
@@ -143,10 +182,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                     
-                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
-                    ProjectModel pm = new ProjectModel();
+                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");                    
+                    UserProjectMappingModel UPM = new UserProjectMappingModel();
                     DataTable dtAllProjects = new DataTable();
-                    dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
+                    dtAllProjects = UPM.GetAllProjectByUserID(int.Parse(HttpContext.Session["UserID"].ToString()));
                     sbOut.Append("<div class='col-md-2'>");
                     sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
                     sbOut.Append("<option value='0'>Select</option>");
@@ -183,10 +222,28 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbOut = new StringBuilder();
             try
             {
+                string Role = "";
+                if (HttpContext.Session["SysAdmin"] != null && HttpContext.Session["OrgAdmin"]!=null && HttpContext.Session["OrgPM"] != null)
+                {
+                     Role = "SysAdmin";
+                }
+                else if (HttpContext.Session["SysAdmin"] == null && HttpContext.Session["OrgAdmin"] != null && HttpContext.Session["OrgPM"] != null)
+                {
+                     Role = "OrgAdmin";
+                }
+                else if (HttpContext.Session["SysAdmin"] == null && HttpContext.Session["OrgAdmin"] == null && HttpContext.Session["OrgPM"] != null)
+                {
+                     Role = "OrgPM";
+                }
+                else
+                {
+                    Role = "User";
+                }
+
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetReportData(userid, startdate, endDate, projectid);
+                DataSet ds = lvm.GetReportData(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
                 sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
-                sbOut.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>Client</th><th class='text-center tblHeaderColor'>Job</th><th class='text-center tblHeaderColor'>Milestone</th><th class='text-center tblHeaderColor'>Activity Group</th><th class='text-center tblHeaderColor'>Activity</th><th class='text-center tblHeaderColor'>Naration</th><th class='text-center tblHeaderColor'>User</th><th class='text-center tblHeaderColor'>Total Hours(HH:MM:SS)</th><th style='display: none;'>Total Sec</th></tr></thead>");
+                sbOut.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>User</th><th class='text-center tblHeaderColor'>Client</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Milestone</th><th class='text-center tblHeaderColor'>Activity Group</th><th class='text-center tblHeaderColor'>Activity</th><th class='text-center tblHeaderColor'>Naration</th><th class='text-center tblHeaderColor'>Total Hours</th><th style='display: none;'>Total Sec</th></tr></thead>");
                 sbOut.Append("<tbody id='tableBodyReportData'>");
                 if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                 {
@@ -202,7 +259,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                             
                         
-                        sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + hours  + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
+                        sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + hours  + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
                     }
                     
                 }
