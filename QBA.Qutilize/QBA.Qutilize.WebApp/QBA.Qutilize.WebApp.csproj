@@ -196,6 +196,7 @@
     <Compile Include="Models\ProjectTaskModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
+    <Compile Include="Models\SkillManagementModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserProjectMappingModel.cs" />
     <Compile Include="Models\UserRoleMappingModel.cs" />
@@ -780,6 +781,9 @@
     <Content Include="Views\Admin\ManageModule.cshtml" />
     <Content Include="Views\Admin\ManageClient.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Admin\ManageRoleMapping.cshtml" />
+    <Content Include="Views\Admin\ManageRoles.cshtml" />
+    <Content Include="Views\DailyTask\SkillManagement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
