@@ -119,11 +119,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;"><span id="projectNameHeader"></span> Task List</h4>
+                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader">Task List</h4>
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:10px">
                         <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
 
                         <table class="table table-striped table-bordered myTable" id="tblTasklist">
@@ -131,6 +131,7 @@
                                 <tr>
                                     <th class="text-center tblHeaderColor sorting">ID</th>
                                     <th class="text-center tblHeaderColor sorting">Task Name</th>
+                                    <th class="text-center tblHeaderColor sorting">Task Code</th>
                                     <th class="text-center tblHeaderColor sorting">Parent task Name</th>
                                     <th class="text-center tblHeaderColor sorting">Project Name</th>
                                     <th class="text-center tblHeaderColor sorting">Start Date</th>
@@ -139,6 +140,8 @@
                                     <th class="text-center tblHeaderColor sorting">Actual End Date</th>
                                     <th class="text-center tblHeaderColor sorting">Task Status</th>
                                     <th class="text-center tblHeaderColor sorting">Status</th>
+                                    <th class="text-center tblHeaderColor sorting">Percentage Complete</th>
+                                    <th class="text-center tblHeaderColor sorting">IsMilestone</th>
                                     <th class="text-center tblHeaderColor sorting">Edit</th>
                                 </tr>
                             </thead>
@@ -166,7 +169,7 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <h5>Project Task Details</h5>
+                        <h4>Project Task Details</h4>
 
                         <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -207,6 +210,16 @@
                                 <div class="col-md-10">
                                     @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
                                     @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.IsMilestone, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="ProjectTask_IsMilestone" />
+                                    </div>
                                 </div>
                             </div>
 
@@ -513,9 +526,11 @@
             $('#ClientD').val(clientID);
 
         });
-        function ShowTaskPopup(projectId) {
+        function ShowTaskPopup(projectId, projectname) {
 
             //alert(projectname);
+            $('#hProjectNameHeader').html('');
+            $('#hProjectNameHeader').html(projectname + ' Task list');
             $('#SelectedProjectId').val(projectId);
             $("#ddlUsersAssigned").multiselect('destroy');
 
@@ -565,12 +580,20 @@
                                 var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
                                 var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
                                 var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
+                               // var isMileStone = (taskList[i].IsMilestone == true && taskList[i].IsMilestone != null )
+                                var isMilestone;
+                                if (taskList[i].IsMilestone != null) {
+                                    isMilestone = (taskList[i].IsMilestone == true) ? 'Yes' : 'No';
+                                }
+                                else {
+                                    isMilestone = "";
+                                }
 
-                                var userListHTML = "<tr><td>" + taskList[i].TaskId + "</td> <td>" + taskList[i].TaskName + "</td> <td>" + taskList[i].ParentTaskName + "</td> <td>" + taskList[i].ProjectName + "</td> <td>" +
+                                var userListHTML = "<tr><td class='text-center'>" + taskList[i].TaskId + "</td> <td class='text-center'>" + taskList[i].TaskName + "</td> <td class='text-center'>" + taskList[i].TaskCode + "</td> <td class='text-center'>" + taskList[i].ParentTaskName + "</td> <td class='text-center'>" + taskList[i].ProjectName + "</td> <td class='text-center'>" +
                                     formatDateInMM_DD_YYYY(new Date(taskList[i].TaskStartDate))
-                                    + "</td> <td>" + formatDateInMM_DD_YYYY(new Date(taskList[i].TaskEndDate)) + "</td><td>" + taskActualStartValue + "</td><td>" + taskActualEndValue +
-                                    "</td> <td>" + taskList[i].TaskStatusName + "</td><td>" + activeStatus +
-                                    "</td><td><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + taskList[i].TaskId + ")'>Edit</a></td>"
+                                    + "</td> <td class='text-center'>" + formatDateInMM_DD_YYYY(new Date(taskList[i].TaskEndDate)) + "</td><td class='text-center'>" + taskActualStartValue + "</td><td class='text-center'>" + taskActualEndValue +
+                                    "</td> <td class='text-center'>" + taskList[i].TaskStatusName + "</td><td class='text-center'>" + activeStatus + "</td><td class='text-center'>" + taskList[i].CompletePercent +"</td><td class='text-center'>"      + isMilestone +
+                                    "</td><td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + taskList[i].TaskId + ")'>Edit</a></td>"
                                 $('#tblTasklist tbody').append(userListHTML);
 
                                 $("#ddlParentTask").append($("<option></option>").val(taskList[i].TaskId).html(taskList[i].TaskName));
@@ -585,9 +608,9 @@
 
                         if (obj.UserList.length > 0) {
 
-                            $('#divAddUserToAssignProject').css('display', 'none');
-                            $('#divUserDDL').removeClass('col-md-7');
-                            $('#divUserDDL').addClass('col-md-10') ;
+                           // $('#divAddUserToAssignProject').css('display', 'none');
+                           // $('#divUserDDL').removeClass('col-md-7');
+                            //$('#divUserDDL').addClass('col-md-10') ;
                             var UserList = obj.UserList;
 
                             for (var i = 0; i < UserList.length; i++) {
@@ -605,9 +628,9 @@
 
                         }
                         else {
-                            $('#divUserDDL').removeClass('col-md-10');
-                            $('#divUserDDL').addClass('col-md-7');
-                            $('#divAddUserToAssignProject').css('display', 'block');
+                           // $('#divUserDDL').removeClass('col-md-10');
+                           // $('#divUserDDL').addClass('col-md-7');
+                           // $('#divAddUserToAssignProject').css('display', 'block');
 
                             //$("#ddlUsersAssigned").multiselect('refresh');
                             $("#ddlUsersAssigned").multiselect({
@@ -656,7 +679,7 @@
             var completePercent = $('#ddlPercentage').val();
             var taskStatusId = $('#ddlTaskStatus').val();
             var IsActive = $('#ProjectTask_IsActive').is(':checked');
-
+            var IsMilestone = $('#ProjectTask_IsMilestone').is(':checked');
             var userIds = $('#UserIdsInString').val();
 
            var validationStatus= validateTaskSave()
@@ -677,6 +700,7 @@
                 "ActualTaskEndDateDisplay": actualEndDate,
                 "CompletePercent": completePercent,
                 "IsActive": IsActive,
+                "IsMilestone": IsMilestone,
                 "TaskStatusID": taskStatusId,
                 "UserIdsTaskAssigned": userIds
             };
@@ -731,10 +755,6 @@
 
                     $('#divUserList').css('display', 'block');
 
-
-
-
-                   // $('#myModalForUsers').modal('show');
                 },
                 error: function (response) {
                     alert('error occured')
@@ -785,6 +805,15 @@
 
                      $('#ProjectTask_TaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskStartDate));
                      $('#ProjectTask_TaskEndDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.TaskEndDate));
+
+                     if (taskObj.IsMilestone == null) {
+                         $('#ProjectTask_IsMilestone').prop('checked', false);
+                     }
+                     else {
+                         $('#ProjectTask_IsMilestone').prop('checked', taskObj.IsMilestone);
+                     }
+
+                    
 
                      $('#ddlPercentage').val(taskObj.CompletePercent);
 
@@ -870,11 +899,14 @@
             $('#ddlUsersAssigned').val(0);
             $('#ddlUsersAssigned').multiselect('deselectAll', false);
             $('#ddlUsersAssigned').multiselect('updateButtonText');
+            $('#UserIdsInString').val('');
             $('#ddlParentTask').val(0);
             $('#ddlPercentage').val(0);
             $('#ddlTaskStatus').val(0);
             $('#ProjectTask_IsActive').val(false);
             $('#ProjectTask_IsActive').prop("checked", false);
+            $('#ProjectTask_IsMilestone').val(false);
+            $('#ProjectTask_IsMilestone').prop("checked", false);
         }
 
         function validateTaskSave() {
@@ -1101,13 +1133,20 @@
 
 
                         $('#divUserList').css('display', 'none');
-                        $("#ddlUsersAssigned").html('');
+                       // $("#ddlUsersAssigned").html('');
                         var userIds=""
                         for (var i = 0; i < userList.length; i++) {
                             userIds += userList[i].UserId + ",";
                             $("#ddlUsersAssigned").append($("<option></option>").val(userList[i].UserId).html(userList[i].UserName));
                         }
-                        userIds = userIds.substr(0, userIds.length - 1);
+                        var previousSelectedUser = $('#UserIdsInString').val();
+                        if (previousSelectedUser == "") {
+                            userIds = userIds.substr(0, userIds.length - 1);
+                        }
+                        else {
+                            userIds = previousSelectedUser +","+ userIds.substr(0, userIds.length - 1);
+                        }
+                        //userIds = userIds.substr(0, userIds.length - 1);
                         $("#ddlUsersAssigned").multiselect({
                             enableCaseInsensitiveFiltering: true,
                             buttonWidth: 550,
@@ -1122,9 +1161,9 @@
 
                         $('#UserIdsInString').val(userIds);
 
-                        $('#divAddUserToAssignProject').css('display', 'none');
-                        $('#divUserDDL').removeClass('col-md-7');
-                        $('#divUserDDL').addClass('col-md-10');
+                        //$('#divAddUserToAssignProject').css('display', 'none');
+                        //$('#divUserDDL').removeClass('col-md-7');
+                       // $('#divUserDDL').addClass('col-md-10');
 
 
                     } else {
@@ -1221,6 +1260,12 @@
             @Html.Raw(TempData["JavaScriptFunction"].ToString())
         </script>
     }
+
+    <style>
+        .modal-dialog {
+            width: 1125px;
+        }
+    </style>
 </body>
 </html>
 
