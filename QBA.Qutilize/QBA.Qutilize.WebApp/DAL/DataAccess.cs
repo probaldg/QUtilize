@@ -472,7 +472,24 @@ namespace QBA.Qutilize.WebApp.DAL
             return orgId;
         }
         #endregion
+        public static DataSet GetSkillManagementDetailData(int userID, int ORGID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param = { new SqlParameter("@UserId", userID), new SqlParameter("@ORGID", ORGID) };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPSkillManagementDetail_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
 
-        
+            }
+
+            return ds;
+        }
+
     }
 }

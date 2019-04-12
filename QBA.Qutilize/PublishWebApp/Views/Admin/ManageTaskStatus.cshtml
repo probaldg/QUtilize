@@ -1,0 +1,191 @@
+﻿@model QBA.Qutilize.WebApp.Models.TaskStatusModel
+@{
+    ViewBag.Title = "Manage Task Status";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+@{
+    var strMSGforSave = string.Empty;
+    string strStyle = string.Empty;
+    string strErrorStyle = string.Empty;
+    var strMsgforErr = string.Empty;
+    var strmsgStyle = string.Empty;
+
+    var errSts = TempData["ErrMsg"];
+
+    var ErrStatus = TempData["ErrStatus"];
+    strStyle = "display:none";
+    strErrorStyle = "display:none";
+
+    if (ErrStatus != null && Convert.ToBoolean(ErrStatus) == false)
+    {
+
+        strStyle = "display:block";
+        strErrorStyle = "display:none";
+    }
+    else if (ErrStatus != null && Convert.ToBoolean(ErrStatus) == true)
+    {
+        strMSGforSave = "Error occured.";
+        strStyle = "display:none";
+        strErrorStyle = "display:block";
+    }
+
+
+
+}
+<div class="form-horizontal col-md-12">
+    <div class="alert alert-success alert-dismissible" role="alert" style="@strStyle">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        Data Saved Successfully!!!
+    </div>
+</div>
+
+<div class="form-horizontal col-md-12">
+    <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="@strErrorStyle">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <span id="errormsg">@strMSGforSave</span>
+    </div>
+</div>
+<h4>Manage Task Status</h4>
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
+        <thead id="tblHeadListViewPost">
+            <tr>
+                <th class="text-center tblHeaderColor">ID</th>
+                <th class="text-center tblHeaderColor">Code</th>
+                <th class="text-center tblHeaderColor">Name</th>
+                <th class="text-center tblHeaderColor">Rank</th>
+                <th class="text-center tblHeaderColor">Organisation</th>
+                <th class="text-center tblHeaderColor">Active</th>
+                <th class="text-center tblHeaderColor">Edit</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Action("LoadTaskStatusData", "Admin")
+        </tbody>
+    </table>
+</div>
+<div class="col-md-12"><br /></div>
+@using (Html.BeginForm("ManageTaskStatus", "Admin", FormMethod.Post, new { onsubmit = "return checkClientForm()" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Status Details</h4>
+    <hr />
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.StatusId)
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StatusName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StatusName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StatusName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.StatusCode, htmlAttributes: new { @class = "control-label col-md-2"  })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StatusCode, new { htmlAttributes = new { @class = "form-control", @maxlength = "2" } })
+                @Html.ValidationMessageFor(model => model.StatusCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Rank, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Rank, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Rank, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.OrganisationList, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.StatusOrgId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+}
+
+<script type="text/javascript">
+    $("#tblGridListViewPost").dataTable();
+
+    $('#OrganisationList').change(function () {
+        var OrgId = $('#OrganisationList').val();
+        $('#StatusOrgId').val(OrgId)
+
+    });
+    var orgId = $('#StatusOrgId').val();
+    if (orgId != 0) {
+        $('#OrganisationList').val(orgId);
+        if ($('#OrganisationList option').length == 2) {
+            $("#OrganisationList").prop("disabled", true);
+        }
+    }
+    function checkClientForm() {
+        //alert('test');
+        var statusName = $('#StatusName').val();
+        var statusCode = $('#StatusCode').val();
+        var rank = $('#Rank').val();
+        var organisationName = $('#OrganisationList').val();
+        if (statusName == "") {
+            showErrorMessage("Name is required");
+            return false;
+        }
+        else {
+            hideErrorMessage();
+        }
+        if (statusCode == "") {
+            showErrorMessage("Code is required");
+            return false;
+        }
+        else {
+            hideErrorMessage();
+        }
+        if (rank == 0) {
+            showErrorMessage("Rank is required");
+            return false;
+        }
+        else {
+            hideErrorMessage();
+        }
+        if (organisationName == "") {
+            showErrorMessage("Please select a organisation from the list.");
+            return false;
+        }
+        else {
+            hideErrorMessage();
+        }
+        return true;
+    }
+
+    function showErrorMessage(message) {
+        document.getElementById("errormsg").innerHTML = message;
+        document.getElementById("ErrorMsg").style.display = 'block';
+    }
+    function hideErrorMessage() {
+        document.getElementById("errormsg").innerHTML = '';
+        document.getElementById("ErrorMsg").style.display = 'none';
+    }
+</script>
