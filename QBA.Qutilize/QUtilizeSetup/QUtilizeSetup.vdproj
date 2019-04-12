@@ -16,13 +16,19 @@
         "Entry"
         {
         "MsmKey" = "8:_006ED95E17DEBC7D6C70BA01D0F66430"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_0EF4D4CDB7D9B59C4CD5ACDE5A1FE715"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -34,7 +40,7 @@
         "Entry"
         {
         "MsmKey" = "8:_69274EA6D8D287154FE98F6EF88A469D"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -46,7 +52,7 @@
         "Entry"
         {
         "MsmKey" = "8:_94C4E6C285ADBF0E5739B0F3508261AA"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,7 +64,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B0B8FBE17FD2EA8FF039F97A3BCBC0FD"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -70,25 +76,19 @@
         "Entry"
         {
         "MsmKey" = "8:_D58494A97204B87FA1183F04FA83F93A"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
-        "OwnerKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E1262DB8209EDECF4F43104E0C07597A"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E6794906F5F3E5701A899BDF5B40748A"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -106,7 +106,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
+        "OwnerKey" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -691,7 +691,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_960E569548914619B1F8A7977876221F"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_3759F639FB974FD2BAC8340BF4C14CD5"
             {
             "Name" = "8:Qutilize"
             "Arguments" = "8:"
@@ -699,13 +699,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
-            "Folder" = "8:_EF4E1CA01CF54489AE43A410768B96A5"
+            "Target" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
+            "Folder" = "8:_F88E375C3AF04159BB10B5FBC46D8FAD"
             "WorkingFolder" = "8:_D74F6478134041DDB58063E12E4114B7"
             "Icon" = "8:_7DC8730E455845779E8EB4E64DA8BEAF"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FB57C55B4264494FAE8CABAEFFCA93AC"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_4AD89DEA21E14A7A99B7490C49007C85"
             {
             "Name" = "8:Qutilize"
             "Arguments" = "8:"
@@ -713,8 +713,8 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_D9AE8C5288DE4539BAE8F88A067F3028"
-            "Folder" = "8:_F88E375C3AF04159BB10B5FBC46D8FAD"
+            "Target" = "8:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
+            "Folder" = "8:_EF4E1CA01CF54489AE43A410768B96A5"
             "WorkingFolder" = "8:_D74F6478134041DDB58063E12E4114B7"
             "Icon" = "8:_7DC8730E455845779E8EB4E64DA8BEAF"
             "Feature" = "8:"
@@ -1118,7 +1118,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D9AE8C5288DE4539BAE8F88A067F3028"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_11CCE7E21E1C47DF9CF9E2B1E634B3D6"
             {
             "SourcePath" = "8:..\\QBA.Qutilize.ClientApp\\obj\\Debug\\QBA.Qutilize.ClientApp.exe"
             "TargetName" = "8:"
