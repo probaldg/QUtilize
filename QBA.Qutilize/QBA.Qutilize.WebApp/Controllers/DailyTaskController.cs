@@ -245,7 +245,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             return result;
         }
 
-        public ActionResult PMSDetails()
+        public ActionResult SkillManagement()
         {
             if (System.Web.HttpContext.Current.Session["sessUser"] != null)
             {
@@ -271,22 +271,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<thead>");
                     sbContent.Append("<tr>");
                     //sbContent.Append("<th class='text-center tblHeaderColor'>Name</th>");
-                    sbContent.Append("<th class='text-center tblHeaderColor'>IP Address</th>");
-                    sbContent.Append("<th class='text-center tblHeaderColor'>Application</th>");
-                    sbContent.Append("<th class='text-center tblHeaderColor'>Start Date Time</th>");
-                    sbContent.Append("<th class='text-center tblHeaderColor'>End Date Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Category</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Skill Code</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Skill Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Proficiency Level</th>");
                     sbContent.Append("</tr>");
                     sbContent.Append("</thead>");
                     sbContent.Append("<tbody id='tbodySessionHistoryData'>");
+                    int counter = 1;
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
                         //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["userName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IPAddress"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Application"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDateTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDateTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Category"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillCode"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillName"]) + "</span></td>");
+                        sbContent.Append("<td>" + GetDDlSkillRankype(ds, counter, "V") + "<input type='hidden' id='hidSkillID" + counter + "' name='hidSkillID[]' value='" + Convert.ToString(dr["ID"]) + "'></td>");
                         sbContent.Append("</tr>");
+                        counter++;
                     }
                     sbContent.Append("</tbody>");
                     sbContent.Append("</table>");
