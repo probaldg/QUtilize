@@ -142,7 +142,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<div class='col-md-2'>");
                     sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers'>");
                     sbOut.Append("<option value='0'>Select</option>");
-
+                    sbOut.Append("<option value='" + HttpContext.Session["UserID"].ToString() + "'>" + HttpContext.Session["Name"].ToString() + "</option>");
                     var dtActiveUsers = USM.GetAllUsersByManagerID(int.Parse(HttpContext.Session["UserID"].ToString())).Select("IsActive=1");
                     if (dtActiveUsers.Length > 0)
                     {
@@ -223,7 +223,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 string Role = "";
-                if (HttpContext.Session["SysAdmin"] != null && HttpContext.Session["OrgAdmin"]!=null && HttpContext.Session["OrgPM"] != null)
+                if (HttpContext.Session["SysAdmin"] != null)
                 {
                      Role = "SysAdmin";
                 }
