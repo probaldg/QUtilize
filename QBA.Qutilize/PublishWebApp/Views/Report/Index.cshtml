@@ -43,7 +43,7 @@
         var vUserID = $('#ddlUsers').val();
         var vProjectID = $('#ddlProjects').val();
 
-        if (vUserID != "0" && vProjectID != "0") {
+        if (vStartDate != "" && vEndDate != "") {
             $.ajax({
                 url: '@Url.Action("GetReportData", "Report")',
                 type: "POST",
@@ -89,12 +89,12 @@
             });
         } else {
             
-            if (vUserID == "0") {
-                alert("Please select a User.");
+            if (vStartDate == "") {
+                alert("Please Provide Start Date.");
                 return false;
             }
-            if (vProjectID == "0") {
-                alert("Please select a Project.");
+            if (vEndDate == "0") {
+                alert("Please Provide End Date.");
                 return false;
             }
             
