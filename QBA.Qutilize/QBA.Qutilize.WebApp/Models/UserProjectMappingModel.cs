@@ -167,8 +167,6 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
-
-
         public DataTable GetAllProjectMappedStatusByUserID(int UserID, int OrgID)
         {
 
