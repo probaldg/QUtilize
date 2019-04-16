@@ -157,8 +157,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 DailyTaskId = model.DailyTaskId,
                 TaskDate = model.TaskDate.ToShortDateString(),
-                StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
-                EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
+                //StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
+                //EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
+
+                StartTime = model.StartTime.ToString("HH:mm"),
+                EndTime = model.EndTime.ToString("HH:mm"),
                 Description = model.Description,
                 TaskName = model.TaskName,
                 Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
@@ -253,7 +256,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
         }
         public ActionResult LoadSkillManagementDetails()
@@ -299,7 +302,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Content(sbContent.ToString());
         }
-        private string GetDDlSkillRankype( DataSet ds,int rowNo, string byValOrText, string optionValToSelect = "0")
+        private string GetDDlSkillRankype(DataSet ds, int rowNo, string byValOrText, string optionValToSelect = "0")
         {
             StringBuilder sb = new StringBuilder();
             try
