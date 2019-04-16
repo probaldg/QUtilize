@@ -81,12 +81,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID)
+        public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID,int MainUser,string Role)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportData(userID, startDate, endDate,ProjectID);
+                ds = DataAccess.GetReportData(userID, startDate, endDate,ProjectID,MainUser,Role);
             }
             catch (Exception ex)
             {

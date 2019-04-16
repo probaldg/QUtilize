@@ -167,6 +167,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (Session["sessUserAllData"] != null)
                 {
                     DataSet ds = (DataSet)Session["sessUserAllData"];// lvm.GetUserDetailData(Convert.ToInt32(Session["sessUser"]));
+                    Session.Add("UserID", ds.Tables[0].Rows[0]["Id"]);
                     Session.Add("Name", ds.Tables[0].Rows[0]["Name"]);
                     Session.Add("Email", ds.Tables[0].Rows[0]["EmailId"]);
                     Session.Add("EmployeeCode", ds.Tables[0].Rows[0]["EmployeeCode"]);

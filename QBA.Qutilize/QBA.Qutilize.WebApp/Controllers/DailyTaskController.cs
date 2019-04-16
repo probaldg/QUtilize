@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using DailyTaskModel = QBA.Qutilize.WebApp.Models.DailyTaskModel;
 
@@ -242,6 +243,100 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
 
             return result;
+        }
+
+        public ActionResult SkillManagement()
+        {
+            if (System.Web.HttpContext.Current.Session["sessUser"] != null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index","Home");
+            }
+        }
+        public ActionResult LoadSkillManagementDetails()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                SkillManagementModel smm = new SkillManagementModel();
+                DataSet dsUserDetail = (DataSet)Session["sessUserAllData"];
+                DataSet ds = smm.GetSkillManagementDetailData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(dsUserDetail.Tables[2].Rows[0]["ORGID"]));
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblSessionHistory'  width='100%'>");
+                    sbContent.Append("<thead>");
+                    sbContent.Append("<tr>");
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Category</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Skill Code</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Skill Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Proficiency Level</th>");
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</thead>");
+                    sbContent.Append("<tbody id='tbodySessionHistoryData'>");
+                    int counter = 1;
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["userName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Category"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillCode"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillName"]) + "</span></td>");
+                        sbContent.Append("<td>" + GetDDlSkillRankype(ds, counter, "V") + "<input type='hidden' id='hidSkillID" + counter + "' name='hidSkillID[]' value='" + Convert.ToString(dr["ID"]) + "'></td>");
+                        sbContent.Append("</tr>");
+                        counter++;
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        private string GetDDlSkillRankype( DataSet ds,int rowNo, string byValOrText, string optionValToSelect = "0")
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                sb.Append("<select class='form-control' id='ddlSkillPerspective" + rowNo.ToString() + "' name='ddlSkillPerspective[]'>");
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[1].Rows)
+                    {
+                        if (byValOrText == "V")
+                        {
+                            if (optionValToSelect != "0" && Convert.ToString(dr["ID"]) == optionValToSelect)
+                                sb.Append("<option value='" + Convert.ToString(dr["ID"]) + "' selected>" + Convert.ToString(dr["SkillLevel"]) + "</option>");
+                            else
+                                sb.Append("<option value='" + Convert.ToString(dr["ID"]) + "'>" + Convert.ToString(dr["SkillLevel"]) + "</option>");
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dr["SkillLevel"]).Trim().ToLower().Contains(optionValToSelect.Trim().ToLower()))
+                                sb.Append("<option value='" + Convert.ToString(dr["ID"]) + "' selected>" + Convert.ToString(dr["SkillLevel"]) + "</option>");
+                            else
+                                sb.Append("<option value='" + Convert.ToString(dr["ID"]) + "'>" + Convert.ToString(dr["SkillLevel"]) + "</option>");
+                        }
+                    }
+                }
+                sb.Append("</select>");
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return sb.ToString();
         }
     }
 }

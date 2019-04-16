@@ -158,7 +158,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             else
             {
-                return Redirect("/Home/Index");
+                return RedirectToAction("Index", "Home");
             }
         }
         public JsonResult UpdatePassword(int id, string password)
