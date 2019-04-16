@@ -1,11 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.DAL;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Web.Mvc;
-using System.Linq;
-using System.Web;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace QBA.Qutilize.WebApp.Models
@@ -33,7 +29,7 @@ namespace QBA.Qutilize.WebApp.Models
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
-        
+
         public DataTable GetAllProjects(int orgId = 0)
         {
             DataTable dt = null;
@@ -59,7 +55,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={
                                         new SqlParameter("@OrgID",orgId)
                                       };
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]",param);
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUsers_GetForWeb]", param);
             }
             catch (Exception ex)
             {
@@ -140,26 +136,26 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-        public Boolean InsertUserProjectMappingdata( UserProjectMappingModel userProjectMapping)
+        public Boolean InsertUserProjectMappingdata(UserProjectMappingModel userProjectMapping)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
-           
+
 
             try
             {
-                
+
                 SqlParameter[] param ={
                     new SqlParameter("@UserID",userProjectMapping.UserId),
                     new SqlParameter("@ProjectID",userProjectMapping.ProjectId),
-                   
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Insert]", param);
                 userProjectMapping.ISErr = false;
                 userProjectMapping.ErrString = "Data Saved Successfully!!!";
                 result = true;
-              
+
             }
             catch (Exception ex)
             {
@@ -170,7 +166,30 @@ namespace QBA.Qutilize.WebApp.Models
             return result;
 
         }
+
+
+
+        public DataTable GetAllProjectMappedStatusByUserID(int UserID, int OrgID)
+        {
+
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@OrgID",OrgID),
+                                          new SqlParameter("@userId",UserID),
+                                      };
+
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPGetProjectsMappedStatusWithUser]", param);
+            }
+
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
     }
 
-  
+
 }
