@@ -1133,6 +1133,11 @@ namespace QBA.Qutilize.WebApp.Controllers
         [HttpPost]
         public ActionResult SaveProjectMapping(UserProjectMappingModel[] itemlist)
         {
+            if (itemlist == null)
+            {
+                //throw new ArgumentNullException(nameof(itemlist));
+            }
+
             UserProjectMappingModel UPM = new UserProjectMappingModel();
             int UserID = itemlist[0].UserId;
             try
@@ -1146,14 +1151,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     UPM.DeleteAllExistingMapping(itemlist[0].UserId); // TODO crate a proc to delete all the project mapped to the user
                 }
 
-                foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+                if (itemlist != null)
                 {
-                    UserProjectMappingModel mm = new UserProjectMappingModel();
+                    foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+                    {
+                        UserProjectMappingModel mm = new UserProjectMappingModel();
 
-                    mm.UserId = i.UserId;
-                    mm.ProjectId = i.ProjectId;
-                    mm.InsertUserProjectMappingdata(mm);
+                        mm.UserId = i.UserId;
+                        mm.ProjectId = i.ProjectId;
+                        mm.InsertUserProjectMappingdata(mm);
+                    }
                 }
+
 
                 if (Session["AllProjectList"] != null)
                 {
@@ -1491,7 +1500,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 strProjectMapped += "<td align='center'>" + dr["ID"].ToString() + "</td><td align='center'>" + dr["Name"].ToString() + "</td><td align='center'>" + dr["orgname"].ToString() + "</td>";
                 if (status)
                 {
-                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule'  onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
+                    strProjectMapped += "<td align='center'><button data-toggle='modal' data-target='#myModalForModule' data-keyboard='false' data-backdrop='static' onclick='ShowPermission(" + dr["Id"].ToString() + ")'>Map</button></td>";
 
                 }
                 else

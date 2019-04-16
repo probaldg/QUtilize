@@ -60,9 +60,9 @@
                             <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
                         </div>
                     </form>
-
+                   
                     <div id="popupBody">
-
+                        
                     </div>
                 </div>
 
@@ -116,31 +116,6 @@
             }
         });
 
-
-
-            @*$.ajax({
-            url: '@Url.Action("GetProjectMappedToUser", "Admin")',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-
-            data: JSON.stringify({
-                "id":id
-            }),
-
-            success: function (response) {
-
-                $.each(response, function (key, value) {
-
-                    $("input[value='" + value.ProjectId + "']").prop('checked', true);
-
-                });
-
-            },
-            error: function (response) {
-                console.log(response);
-            }
-        });*@
         }
 
 
@@ -155,7 +130,7 @@
             var lastpushedModuleid = 0;
 
             $('#divProjectList input:checked').each(function () {
-             
+
 
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
@@ -164,13 +139,21 @@
             });
 
             var length = moduleids.length
-
-            for (var i = 0; i < moduleids.length; i++) {
-                if (lastpushedModuleid != moduleids[i]) {
-                    Item = { userID: UserID, ProjectId: moduleids[i] }
-                    Itemlist.push(Item);
+            if (length > 0) {
+               
+                for (var i = 0; i < moduleids.length; i++) {
+                    if (lastpushedModuleid != moduleids[i]) {
+                        Item = { userID: UserID, ProjectId: moduleids[i] }
+                        Itemlist.push(Item);
+                    }
                 }
             }
+            else {
+               
+                alert('Please select a project.');
+                return false;
+            }
+            
 
 
             lastpushedModuleid = moduleids[i];
@@ -208,9 +191,9 @@
                 return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
             }
 
-           
+
         });
-       
+
 
         $('#srch-term').keyup(function () {
 

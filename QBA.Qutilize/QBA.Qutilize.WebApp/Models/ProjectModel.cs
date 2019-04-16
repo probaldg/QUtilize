@@ -152,7 +152,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),
-                    new SqlParameter("@ManagerID", model.PMUserID),
+                    new SqlParameter("@ManagerID", model.PMUserID !=0?  model.PMUserID:(int?)null),
                     new SqlParameter("@ClientID", model.ClientD),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
