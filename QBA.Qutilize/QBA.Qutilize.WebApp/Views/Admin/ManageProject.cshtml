@@ -44,9 +44,9 @@
             strStyle = "display:block";
             strErrorStyle = "display:none";
         }
-        else if(ErrStatus != null && Convert.ToBoolean(ErrStatus) == true)
+        else if (ErrStatus != null && Convert.ToBoolean(ErrStatus) == true)
         {
-            strMSGforSave= errSts.ToString();
+            strMSGforSave = errSts.ToString();
             strStyle = "display:none";
             strErrorStyle = "display:block";
         }
@@ -230,34 +230,34 @@
 
                                     <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                                 </div>
-                                <div class="col-md-1" id="divAddUserToAssignProject">
-                                    <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
-                                </div>
+                                @*<div class="col-md-1" id="divAddUserToAssignProject">
+                                        <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
+                                    </div>*@
 
                                 @*<div class="col-md-2"></div>*@
                             </div>
-                            <div class="col-md-12"><br /></div>
-                            <div class="form-group">
-                                <div class="col-md-2"></div>
-                                <div id="divUserList" style="display:none;" class="col-md-10">
+                            @*<div class="col-md-12"><br /></div>
+                                <div class="form-group">
+                                    <div class="col-md-2"></div>
+                                    <div id="divUserList" style="display:none;" class="col-md-10">
 
-                                    <form class="navbar-form" role="search">
-                                        <div class="input-group add-on">
-                                            <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                        <form class="navbar-form" role="search">
+                                            <div class="input-group add-on">
+                                                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                            </div>
+                                        </form>
+
+                                        <div id="popupUserBody">
+
                                         </div>
-                                    </form>
 
-                                    <div id="popupUserBody">
-
+                                        <div class="modal-footer">
+                                            <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
+                                            <button type="button" id="btnCloseUserList" class="btn btn-default">Close</button>
+                                        </div>
                                     </div>
 
-                                    <div class="modal-footer">
-                                        <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
-                                        <button type="button" id="btnCloseUserList" class="btn btn-default">Close</button>
-                                    </div>
-                                </div>
-
-                            </div>
+                                </div>*@
 
 
                             <div class="form-group">
@@ -334,9 +334,14 @@
                         </div>
                     </form>
 
-                    @*<div id="popupUserBody">
+                    <div class="col-md-12"><br /></div>
+                    <div class="form-group">
+                      
+                        <div id="popupUserBody">
 
-                        </div>*@
+                        </div>
+
+                    </div>
                 </div>
 
 
@@ -480,6 +485,7 @@
             var ProjectName = document.getElementById("ProjectName").value;
             var projectCode = document.getElementById("ProjectCode").value;
             var DepartmentId = $("#DepartmentList").val();
+            var managerId = $("#UserList").val();
             var MaxProjectTimeInHours = $('#MaxProjectTimeInHours').val();
             if (ProjectName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Project Name";
@@ -495,6 +501,11 @@
             }
             if (DepartmentId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select a department";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                return false;
+            }
+            if (managerId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select a manager";
                 document.getElementById("ErrorMsg").style.display = 'block';
                 return false;
             }
@@ -813,7 +824,7 @@
                          $('#ProjectTask_IsMilestone').prop('checked', taskObj.IsMilestone);
                      }
 
-                    
+
 
                      $('#ddlPercentage').val(taskObj.CompletePercent);
 
@@ -1253,6 +1264,37 @@
         $('#btnCloseUserList').click(function () {
             $('#divUserList').css('display', 'none');
         });
+
+        function ShowUserPopup(projectId, projectname) {
+            //alert(projectId + ", "+ projectname);
+            //$('#hdnUserID').val('');
+            //$('#hdnUserID').val(id);
+
+
+            $("input[type='checkbox']").prop('checked', false)
+
+            $.ajax({
+            url: '@Url.Action("GetAllUserOfOrganisationByProjectID", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "projectID": projectId
+            }),
+                success: function (response) {
+                    $('#popupUserBody').html('');
+                    $('#popupUserBody').append(response);
+            },
+                error: function (response) {
+                    alert(Error);
+                console.log(response);
+            }
+        });
+
+
+            $('#myModalForUsers').modal('show');
+        }
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {

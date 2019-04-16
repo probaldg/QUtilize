@@ -126,5 +126,28 @@ namespace QBA.Qutilize.WebApp.Models
             return result;
 
         }
+
+
+
+        public DataTable GetAllRolesMappedStatusByUserID(int UserID, int OrgID)
+        {
+
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@OrgID",OrgID),
+                                          new SqlParameter("@userId",UserID),
+                                      };
+
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPGetRolesMappedStatusWithUser]", param);
+            }
+
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
     }
 }

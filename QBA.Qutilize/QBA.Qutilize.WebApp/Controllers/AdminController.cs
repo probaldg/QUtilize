@@ -568,10 +568,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                             obj.ErrString = "Data Saved Successfully.";
                             TempData["ErrStatus"] = obj.ISErr;
                             TempData["ErrMsg"] = obj.ErrString.ToString();
-                            //obj.ISErr = true;
-                            //obj.ErrString = "Error occured.";
-                            //TempData["ErrStatus"] = obj.ISErr;
-                            //TempData["ErrMsg"] = obj.ErrString.ToString();
+                            //TODO need to remove this line when testing is complete.
+                            TempData["JavaScriptFunction"] = $"ShowUserPopup('{model.ProjectID}','{model.ProjectName}');";
                         }
                         else
                         {
@@ -580,10 +578,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             TempData["ErrStatus"] = obj.ISErr;
                             TempData["ErrMsg"] = obj.ErrString.ToString();
 
-                            //obj.ISErr = false;
-                            //obj.ErrString = "Data Saved Successfully.";
-                            //TempData["ErrStatus"] = obj.ISErr;
-                            //TempData["ErrMsg"] = obj.ErrString.ToString();
+
                         }
 
 
@@ -608,8 +603,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         obj.ErrString = "Data Saved Successfully.";
                         TempData["ErrStatus"] = model.ISErr.ToString();
                         TempData["ErrMsg"] = obj.ErrString.ToString();
-                        //TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
-                        TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}','{model.ProjectName}');";
+                        TempData["JavaScriptFunction"] = $"ShowUserPopup('{id}','{model.ProjectName}');";
                     }
                     else
                     {
@@ -618,17 +612,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         TempData["ErrStatus"] = obj.ISErr;
                         TempData["ErrMsg"] = obj.ErrString.ToString();
                     }
-                    //if (id > 0)
-                    //{
-                    //    TempData["ErrStatus"] = model.ISErr.ToString();
-                    //    TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
-                    //}
-                    //else
-                    //{
 
-                    //}
-
-                    //TempData["ErrStatus"] = model.ISErr.ToString();
                 }
             }
             catch (Exception ex)
@@ -640,7 +624,38 @@ namespace QBA.Qutilize.WebApp.Controllers
             return RedirectToAction("ManageProject", "Admin");
 
         }
+        public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
+        {
+            ProjectTaskModel obj = new ProjectTaskModel();
 
+            DataTable dt = new DataTable();
+            dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
+            StringBuilder builder = new StringBuilder();
+            builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
+
+            if (dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                    if (Convert.ToBoolean(row["IsMapped"]))
+                    {
+                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked>{row["Name"].ToString()}");
+                    }
+                    else
+                    {
+                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} >{row["Name"].ToString()}");
+                    }
+                    builder.Append(@"</div>");
+                }
+            }
+            else
+            {
+                builder.Append(@"<h5>No Users available</h5>");
+            }
+            builder.Append(@"</div>");
+            return Json(builder.ToString());
+        }
 
         #region Project task managment region"
         public ActionResult ManageProjectTask(int ProjectId = 0)
@@ -878,37 +893,37 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
 
 
-        public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
-        {
-            ProjectTaskModel obj = new ProjectTaskModel();
+        //public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
+        //{
+        //    ProjectTaskModel obj = new ProjectTaskModel();
 
-            DataTable dt = new DataTable();
-            dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
-            StringBuilder builder = new StringBuilder();
-            builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
-            if (dt.Rows.Count > 0)
-            {
+        //    DataTable dt = new DataTable();
+        //    dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
+        //    StringBuilder builder = new StringBuilder();
+        //    builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
+        //    if (dt.Rows.Count > 0)
+        //    {
 
-                foreach (DataRow dr in dt.Rows)
-                {
-                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
-                    builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>");
+        //        foreach (DataRow dr in dt.Rows)
+        //        {
+        //            builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+        //            builder.Append(@"<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>");
 
-                    builder.Append("<span id='span_" + dr["Id"].ToString() + "'> " + dr["Name"].ToString() + "</span>");
+        //            builder.Append("<span id='span_" + dr["Id"].ToString() + "'> " + dr["Name"].ToString() + "</span>");
 
-                    builder.Append(@"</div>");
-                }
-                builder.Append(@"</div>");
-            }
-            else
-            {
-                builder.Append(@"<div style='float: left;width: 100%; padding: 5px;'>");
-                builder.Append("<h5 >" + "No users available" + "</h5>");
-                builder.Append(@"</div>");
-            }
+        //            builder.Append(@"</div>");
+        //        }
+        //        builder.Append(@"</div>");
+        //    }
+        //    else
+        //    {
+        //        builder.Append(@"<div style='float: left;width: 100%; padding: 5px;'>");
+        //        builder.Append("<h5 >" + "No users available" + "</h5>");
+        //        builder.Append(@"</div>");
+        //    }
 
-            return Json(builder.ToString());
-        }
+        //    return Json(builder.ToString());
+        //}
 
         public ActionResult SaveProjectUserMapping(UserProjectMappingModel[] itemlist)
         {
@@ -1362,6 +1377,47 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Content(strProjectMapped.ToString());
         }
+
+        //public ActionResult LoadAllRoles(int userID)
+        //{
+        //    UserRoleMappingModel obj = new UserRoleMappingModel();
+
+        //    UserInfoHelper userInfo = new UserInfoHelper(userID);
+
+        //    DataTable dtRoles = new DataTable();
+
+        //    if (userInfo.IsRoleSysAdmin)
+        //    {
+        //        var dataRows = obj.GetAllRoles().Select("IsActive=1"); ;
+
+        //        if (dataRows.Length > 0)
+        //        {
+        //            dtRoles = dataRows.CopyToDataTable();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var dataRows = obj.GetAllRoles(userInfo.UserOrganisationID).Select("IsActive=1"); ;
+
+        //        if (dataRows.Length > 0)
+        //        {
+        //            dtRoles = dataRows.CopyToDataTable();
+        //        }
+
+        //    }
+
+
+        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+        //    foreach (DataRow dr in dtRoles.Rows)
+        //    {
+        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+        //        strModules += "</div>";
+        //    }
+        //    strModules += @"</div>";
+
+        //    return Json(strModules);
+        //}
 
         public ActionResult LoadAllRoles(int userID)
         {
