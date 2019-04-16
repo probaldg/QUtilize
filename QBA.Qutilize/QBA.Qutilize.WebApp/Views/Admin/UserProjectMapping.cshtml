@@ -88,6 +88,8 @@
 
 
         function ShowPermission(id) {
+
+
             $('#hdnUserID').val('');
             $('#hdnUserID').val(id);
 
@@ -103,6 +105,7 @@
             data: JSON.stringify({
                 "Userid":id
             }),
+
                 success: function (response) {
                 $('#popupBody').html('');
                 $('#popupBody').append(response);
@@ -115,7 +118,7 @@
 
 
 
-            @*$.ajax({
+            $.ajax({
             url: '@Url.Action("GetProjectMappedToUser", "Admin")',
             type: "POST",
             dataType: "json",
@@ -137,7 +140,7 @@
             error: function (response) {
                 console.log(response);
             }
-        });*@
+        });
         }
 
 
@@ -161,19 +164,14 @@
             });
 
             var length = moduleids.length
-            if (length > 0) {
-                for (var i = 0; i < moduleids.length; i++) {
-                    if (lastpushedModuleid != moduleids[i]) {
-                        Item = { userID: UserID, ProjectId: moduleids[i] }
-                        Itemlist.push(Item);
-                    }
-                }
 
-            } else {
-                alert("Please select a project.");
-                return false;
+            for (var i = 0; i < moduleids.length; i++) {
+                if (lastpushedModuleid != moduleids[i]) {
+                    Item = { userID: UserID, ProjectId: moduleids[i] }
+                    Itemlist.push(Item);
+                }
             }
-           
+
 
             lastpushedModuleid = moduleids[i];
 
