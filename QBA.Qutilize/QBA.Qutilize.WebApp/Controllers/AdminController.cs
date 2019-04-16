@@ -565,23 +565,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                         if (result)
                         {
                             obj.ISErr = false;
-                            obj.ErrString = "Data Saved Successfully!!!";
+                            obj.ErrString = "Data Saved Successfully.";
                             TempData["ErrStatus"] = obj.ISErr;
                             TempData["ErrMsg"] = obj.ErrString.ToString();
                             //obj.ISErr = true;
-                            //obj.ErrString = "Error occured!!!";
+                            //obj.ErrString = "Error occured.";
                             //TempData["ErrStatus"] = obj.ISErr;
                             //TempData["ErrMsg"] = obj.ErrString.ToString();
                         }
                         else
                         {
                             obj.ISErr = true;
-                            obj.ErrString = "Error occured!!!";
+                            obj.ErrString = "Error occured.";
                             TempData["ErrStatus"] = obj.ISErr;
                             TempData["ErrMsg"] = obj.ErrString.ToString();
 
                             //obj.ISErr = false;
-                            //obj.ErrString = "Data Saved Successfully!!!";
+                            //obj.ErrString = "Data Saved Successfully.";
                             //TempData["ErrStatus"] = obj.ISErr;
                             //TempData["ErrMsg"] = obj.ErrString.ToString();
                         }
@@ -605,7 +605,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (result && id > 0)
                     {
                         obj.ISErr = false;
-                        obj.ErrString = "Data Saved Successfully!!!";
+                        obj.ErrString = "Data Saved Successfully.";
                         TempData["ErrStatus"] = model.ISErr.ToString();
                         TempData["ErrMsg"] = obj.ErrString.ToString();
                         //TempData["JavaScriptFunction"] = $"ShowTaskPopup('{id}');";
@@ -614,7 +614,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
                         obj.ISErr = true;
-                        obj.ErrString = "Error occured!!!";
+                        obj.ErrString = "Error occured.";
                         TempData["ErrStatus"] = obj.ISErr;
                         TempData["ErrMsg"] = obj.ErrString.ToString();
                     }
@@ -818,13 +818,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (updateStatus)
                     {
                         model.ISErr = false;
-                        model.ErrString = "Data Saved Successfully!!!";
+                        model.ErrString = "Data Saved Successfully.";
                         result = "Success";
                     }
                     else
                     {
                         model.ISErr = true;
-                        model.ErrString = "Error Occured!!!";
+                        model.ErrString = "Error Occured.";
                         result = "Error";
                     }
 

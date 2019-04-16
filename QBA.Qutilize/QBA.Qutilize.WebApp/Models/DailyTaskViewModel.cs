@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
-using System.Globalization;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -173,7 +172,7 @@ namespace QBA.Qutilize.WebApp.Models
                     id = Convert.ToInt32(Status.Value);
                     model.DailyTaskId = id;
                     model.ISErr = false;
-                    model.ErrString = "Data Saved Successfully!!!";
+                    model.ErrString = "Data Saved Successfully.";
                     result = true;
                 }
                 else
@@ -181,13 +180,13 @@ namespace QBA.Qutilize.WebApp.Models
                     id = 0;
                     result = false;
                     model.ISErr = true;
-                    model.ErrString = "Error Occured!!!";
+                    model.ErrString = "Error Occured.";
                 }
             }
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;
@@ -220,7 +219,7 @@ namespace QBA.Qutilize.WebApp.Models
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;
@@ -248,7 +247,7 @@ namespace QBA.Qutilize.WebApp.Models
             catch (Exception ex)
             {
                 //model.ISErr = true;
-                //model.ErrString = "Error Occured!!!";
+                //model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;

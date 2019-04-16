@@ -94,7 +94,7 @@ namespace QBA.Qutilize.WebApp.Models
                     id = Convert.ToInt32(Status.Value);
                     model.Id = id;
                     model.ISErr = false;
-                    model.ErrString = "Data Saved Successfully!!!";
+                    model.ErrString = "Data Saved Successfully.";
                     result = true;
                 }
                 else
@@ -102,13 +102,13 @@ namespace QBA.Qutilize.WebApp.Models
                     id = 0;
                     result = false;
                     model.ISErr = true;
-                    model.ErrString = "Error Occured!!!";
+                    model.ErrString = "Error Occured.";
                 }
             }
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;

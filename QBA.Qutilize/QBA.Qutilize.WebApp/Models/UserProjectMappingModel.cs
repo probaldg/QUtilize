@@ -153,14 +153,14 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_Insert]", param);
                 userProjectMapping.ISErr = false;
-                userProjectMapping.ErrString = "Data Saved Successfully!!!";
+                userProjectMapping.ErrString = "Data Saved Successfully.";
                 result = true;
 
             }
             catch (Exception ex)
             {
                 userProjectMapping.ISErr = true;
-                userProjectMapping.ErrString = "Error Occured!!!";
+                userProjectMapping.ErrString = "Error Occured.";
                 result = false;
             }
             return result;

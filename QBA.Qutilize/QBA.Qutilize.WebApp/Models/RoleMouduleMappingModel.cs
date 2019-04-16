@@ -130,14 +130,14 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPRoleMouduleMapping_Insert", param);
                 roleMouduleMapping.ISErr = false;
-                roleMouduleMapping.ErrString = "Data Saved Successfully!!!";
+                roleMouduleMapping.ErrString = "Data Saved Successfully.";
                 result = true;
 
             }
             catch (Exception ex)
             {
                 roleMouduleMapping.ISErr = true;
-                roleMouduleMapping.ErrString = "Error Occured!!!";
+                roleMouduleMapping.ErrString = "Error Occured.";
                 result = false;
             }
             return result;

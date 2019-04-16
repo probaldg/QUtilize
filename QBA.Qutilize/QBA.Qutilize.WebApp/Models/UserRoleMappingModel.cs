@@ -42,7 +42,7 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-      
+
         public DataTable GetAllRoles(int? OrgId = null)
         {
             DataTable dt = null;
@@ -113,14 +113,14 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPUserRoles_Insert", param);
                 userRoleMapping.ISErr = false;
-                userRoleMapping.ErrString = "Data Saved Successfully!!!";
+                userRoleMapping.ErrString = "Data Saved Successfully.";
                 result = true;
 
             }
             catch (Exception ex)
             {
                 userRoleMapping.ISErr = true;
-                userRoleMapping.ErrString = "Error Occured!!!";
+                userRoleMapping.ErrString = "Error Occured.";
                 result = false;
             }
             return result;
