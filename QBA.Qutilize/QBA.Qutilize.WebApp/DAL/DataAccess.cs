@@ -1,10 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.Models;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 
 namespace QBA.Qutilize.WebApp.DAL
 {
@@ -133,7 +130,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID,int MainUser,string Role)
+        public static DataSet GetReportData(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
         {
             DataSet ds = null;
             try
@@ -164,7 +161,7 @@ namespace QBA.Qutilize.WebApp.DAL
             DataSet ds = null;
             try
             {
-                SqlParameter[] param ={new SqlParameter("@Id", Convert.ToInt32(userID))};
+                SqlParameter[] param = { new SqlParameter("@Id", Convert.ToInt32(userID)) };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
                     ds = objSQLHelper.ExecuteDataset("USPUserDetailData", param);
@@ -181,7 +178,7 @@ namespace QBA.Qutilize.WebApp.DAL
         {
             DataSet ds = null;
             try
-            { 
+            {
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
                     ds = objSQLHelper.ExecuteDataset("USPUsers_GetForWeb");
@@ -357,7 +354,7 @@ namespace QBA.Qutilize.WebApp.DAL
                 }
 
                 //model.ISErr = false;
-                //model.ErrString = "Data Saved Successfully!!!";
+                //model.ErrString = "Data Saved Successfully.";
             }
             catch (Exception ex)
             {
@@ -420,7 +417,7 @@ namespace QBA.Qutilize.WebApp.DAL
                     dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_getOrganisationByURL]", param);
                 }
                 //model.ISErr = false;
-                //model.ErrString = "Data Saved Successfully!!!";
+                //model.ErrString = "Data Saved Successfully.";
             }
             catch (Exception ex)
             {
@@ -490,8 +487,8 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
-        
 
-        
+
+
     }
 }

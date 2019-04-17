@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using QBA.Qutilize.WebApp.DAL;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
-using QBA.Qutilize.WebApp.DAL;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -20,7 +17,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string OrgName { get; set; }
 
         public SelectList OrganisationList { get; set; }
-   
+
         public Boolean IsSysAdmin { get; set; }
         public Boolean IsApprover { get; set; }
         public Boolean IsPublisher { get; set; }
@@ -90,12 +87,12 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[sp_tblsysrole_update]", param);
                 model.ISErr = false;
-                model.ErrString = "Data Saved Successfully!!!";
+                model.ErrString = "Data Saved Successfully.";
             }
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 bln = false;
             }
             return bln;

@@ -261,7 +261,7 @@ namespace QBA.Qutilize.WebApp.Models
                     {
                         model.ID = id;
                         model.ISErr = false;
-                        model.ErrString = "Data Saved Successfully!!!";
+                        model.ErrString = "Data Saved Successfully.";
                         result = true;
                     }
                     else
@@ -269,7 +269,7 @@ namespace QBA.Qutilize.WebApp.Models
                         id = 0;
                         result = false;
                         model.ISErr = true;
-                        model.ErrString = "Error Occured!!!";
+                        model.ErrString = "Error Occured.";
                     }
 
                 }
@@ -278,13 +278,13 @@ namespace QBA.Qutilize.WebApp.Models
                     id = 0;
                     result = false;
                     model.ISErr = true;
-                    model.ErrString = "Error Occured!!!";
+                    model.ErrString = "Error Occured.";
                 }
             }
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;
@@ -317,13 +317,13 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_Update]", param);
                 model.ISErr = false;
-                model.ErrString = "Data Saved Successfully!!!";
+                model.ErrString = "Data Saved Successfully.";
 
             }
             catch (Exception ex)
             {
                 model.ISErr = true;
-                model.ErrString = "Error Occured!!!";
+                model.ErrString = "Error Occured.";
                 result = false;
             }
             return result;
