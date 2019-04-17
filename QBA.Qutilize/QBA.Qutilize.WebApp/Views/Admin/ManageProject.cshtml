@@ -324,7 +324,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;">Select Users</h4>
+                    <h4 id="headerForAddUser" class="modal-title" style="color:#626262;"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -537,6 +537,7 @@
             $('#ClientD').val(clientID);
 
         });
+
         function ShowTaskPopup(projectId, projectname) {
 
             //alert(projectname);
@@ -747,7 +748,7 @@
            // alert('task save');
         })
 
-        $('#btnAddUser').click(function () {
+        @*$('#btnAddUser').click(function () {
 
 
             var projectID = $('#SelectedProjectId').val();
@@ -773,7 +774,7 @@
                 }
             });
 
-        });
+        });*@
 
 
         function EditProjectTask(taskID) {
@@ -1094,10 +1095,10 @@
             var moduleid = [];
             var moduleids = [];
             var userName = [];
-            var userNames = [];
-            var userList = [];
-            var projectID = document.getElementById("SelectedProjectId").value;
-            $("#ddlUsersAssigned").multiselect('destroy');
+           // var userNames = [];
+            //var userList = [];
+            var projectID = document.getElementById("ProjectID").value;
+            //$("#ddlUsersAssigned").multiselect('destroy');
 
             var lastpushedModuleid = 0;
 
@@ -1105,14 +1106,12 @@
 
                 if ($(this).attr("name") == "modules") {
                     moduleid = $(this).val();
-                    userName = $(this).next('span').text();
-
+                   // userName = $(this).next('span').text();
                 }
 
                 moduleids.push(moduleid);
-                userNames.push(userName);
+                //userNames.push(userName);
             });
-
 
             for (var i = 0; i < moduleids.length; i++) {
 
@@ -1122,13 +1121,13 @@
                 }
             }
 
-            for (var i = 0; i < moduleids.length; i++) {
+            //for (var i = 0; i < moduleids.length; i++) {
 
-                if (lastpushedModuleid != moduleids[i]) {
-                    Item = { UserName: userNames[i], UserId: moduleids[i] }
-                    userList.push(Item);
-                }
-            }
+            //    if (lastpushedModuleid != moduleids[i]) {
+            //        Item = { UserName: userNames[i], UserId: moduleids[i] }
+            //        userList.push(Item);
+            //    }
+            //}
 
             lastpushedModuleid = moduleids[i];
 
@@ -1142,35 +1141,37 @@
                 success: function (result) {
                     if (result == "success") {
 
+                        alert("Successfully Saved the Data");
+                        $('#myModalForUsers').modal('toggle');
 
-                        $('#divUserList').css('display', 'none');
+                       // $('#divUserList').css('display', 'none');
                        // $("#ddlUsersAssigned").html('');
-                        var userIds=""
-                        for (var i = 0; i < userList.length; i++) {
-                            userIds += userList[i].UserId + ",";
-                            $("#ddlUsersAssigned").append($("<option></option>").val(userList[i].UserId).html(userList[i].UserName));
-                        }
-                        var previousSelectedUser = $('#UserIdsInString').val();
-                        if (previousSelectedUser == "") {
-                            userIds = userIds.substr(0, userIds.length - 1);
-                        }
-                        else {
-                            userIds = previousSelectedUser +","+ userIds.substr(0, userIds.length - 1);
-                        }
-                        //userIds = userIds.substr(0, userIds.length - 1);
-                        $("#ddlUsersAssigned").multiselect({
-                            enableCaseInsensitiveFiltering: true,
-                            buttonWidth: 550,
-                            enableFiltering: true
-                        });
+                        //var userIds=""
+                        //for (var i = 0; i < userList.length; i++) {
+                        //    userIds += userList[i].UserId + ",";
+                        //    $("#ddlUsersAssigned").append($("<option></option>").val(userList[i].UserId).html(userList[i].UserName));
+                        //}
+                        //var previousSelectedUser = $('#UserIdsInString').val();
+                        //if (previousSelectedUser == "") {
+                        //    userIds = userIds.substr(0, userIds.length - 1);
+                        //}
+                        //else {
+                        //    userIds = previousSelectedUser +","+ userIds.substr(0, userIds.length - 1);
+                        //}
+                        ////userIds = userIds.substr(0, userIds.length - 1);
+                        //$("#ddlUsersAssigned").multiselect({
+                        //    enableCaseInsensitiveFiltering: true,
+                        //    buttonWidth: 550,
+                        //    enableFiltering: true
+                        //});
 
 
-                        var selectedOptions = userIds.split(',');
-                        for (i = 0; i < selectedOptions.length; i++) {
-                            $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
-                        }
+                        //var selectedOptions = userIds.split(',');
+                        //for (i = 0; i < selectedOptions.length; i++) {
+                        //    $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
+                        //}
 
-                        $('#UserIdsInString').val(userIds);
+                        //$('#UserIdsInString').val(userIds);
 
                         //$('#divAddUserToAssignProject').css('display', 'none');
                         //$('#divUserDDL').removeClass('col-md-7');
@@ -1181,7 +1182,8 @@
                         alert("error");
                     }
                 },
-                error: function (xhr) {
+                 error: function (xhr) {
+                     alert("error");
                     console.log();
                 }
             });
@@ -1266,13 +1268,14 @@
         });
 
         function ShowUserPopup(projectId, projectname) {
-            //alert(projectId + ", "+ projectname);
-            //$('#hdnUserID').val('');
-            //$('#hdnUserID').val(id);
+           
+            $('#ProjectID').val('');
+            $('#ProjectID').val(projectId);
 
+            $('#headerForAddUser').html('Add users for ' + projectname);
 
             $("input[type='checkbox']").prop('checked', false)
-
+            $('#popupUserBody').html('');
             $.ajax({
             url: '@Url.Action("GetAllUserOfOrganisationByProjectID", "Admin")',
             type: "POST",
@@ -1283,7 +1286,7 @@
                 "projectID": projectId
             }),
                 success: function (response) {
-                    $('#popupUserBody').html('');
+                    //$('#popupUserBody').html('');
                     $('#popupUserBody').append(response);
             },
                 error: function (response) {

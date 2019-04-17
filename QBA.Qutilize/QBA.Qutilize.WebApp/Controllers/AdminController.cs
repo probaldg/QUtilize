@@ -480,7 +480,8 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 obj.DepartmentList = obj.GetDepartments().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
-                obj.UserList = obj.GetManagers().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                //obj.UserList = obj.GetManagers().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.UserList = obj.GetManagers().Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
 
                 UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
                 obj.UserList.Remove(sysAdmin);
@@ -490,7 +491,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             else
             {
                 obj.DepartmentList = obj.GetDepartments(userInfo.UserOrganisationID);
-                obj.UserList = obj.GetManagers(userInfo.UserOrganisationID).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.UserList = obj.GetManagers(userInfo.UserOrganisationID).Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.ClientList = obj.GetClients(userInfo.UserOrganisationID).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
 
             }
@@ -568,8 +569,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                             obj.ErrString = "Data Saved Successfully.";
                             TempData["ErrStatus"] = obj.ISErr;
                             TempData["ErrMsg"] = obj.ErrString.ToString();
-                            //TODO need to remove this line when testing is complete.
-                            TempData["JavaScriptFunction"] = $"ShowUserPopup('{model.ProjectID}','{model.ProjectName}');";
+                            ////TODO need to remove this line when testing is complete.
+                            //TempData["JavaScriptFunction"] = $"ShowUserPopup('{model.ProjectID}','{model.ProjectName}');";
                         }
                         else
                         {
@@ -599,6 +600,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     bool result = obj.InsertProjectdata(model, out int id);
                     if (result && id > 0)
                     {
+                        obj.ProjectID = id;
                         obj.ISErr = false;
                         obj.ErrString = "Data Saved Successfully.";
                         TempData["ErrStatus"] = model.ISErr.ToString();
@@ -627,33 +629,41 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult GetAllUserOfOrganisationByProjectID(int projectID)
         {
             ProjectTaskModel obj = new ProjectTaskModel();
+            StringBuilder builder = new StringBuilder();
 
             DataTable dt = new DataTable();
-            dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
-            StringBuilder builder = new StringBuilder();
-            builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
+            try
+            {
+                dt = obj.GetAllUserOfOrganisationByProjectID(projectID);
+                builder.Append(@"<div id='divUserList' class='row' style='margin:10px;'>");
 
-            if (dt.Rows.Count > 0)
-            {
-                foreach (DataRow row in dt.Rows)
+                if (dt.Rows.Count > 0)
                 {
-                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
-                    if (Convert.ToBoolean(row["IsMapped"]))
+                    foreach (DataRow row in dt.Rows)
                     {
-                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked>{row["Name"].ToString()}");
+                        builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                        if (Convert.ToBoolean(row["IsMapped"]))
+                        {
+                            builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked>{row["Name"].ToString()}");
+                        }
+                        else
+                        {
+                            builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} >{row["Name"].ToString()}");
+                        }
+                        builder.Append(@"</div>");
                     }
-                    else
-                    {
-                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} >{row["Name"].ToString()}");
-                    }
-                    builder.Append(@"</div>");
                 }
+                else
+                {
+                    builder.Append(@"<h5>No Users available</h5>");
+                }
+                builder.Append(@"</div>");
             }
-            else
+            catch (Exception)
             {
-                builder.Append(@"<h5>No Users available</h5>");
+
+                throw;
             }
-            builder.Append(@"</div>");
             return Json(builder.ToString());
         }
 
@@ -929,19 +939,47 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             // return Content("test");
 
-            foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            //foreach (UserProjectMappingModel i in itemlist)   //loop through the array and insert value into database.
+            //{
+            //    UserProjectMappingModel mm = new UserProjectMappingModel();
+
+            //    mm.UserId = i.UserId;
+            //    mm.ProjectId = i.ProjectId;
+            //    bool result = mm.InsertUserProjectMappingdata(mm);
+            //    if (!result)
+            //    {
+            //        return Json("Error");
+            //    }
+            //}
+
+            //return Json("success");
+
+            ProjectModel UPM = new ProjectModel();
+            int UserID = itemlist[0].UserId;
+            try
             {
-                UserProjectMappingModel mm = new UserProjectMappingModel();
+                DataTable dt = UPM.GetAllUserByProjectID(itemlist[0].ProjectId);
 
-                mm.UserId = i.UserId;
-                mm.ProjectId = i.ProjectId;
-                bool result = mm.InsertUserProjectMappingdata(mm);
-                if (!result)
+                if (dt.Rows.Count > 0)
                 {
-                    return Json("Error");
+                    UPM.DeleteAllExistingMappingByProjectID(itemlist[0].ProjectId);
                 }
-            }
 
+                foreach (UserProjectMappingModel i in itemlist)
+                {
+                    UserProjectMappingModel mm = new UserProjectMappingModel();
+
+                    mm.UserId = i.UserId;
+                    mm.ProjectId = i.ProjectId;
+                    mm.InsertUserProjectMappingdata(mm);
+                }
+
+            }
+            catch (Exception)
+            {
+                //return Json(false);
+                throw;
+            }
             return Json("success");
         }
         #endregion

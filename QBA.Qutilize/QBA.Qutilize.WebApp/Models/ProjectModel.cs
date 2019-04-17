@@ -246,6 +246,7 @@ namespace QBA.Qutilize.WebApp.Models
                         user.ID = Convert.ToInt32(item["Id"]);
                         user.OrganisationName = item["orgname"].ToString();
                         user.Name = item["Name"].ToString();
+                        user.IsActive = Convert.ToBoolean(item["IsActive"]);
                         user.OrgName_UserNameForCombo = item["orgname"].ToString() + "-" + item["Name"].ToString();
                         userModelsList.Add(user);
                     }
@@ -296,5 +297,41 @@ namespace QBA.Qutilize.WebApp.Models
             return clientsList;
         }
 
+
+        public DataTable GetAllUserByProjectID(int projectId)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@ProjectID",projectId),
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_GetByProjectID]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public DataTable DeleteAllExistingMappingByProjectID(int ProjectId)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                         new SqlParameter("@ProjectID",ProjectId),
+
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUserProjects_DeleteMappingByProjectId]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
     }
 }
