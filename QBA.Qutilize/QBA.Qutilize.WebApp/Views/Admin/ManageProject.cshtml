@@ -94,8 +94,10 @@
                     <th class="text-center tblHeaderColor sorting">Client Name</th>
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
+                    <th class="text-center tblHeaderColor sorting">Total Team Member</th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
                     <th class="text-center tblHeaderColor sorting">Add Task</th>
+                    <th class="text-center tblHeaderColor sorting">Add User</th>
                 </tr>
             </thead>
             <tbody>
@@ -225,40 +227,14 @@
 
                             <div class="form-group">
                                 @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-7" id="divUserDDL">
+                                <div class="col-md-10" id="divUserDDL">
                                     @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
 
                                     <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                                 </div>
-                                @*<div class="col-md-1" id="divAddUserToAssignProject">
-                                        <input type="button" value="&#xe081;" class="btn btn-primary glyphicon " id="btnAddUser" title="Add User" />
-                                    </div>*@
-
-                                @*<div class="col-md-2"></div>*@
+                              
                             </div>
-                            @*<div class="col-md-12"><br /></div>
-                                <div class="form-group">
-                                    <div class="col-md-2"></div>
-                                    <div id="divUserList" style="display:none;" class="col-md-10">
-
-                                        <form class="navbar-form" role="search">
-                                            <div class="input-group add-on">
-                                                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
-                                            </div>
-                                        </form>
-
-                                        <div id="popupUserBody">
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <input type="button" id="btnSaveUserProjectMapping" class="btn btn-default" value="Submit">
-                                            <button type="button" id="btnCloseUserList" class="btn btn-default">Close</button>
-                                        </div>
-                                    </div>
-
-                                </div>*@
-
+                           
 
                             <div class="form-group">
                                 @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -872,17 +848,17 @@
 
         }
 
-        //if ($('#ProjectTask_UserIdsTaskAssigned').val() != "") {
+        if ($('#ProjectTask_UserIdsTaskAssigned').val() != "") {
 
-        //    var AllselectedOptions = $('#UserIdsTaskAssigned').val();
-        //    var selectedOptions = AllselectedOptions.split(',');
+            var AllselectedOptions = $('#UserIdsTaskAssigned').val();
+            var selectedOptions = AllselectedOptions.split(',');
 
-        //    for (var i in selectedOptions) {
-        //        var optionVal = selectedOptions[i];
-        //        $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
-        //    }
-        //    $("#ddlUsersAssigned").multiselect('reload');
-        //}
+            for (var i in selectedOptions) {
+                var optionVal = selectedOptions[i];
+                $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
+            }
+            $("#ddlUsersAssigned").multiselect('reload');
+        }
 
         function formatDateInMM_DD_YYYY(yourUnformattedDate) {
             var formattedDate = new Date(yourUnformattedDate);
@@ -1095,8 +1071,7 @@
             var moduleid = [];
             var moduleids = [];
             var userName = [];
-           // var userNames = [];
-            //var userList = [];
+          
             var projectID = document.getElementById("ProjectID").value;
             //$("#ddlUsersAssigned").multiselect('destroy');
 
@@ -1113,21 +1088,23 @@
                 //userNames.push(userName);
             });
 
-            for (var i = 0; i < moduleids.length; i++) {
+            var selectedUser = moduleids.length;
+            if (selectedUser > 0) {
+                for (var i = 0; i < moduleids.length; i++) {
 
-                if (lastpushedModuleid != moduleids[i]) {
-                    Item = { ProjectId: projectID, UserId: moduleids[i] }
-                    Itemlist.push(Item);
+                    if (lastpushedModuleid != moduleids[i]) {
+                        Item = { ProjectId: projectID, UserId: moduleids[i] }
+                        Itemlist.push(Item);
+                    }
                 }
             }
+            else {
+                alert('Please select a user');
+                return false;
+            }
+            
 
-            //for (var i = 0; i < moduleids.length; i++) {
-
-            //    if (lastpushedModuleid != moduleids[i]) {
-            //        Item = { UserName: userNames[i], UserId: moduleids[i] }
-            //        userList.push(Item);
-            //    }
-            //}
+           
 
             lastpushedModuleid = moduleids[i];
 
@@ -1143,40 +1120,9 @@
 
                         alert("Successfully Saved the Data");
                         $('#myModalForUsers').modal('toggle');
-
-                       // $('#divUserList').css('display', 'none');
-                       // $("#ddlUsersAssigned").html('');
-                        //var userIds=""
-                        //for (var i = 0; i < userList.length; i++) {
-                        //    userIds += userList[i].UserId + ",";
-                        //    $("#ddlUsersAssigned").append($("<option></option>").val(userList[i].UserId).html(userList[i].UserName));
-                        //}
-                        //var previousSelectedUser = $('#UserIdsInString').val();
-                        //if (previousSelectedUser == "") {
-                        //    userIds = userIds.substr(0, userIds.length - 1);
-                        //}
-                        //else {
-                        //    userIds = previousSelectedUser +","+ userIds.substr(0, userIds.length - 1);
-                        //}
-                        ////userIds = userIds.substr(0, userIds.length - 1);
-                        //$("#ddlUsersAssigned").multiselect({
-                        //    enableCaseInsensitiveFiltering: true,
-                        //    buttonWidth: 550,
-                        //    enableFiltering: true
-                        //});
-
-
-                        //var selectedOptions = userIds.split(',');
-                        //for (i = 0; i < selectedOptions.length; i++) {
-                        //    $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
-                        //}
-
-                        //$('#UserIdsInString').val(userIds);
-
-                        //$('#divAddUserToAssignProject').css('display', 'none');
-                        //$('#divUserDDL').removeClass('col-md-7');
-                       // $('#divUserDDL').addClass('col-md-10');
-
+                        var url = '@Url.Action("ManageProject", "Admin")';
+                        window.location.href = url;
+                       
 
                     } else {
                         alert("error");
@@ -1199,12 +1145,10 @@
 
 
         $('#srch-term').keyup(function () {
-            //alert('test');
+            //alert($(this).val());
 
             $("#divUserList div").css("text-decoration", "none");
             $("#divUserList div").css("background", "white");
-            $("#divUserList span").css("background", "white");
-            $("#divUserList span").css("text-decoration", "none");
             $("#divUserList div").css("color", "black");
 
             var searchFilter = $(this).val();
@@ -1213,26 +1157,14 @@
 
                 $("#divUserList div").css("text-decoration", "none");
                 $("#divUserList div").css("background", "white");
-                $("#divUserList span").css("background", "white");
-                $("#divUserList span").css("text-decoration", "none");
                 $("#divUserList div").css("color", "black");
             }
             else {
 
-                //$("#divUserList div:containsIN(" + searchFilter + ")").css("text-decoration", "underline");
-                //$("#divUserList div:containsIN(" + searchFilter + ")").css("background", "#42f4eb");
-                //$("#divUserList div:containsIN(" + searchFilter + ")").css("color", "black");
-
-                var container = $("#divUserList :containsIN(" + searchFilter + ")")
-                container.each(function (index, item) {
-
-                    if (item.tagName == "SPAN") {
-
-                        $(item).css("text-decoration", "underline");
-                        $(item).css("background", "#42f4eb");
-                    }
-
-                });
+                $("#divUserList :containsIN(" + searchFilter + ")").css("text-decoration", "underline");
+                $("#divUserList :containsIN(" + searchFilter + ")").css("background", "#42f4eb");
+                $("#divUserList :containsIN(" + searchFilter + ")").css("color", "black");
+                
             }
 
         });

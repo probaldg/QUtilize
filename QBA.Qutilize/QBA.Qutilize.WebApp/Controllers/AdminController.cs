@@ -444,20 +444,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + clientName + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TotalMemberCount"] + " </td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
                     if (Convert.ToBoolean(item["IsActive"]))
                     {
-                        //strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + item["Id"].ToString() + ");> Add Task </a> </td>");
-                        // var functionString=
-                        //strUserData.Append("<td class='text-center'><a href ='javascript:void(0);' onclick=ShowTaskPopup(" + Convert.ToInt32(item["Id"]) + " , '" + item["Name"].ToString() + "');> Add Task </a> </td>");
                         strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskPopup({0},'{1}');""> Add Task </a> </td>", item["Id"].ToString(), item["Name"].ToString());
-
                     }
                     else
                     {
                         strUserData.Append("<td class='text-center'></td>");
 
                     }
+                    strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowUserPopup({0},'{1}');""> Add User </a> </td>", item["Id"].ToString(), item["Name"].ToString());
+
+
                     strUserData.Append("</tr>");
 
                 }
@@ -644,12 +644,21 @@ namespace QBA.Qutilize.WebApp.Controllers
                         builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
                         if (Convert.ToBoolean(row["IsMapped"]))
                         {
-                            builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked>{row["Name"].ToString()}");
+                            if (Convert.ToBoolean(row["IsProjectManager"]))
+                            {
+                                builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked disabled>{row["Name"].ToString()}");
+                            }
+                            else
+                            {
+                                builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked >{row["Name"].ToString()}");
+                            }
                         }
                         else
                         {
                             builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} >{row["Name"].ToString()}");
                         }
+
+
                         builder.Append(@"</div>");
                     }
                 }
