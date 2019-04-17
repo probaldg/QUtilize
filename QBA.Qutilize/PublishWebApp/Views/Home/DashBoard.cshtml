@@ -2,207 +2,219 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
-
 <div class="row">
-    <div class="col-md-12" id="dashBoardDateRange">
-        @Html.Action("GetDateRange", "Home")
+    <div class="col-md-3">
+        <div class="info-box bg-yellow">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i></span>
+            <div style="padding: 5px 10px;">
+                @Html.Action("GetBirthDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-green">
+            <span  style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i></span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetAnniversaryDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-aqua">
+            <span  style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i></span>
+            <div style="padding: 5px 10px;">
+                @*@Html.Action("GetAnniversaryDayDetail", "Home")*@
+                <span class="progress-description">
+                    Upcoming!!
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-12" id="dashBoardDateRange">
+                @Html.Action("GetDateRange", "Home")
+            </div>
+        </div>
+        @if (HttpContext.Current.Session["SysAdmin"] != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Sys Admin Data details</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
+                        </div>
+                        <div class="panel-body">Panel content</div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (HttpContext.Current.Session["OrgAdmin"] != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Admin Data details</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" id="DashBoardAdminSummary">
+                                <!-- load header summary -->
+                                @Html.Action("LoadDashBoardAdminSummary", "Home")
+                            </div>
+                            <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
+                                <div class="col-md-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="barChartAdmin" width="200" height="30"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin", "Home")
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (HttpContext.Current.Session["OrgPM"] != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Manager data details</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" id="DashBoardPMSummary">
+                                <!-- load header summary -->
+                                @Html.Action("LoadDashBoardPMSummary", "Home")
+                            </div>
+
+
+
+
+                            <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
+                                <div class="col-md-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="barChartPM" width="200" height="30"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    @Html.Action("GetTableForDaywisedetailsinMinuteForPM", "Home")
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (HttpContext.Current.Session["OrgUser"] != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Self Data details</h3>
+                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row" id="divLoadDashBoardDataDayWise">
+                                <div class="col-md-12">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="barChart" width="200" height="30"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label> Day wise details:</label></div>
+                                        <div class="panel-body" id="divActualData">
+                                            @Html.Action("GetDataActual", "Home")
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-body">
+                                            <canvas id="DonutChart" width="200" height="100"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
-@if (HttpContext.Current.Session["SysAdmin"] != null)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Sys Admin Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                </div>
-                <div class="panel-body">Panel content</div>
-            </div>
-        </div>
-    </div>
-}
-@if (HttpContext.Current.Session["OrgAdmin"] != null)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Admin Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                </div>
-                <div class="panel-body">
-                    <div class="row" id="DashBoardAdminSummary">
-                        <!-- load header summary -->
-                        @Html.Action("LoadDashBoardAdminSummary", "Home")
-                    </div>
-                    <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
-                        <div class="col-md-12">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="barChartAdmin" width="200" height="30"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin","Home")                                
-                        </div>
-                        
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>User Wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-    @*<div class="row">
-            <div class="col-md-8">
-                <div class="panel panel-info">
-                    <div class="panel-heading"><label>Resource Wise Data:</label></div>
-                    <div class="panel-body" id="divActualDataProj">
-                        @Html.Action("GetResourceWiseDataAdmin", "Home")
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-info">
-                    <div class="panel-heading"><label>Project Wise Data:</label></div>
-                    <div class="panel-body" id="divActualDataReportee">
-                        @Html.Action("GetProjectWiseDataAdmin", "Home")
-                    </div>
-                </div>
-            </div>
-        </div>*@
-}
-@if (HttpContext.Current.Session["OrgPM"] != null)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Manager data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                </div>
-                <div class="panel-body">
-                    <div class="row" id="DashBoardPMSummary">
-                        <!-- load header summary -->
-                        @Html.Action("LoadDashBoardPMSummary", "Home")
-                    </div>
-
-
-
-
-                    <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
-                        <div class="col-md-12">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="barChartPM" width="200" height="30"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-md-12">
-                            @Html.Action("GetTableForDaywisedetailsinMinuteForPM", "Home")
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>User Wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-}
-@if (HttpContext.Current.Session["OrgUser"] != null)
-{
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Self Data details</h3>
-                    <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                </div>
-                <div class="panel-body">
-                    <div class="row" id="divLoadDashBoardDataDayWise">
-                        <div class="col-md-12">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label> Day wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="barChart" width="200" height="30"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label> Day wise details:</label></div>
-                                <div class="panel-body" id="divActualData">
-                                    @Html.Action("GetDataActual", "Home")
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="panel panel-info">
-                                <div class="panel-heading"><label>Project wise details in minute:</label></div>
-                                <div class="panel-body">
-                                    <canvas id="DonutChart" width="200" height="100"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-}
 <script>
 
 
@@ -475,14 +487,14 @@
 
     function getDayWiseDetailsinMinutesForAdmin() {
          try {
-         
+
             $.ajax({
                 url: '@Url.Action("BarChartDataAdmin", "Home")',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    
+
                 }),
                 success: function (response) {
                     if (response != "") {
