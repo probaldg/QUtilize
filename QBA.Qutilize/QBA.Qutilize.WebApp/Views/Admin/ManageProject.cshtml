@@ -1120,6 +1120,7 @@
 
                         alert("Successfully Saved the Data");
                         $('#myModalForUsers').modal('toggle');
+                        $('#ProjectID').val('');
                         var url = '@Url.Action("ManageProject", "Admin")';
                         window.location.href = url;
                        
