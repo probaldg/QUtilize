@@ -12,7 +12,7 @@
             <!-- /.info-box-content -->
         </div>
         <div class="info-box bg-green">
-            <span  style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i></span>
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i></span>
             <div style="padding: 5px 10px;">
                 @*class="info-box-content"*@
                 @Html.Action("GetAnniversaryDayDetail", "Home")
@@ -20,12 +20,20 @@
             <!-- /.info-box-content -->
         </div>
         <div class="info-box bg-aqua">
-            <span  style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i></span>
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i></span>
             <div style="padding: 5px 10px;">
                 @*@Html.Action("GetAnniversaryDayDetail", "Home")*@
                 <span class="progress-description">
                     Upcoming!!
                 </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-red">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i></span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetHoliDayDetail", "Home")
             </div>
             <!-- /.info-box-content -->
         </div>

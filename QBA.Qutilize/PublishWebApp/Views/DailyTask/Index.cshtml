@@ -49,7 +49,7 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="saveMsg">
                 <span aria-hidden="true">&times;</span>
             </button>
-            Data Saved Successfully!!!
+            Data Saved Successfully.
         </div>
     </div>
     <h4>Daily Task</h4>
@@ -311,10 +311,10 @@
                 function (item) {
                    // alert(item.TaskDate);
                     tr.find('#TaskDate_' + DailyTaskId).text(item.TaskDate);
-                    tr.find('#TaskName_' + DailyTaskId).text(item.TaskName);
-                    tr.find('#Description_' + DailyTaskId).text(item.Description);
+                    tr.find('#TaskName_' + DailyTaskId).text(item.TaskName == null ? "" : item.TaskName);
+                    tr.find('#Description_' + DailyTaskId).text(item.Description== null?"":item.descreption);
                     tr.find('#StartTime_' + DailyTaskId).text(item.StartTime);
-                    tr.find('#EndTime_' + DailyTaskId).text(item.EndTime);
+                    tr.find('#EndTime_' + DailyTaskId).text(item.EndTime== null?"":item.EndTime);
                     tr.find('#hours_' + DailyTaskId).text(item.Hours);
 
                 }, "json");

@@ -1140,6 +1140,26 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Content(sbContent.ToString());
         }
+        public ActionResult GetHoliDayDetail()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUserAllData"] != null)
+                {
+                    DataSet ds = (DataSet)Session["sessUserAllData"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[6] != null && ds.Tables[6].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[6].Rows)
+                        { sbContent.Append("<div class='row'><div class='col-md-9'>" + dr["Description"] + "</div><div class='col-md-3'>" + dr["Holiday"] + "</div></div>"); }
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No holiday found</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
         #endregion
     }
 }
