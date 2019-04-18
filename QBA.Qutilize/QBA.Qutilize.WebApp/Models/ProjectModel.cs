@@ -152,12 +152,12 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Description",model.Description ??""),
                     new SqlParameter("@ParentProjectId", model.ParentProjectID),
                     new SqlParameter("@DeptID", model.DepartmentID),
-                    new SqlParameter("@ManagerID", (model.PMUserID ==0)?(int?)null:model.PMUserID),
+                    new SqlParameter("@ManagerID", model.PMUserID),
                     new SqlParameter("@ClientID", model.ClientD),
-                    new SqlParameter("@EditedBy", model.EditedBy),
-                    new SqlParameter("@EditedDate", model.EditedDate),
-                    new SqlParameter("@IsActive", model.IsActive),
-                    new SqlParameter("@MaxProjectTimeInHours", model.MaxProjectTimeInHours)
+                    new SqlParameter("@EditedBy",model.EditedBy),
+                    new SqlParameter("@EditedDate",model.EditedDate),
+                    new SqlParameter("@IsActive",model.IsActive),
+                    new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Update]", param);
                 if (dt != null)

@@ -684,10 +684,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                         object sumObject;
                         sumObject = ds.Tables[3].Compute("Sum(totalSec)", string.Empty);
                         TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
-                        string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",//:{3:D3}ms
+                        string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
                                         t.Hours,
-                                        t.Minutes,
-                                        t.Seconds
+                                        t.Minutes//,
+                                        //t.Seconds
                                         );//t.Milliseconds
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-yellow'>");
@@ -918,10 +918,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                         object sumObject;
                         sumObject = ds.Tables[2].Compute("Sum(totalSec)", string.Empty);
                         TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
-                        string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",//:{3:D3}ms
+                        string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
                                         t.Hours,
-                                        t.Minutes,
-                                        t.Seconds
+                                        t.Minutes//,
+                                        //t.Seconds
                                         );//t.Milliseconds
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-yellow'>");
@@ -1096,6 +1096,49 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exx) { }
             return Json(_chart, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+        #region Birthday Anniversary and info
+        public ActionResult GetBirthDayDetail()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUserAllData"] != null)
+                {
+                    DataSet ds = (DataSet)Session["sessUserAllData"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[4] != null && ds.Tables[4].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[4].Rows)
+                        { sbContent.Append("<div class='row'><div class='col-md-9'>" + dr["name"] + "</div><div class='col-md-3'>" + dr["birthday"] + "</div></div>"); }
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No birthday in next 30 days</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetAnniversaryDayDetail()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUserAllData"] != null)
+                {
+                    DataSet ds = (DataSet)Session["sessUserAllData"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[5] != null && ds.Tables[5].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[5].Rows)
+                        { sbContent.Append("<div class='row'><div class='col-md-9'>" + dr["name"] + "</div><div class='col-md-3'>" + dr["anniversaryDay"] + "</div></div>"); }
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No Anniversary in next 30 days</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
         }
         #endregion
     }
