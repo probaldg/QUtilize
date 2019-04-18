@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -420,6 +421,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     ////Making the selecedindex to the selected project...
                     ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectID == Convert.ToInt32(ProjectID));
                     ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectID == Convert.ToInt32(ProjectID));
+
+
+
+
                     RefreshUI();
                     UpdateCurrentTask();
 
@@ -434,7 +439,19 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void RefreshUI()
         {
+
+
+            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(delegate
+
+            //{
+            //    var listBox = (ListBox)_dailyTaskView.FindName("lstProject");
+
+            //    listBox.ScrollIntoView(listBox.Items[0]);
+
+            //}));
+
             CollectionViewSource.GetDefaultView(this.ProjectListViewViewModel.Projects).Refresh();
+
         }
 
         //private async void UpdateCurrentTask()
@@ -646,6 +663,16 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                             ProjectListViewViewModel.SelectedProject = ProjectListViewViewModel.Projects.FirstOrDefault(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
                             ProjectListViewViewModel.SelectedIndex = ProjectListViewViewModel.Projects.ToList().FindIndex(x => x.ProjectName.ToLower() == CurrentWorkingProject.ProjectName.ToLower());
+
+                            // for bring the scrollbar to the top of the screen..
+                            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(delegate
+                            {
+                                var listBox = (ListBox)_dailyTaskView.FindName("lstProject");
+
+                                listBox.ScrollIntoView(listBox.Items[0]);
+
+                            }));
+
                         }
                     }
 

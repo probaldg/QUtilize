@@ -208,6 +208,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         }
         private void StopLoadingAnimation()
         {
+
             ((TextBlock)_loginView.FindName("Wait")).Visibility = Visibility.Collapsed;
             ((Storyboard)_loginView.FindResource("WaitStoryboard")).Stop();
         }

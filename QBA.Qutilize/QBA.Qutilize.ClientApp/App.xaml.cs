@@ -50,7 +50,7 @@ namespace QBA.Qutilize.ClientApp
         private void CreateContextMenu()
         {
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-            _notifyIcon.ContextMenuStrip.Items.Add("MainWindow...").Click += (s, e) => ShowAppWindow();
+            _notifyIcon.ContextMenuStrip.Items.Add("Open").Click += (s, e) => ShowAppWindow();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
         }
 
