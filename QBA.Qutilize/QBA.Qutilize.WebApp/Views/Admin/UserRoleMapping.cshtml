@@ -108,29 +108,6 @@
             }
         });
 
-
-             $.ajax({
-            url: '@Url.Action("GetRolesMappedToUser", "Admin")',
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            // data: { id:id },
-            data: JSON.stringify({
-                "id":id
-            }),
-
-            success: function (response) {
-
-                $.each(response, function (key, value) {
-                    $("input[value='" + value.RoleId + "']").prop('checked', true);
-
-                });
-
-            },
-            error: function (response) {
-                console.log(response);
-            }
-        });
         }
 
         function showArraylist() {
@@ -161,13 +138,19 @@
                 moduleids.push(moduleid);
             });
             var length = moduleids.length
-
-            for (var i = 0; i < moduleids.length; i++) {
-                if (lastpushedModuleid != moduleids[i]) {
-                    Item = { userID: UserID, RoleId: moduleids[i] }
-                    Itemlist.push(Item);
+            if (length > 0) {
+                for (var i = 0; i < moduleids.length; i++) {
+                    if (lastpushedModuleid != moduleids[i]) {
+                        Item = { userID: UserID, RoleId: moduleids[i] }
+                        Itemlist.push(Item);
+                    }
                 }
             }
+            else {
+                alert("Please select a role to map");
+                return false;
+            }
+            
 
 
             lastpushedModuleid = moduleids[i];
