@@ -93,7 +93,7 @@
             $('#hdnUserID').val('');
             $('#hdnUserID').val(id);
 
-
+            $('#popupBody').html('');
             $("input[type='checkbox']").prop('checked', false)
 
             $.ajax({
@@ -107,7 +107,7 @@
             }),
 
                 success: function (response) {
-                $('#popupBody').html('');
+               
                 $('#popupBody').append(response);
             },
                 error: function (response) {
@@ -118,7 +118,7 @@
 
 
 
-            $.ajax({
+            @*$.ajax({
             url: '@Url.Action("GetProjectMappedToUser", "Admin")',
             type: "POST",
             dataType: "json",
@@ -140,7 +140,7 @@
             error: function (response) {
                 console.log(response);
             }
-        });
+        });*@
         }
 
 
@@ -164,13 +164,19 @@
             });
 
             var length = moduleids.length
-
-            for (var i = 0; i < moduleids.length; i++) {
-                if (lastpushedModuleid != moduleids[i]) {
-                    Item = { userID: UserID, ProjectId: moduleids[i] }
-                    Itemlist.push(Item);
+            if (length > 0) {
+                for (var i = 0; i < moduleids.length; i++) {
+                    if (lastpushedModuleid != moduleids[i]) {
+                        Item = { userID: UserID, ProjectId: moduleids[i] }
+                        Itemlist.push(Item);
+                    }
                 }
             }
+            else {
+                alert('Please select a project to map.')
+                return false;
+            }
+            
 
 
             lastpushedModuleid = moduleids[i];
