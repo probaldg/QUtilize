@@ -1231,6 +1231,11 @@
 
             $('#myModalForUsers').modal('show');
         }
+
+        $('#myModalForUsers').on('hidden.bs.modal', function () {
+            //alert('Model closing')
+            $('#ProjectID').val('');
+        });
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {
