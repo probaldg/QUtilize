@@ -1,5 +1,6 @@
 ﻿using QBA.Qutilize.WebApp.Models;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -488,7 +489,43 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-
+        public static bool InsertUserSkillData(List<MapUserSkill> lstUserSkill)
+        {
+            string str = string.Empty;
+            bool bln = false;
+            DataTable dt = null;
+            try
+            {
+                if (lstUserSkill.Count > 0)
+                {
+                    //delete existing drafted  goals
+                    SqlParameter[] paramGoalDel ={//StatusGoal,
+                                    new SqlParameter("@userID",lstUserSkill[0].userID)};
+                    using (SqlHelper objSQLHelper = new SqlHelper())
+                    {
+                        dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MapUserSkill_Del]", paramGoalDel);
+                    }
+                    foreach (MapUserSkill mUserSkill in lstUserSkill)
+                    {
+                        SqlParameter[] param ={
+                                    new SqlParameter("@skillID",mUserSkill.skillID),
+                                    new SqlParameter("@userID",mUserSkill.userID),
+                                    new SqlParameter("@SkillRatingID",mUserSkill.SkillRatingID),
+                                    new SqlParameter("@CreatedBy",mUserSkill.CreatedBy),
+                                    new SqlParameter("@CreateDate",mUserSkill.CreateDate)
+                                    };
+                        using (SqlHelper objSQLHelper = new SqlHelper())
+                        { dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MapUserSkill_Insert]", param); }
+                    }
+                    bln = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                bln = false;
+            }
+            return bln;
+        }
 
     }
 }

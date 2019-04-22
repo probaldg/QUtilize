@@ -52,4 +52,29 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime EditedDate { get; set; }
         public bool IsActive { get; set; }
     }
+    public class MapUserSkill
+    {
+        public int Id { get; set; }
+        public int skillID { get; set; }
+        public int userID { get; set; }
+        public int SkillRatingID { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreateDate { get; set; }
+        public int EditedBy { get; set; }
+        public DateTime EditedDate { get; set; }
+        public bool IsActive { get; set; }
+        public bool InsertUserSkillData(List<MapUserSkill> lstUserSkill)
+        {
+            bool bln = false;
+            try
+            {
+                bln = DataAccess.InsertUserSkillData(lstUserSkill);
+            }
+            catch (Exception ex)
+            {
+                bln = false;
+            }
+            return bln;
+        }
+    }
 }

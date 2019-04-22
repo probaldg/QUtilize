@@ -1,6 +1,7 @@
 ﻿using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -270,7 +271,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='table-responsive'>");
-                    sbContent.Append("<table class='table table-bordered' id='tblSessionHistory'  width='100%'>");
+                    sbContent.Append("<table class='table table-bordered' id='tblSkillManagement'  width='100%'>");
                     sbContent.Append("<thead>");
                     sbContent.Append("<tr>");
                     //sbContent.Append("<th class='text-center tblHeaderColor'>Name</th>");
@@ -280,7 +281,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<th class='text-center tblHeaderColor'>Proficiency Level</th>");
                     sbContent.Append("</tr>");
                     sbContent.Append("</thead>");
-                    sbContent.Append("<tbody id='tbodySessionHistoryData'>");
+                    sbContent.Append("<tbody id='tbodySkillManagement'>");
                     int counter = 1;
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
@@ -297,6 +298,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("</table>");
                     sbContent.Append("</div>");
                     //sbContent.Append("</div>");
+
+                    sbContent.Append("<div class='row'>");
+                    sbContent.Append("<div class='col-md-12'>");
+                    sbContent.Append("<div class='dvBorder form-group'>");
+                    sbContent.Append("<input type='submit' id='btnSkillSave' value='Save' name='Command' class='btn btn-default' onclick='saveSkillData()' />");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
                 }
             }
             catch (Exception exx) { }
@@ -340,6 +349,49 @@ namespace QBA.Qutilize.WebApp.Controllers
                 catch (Exception exC) { }
             }
             return sb.ToString();
+        }
+        public ActionResult saveUserSkillData(string SkillID, string SkillRate)
+        {
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                MapUserSkill mMUSkill = new MapUserSkill();
+                int UserID = Convert.ToInt32(Session["sessUser"]);
+                string[] arrSkillID = SkillID.Split('|');
+                string[] arrSkillRate = SkillRate.Split('|');
+                List<MapUserSkill> lstUserSkill = new List<MapUserSkill>();
+                for (int i = 0; i < arrSkillID.Length; i++)
+                {
+                    try
+                    {
+                        MapUserSkill mMUS = new MapUserSkill();
+                        mMUS.userID = UserID;
+                        mMUS.skillID = Convert.ToInt32(arrSkillID[i]);
+                        mMUS.SkillRatingID = Convert.ToInt32(arrSkillRate[i]);
+                        mMUS.CreatedBy = UserID;
+                        mMUS.CreateDate = DateTime.Now;
+                        lstUserSkill.Add(mMUS);
+                    }
+                    catch (Exception exx) { }
+                }
+                var returnStatus = mMUSkill.InsertUserSkillData(lstUserSkill);
+                if (returnStatus)
+                {
+                    string strReturnMessage = "Your data has been saved successfully.";
+                    sb.Append(strReturnMessage);
+                }
+                else sb.Append("Data could not save. Please try after some time.");
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return Json(sb.ToString());
         }
     }
 }
