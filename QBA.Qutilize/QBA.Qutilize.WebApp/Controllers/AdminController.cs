@@ -1057,59 +1057,97 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(strProjectMapped.ToString());
         }
 
+        //public ActionResult LoadAllModules(int Userid)
+        //{
+        //    UserProjectMappingModel obj = new UserProjectMappingModel();
 
+
+        //    UserInfoHelper userInfo = new UserInfoHelper(Userid);
+        //    DataTable dt = new DataTable();
+
+        //    if (userInfo.IsRoleSysAdmin)
+        //    {
+
+        //        var dataRows = obj.GetAllProjects().Select("IsActive=1");
+        //        if (dataRows.Length > 0)
+        //        {
+        //            dt = dataRows.CopyToDataTable();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var dataRows = obj.GetAllProjects(userInfo.UserOrganisationID).Select("IsActive=1");
+        //        if (dataRows.Length > 0)
+        //        {
+        //            dt = dataRows.CopyToDataTable();
+        //        }
+        //    }
+
+
+        //    if (Session["AllProjectList"] != null)
+        //    {
+        //        Session.Remove("AllProjectList");
+        //        Session["AllProjectList"] = dt;
+        //    }
+        //    else
+        //    {
+        //        Session["AllProjectList"] = dt;
+        //    }
+
+
+        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
+        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
+        //        strModules += "</div>";
+        //    }
+        //    strModules += @"</div>";
+
+        //    return Json(strModules);
+        //}
 
         public ActionResult LoadAllModules(int Userid)
         {
             UserProjectMappingModel obj = new UserProjectMappingModel();
+            StringBuilder builder = new StringBuilder();
 
-
-            UserInfoHelper userInfo = new UserInfoHelper(Userid);
-            DataTable dt = new DataTable();
-
-            if (userInfo.IsRoleSysAdmin)
+            try
             {
-
-                var dataRows = obj.GetAllProjects().Select("IsActive=1");
-                if (dataRows.Length > 0)
+                UserInfoHelper userInfo = new UserInfoHelper(Userid);
+                DataTable dt = new DataTable();
+                var data = obj.GetAllProjectMappedStatusByUserID(Userid, userInfo.UserOrganisationID);
+                builder.Append(@"<div id='divProjectList' class='row' style='margin:10px;'>");
+                if (data.Rows.Count > 0)
                 {
-                    dt = dataRows.CopyToDataTable();
+                    foreach (DataRow row in data.Rows)
+                    {
+                        builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                        if (Convert.ToBoolean(row["IsMapped"]))
+                        {
+                            builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} checked>{row["Name"].ToString()}");
+                        }
+                        else
+                        {
+                            builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={row["Id"].ToString()} >{row["Name"].ToString()}");
+                        }
+
+                        builder.Append(@"</div>");
+                    }
                 }
-            }
-            else
-            {
-                var dataRows = obj.GetAllProjects(userInfo.UserOrganisationID).Select("IsActive=1");
-                if (dataRows.Length > 0)
+                else
                 {
-                    dt = dataRows.CopyToDataTable();
+                    builder.Append(@"<h5>No Projects available</h5>");
                 }
+
+                builder.Append(@"</div>");
             }
-
-
-            if (Session["AllProjectList"] != null)
+            catch (Exception)
             {
-                Session.Remove("AllProjectList");
-                Session["AllProjectList"] = dt;
+                throw;
             }
-            else
-            {
-                Session["AllProjectList"] = dt;
-            }
-
-
-            string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
-            foreach (DataRow dr in dt.Rows)
-            {
-                strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
-                strModules += "</div>";
-            }
-            strModules += @"</div>";
-
-            return Json(strModules);
+            return Json(builder.ToString());
         }
-
-
         public ActionResult SearchProject(string searchFilter)
         {
             //ViewBag.ProjectListDataTable
@@ -1321,10 +1359,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         #region User Role Mapping region
         public ActionResult UserRoleMapping()
         {
-
             return View();
         }
-
         public ActionResult LoadALLUserRoleToMapped()
         {
             StringBuilder strProjectMapped = new StringBuilder();
@@ -1380,48 +1416,6 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Content(strProjectMapped.ToString());
         }
-
-        //public ActionResult LoadAllRoles(int userID)
-        //{
-        //    UserRoleMappingModel obj = new UserRoleMappingModel();
-
-        //    UserInfoHelper userInfo = new UserInfoHelper(userID);
-
-        //    DataTable dtRoles = new DataTable();
-
-        //    if (userInfo.IsRoleSysAdmin)
-        //    {
-        //        var dataRows = obj.GetAllRoles().Select("IsActive=1"); ;
-
-        //        if (dataRows.Length > 0)
-        //        {
-        //            dtRoles = dataRows.CopyToDataTable();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var dataRows = obj.GetAllRoles(userInfo.UserOrganisationID).Select("IsActive=1"); ;
-
-        //        if (dataRows.Length > 0)
-        //        {
-        //            dtRoles = dataRows.CopyToDataTable();
-        //        }
-
-        //    }
-
-
-        //    string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
-        //    foreach (DataRow dr in dtRoles.Rows)
-        //    {
-        //        strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
-        //        strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
-        //        strModules += "</div>";
-        //    }
-        //    strModules += @"</div>";
-
-        //    return Json(strModules);
-        //}
-
         public ActionResult LoadAllRoles(int userID)
         {
             UserRoleMappingModel obj = new UserRoleMappingModel();
@@ -1429,87 +1423,62 @@ namespace QBA.Qutilize.WebApp.Controllers
             UserInfoHelper userInfo = new UserInfoHelper(userID);
 
             DataTable dtRoles = new DataTable();
+            StringBuilder builder = new StringBuilder();
 
-            if (userInfo.IsRoleSysAdmin)
+            try
             {
-                var dataRows = obj.GetAllRoles().Select("IsActive=1"); ;
-
-                if (dataRows.Length > 0)
+                dtRoles = obj.GetAllRolesMappedStatusByUserID(userID, userInfo.UserOrganisationID);
+                builder.Append(@"<div id='divProjectList' class='row' style='margin:10px;'>");
+                foreach (DataRow item in dtRoles.Rows)
                 {
-                    dtRoles = dataRows.CopyToDataTable();
+                    builder.Append(@"<div style='float: left;width: 25%; padding: 5px;'>");
+                    if (Convert.ToBoolean(item["IsMapped"]))
+                    {
+                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={item["Id"].ToString()} checked >{item["Name"].ToString()}");
+                    }
+                    else
+                    {
+                        builder.AppendFormat($"<input type = 'checkbox' class='check' style=' margin:5px;' name='modules' value={item["Id"].ToString()} >{item["Name"].ToString()}");
+                    }
+                    builder.Append(@"</div>");
                 }
+
             }
-            else
+            catch (Exception)
             {
-                var dataRows = obj.GetAllRoles(userInfo.UserOrganisationID).Select("IsActive=1"); ;
 
-                if (dataRows.Length > 0)
-                {
-                    dtRoles = dataRows.CopyToDataTable();
-                }
-
+                throw;
             }
 
-
-            string strModules = @"<div id='divProjectList' class='row' style='margin:10px;'>";
-            foreach (DataRow dr in dtRoles.Rows)
-            {
-                strModules += @"<div style='float: left;width: 25%; padding: 5px;'>";
-                strModules += "<input type='checkbox' class='check' style=' margin:5px;' name='modules' value='" + dr["Id"].ToString() + "'>" + dr["Name"].ToString();
-                strModules += "</div>";
-            }
-            strModules += @"</div>";
-
-            return Json(strModules);
+            return Json(builder.ToString());
         }
-
         public ActionResult SaveRoleMapping(UserRoleMappingModel[] itemlist)
         {
             UserRoleMappingModel UPM = new UserRoleMappingModel();
             int UserID = itemlist[0].UserId;
             try
             {
-
-
                 DataTable dt = UPM.GetAllRolesByUserID(itemlist[0].UserId);
-
                 if (dt.Rows.Count > 0)
                 {
                     UPM.DeleteAllExistingMapping(itemlist[0].UserId);
                 }
-
                 foreach (UserRoleMappingModel i in itemlist)
                 {
-                    UserRoleMappingModel mm = new UserRoleMappingModel();
-
-                    mm.UserId = i.UserId;
-                    mm.RoleId = i.RoleId;
+                    UserRoleMappingModel mm = new UserRoleMappingModel
+                    {
+                        UserId = i.UserId,
+                        RoleId = i.RoleId
+                    };
                     mm.InsertUserRoleMappingdata(mm);
                 }
             }
             catch (Exception)
             {
-
+                return Json(false);
                 //throw;
             }
             return Json(true);
-        }
-
-        public ActionResult GetRolesMappedToUser(int id)
-        {
-            UserRoleMappingModel upm = new UserRoleMappingModel();
-            DataTable dt = upm.GetAllRolesByUserID(id);
-
-            List<UserRoleMappingModel> viewModelList = new List<UserRoleMappingModel>();
-            for (var i = 0; i < dt.Rows.Count; i++)
-            {
-                UserRoleMappingModel um = new UserRoleMappingModel();
-                um.UserId = int.Parse(dt.Rows[i]["UserId"].ToString());
-                um.RoleId = int.Parse(dt.Rows[i]["RoleId"].ToString());
-
-                viewModelList.Add(um);
-            }
-            return Json(viewModelList);
         }
 
         #endregion
