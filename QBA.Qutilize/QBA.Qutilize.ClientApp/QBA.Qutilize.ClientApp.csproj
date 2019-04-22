@@ -101,6 +101,7 @@
     <Compile Include="Helper\ViewModelBase.cs" />
     <Compile Include="Helper\WebAPIHelper.cs" />
     <Compile Include="ViewModel\DailyTaskViewModel.cs" />
+    <Compile Include="ViewModel\DailyTaskWithTaskListViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\ProjectListViewViewModel.cs" />
     <Compile Include="Views\DailyTask.xaml.cs">
@@ -108,6 +109,9 @@
     </Compile>
     <Compile Include="Views\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewDailyTask.xaml.cs">
+      <DependentUpon>NewDailyTask.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NewDailyTask.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
