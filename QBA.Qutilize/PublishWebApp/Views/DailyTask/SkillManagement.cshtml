@@ -6,3 +6,36 @@
 <div id="divMain">
     @Html.Action("LoadSkillManagementDetails", "DailyTask")
 </div>
+<script>
+    function saveSkillData() {
+        try {
+            var vSkillID = $('#tblSkillManagement input[name="hidSkillID[]"]').map(function () { return this.value }).get().join("|");
+            var vSkillRate = $('#tblSkillManagement select[name="ddlSkillPerspective[]"]').map(function () { return this.value }).get().join("|");
+            $.ajax({
+                            url: '@Url.Action("saveUserSkillData", "DailyTask")',
+                            type: "POST",
+                            beforeSend: function () {
+                                $('#spinner').show();
+                            },
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            //data: JSON.stringify(claims),
+                            data: JSON.stringify({
+                                SkillID: vSkillID, SkillRate: vSkillRate
+                            }),
+                            success: function (response) {
+                                alert(response);
+                                //if (vRedirectRequired == "Y") {
+                                    @*$("#divMain").load('@Url.Action("LoadSkillManagementDetails", "DailyTask")');*@
+                                //}
+                            },
+                            complete: function () {
+                                $('#spinner').hide();
+                            }
+                        });
+        }
+        catch (e) {
+            alert(e);
+        }
+    };
+</script>
