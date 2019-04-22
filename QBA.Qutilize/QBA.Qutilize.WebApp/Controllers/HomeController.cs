@@ -1160,6 +1160,33 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Content(sbContent.ToString());
         }
+        public ActionResult GetNewsDetail()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUserAllData"] != null)
+                {
+                    DataSet ds = (DataSet)Session["sessUserAllData"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[7] != null && ds.Tables[7].Rows.Count > 0)
+                    {
+                        sbContent.Append("<marquee direction='up' onmouseover='this.stop();' onmouseout='this.start();' scrolldelay='150'><ul>");
+                        foreach (DataRow dr in ds.Tables[7].Rows)
+                        {
+                            try {
+                                sbContent.Append("<li><b>" + dr["Heading"] + "</b><br>" + dr["Description"] + "</li><br>");
+                            }
+                            catch (Exception exx) { }
+                        }
+                        sbContent.Append("</ul></marquee>");
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No News/Events found</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
         #endregion
     }
 }
