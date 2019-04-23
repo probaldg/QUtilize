@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
-        Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="2">
-    <Grid>
-        <Grid x:Name="grdProject" VerticalAlignment="Top" >
-            
-        </Grid>
+        Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="1">
+    <Grid >
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <Grid x:Name="grdProject" VerticalAlignment="Top"  ScrollViewer.CanContentScroll="False">
+
+            </Grid>
+        </ScrollViewer>
+
     </Grid>
 </Window>
