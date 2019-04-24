@@ -71,7 +71,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             var grid = (Grid)view.FindName("grdProject");
             StackPanel stackPanel = new StackPanel();
-            stackPanel.Margin = new Thickness(10, 5, 5, 10);
+            stackPanel.Margin = new Thickness(5, 5, 5, 10);
 
             if (user.Projects.Count > 0)
             {
@@ -88,26 +88,22 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     projects.Insert(0, defaultProject);
                 }
 
+                int rowCounter = 0;
                 foreach (var item in projects)
                 {
-
-                    Canvas myCanvas = CreateCanvas(item);
-
-                    Border brdr = new Border()
+                    Border border = new Border();
+                    if (rowCounter == 0)
                     {
-                        BorderThickness = new Thickness()
-                        {
-                            Bottom = 1,
-                            Left = 1,
-                            Right = 1,
-                            Top = 1
-                        },
-                        BorderBrush = new SolidColorBrush(Colors.Black),
-                        Margin = new Thickness(0, 2, 0, 2)
-                    };
-                    brdr.Child = myCanvas;
+                        border = CreateControlForSelectedItem(item);
+                    }
+                    else
+                    {
+                        border = CreateCanvas(item);
+                    }
+                    rowCounter++;
 
-                    stackPanel.Children.Add(brdr);
+
+                    stackPanel.Children.Add(border);
 
                 }
                 grid.Children.Add(stackPanel);
@@ -116,16 +112,104 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         }
 
-        private Canvas CreateCanvas(Project item)
+        private Border CreateCanvas(Project item)
         {
 
             Canvas myCanvas = new Canvas
             {
-                Margin = new Thickness(5),
+                Margin = new Thickness(0),
                 Background = new SolidColorBrush(Colors.AliceBlue),
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MinWidth = 290,
+                MinWidth = 281,
+                MinHeight = 50,
+                DataContext = item
+
+            };
+
+            myCanvas.MouseLeftButtonDown += ShowProject_Task;
+            myCanvas.MouseEnter += MyCanvas_MouseEnter;
+            myCanvas.MouseLeave += MyCanvas_MouseLeave;
+
+
+            Grid grid = new Grid();
+            grid.Margin = new Thickness(0);
+            //RowDefinition row1 = new RowDefinition();
+            //RowDefinition row2 = new RowDefinition();
+
+            //ColumnDefinition column1 = new ColumnDefinition();
+            //ColumnDefinition column2 = new ColumnDefinition();
+            RowDefinition row1 = new RowDefinition();
+            row1.Height = new GridLength(30);
+            RowDefinition row2 = new RowDefinition();
+            row2.Height = new GridLength(25);
+
+            ColumnDefinition column1 = new ColumnDefinition();
+            column1.Width = new GridLength(200);
+            ColumnDefinition column2 = new ColumnDefinition();
+            //column1.Width = new GridLength();
+
+
+            grid.RowDefinitions.Add(row1);
+            grid.RowDefinitions.Add(row2);
+            grid.ColumnDefinitions.Add(column1);
+            grid.ColumnDefinitions.Add(column2);
+
+
+            TextBlock txtName = new TextBlock
+            {
+                FontSize = 14,
+                Text = item.ProjectName,
+                Foreground = new SolidColorBrush(Colors.Black),
+
+            };
+
+            TextBlock txtProjectDesc = new TextBlock
+            {
+                FontSize = 12,
+                Text = item.Description,
+                Foreground = new SolidColorBrush(Colors.Black),
+
+            };
+            Grid.SetRow(txtName, 0);
+            Grid.SetColumn(txtName, 0);
+
+            Grid.SetRow(txtProjectDesc, 1);
+            Grid.SetColumn(txtProjectDesc, 0);
+
+            grid.Children.Add(txtName);
+            grid.Children.Add(txtProjectDesc);
+
+            Canvas.SetTop(grid, 5);
+            Canvas.SetLeft(grid, 10);
+            myCanvas.Children.Add(grid);
+
+            Border brdr = new Border()
+            {
+                BorderThickness = new Thickness()
+                {
+                    Bottom = 1,
+                    Left = 1,
+                    Right = 1,
+                    Top = 1
+                },
+                BorderBrush = new SolidColorBrush(Colors.Black),
+                Margin = new Thickness(10, 2, 0, 2)
+            };
+            brdr.Child = myCanvas;
+
+            return brdr;
+        }
+
+        private Border CreateControlForSelectedItem(Project item)
+        {
+            Canvas myCanvas = new Canvas
+            {
+                Margin = new Thickness(0),
+                Background = new SolidColorBrush(Colors.Tan),
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MinWidth = 281,
                 //MaxWidth = 350,
                 MinHeight = 50,
                 DataContext = item
@@ -136,159 +220,129 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             myCanvas.MouseEnter += MyCanvas_MouseEnter;
             myCanvas.MouseLeave += MyCanvas_MouseLeave;
 
-            if (item.ProjectID == 155)
+            Grid grid = CreateGridForSelectedProject(item);
+
+            Canvas.SetTop(grid, 5);
+            Canvas.SetLeft(grid, 10);
+
+            myCanvas.Children.Add(grid);
+
+
+            myCanvas.Background = new SolidColorBrush(Colors.Tan);
+            myCanvas.Height = 30 + 25 + 5;
+
+            Border brdr = new Border()
             {
-                Grid grid = new Grid();
-                grid.Margin = new Thickness(0);
-
-                RowDefinition row1 = new RowDefinition();
-                row1.Height = new GridLength(30);
-                RowDefinition row2 = new RowDefinition();
-                row2.Height = new GridLength(25);
-
-                ColumnDefinition column1 = new ColumnDefinition();
-                column1.Width = new GridLength(200);
-                ColumnDefinition column2 = new ColumnDefinition();
-
-                grid.RowDefinitions.Add(row1);
-                grid.RowDefinitions.Add(row2);
-                grid.ColumnDefinitions.Add(column1);
-                grid.ColumnDefinitions.Add(column2);
-
-
-                TextBlock txtName = new TextBlock
+                BorderThickness = new Thickness()
                 {
-                    FontSize = 14,
-                    Text = item.ProjectName,
-                    Foreground = new SolidColorBrush(Colors.White),
-                    TextWrapping = TextWrapping.Wrap
-                };
+                    Bottom = 1,
+                    Left = 10,
+                    Right = 1,
+                    Top = 1
+                },
+                BorderBrush = new SolidColorBrush(Colors.Green),
+                Margin = new Thickness(10, 2, 0, 2)
+            };
+            brdr.Child = myCanvas;
+            return brdr;
 
-                TextBlock txtProjectDesc = new TextBlock
-                {
-                    FontSize = 12,
-                    Text = item.Description,
-                    Foreground = new SolidColorBrush(Colors.White),
-                    Margin = new Thickness(0, 0, 0, 5),
-                    TextWrapping = TextWrapping.Wrap
+        }
 
-                };
+        private static Grid CreateGridForSelectedProject(Project item)
+        {
+            Grid grid = new Grid();
+            grid.Margin = new Thickness(0);
 
-                ResourceDictionary rd = new ResourceDictionary
-                {
-                    Source = new Uri("../SwitchTypeToggleButton.xaml", UriKind.Relative)
-                };
+            RowDefinition row1 = new RowDefinition();
+            row1.Height = new GridLength(30);
+            RowDefinition row2 = new RowDefinition();
+            row2.Height = new GridLength(25);
 
-                ToggleButton toggleButton = new ToggleButton
-                {
-                    Width = 45,
-                    Height = 22,
-                    Style = (Style)rd["SwitchTypeToggleButton"],
+            ColumnDefinition column1 = new ColumnDefinition();
+            column1.Width = new GridLength(200);
+            ColumnDefinition column2 = new ColumnDefinition();
 
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(0, 2, 5, 0)
-                };
-
-                if (item.DifferenceInSecondsInCurrentDate == null)
-                {
-                    TimeSpan ts = TimeSpan.FromSeconds(0);
-                    item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                    item.PreviousElapsedTime = ts;
-                }
-                else
-                {
-                    TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-                    item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                    item.PreviousElapsedTime = ts;
-                }
+            grid.RowDefinitions.Add(row1);
+            grid.RowDefinitions.Add(row2);
+            grid.ColumnDefinitions.Add(column1);
+            grid.ColumnDefinitions.Add(column2);
 
 
-                TextBlock txtElapsedTime = new TextBlock
-                {
-                    FontSize = 12,
-                    Text = item.TimeElapsedValue,
-                    Foreground = new SolidColorBrush(Colors.White),
-                    Margin = new Thickness(0, 0, 0, 5),
-                    TextWrapping = TextWrapping.Wrap
+            TextBlock txtName = new TextBlock
+            {
+                FontSize = 14,
+                Text = item.ProjectName,
+                Foreground = new SolidColorBrush(Colors.White),
+                TextWrapping = TextWrapping.Wrap
+            };
 
-                };
+            TextBlock txtProjectDesc = new TextBlock
+            {
+                FontSize = 12,
+                Text = item.Description,
+                Foreground = new SolidColorBrush(Colors.White),
+                Margin = new Thickness(0, 0, 0, 5),
+                TextWrapping = TextWrapping.Wrap
 
-                Grid.SetRow(txtName, 0);
-                Grid.SetColumn(txtName, 0);
+            };
 
-                Grid.SetRow(txtProjectDesc, 1);
-                Grid.SetColumn(txtProjectDesc, 0);
+            ResourceDictionary rd = new ResourceDictionary
+            {
+                Source = new Uri("../SwitchTypeToggleButton.xaml", UriKind.Relative)
+            };
 
-                Grid.SetRow(toggleButton, 0);
-                Grid.SetColumn(toggleButton, 1);
+            ToggleButton toggleButton = new ToggleButton
+            {
+                Width = 45,
+                Height = 22,
+                Style = (Style)rd["SwitchTypeToggleButton"],
 
-                Grid.SetRow(txtElapsedTime, 1);
-                Grid.SetColumn(txtElapsedTime, 1);
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 2, 5, 0)
+            };
 
-                grid.Children.Add(txtName);
-                grid.Children.Add(txtProjectDesc);
-                grid.Children.Add(toggleButton);
-                grid.Children.Add(txtElapsedTime);
-
-                Canvas.SetTop(grid, 5);
-                Canvas.SetLeft(grid, 10);
-
-
-                myCanvas.Children.Add(grid);
-                myCanvas.Background = new SolidColorBrush(Colors.Tan);
-                myCanvas.Height = 30 + 25 + 5;
-
-
+            if (item.DifferenceInSecondsInCurrentDate == null)
+            {
+                TimeSpan ts = TimeSpan.FromSeconds(0);
+                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+                item.PreviousElapsedTime = ts;
             }
             else
             {
-                Grid grid = new Grid();
-                grid.Margin = new Thickness(0);
-                RowDefinition row1 = new RowDefinition();
-                RowDefinition row2 = new RowDefinition();
-
-                ColumnDefinition column1 = new ColumnDefinition();
-                ColumnDefinition column2 = new ColumnDefinition();
-                grid.RowDefinitions.Add(row1);
-                grid.RowDefinitions.Add(row2);
-                grid.ColumnDefinitions.Add(column1);
-                grid.ColumnDefinitions.Add(column2);
-
-
-                TextBlock txtName = new TextBlock
-                {
-                    FontSize = 14,
-                    Text = item.ProjectName,
-                    Foreground = new SolidColorBrush(Colors.Black),
-
-                };
-
-                TextBlock txtProjectDesc = new TextBlock
-                {
-                    FontSize = 12,
-                    Text = item.Description,
-                    Foreground = new SolidColorBrush(Colors.Black),
-
-                };
-                Grid.SetRow(txtName, 0);
-                Grid.SetColumn(txtName, 0);
-
-                Grid.SetRow(txtProjectDesc, 1);
-                Grid.SetColumn(txtProjectDesc, 0);
-
-                grid.Children.Add(txtName);
-                grid.Children.Add(txtProjectDesc);
-
-                Canvas.SetTop(grid, 5);
-                Canvas.SetLeft(grid, 10);
-
-
-                myCanvas.Children.Add(grid);
-
+                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
+                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+                item.PreviousElapsedTime = ts;
             }
 
-            return myCanvas;
+
+            TextBlock txtElapsedTime = new TextBlock
+            {
+                FontSize = 12,
+                Text = item.TimeElapsedValue,
+                Foreground = new SolidColorBrush(Colors.White),
+                Margin = new Thickness(0, 0, 0, 5),
+                TextWrapping = TextWrapping.Wrap
+
+            };
+
+            Grid.SetRow(txtName, 0);
+            Grid.SetColumn(txtName, 0);
+
+            Grid.SetRow(txtProjectDesc, 1);
+            Grid.SetColumn(txtProjectDesc, 0);
+
+            Grid.SetRow(toggleButton, 0);
+            Grid.SetColumn(toggleButton, 1);
+
+            Grid.SetRow(txtElapsedTime, 1);
+            Grid.SetColumn(txtElapsedTime, 1);
+
+            grid.Children.Add(txtName);
+            grid.Children.Add(txtProjectDesc);
+            grid.Children.Add(toggleButton);
+            grid.Children.Add(txtElapsedTime);
+            return grid;
         }
 
         private void MyCanvas_MouseLeave(object sender, MouseEventArgs e)
