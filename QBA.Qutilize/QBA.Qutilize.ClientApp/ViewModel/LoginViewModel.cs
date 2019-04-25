@@ -247,7 +247,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 // DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
 
                 //dailyTask.DataContext = dailyTaskVM;
-                DailyTaskWithTaskListViewModel taskListViewModel = new DailyTaskWithTaskListViewModel();
+                DailyTaskWithTaskListViewModel taskListViewModel = new DailyTaskWithTaskListViewModel(dailyTask, user);
                 taskListViewModel.CreateProjectListControls(dailyTask, user);
                 Application.Current.MainWindow = dailyTask;
                 dailyTask.Show();

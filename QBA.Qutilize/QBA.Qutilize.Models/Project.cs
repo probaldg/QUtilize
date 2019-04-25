@@ -8,6 +8,7 @@ namespace QBA.Qutilize.Models
         public Project()
         {
             Users = new List<User>();
+            Tasks = new List<ProjectTask>();
         }
         public int? ProjectID { get; set; }
         public string ProjectName { get; set; }
@@ -18,6 +19,7 @@ namespace QBA.Qutilize.Models
 
         public int? MaxProjectTimeInHours { get; set; }
         public ICollection<User> Users { get; set; }
+        public ICollection<ProjectTask> Tasks { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }
