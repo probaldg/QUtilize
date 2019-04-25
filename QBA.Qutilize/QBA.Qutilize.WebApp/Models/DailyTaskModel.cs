@@ -10,11 +10,12 @@ namespace QBA.Qutilize.WebApp.Models
         public string ProjectName { get; set; }
         public DateTime TaskDate { get; set; }
         public DateTime StartTime { get; set; }
-
+        public string StartTimeString { get; set; }
         public string StartTimeToDisplay { get; set; }
         public string EndTimeToDisplay { get; set; }
 
         public DateTime EndTime { get; set; }
+        public string EndTimeString { get; set; }
         public string TaskName { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }

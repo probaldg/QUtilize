@@ -92,7 +92,8 @@ namespace QBA.Qutilize.WebApp.DAL
             {
                 //System.Windows.Forms.MessageBox.Show(ee.Message);
                 //Errormessage.WriteError(ee.Message);
-                return null;
+                throw;
+                // return null;
 
             }
             finally
