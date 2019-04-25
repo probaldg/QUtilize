@@ -21,7 +21,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (System.Web.HttpContext.Current.Session["sessUser"] != null)
             {
                 model.UserId = Convert.ToInt32(Session["sessUser"]);
-                // string url = Request.Url.AbsoluteUri;
+
                 if (ModuleMappingHelper.IsUserMappedToModule(model.UserId, Request.Url.AbsoluteUri))
                 {
                     // model.GetAllProjects(model.UserId);
@@ -108,6 +108,68 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
 
 
+        //[HttpPost]
+        //public ActionResult UpdateDailyTask(DailyTaskModel model)
+        //{
+        //    string result = string.Empty;
+        //    DailyTaskViewModel dailyTaskViewModel = new DailyTaskViewModel();
+        //    try
+        //    {
+
+        //        DateTime startTime = model.StartTime;
+        //        DateTime endTime = model.EndTime;
+
+        //        if (model.StartTime.ToShortDateString() != Convert.ToDateTime(model.TaskDate).ToShortDateString())
+        //        {
+        //            var tempStartTime = model.StartTime.TimeOfDay;
+        //            var tempEndTime = model.EndTime.TimeOfDay;
+
+        //            //DateTime NewstartTimeAB = DateTime.Parse(startTime);
+
+        //            DateTime newStartTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, model.StartTime.Second);
+        //            DateTime newEndtTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+        //            startTime = newStartTime;
+        //            endTime = newEndtTime;
+        //        }
+
+
+        //        DailyTaskModel taskModel = new DailyTaskModel();
+        //        taskModel.DailyTaskId = model.DailyTaskId;
+        //        taskModel.TaskDate = model.TaskDate;
+        //        taskModel.TaskName = model.TaskName;
+        //        taskModel.StartTime = startTime;
+        //        taskModel.EndTime = endTime;
+        //        taskModel.Description = model.Description;
+        //        taskModel.EditedBy = Session["sessUser"].ToString();
+        //        taskModel.EditedDate = DateTime.Now;
+
+        //        bool updateResut = dailyTaskViewModel.UpdateDailyTaskdata(taskModel);
+        //        if (updateResut)
+        //            result = "Success";
+
+        //    }
+        //    catch (Exception)
+        //    {
+        //        result = "Error";
+
+        //        throw;
+        //    }
+        //    return Json(new
+        //    {
+        //        DailyTaskId = model.DailyTaskId,
+        //        TaskDate = model.TaskDate.ToShortDateString(),
+        //        //StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
+        //        //EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
+
+        //        StartTime = model.StartTime.ToString("HH:mm"),
+        //        EndTime = model.EndTime.ToString("HH:mm"),
+        //        Description = model.Description,
+        //        TaskName = model.TaskName,
+        //        Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
+        //    });
+
+        //}
+
         [HttpPost]
         public ActionResult UpdateDailyTask(DailyTaskModel model)
         {
@@ -116,21 +178,11 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
 
-                DateTime startTime = model.StartTime;
-                DateTime endTime = model.EndTime;
+                DateTime startTime = Convert.ToDateTime(model.StartTimeString);
 
-                if (model.StartTime.ToShortDateString() != Convert.ToDateTime(model.TaskDate).ToShortDateString())
-                {
-                    var tempStartTime = model.StartTime.TimeOfDay;
-                    var tempEndTime = model.EndTime.TimeOfDay;
-
-                    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
-
-                    DateTime newStartTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, model.StartTime.Second);
-                    DateTime newEndtTime = new DateTime(model.TaskDate.Year, model.TaskDate.Month, model.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
-                    startTime = newStartTime;
-                    endTime = newEndtTime;
-                }
+                model.StartTime = startTime;
+                DateTime endTime = Convert.ToDateTime(model.EndTimeString);
+                model.EndTime = endTime;
 
 
                 DailyTaskModel taskModel = new DailyTaskModel();
@@ -145,7 +197,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 bool updateResut = dailyTaskViewModel.UpdateDailyTaskdata(taskModel);
                 if (updateResut)
+                {
                     result = "Success";
+                }
+
+                else
+                {
+                    return null;
+                }
 
             }
             catch (Exception)
@@ -158,19 +217,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 DailyTaskId = model.DailyTaskId,
                 TaskDate = model.TaskDate.ToShortDateString(),
-                //StartTime = model.StartTime.ToLongTimeString().Substring(0, 5),
-                //EndTime = model.EndTime.ToLongTimeString().Substring(0, 5),
 
                 StartTime = model.StartTime.ToString("HH:mm"),
                 EndTime = model.EndTime.ToString("HH:mm"),
-                Description = model.Description,
+                TaskDescription = model.Description,
                 TaskName = model.TaskName,
                 Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
             });
 
         }
-
-
         [HttpPost]
         public ActionResult DeleteDailyTask(int ID)
         {
@@ -200,7 +255,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             try
             {
-                TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
+                TimeSpan ts = endTime - startTime;
 
                 return ts.ToString(@"hh\:mm");
 

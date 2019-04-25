@@ -82,6 +82,63 @@ namespace QBA.Qutilize.WebApp.Models
             return ProjectsList;
         }
 
+        //public List<DailyTaskModel> GetAllTaskByDateRange(int userID, DateTime startDate, DateTime endTime)
+        //{
+        //    DataTable dt = null;
+        //    List<DailyTaskModel> taskList = new List<DailyTaskModel>();
+        //    try
+        //    {
+        //        SqlParameter[] param ={
+        //            new SqlParameter("@UserID",userID),
+        //            new SqlParameter("@STARTDT",startDate),
+        //            new SqlParameter("@ENDDT", endTime)
+        //        };
+        //        dt = objSQLHelper.ExecuteDataTable("[USPDailyTask_GetByDateRange]", param);
+
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            foreach (DataRow item in dt.Rows)
+        //            {
+        //                DailyTaskModel dailyTaskModel = new DailyTaskModel();
+
+        //                dailyTaskModel.DailyTaskId = Convert.ToInt32(item["DailyTaskId"]);
+        //                dailyTaskModel.ProjectID = Convert.ToInt32(item["ProjectId"]);
+        //                dailyTaskModel.ProjectName = item["ProjectName"].ToString();
+        //                dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
+        //                dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
+
+
+        //                //Start time only contains date part so creating full date time with taskDate
+
+        //                var tempStartTime = Convert.ToDateTime(item["StartTime"]).TimeOfDay;
+        //                dailyTaskModel.StartTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, tempStartTime.Seconds);
+        //                dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
+
+        //                if (!DBNull.Value.Equals(item["EndTime"]))
+        //                {
+        //                    var tempEndTime = Convert.ToDateTime(item["EndTime"]).TimeOfDay;
+
+        //                    dailyTaskModel.EndTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+        //                    dailyTaskModel.EndTimeToDisplay = item["EndTime"].ToString();
+        //                    dailyTaskModel.HoursToDisplay = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
+        //                }
+
+        //                dailyTaskModel.Description = item["Description"] == null ? "" : item["Description"].ToString();
+
+
+
+        //                taskList.Add(dailyTaskModel);
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return taskList;
+        //}
+
         public List<DailyTaskModel> GetAllTaskByDateRange(int userID, DateTime startDate, DateTime endTime)
         {
             DataTable dt = null;
@@ -108,19 +165,15 @@ namespace QBA.Qutilize.WebApp.Models
                         dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
 
 
-                        //Start time only contains date part so creating full date time with taskDate
 
-                        var tempStartTime = Convert.ToDateTime(item["StartTime"]).TimeOfDay;
-                        dailyTaskModel.StartTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, tempStartTime.Seconds);
+                        dailyTaskModel.StartTime = Convert.ToDateTime(item["ActualStartTime"]);
                         dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
 
-                        if (!DBNull.Value.Equals(item["EndTime"]))
+                        if (!DBNull.Value.Equals(item["ActualEndTime"]))
                         {
-                            var tempEndTime = Convert.ToDateTime(item["EndTime"]).TimeOfDay;
-
-                            dailyTaskModel.EndTime = new DateTime(dailyTaskModel.TaskDate.Year, dailyTaskModel.TaskDate.Month, dailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+                            dailyTaskModel.EndTime = Convert.ToDateTime(item["ActualEndTime"]);
                             dailyTaskModel.EndTimeToDisplay = item["EndTime"].ToString();
-                            dailyTaskModel.HoursToDisplay = CalculateTimeDiffrence(Convert.ToDateTime(item["StartTime"]), Convert.ToDateTime(item["EndTime"]));
+                            dailyTaskModel.HoursToDisplay = CalculateTimeDiffrence(dailyTaskModel.StartTime, dailyTaskModel.EndTime);
                         }
 
                         dailyTaskModel.Description = item["Description"] == null ? "" : item["Description"].ToString();
@@ -138,8 +191,6 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return taskList;
         }
-
-
         public Boolean InsertDailyTaskdata(DailyTaskModel model, out int id)
         {
             string str = string.Empty;
@@ -213,8 +264,10 @@ namespace QBA.Qutilize.WebApp.Models
 
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDailyTask_UpdateForWeb]", param);
-
-                result = true;
+                if (dt != null)
+                    result = true;
+                else
+                    result = false;
             }
             catch (Exception ex)
             {
@@ -254,27 +307,14 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
-
-        //private decimal CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
-        //{
-        //    try
-        //    {
-        //        TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
-        //        return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
         private string CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
         {
             try
             {
-                TimeSpan ts = endTime.TimeOfDay - startTime.TimeOfDay;
-
+                TimeSpan ts = endTime - startTime;
                 return ts.ToString(@"hh\:mm");
-                //return Convert.ToDecimal(ts.Hours + "." + ts.Minutes);
+
+                //return (endTime - startTime).ToString(@"hh\:mm");
             }
             catch (Exception ex)
             {
