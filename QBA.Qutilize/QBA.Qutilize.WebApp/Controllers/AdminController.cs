@@ -198,18 +198,11 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         if (model.birthDayToDisplay != "")
                         {
-                            DateTime dateTimeConverted;
-                            if (DateTime.TryParse(model.birthDayToDisplay, out dateTimeConverted))
-                            {
-                                model.BirthDate = dateTimeConverted;
-                            }
-                            else
-                            {
-                                var stringDateArray = model.birthDayToDisplay.Split('/');
-                                var newBirthDayString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
-                                DateTime newDate = Convert.ToDateTime(newBirthDayString);
-                                model.BirthDate = newDate;
-                            }
+                            var stringDateArray = model.birthDayToDisplay.Split('/');
+                            DateTime dob = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
+
+                            model.BirthDate = dob;
+
 
                         }
 

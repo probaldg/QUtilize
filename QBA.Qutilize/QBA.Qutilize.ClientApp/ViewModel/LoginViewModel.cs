@@ -219,15 +219,36 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             ((Storyboard)_loginView.FindResource("WaitStoryboard")).Begin();
         }
 
+        //private static void ConfigureDailyTaskViewModel(User user)
+        //{
+        //    try
+        //    {
+        //        DailyTask dailyTask = new DailyTask();
+        //        DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
+
+        //        dailyTask.DataContext = dailyTaskVM;
+
+        //        Application.Current.MainWindow = dailyTask;
+        //        dailyTask.Show();
+        //        dailyTask.Activate();
+        //    }
+        //    //catch (Exception ex)
+        //    {
+        //        Logger.Log("ConfigureDailyTaskViewModel", "Error", $"{ex.ToString()}");
+        //        throw ex;
+        //    }
+
+        //}
         private static void ConfigureDailyTaskViewModel(User user)
         {
             try
             {
-                DailyTask dailyTask = new DailyTask();
-                DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
+                NewDailyTask dailyTask = new NewDailyTask();
+                // DailyTaskViewModel dailyTaskVM = new DailyTaskViewModel(dailyTask, user);
 
-                dailyTask.DataContext = dailyTaskVM;
-
+                //dailyTask.DataContext = dailyTaskVM;
+                DailyTaskWithTaskListViewModel taskListViewModel = new DailyTaskWithTaskListViewModel(dailyTask, user);
+                taskListViewModel.CreateProjectListControls(dailyTask, user);
                 Application.Current.MainWindow = dailyTask;
                 dailyTask.Show();
                 dailyTask.Activate();
@@ -239,7 +260,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
 
         }
-
         private bool ValidateInput()
         {
             if (UserID == null)
