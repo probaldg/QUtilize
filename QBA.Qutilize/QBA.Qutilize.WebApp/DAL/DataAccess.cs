@@ -29,6 +29,27 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return dt;
         }
+        public static DataSet GetOnlineUser(int UserID, DateTime CurrDate)
+        {
+            DataSet dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",UserID),
+                                        new SqlParameter("@CurrDate",CurrDate)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    dt = objSQLHelper.ExecuteDataset("USP_OnlineUser_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return dt;
+        }
         public static bool SetUserActivityLog(UserActivityLog mUSL)
         {
             bool bRetVal = true;

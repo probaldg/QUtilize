@@ -34,6 +34,14 @@
             </div>
             <!-- /.info-box-content -->
         </div>
+        <div class="box box-info box-solid">
+            @*<div class="box-header">
+                    <h3 class="box-title"></h3>
+                </div>*@
+            <div class="box-body" id="divActiveUserData"  style="text-align: left;">
+                @Html.Action("GetOnlineUserActive", "Home")
+            </div>
+        </div>
     </div>
     <div class="col-md-9">
         <div class="row">
@@ -72,7 +80,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChartAdmin" width="200" height="30"></canvas>
                                         </div>
@@ -91,7 +99,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
                                         </div>
@@ -99,7 +107,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
                                         </div>
@@ -136,7 +144,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChartPM" width="200" height="30"></canvas>
                                         </div>
@@ -154,7 +162,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
                                         </div>
@@ -162,7 +170,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
                                         </div>
@@ -188,7 +196,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWise">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChart" width="200" height="30"></canvas>
                                         </div>
@@ -206,7 +214,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChart" width="200" height="100"></canvas>
                                         </div>
@@ -392,7 +400,17 @@
 
 
         });
-    })
+
+        setInterval(function () {
+            alert("Refresh data");
+            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
+        }, 5000);
+        //var myVar;
+        //function myFunction() {
+        //    myVar = setTimeout(alertFunc, 5000);
+        //    //5000 = 3sec;
+        //};
+    });
 
 
     $(document).ready(function () {
@@ -424,6 +442,15 @@
 
         }
     })
+    @*function alertFunc() {
+        alert("Refresh data");
+        try {
+            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
+        }
+        catch (e) {
+            alert(e);
+        }
+    }*@
     function gerBarChartData(){
         try {
         //-----Single Bar --------------
@@ -701,3 +728,35 @@
         }
     }
 </script>
+<style>
+    .green_icon {
+        background-color: #4cd137;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+    .orange_icon {
+        background-color: #FFA500;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+    .red_icon {
+        background-color: #FF0000;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+</style>
