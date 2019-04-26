@@ -3,46 +3,7 @@
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 <div class="row">
-    <div class="col-md-3">
-        <div class="info-box bg-yellow">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
-            <div style="padding: 5px 10px;">
-                @Html.Action("GetBirthDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-green">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
-            <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
-                @Html.Action("GetAnniversaryDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-aqua">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i> Upcoming News/Events</span>
-            <div style="padding: 5px 10px;">
-                @Html.Action("GetNewsDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-red">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
-            <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
-                @Html.Action("GetHoliDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="box box-info box-solid">
-            @*<div class="box-header">
-                    <h3 class="box-title"></h3>
-                </div>*@
-            <div class="box-body" id="divActiveUserData"  style="text-align: left;">
-                @Html.Action("GetOnlineUserActive", "Home")
-            </div>
-        </div>
-    </div>
+
     <div class="col-md-9">
         <div class="row">
             <div class="col-md-12" id="dashBoardDateRange">
@@ -226,6 +187,46 @@
                 </div>
             </div>
         }
+    </div>
+    <div class="col-md-3">
+        <div class="info-box bg-yellow">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
+            <div style="padding: 5px 10px;">
+                @Html.Action("GetBirthDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-green">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetAnniversaryDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-aqua">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i> Upcoming News/Events</span>
+            <div style="padding: 5px 10px;">
+                @Html.Action("GetNewsDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-red">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetHoliDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="box box-info box-solid">
+            @*<div class="box-header">
+                    <h3 class="box-title"></h3>
+                </div>*@
+            <div class="box-body" id="divActiveUserData" style="text-align: left;">
+                @Html.Action("GetOnlineUserActive", "Home")
+            </div>
+        </div>
     </div>
 </div>
 <script>
