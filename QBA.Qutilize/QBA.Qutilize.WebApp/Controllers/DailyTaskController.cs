@@ -345,7 +345,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Category"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillCode"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SkillName"]) + "</span></td>");
-                        sbContent.Append("<td>" + GetDDlSkillRankype(ds, counter, "V") + "<input type='hidden' id='hidSkillID" + counter + "' name='hidSkillID[]' value='" + Convert.ToString(dr["ID"]) + "'></td>");
+                        string optionValToSelect = "0";
+                        if (ds != null && ds.Tables.Count > 0 && ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0)
+                        {
+                            foreach (DataRow drMapSk in ds.Tables[2].Rows)
+                            {
+                                if (Convert.ToString(dr["ID"]) == Convert.ToString(drMapSk["skillID"]))
+                                {
+                                    optionValToSelect = Convert.ToString(drMapSk["skillratingID"]);break;
+                                }
+                            }
+                        }
+                        sbContent.Append("<td>" + GetDDlSkillRankype(ds, counter, "V", optionValToSelect) + "<input type='hidden' id='hidSkillID" + counter + "' name='hidSkillID[]' value='" + Convert.ToString(dr["ID"]) + "'></td>");
                         sbContent.Append("</tr>");
                         counter++;
                     }
@@ -372,6 +383,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 sb.Append("<select class='form-control' id='ddlSkillPerspective" + rowNo.ToString() + "' name='ddlSkillPerspective[]'>");
+                sb.Append("<option value='0'>Select</option>");
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
                 {
                     foreach (DataRow dr in ds.Tables[1].Rows)
@@ -407,6 +419,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         public ActionResult saveUserSkillData(string SkillID, string SkillRate)
         {
+           
             StringBuilder sb = new StringBuilder();
             try
             {
@@ -419,13 +432,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     try
                     {
-                        MapUserSkill mMUS = new MapUserSkill();
-                        mMUS.userID = UserID;
-                        mMUS.skillID = Convert.ToInt32(arrSkillID[i]);
-                        mMUS.SkillRatingID = Convert.ToInt32(arrSkillRate[i]);
-                        mMUS.CreatedBy = UserID;
-                        mMUS.CreateDate = DateTime.Now;
-                        lstUserSkill.Add(mMUS);
+                        if (arrSkillRate[i].Trim() != "0")
+                        {
+                            MapUserSkill mMUS = new MapUserSkill();
+                            mMUS.userID = UserID;
+                            mMUS.skillID = Convert.ToInt32(arrSkillID[i]);
+                            mMUS.SkillRatingID = Convert.ToInt32(arrSkillRate[i]);
+                            mMUS.CreatedBy = UserID;
+                            mMUS.CreateDate = DateTime.Now;
+                            lstUserSkill.Add(mMUS);
+                        }
                     }
                     catch (Exception exx) { }
                 }

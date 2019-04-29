@@ -16,6 +16,10 @@ namespace QBA.Qutilize.WebApp.Controllers
     {
         public ActionResult Index()
         {
+            //string st = null;
+            //string  st1 =st;
+            //DateTime dd;
+            //DateTime.TryParse(st, out dd);
             return View();
         }
 

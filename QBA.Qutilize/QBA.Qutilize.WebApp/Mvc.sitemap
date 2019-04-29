@@ -20,6 +20,7 @@
       <mvcSiteMapNode title="Project Status Management"  controller="Admin" action="ManageTaskStatus"/>
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
+    <mvcSiteMapNode title="Skill Matrix"  controller="Dailytask" action="SkillManagement"/>
     <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
     <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
 
