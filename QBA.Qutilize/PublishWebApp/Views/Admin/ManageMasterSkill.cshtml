@@ -70,25 +70,7 @@
             </div>
         </div>
 
-        @*@if (Session["SysAdmin"] != null)
-        {
-            <div class="form-group">
-                @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.OrgID, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control", @onchange = "getDepartments();" })
-                    @Html.HiddenFor(model => model.OrgID)
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="form-group">
-                @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.OrgID, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control", @disabled = "disabled" })
-                </div>
-            </div>
-        }*@
+       
         <div class="form-group">
             @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
