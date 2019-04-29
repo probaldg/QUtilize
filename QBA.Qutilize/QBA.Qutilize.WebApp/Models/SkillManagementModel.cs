@@ -180,6 +180,149 @@ namespace QBA.Qutilize.WebApp.Models
 
 
     }
+    public class MasterSkillRating
+    {
+        public int ID { get; set; }
+        public string SkillCode { get; set; }
+        public string SkillLevel { get; set; }
+        public string Description { get; set; }
+        public int SkillScore { get; set; }
+        public int UserOrgId { get; set; }
+        public List<OrganisationModel> OrganisationList { get; set; }
+        public int OrgID { get; set; }
+        public bool isActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int EditedBy { get; set; }
+        public DateTime EditedDate { get; set; }
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
+
+        #region Global Variable Decleartion::
+        SqlHelper objSQLHelper = new SqlHelper();
+        #endregion
+
+        public MasterSkillRating()
+        {
+            OrganisationList = new List<OrganisationModel>();           
+        }
+
+        public DataTable GetAllMasterSkillRating(bool isSysAdmin, int OrgID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@isSysAdmin",isSysAdmin),
+                                        new SqlParameter("@OrgID",OrgID),
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetAllMasterSkillRating]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+        public DataTable GetMasterSkillRatingByID(int ID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@ID",ID)
+                                      };
+
+                dt = objSQLHelper.ExecuteDataTable("USP_GetAllMasterSkillRatingByID", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public Boolean InsertMasterSkillRatingdata(MasterSkillRating model, out int id)
+        {
+            string str = string.Empty;
+            bool result = false;
+            DataTable dt = null;
+            id = 0;
+
+            try
+            {
+                SqlParameter Status = new SqlParameter("@Identity", SqlDbType.Int);
+                Status.Direction = ParameterDirection.Output;
+                SqlParameter[] param ={Status,
+                    new SqlParameter("@SkillCode",model.SkillCode),
+                    new SqlParameter("@SkillScore",model.SkillScore),
+                    new SqlParameter("@SkillLevel",model.SkillLevel),
+                    new SqlParameter("@Description",model.Description),
+                    new SqlParameter("@OrgID",model.OrgID),                                        
+                   new SqlParameter("@CreatedBy",model.CreatedBy),
+                    new SqlParameter("@CreatedDate",model.CreatedDate),
+                    new SqlParameter("@IsActive",model.isActive),
+
+
+                };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPMasterSkillRating_Insert]", param);
+
+                if (!(Status.Value is DBNull))
+                {
+                    id = Convert.ToInt32(Status.Value);
+                    model.ID = id;
+                    model.ISErr = false;
+                    model.ErrString = "Data Saved Successfully.";
+                    result = true;
+                }
+                else
+                {
+                    id = 0;
+                    result = false;
+                    model.ISErr = true;
+                    model.ErrString = "Error Occured.";
+                }
+            }
+            catch (Exception ex)
+            {
+                model.ISErr = true;
+                model.ErrString = "Error Occured.";
+                result = false;
+            }
+            return result;
+
+        }
+
+        public Boolean Update_MasterSkillRating(MasterSkillRating model)
+        {
+            bool result = false;
+            DataTable dt = null;
+
+            try
+            {
+                SqlParameter[] param = {
+                    new SqlParameter("@ID",model.ID),
+                    new SqlParameter("@SkillCode",model.SkillCode),
+                    new SqlParameter("@SkillScore",model.SkillScore),
+                    new SqlParameter("@SkillLevel",model.SkillLevel),
+                    new SqlParameter("@Description",model.Description),                    
+                    new SqlParameter("@IsActive",model.isActive),
+                    new SqlParameter("@OrgId",model.OrgID),                    
+                    new SqlParameter("@EditedBy",model.EditedBy),
+                    new SqlParameter("@EditedDate",model.EditedDate),
+
+                };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPMasterSkillRating_Update]", param);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+    }
     public class MapUserSkill
     {
         public int Id { get; set; }
