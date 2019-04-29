@@ -220,18 +220,16 @@
             <!-- /.info-box-content -->
         </div>
         <div class="box box-info box-solid">
-            @*<div class="box-header">
-                    <h3 class="box-title"></h3>
-                </div>*@
             <div class="box-body" id="divActiveUserData" style="text-align: left;">
-                @Html.Action("GetOnlineUserActive", "Home")
+                @*@Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })*@
             </div>
         </div>
     </div>
 </div>
+<Text>
+    
+</Text>
 <script>
-
-
     $(document).ready(function () {
         $('#tblAppraisalRating').DataTable({
             // "pageLength": 10,
@@ -403,19 +401,22 @@
         });
 
         setInterval(function () {
-            //alert("Refresh data");
-            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
+            var date = new Date();
+            var day = date.getDate();       // yields date
+            var month = date.getMonth() + 1;    // yields month (add one as '.getMonth()' is zero indexed)
+            var year = date.getFullYear();  // yields year
+            var hour = date.getHours();     // yields hours 
+            var minute = date.getMinutes(); // yields minutes
+            var second = date.getSeconds(); // yields seconds
+            // After this construct a string with the above results as below
+            var vCurrDateTime = month + "/" + day + "/" + year + "_" + hour + ':' + minute + ':' + second; 
+            //location.href = 'Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime;
+            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime);
         }, 5000);
-        //var myVar;
-        //function myFunction() {
-        //    myVar = setTimeout(alertFunc, 5000);
-        //    //5000 = 3sec;
-        //};
     });
 
 
     $(document).ready(function () {
-
         //$(".datepicker").datepicker();
         $('#txtStartDate').datepicker();
         $('#txtEndDate').datepicker();
@@ -443,7 +444,7 @@
 
         }
     })
-    @*function alertFunc() {
+    function alertFunc() {
         alert("Refresh data");
         try {
             $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
@@ -451,7 +452,7 @@
         catch (e) {
             alert(e);
         }
-    }*@
+    }
     function gerBarChartData(){
         try {
         //-----Single Bar --------------
@@ -707,7 +708,7 @@
                 }),
                 success: function (response) {
                     if (response != "") {
-                        @*gerBarChartData();
+                        gerBarChartData();
                         gerDonutChartData();
                         $("#divActualData").html(response);
                         gerDonutChartDataUserWiseAdmin();
@@ -717,7 +718,7 @@
                         gerDonutChartDataUserWisePM();
                         gerDonutChartDataProjectWisePM();
                         gerBarChartDataPM();
-                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');*@
+                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
                         var url = '@Url.Action("DashBoard", "Home")';
                         window.location.href = url;
                     }

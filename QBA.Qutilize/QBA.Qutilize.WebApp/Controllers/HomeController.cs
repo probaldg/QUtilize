@@ -4,6 +4,7 @@ using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -1235,7 +1236,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Content(sbContent.ToString());
         }
-        public ActionResult GetOnlineUserActive()
+        public ActionResult GetOnlineUserActive(string CurrDate)
         {
             StringBuilder sbContent = new StringBuilder();
             try
@@ -1243,7 +1244,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (Session["sessUser"] != null)
                 {
                     LoginViewModel objLoginViewModel = new LoginViewModel();
-                    DataSet ds = objLoginViewModel.GetOnlineUser(Convert.ToInt32(Session["sessUser"]),DateTime.Now);
+                    DateTime dtCurr = Convert.ToDateTime(CurrDate.Replace("_"," "));// DateTime.ParseExact(CurrDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    DataSet ds = objLoginViewModel.GetOnlineUser(Convert.ToInt32(Session["sessUser"]), dtCurr);
                     if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                     {
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -1287,7 +1289,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     }
                                     sbContent.Append("</div>");
                                     sbContent.Append("<div class='col-md-9'>");
-                                    sbContent.Append("" + Convert.ToString(dr["UserName"]) + "<br><b>Working on:</b>" + Convert.ToString(dr["ProjectName"]) + "<br><br>");//"+ strTimeElapsed + "
+                                    sbContent.Append("" + Convert.ToString(dr["UserName"]) + "<br><b>Working on:</b>" + Convert.ToString(dr["ProjectName"]) + "<br>"+ strTimeElapsed + "<br>");//
                                     sbContent.Append("</div>");
                                     sbContent.Append("</div>");
                                 }
