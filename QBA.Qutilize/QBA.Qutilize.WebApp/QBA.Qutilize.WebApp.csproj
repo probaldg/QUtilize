@@ -330,7 +330,9 @@
     <Content Include="font-awesome\scss\_spinning.scss" />
     <Content Include="font-awesome\scss\_stacked.scss" />
     <Content Include="font-awesome\scss\_variables.scss" />
-    <Content Include="Mvc.sitemap" />
+    <Content Include="Mvc.sitemap">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -786,6 +788,7 @@
     <Content Include="Views\Admin\ManageRoles.cshtml" />
     <Content Include="Views\DailyTask\SkillManagement.cshtml" />
     <Content Include="Views\Admin\ManageTaskStatus.cshtml" />
+    <Content Include="Views\Admin\ManageMasterSkillRating.cshtml" />
     <Content Include="Views\Admin\ManageMasterSkill.cshtml" />
   </ItemGroup>
   <ItemGroup>
