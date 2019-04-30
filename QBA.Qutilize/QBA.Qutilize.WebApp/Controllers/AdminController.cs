@@ -1599,7 +1599,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         var innerChild = childModules.Where(x => x.ParentID == item.ID).OrderBy(x => x.Rank).ToList();
                         if (innerChild.Count > 0)
                         {
-                            LoadChildModules(item.ID, childModules);
+                            stringBuilder.Append(LoadChildModules(item.ID, childModules));
                         }
                         stringBuilder.Append("</li>");
                     }
