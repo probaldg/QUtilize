@@ -98,6 +98,8 @@
     <Compile Include="Helper\EncryptionHelper.cs" />
     <Compile Include="Helper\Logger.cs" />
     <Compile Include="Helper\PasswordHelper.cs" />
+    <Compile Include="Helper\ProjectViewHelper.cs" />
+    <Compile Include="Helper\SelectedProjectViewHelper.cs" />
     <Compile Include="Helper\ViewModelBase.cs" />
     <Compile Include="Helper\WebAPIHelper.cs" />
     <Compile Include="ViewModel\DailyTaskViewModel.cs" />

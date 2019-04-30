@@ -382,7 +382,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             catch (Exception ex)
             {
                 Logger.Log("LogoutUser", "Error", ex.ToString());
-                throw ex;
+                MessageBox.Show("Some error occured");
+                // throw ex;
             }
         }
 
