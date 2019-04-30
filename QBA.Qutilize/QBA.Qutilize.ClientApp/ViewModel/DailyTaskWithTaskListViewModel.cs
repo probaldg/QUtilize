@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -64,7 +63,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
 
         //}
-        string[] ColorArray = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7", "#194C66", "#1F5D7C", "#246E93", "#2A7FAA", "#3090C0", "#3E9ECE", "#55AAD4", "#6BB5DA", "#82C0DF" };
+        string[] ColorArray = new string[] { "#262626", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7", "#194C66", "#1F5D7C", "#246E93", "#2A7FAA", "#3090C0", "#3E9ECE", "#55AAD4", "#6BB5DA", "#82C0DF" };
         private User _user;
 
         public User User
@@ -78,6 +77,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         }
 
         NewDailyTask _dailyTaskView;
+        List<ProjectTask> taskList = new List<ProjectTask>();
         public DailyTaskWithTaskListViewModel(NewDailyTask dailyTask, User user)
         {
             _dailyTaskView = dailyTask;
@@ -116,14 +116,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     Border border = new Border();
                     if (rowCounter == 0)
                     {
-                        border = CreateControlForSelectedItem(item);
+                        SelectedProjectViewHelper selectedProjectView = new SelectedProjectViewHelper();
+                        border = selectedProjectView.CreateTemplateForProjectAtLastLevel(item);
                     }
                     else
                     {
                         border = CreateControlForProjectCanvas(item);
                     }
                     rowCounter++;
-
 
                     stackPanel.Children.Add(border);
 
@@ -145,48 +145,50 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             Grid grid = CreateGridForProjects(item);
 
-
-            var gridSize = grid.RenderSize;
             Canvas.SetTop(grid, 5);
             Canvas.SetLeft(grid, 10);
 
-
+            myCanvas.Height = grid.Height;
 
             myCanvas.Children.Add(grid);
-            Border brdr = CreateBorderForSelectedProjectCanvas();
+
+            Border brdr = CreateBorderForProjectCanvas();
             brdr.Child = myCanvas;
 
-            // var gridsize= grid.re
-            myCanvas.Height = 30;
             return brdr;
         }
+        private Canvas CreateControlForProjectHeading(Project item)
+        {
+            Canvas myCanvas = CreateCanvasPanel(item);
+            myCanvas.Width = 270;
+            myCanvas.Background = new SolidColorBrush(Colors.Black);
+            //myCanvas.MouseLeftButtonDown += ShowProject_Task;
+            myCanvas.MouseEnter += MyCanvas_MouseEnter;
+            myCanvas.MouseLeave += MyCanvas_MouseLeave;
 
-        //private static Border CreateBorderForCanvas()
-        //{
-        //    return new Border()
-        //    {
-        //        BorderThickness = new Thickness()
-        //        {
-        //            Bottom = 1,
-        //            Left = 1,
-        //            Right = 1,
-        //            Top = 1
-        //        },
-        //        BorderBrush = new SolidColorBrush(Colors.Black),
-        //        Margin = new Thickness(10, 5, 0, 5)
-        //    };
-        //}
+            Grid grid = CreateGridForProjects(item);
 
-        private static Canvas CreateCanvasPanel(Project item)
+            Canvas.SetTop(grid, 0);
+            Canvas.SetLeft(grid, 0);
+
+            myCanvas.Height = grid.Height;
+
+            myCanvas.Children.Add(grid);
+
+
+            return myCanvas;
+        }
+
+        private Canvas CreateCanvasPanel(Project item)
         {
             return new Canvas
             {
                 Margin = new Thickness(0),
-                Background = new SolidColorBrush(Colors.Black),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ColorArray[0].ToString())),
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 MinWidth = 281,
-                MinHeight = 50,
+                MinHeight = 30,
                 DataContext = item
 
             };
@@ -199,7 +201,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 Background = new SolidColorBrush(Colors.Black),
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MinWidth = 281,
+                MinWidth = 280,
                 MinHeight = 50,
                 DataContext = item
 
@@ -211,191 +213,165 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             grid.Margin = new Thickness(0);
 
             RowDefinition row1 = new RowDefinition();
-            row1.Height = new GridLength(0, GridUnitType.Auto);
-            //RowDefinition row2 = new RowDefinition();
-            //row2.Height = new GridLength(0, GridUnitType.Auto);
-
+            row1.Height = new GridLength(30);
             ColumnDefinition column1 = new ColumnDefinition();
 
             column1.Width = new GridLength(280, GridUnitType.Pixel);
-            //ColumnDefinition column2 = new ColumnDefinition();
-            //column1.Width = new GridLength(80, GridUnitType.Pixel);
-
             grid.RowDefinitions.Add(row1);
-            //grid.RowDefinitions.Add(row2);
-            grid.ColumnDefinitions.Add(column1);
-            //grid.ColumnDefinitions.Add(column2);
 
+            grid.ColumnDefinitions.Add(column1);
 
             TextBlock txtName = new TextBlock
             {
-                FontSize = 14,
-                Text = item.ProjectName,
-
-                Foreground = new SolidColorBrush(Colors.White),
-                TextWrapping = TextWrapping.Wrap
-            };
-
-            //TextBlock txtProjectDesc = new TextBlock
-            //{
-            //    FontSize = 12,
-            //    Text = item.Description,
-            //    Foreground = new SolidColorBrush(Colors.Black),
-            //    Margin = new Thickness(0, 0, 0, 5),
-            //    TextWrapping = TextWrapping.Wrap
-            //};
-
-            Grid.SetRow(txtName, 0);
-            Grid.SetColumn(txtName, 0);
-
-            //Grid.SetRow(txtProjectDesc, 1);
-            //Grid.SetColumn(txtProjectDesc, 0);
-
-            grid.Children.Add(txtName);
-            // grid.Children.Add(txtProjectDesc);
-            return grid;
-        }
-
-        private Border CreateControlForSelectedItem(Project item)
-        {
-            Canvas myCanvas = CreateCanvasPanel(item);
-            myCanvas.Background = new SolidColorBrush(Colors.Tan);
-
-            myCanvas.MouseLeftButtonDown += ShowProject_Task;
-            myCanvas.MouseEnter += MyCanvas_MouseEnter;
-            myCanvas.MouseLeave += MyCanvas_MouseLeave;
-
-            Grid grid = CreateGridForSelectedProject(item);
-
-            Canvas.SetTop(grid, 5);
-            Canvas.SetLeft(grid, 10);
-
-            myCanvas.Children.Add(grid);
-
-            Border brdr = new Border()
-            {
-                BorderThickness = new Thickness()
-                {
-                    Bottom = 1,
-                    Left = 10,
-                    Right = 1,
-                    Top = 1
-                },
-                BorderBrush = new SolidColorBrush(Colors.Green),
-
-                Margin = new Thickness(10, 5, 0, 5)
-            };
-
-            brdr.Child = myCanvas;
-            return brdr;
-
-        }
-
-        private static Grid CreateGridForSelectedProject(Project item)
-        {
-            Grid grid = new Grid();
-            grid.Margin = new Thickness(0);
-            //grid.ShowGridLines = true;
-            RowDefinition row1 = new RowDefinition();
-            //row1.MinHeight = 30;
-            row1.Height = new GridLength(0, GridUnitType.Auto);
-
-            RowDefinition row2 = new RowDefinition();
-            //row2.MinHeight = 30;
-            row2.Height = new GridLength(0, GridUnitType.Auto);
-
-            ColumnDefinition column1 = new ColumnDefinition();
-            column1.MinWidth = 200;
-            column1.Width = new GridLength(200, GridUnitType.Pixel);
-            ColumnDefinition column2 = new ColumnDefinition();
-            column1.MinWidth = 80;
-            column2.Width = new GridLength(80, GridUnitType.Pixel);
-
-
-
-            grid.RowDefinitions.Add(row1);
-            grid.RowDefinitions.Add(row2);
-            grid.ColumnDefinitions.Add(column1);
-            grid.ColumnDefinitions.Add(column2);
-
-
-            TextBlock txtName = new TextBlock
-            {
-                FontSize = 14,
+                FontSize = 16,
                 Text = item.ProjectName,
                 Foreground = new SolidColorBrush(Colors.White),
-                TextWrapping = TextWrapping.Wrap
-            };
-
-            TextBlock txtProjectDesc = new TextBlock
-            {
-                FontSize = 12,
-                Text = item.Description,
-                Foreground = new SolidColorBrush(Colors.White),
-                Margin = new Thickness(0, 0, 0, 5),
-                VerticalAlignment = VerticalAlignment.Bottom,
-                TextWrapping = TextWrapping.Wrap
-
-            };
-
-            ResourceDictionary rd = new ResourceDictionary
-            {
-                Source = new Uri("../SwitchTypeToggleButton.xaml", UriKind.Relative)
-            };
-
-            ToggleButton toggleButton = new ToggleButton
-            {
-                Width = 45,
-                Height = 22,
-                Style = (Style)rd["SwitchTypeToggleButton"],
-
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0, 2, 5, 0)
-            };
-
-            if (item.DifferenceInSecondsInCurrentDate == null)
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(0);
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-            else
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-
-
-            TextBlock txtElapsedTime = new TextBlock
-            {
-                FontSize = 12,
-                Text = item.TimeElapsedValue,
-                Foreground = new SolidColorBrush(Colors.White),
-                Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                Padding = new Thickness(5, 1, 1, 1),
+                // FontWeight = FontWeights.Bold
             };
+
 
             Grid.SetRow(txtName, 0);
             Grid.SetColumn(txtName, 0);
 
-            Grid.SetRow(txtProjectDesc, 1);
-            Grid.SetColumn(txtProjectDesc, 0);
-
-            Grid.SetRow(toggleButton, 0);
-            Grid.SetColumn(toggleButton, 1);
-
-            Grid.SetRow(txtElapsedTime, 1);
-            Grid.SetColumn(txtElapsedTime, 1);
-
+            grid.Height = row1.Height.Value + 1;
             grid.Children.Add(txtName);
-            grid.Children.Add(txtProjectDesc);
-            grid.Children.Add(toggleButton);
-            grid.Children.Add(txtElapsedTime);
+
             return grid;
         }
+
+        //private Border CreateControlForSelectedProjctItem(Project item)
+        //{
+        //    Canvas myCanvas = CreateCanvasPanel(item);
+        //    myCanvas.Background = new SolidColorBrush(Colors.White);
+
+        //    //myCanvas.MouseLeftButtonDown += ShowProject_Task;
+        //    //myCanvas.MouseEnter += MyCanvas_MouseEnter;
+        //    //myCanvas.MouseLeave += MyCanvas_MouseLeave;
+
+        //    Grid grid = CreateGridForSelectedProject(item);
+
+        //    Canvas.SetTop(grid, 0);
+        //    Canvas.SetLeft(grid, 0);
+
+        //    myCanvas.Height = grid.Height;
+        //    myCanvas.Children.Add(grid);
+
+        //    Border brdr = CreateBorderForProjectCanvas();
+        //    brdr.Margin = new Thickness(0);
+        //    brdr.Child = myCanvas;
+        //    return brdr;
+
+        //}
+
+        //private static Grid CreateGridForSelectedProject(Project item)
+        //{
+        //    Grid grid = new Grid();
+        //    grid.Margin = new Thickness(0);
+
+        //    RowDefinition row1 = new RowDefinition();
+
+        //    row1.Height = new GridLength(30);
+        //    RowDefinition row2 = new RowDefinition();
+
+        //    row2.Height = new GridLength(30);
+
+        //    ColumnDefinition column1 = new ColumnDefinition();
+        //    column1.MinWidth = 200;
+        //    column1.Width = new GridLength(200, GridUnitType.Pixel);
+        //    ColumnDefinition column2 = new ColumnDefinition();
+        //    column1.MinWidth = 80;
+        //    column2.Width = new GridLength(80, GridUnitType.Pixel);
+
+
+
+        //    grid.RowDefinitions.Add(row1);
+        //    grid.RowDefinitions.Add(row2);
+        //    grid.ColumnDefinitions.Add(column1);
+        //    grid.ColumnDefinitions.Add(column2);
+
+
+        //    //TextBlock txtName = new TextBlock
+        //    //{
+        //    //    FontSize = 14,
+        //    //    Text = item.ProjectName,
+        //    //    Foreground = new SolidColorBrush(Colors.White),
+        //    //    TextWrapping = TextWrapping.Wrap
+        //    //};
+
+        //    TextBlock txtProjectDesc = new TextBlock
+        //    {
+        //        FontSize = 12,
+        //        Text = item.Description,
+        //        Foreground = new SolidColorBrush(Colors.White),
+        //        Margin = new Thickness(0, 0, 0, 5),
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //        TextWrapping = TextWrapping.Wrap
+
+        //    };
+
+        //    ResourceDictionary rd = new ResourceDictionary
+        //    {
+        //        Source = new Uri("../SwitchTypeToggleButton.xaml", UriKind.Relative)
+        //    };
+
+        //    ToggleButton toggleButton = new ToggleButton
+        //    {
+        //        Width = 45,
+        //        Height = 22,
+        //        Style = (Style)rd["SwitchTypeToggleButton"],
+
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        VerticalAlignment = VerticalAlignment.Top,
+        //        Margin = new Thickness(0, 2, 5, 0)
+        //    };
+
+        //    if (item.DifferenceInSecondsInCurrentDate == null)
+        //    {
+        //        TimeSpan ts = TimeSpan.FromSeconds(0);
+        //        item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+        //        item.PreviousElapsedTime = ts;
+        //    }
+        //    else
+        //    {
+        //        TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
+        //        item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+        //        item.PreviousElapsedTime = ts;
+        //    }
+
+
+        //    TextBlock txtElapsedTime = new TextBlock
+        //    {
+        //        FontSize = 12,
+        //        Text = item.TimeElapsedValue,
+        //        Foreground = new SolidColorBrush(Colors.Black),
+        //        Margin = new Thickness(0, 0, 0, 5),
+        //        TextWrapping = TextWrapping.Wrap,
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //    };
+
+        //    //Grid.SetRow(txtName, 0);
+        //    //Grid.SetColumn(txtName, 0);
+
+        //    Grid.SetRow(txtProjectDesc, 0);
+        //    Grid.SetColumn(txtProjectDesc, 0);
+
+        //    Grid.SetRow(toggleButton, 0);
+        //    Grid.SetColumn(toggleButton, 1);
+
+        //    Grid.SetRow(txtElapsedTime, 1);
+        //    Grid.SetColumn(txtElapsedTime, 1);
+
+        //    //grid.Children.Add(txtName);
+        //    grid.Children.Add(txtProjectDesc);
+        //    grid.Children.Add(toggleButton);
+        //    grid.Children.Add(txtElapsedTime);
+
+        //    double GridHeight = row1.Height.Value + row2.Height.Value;
+        //    grid.Height = GridHeight;
+        //    return grid;
+        //}
 
         private void MyCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -432,60 +408,231 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         private void ShowProject_Task(object sender, MouseButtonEventArgs e)
         {
             Canvas canvas = (Canvas)sender;
-            var typeOfData = canvas.DataContext.GetType();
-
-            if (typeOfData.ToString().ToLower().Contains("project"))
+            try
             {
-                var project = (Project)canvas.DataContext;
+                var typeOfData = canvas.DataContext.GetType().Name;
 
-                GetTaskByProjectID(project, User.ID);
+                if (typeOfData.ToString().ToLower() == "project".ToLower())
+                {
+                    var project = (Project)canvas.DataContext;
+
+                    GetTaskByProjectIDAndGenrateView(project, User.ID);
+                }
+                else if (typeOfData.ToString().ToLower() == "projecttask".ToLower())
+                {
+                    var task = (ProjectTask)canvas.DataContext;
+
+                    //TODO need to Implement sub task view.
+
+                    GetSubTaskByTaskIDAndGenrateView(User.Projects, task);
+                }
             }
-            else
+            catch (Exception)
             {
-
+                MessageBox.Show("Some error occured.");
+                //throw;
             }
 
         }
 
-        // SqlHelper objSQLHelper = new SqlHelper();
-        private void GetTaskByProjectID(Project project, int userID)
+        private void GetSubTaskByTaskIDAndGenrateView(ICollection<Project> projects, ProjectTask task)
         {
-            DataTable taskData = GetTaskListByProjectDIFromDB(project, userID);
-            if (taskData.Rows.Count > 0)
+            // throw new NotImplementedException();
+            //TODO need to implement subtask view.
+            // DataTable taskData = GetTaskListByTaskIDFromDB(task, UserID);
+
+            if (taskList.Count > 0)
             {
-                List<ProjectTask> taskList = new List<ProjectTask>();
 
-                foreach (DataRow item in taskData.Rows)
+                // Getting tasklist which have parentid as selected project.
+
+                var subTaskList = taskList.Where(x => x.ParentTaskId == task.TaskId).ToList();
+
+                if (subTaskList.Count > 0)
                 {
-                    ProjectTask task = new ProjectTask();
-                    task.TaskId = Convert.ToInt32(item["TaskID"]);
-                    task.TaskCode = item["TaskCode"].ToString();
-                    task.TaskName = item["TaskName"].ToString();
-                    task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
-                    task.TaskStatusID = Convert.ToInt32(item["StatusID"]);
-                    task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
-                    task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
-                    task.ActualTaskStartDate = item["TaskStartDateActual"] != DBNull.Value ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
-                    task.ActualTaskEndDate = item["TaskEndDateActual"] != DBNull.Value ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
-                    task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
-                    task.IsMilestone = item["isMilestone"] != DBNull.Value ? Convert.ToBoolean(item["isMilestone"]) : (Boolean?)null;
-                    task.CompletePercent = Convert.ToInt32(item["CompletePercent"]);
-
-                    taskList.Add(task);
-
+                    //TODO Create TaskSubTaskTemplate
+                }
+                else
+                {
+                    //Create subtask Details Template.
                 }
 
-                //Adding tasklist to the project
-                var projectList = User.Projects;
-                var selectedProject = projectList.FirstOrDefault(x => x.ProjectID == project.ProjectID);
-                selectedProject.Tasks = taskList;
+                //var grid = (Grid)_dailyTaskView.FindName("grdProject");
+                //grid.Children.Clear();
 
-                GenrateViewControl(projectList, project.ProjectID);
+                StackPanel stackPanel = new StackPanel();
+                stackPanel.Margin = new Thickness(5, 5, 5, 10);
 
+                //if (projects.Count > 0)
+                //{
+
+                //    foreach (var item in projects)
+                //    {
+                //        Border border = new Border();
+                //        if (item.Tasks.Count > 0)
+                //        {
+                //            //if (item.ProjectID == seletedProjectID)
+                //            //{
+                //            //    border = CreateControlForSelectedProjectTask(item);
+
+                //            //}
+                //            //else
+                //            //{
+                //            //    border = CreateControlForProjectCanvas(item);
+                //            //}
+
+                //        }
+                //        else
+                //        {
+                //            border = CreateControlForProjectCanvas(item);
+                //        }
+
+
+                //        stackPanel.Children.Add(border);
+
+                //    }
+                //    grid.Children.Add(stackPanel);
+                //}
+            }
+        }
+
+
+        private void GetTaskByProjectIDAndGenrateView(Project project, int userID)
+        {
+            DataTable taskData = GetTaskListByProjectIDFromDB(project, userID);
+            taskList.Clear();
+            try
+            {
+                if (taskData.Rows.Count > 0)
+                {
+                    //List<ProjectTask> taskList = new List<ProjectTask>();
+
+                    foreach (DataRow item in taskData.Rows)
+                    {
+                        ProjectTask task = new ProjectTask();
+                        task.TaskId = Convert.ToInt32(item["TaskID"]);
+                        task.ProjectID = Convert.ToInt32(item["ProjectID"]);
+                        task.TaskCode = item["TaskCode"].ToString();
+                        task.TaskName = item["TaskName"].ToString();
+                        task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
+                        task.TaskStatusID = Convert.ToInt32(item["StatusID"]);
+                        task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
+                        task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
+                        task.ActualTaskStartDate = item["TaskStartDateActual"] != DBNull.Value ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
+                        task.ActualTaskEndDate = item["TaskEndDateActual"] != DBNull.Value ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
+                        task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
+                        task.IsMilestone = item["isMilestone"] != DBNull.Value ? Convert.ToBoolean(item["isMilestone"]) : (Boolean?)null;
+                        task.CompletePercent = Convert.ToInt32(item["CompletePercent"]);
+                        task.TaskDepthLevel = Convert.ToInt32(item["lvl"]);
+                        taskList.Add(task);
+
+                    }
+
+                    //Adding tasklist to the project
+                    var projectList = User.Projects;
+                    var selectedProject = projectList.FirstOrDefault(x => x.ProjectID == project.ProjectID);
+                    var taskList0Level = taskList.Where(x => x.ParentTaskId == 0).ToList();
+                    //selectedProject.Tasks = taskList.Select(x=> x.ParentTaskId ==0).ToList();
+                    selectedProject.Tasks = taskList0Level;
+
+                    GenrateViewControl(projectList, project.ProjectID);
+                }
+                else
+                {
+                    // GenrateViewForProjectDetails(project);
+                    //Border border = new Border();
+                    //SelectedProjectViewHelper selectedProjectView = new SelectedProjectViewHelper();
+                    // border = selectedProjectView.CreateTemplateForProjectAtLastLevel(project);
+                    //GenrateViewControl(projectList, project.ProjectID);
+                    var projectList = User.Projects;
+                    GenrateViewControl(projectList, project.ProjectID);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
+
+        private void GenrateViewForProjectDetails(Project project)
+        {
+            try
+            {
+                Canvas headingControlWithBorder = CreateControlForProjectHeading(project);
+
+                SetHeaderPanelStyle(headingControlWithBorder);
+                Border border = new Border
+                {
+                    BorderThickness = new Thickness()
+                    {
+                        Bottom = 0,
+                        Left = 0,
+                        Right = 1,
+                        Top = 1
+                    },
+                    BorderBrush = new SolidColorBrush(Colors.Green),
+                    Margin = new Thickness(0)
+                };
+                border.Child = headingControlWithBorder;
+
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
 
         }
 
+        //private void GenrateViewControl(ICollection<Project> projectList, int? seletedProjectID)
+        //{
+
+        //    try
+        //    {
+        //        var grid = (Grid)_dailyTaskView.FindName("grdProject");
+        //        grid.Children.Clear();
+
+        //        StackPanel stackPanel = new StackPanel();
+        //        stackPanel.Margin = new Thickness(5, 5, 5, 10);
+
+        //        if (projectList.Count > 0)
+        //        {
+
+        //            List<Project> projects = new List<Project>();
+        //            projects = projectList.ToList();
+
+
+        //            foreach (var item in projects)
+        //            {
+        //                Border border = new Border();
+        //                if (item.ProjectID == seletedProjectID)
+        //                {
+        //                    border = CreateControlForSelectedProjectTask(item);
+
+        //                }
+        //                else
+        //                {
+        //                    border = CreateControlForProjectCanvas(item);
+        //                }
+
+        //                stackPanel.Children.Add(border);
+
+        //            }
+        //            grid.Children.Add(stackPanel);
+        //        }
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
         private void GenrateViewControl(ICollection<Project> projectList, int? seletedProjectID)
         {
 
@@ -503,19 +650,34 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     List<Project> projects = new List<Project>();
                     projects = projectList.ToList();
 
-
                     foreach (var item in projects)
                     {
                         Border border = new Border();
-                        if (item.ProjectID == seletedProjectID)
+                        if (item.Tasks.Count > 0)
                         {
-                            border = CreateControlForSelectedProjectTask(item);
-                            // border = CreateControlForProjectCanvas(item);
-                            break;
+                            if (item.ProjectID == seletedProjectID)
+                            {
+                                border = CreateControlForSelectedProjectTask(item);
+
+                            }
+                            else
+                            {
+                                border = CreateControlForProjectCanvas(item);
+                            }
+
                         }
                         else
                         {
-                            border = CreateControlForProjectCanvas(item);
+                            if (item.ProjectID == seletedProjectID)
+                            {
+
+                                SelectedProjectViewHelper selectedProjectView = new SelectedProjectViewHelper();
+                                border = selectedProjectView.CreateTemplateForProjectAtLastLevel(item);
+                            }
+                            else
+                            {
+                                border = CreateControlForProjectCanvas(item);
+                            }
                         }
 
                         stackPanel.Children.Add(border);
@@ -531,7 +693,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 throw;
             }
         }
-
         private Border CreateControlForSelectedProjectTask(Project item)
         {
 
@@ -539,30 +700,50 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             //1) first for project heading
             //2) for task
 
+            //TODO this canvas should not have postion from top 5 and left 10
+            Canvas headingControlWithBorder = CreateControlForProjectHeading(item);
 
-            Border headeingControlWithBorder = CreateControlForProjectCanvas(item);
+            SetHeaderPanelStyle(headingControlWithBorder);
+            Border border = new Border
+            {
+                BorderThickness = new Thickness()
+                {
+                    Bottom = 0,
+                    Left = 0,
+                    Right = 1,
+                    Top = 1
+                },
+                BorderBrush = new SolidColorBrush(Colors.Green),
+
+                Margin = new Thickness(0)
+            };
+            border.Child = headingControlWithBorder;
             StackPanel tasks = CreateControlForTaskList(item.Tasks.ToList());
 
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Vertical;
-            stackPanel.Children.Add(headeingControlWithBorder);
+            stackPanel.Children.Add(border);
             stackPanel.Children.Add(tasks);
 
+            //Canvas to contain both Project and task List.
             Canvas myCanvas = CreateCanvasPanel(item);
-            myCanvas.Width = 291;
-            // myCanvas.Height = 100;
+            myCanvas.Width = 281;
+            myCanvas.Height = headingControlWithBorder.Height + tasks.Height + 2;
+            myCanvas.Background = new SolidColorBrush(Colors.Tan);
 
-            myCanvas.MouseLeftButtonDown += ShowProject_Task;
+            //myCanvas.MouseLeftButtonDown += ShowProject_Task;
             myCanvas.MouseEnter += MyCanvas_MouseEnter;
             myCanvas.MouseLeave += MyCanvas_MouseLeave;
 
+            //TODO Add margin 5 and 10 this is the main panel displayed in the application.
             Canvas.SetTop(stackPanel, 0);
             Canvas.SetLeft(stackPanel, 0);
 
             myCanvas.Children.Add(stackPanel);
+            //myCanvas.Height = 150;
+            Border brdr = CreateBorderForSelectedProjectCanvas();
 
-            Border brdr = CreateBorderForProjectCanvas();
-            brdr.Margin = new Thickness(0);
+
             brdr.Child = myCanvas;
             return brdr;
 
@@ -570,14 +751,28 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private StackPanel CreateControlForTaskList(List<ProjectTask> taskList)
         {
-            // List<Border> taskControlsWithBorder = new List<Border>();
+
             StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Vertical; if (taskList.Count > 0)
+            stackPanel.Orientation = Orientation.Vertical;
+
+            if (taskList.Count > 0)
             {
+                double stackHeight = 0;
                 foreach (var item in taskList)
                 {
-                    Border border = new Border();
-                    border = CreateControlForTaskList(item);
+                    Canvas panel = new Canvas();
+                    panel = CreateControlForTaskList(item); //ConvertHexToColor("#FF000000")
+
+
+                    // 0 index is for project, so increasing task level by +1
+                    var taskDepth = item.TaskDepthLevel + 1;
+                    panel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(ColorArray[taskDepth].ToString()));
+
+                    Border border = CreateBorderForProjectCanvas();
+                    border.Margin = new Thickness(0);
+                    border.Child = panel;
+                    stackHeight += panel.Height;
+                    stackPanel.Height = stackHeight;
                     stackPanel.Children.Add(border);
                 }
 
@@ -585,14 +780,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             return stackPanel;
         }
 
-        private Border CreateControlForTaskList(ProjectTask item)
+        private Canvas CreateControlForTaskList(ProjectTask item)
         {
             Canvas myCanvas = CreateCanvasPanelForTask(item);
-            myCanvas.Width = 291;
+            myCanvas.Width = 270;
 
             myCanvas.MouseLeftButtonDown += ShowProject_Task;
-            myCanvas.MouseEnter += MyCanvas_MouseEnter;
-            myCanvas.MouseLeave += MyCanvas_MouseLeave;
+            //myCanvas.MouseEnter += MyCanvas_MouseEnter;
+            //myCanvas.MouseLeave += MyCanvas_MouseLeave;
 
             Grid grid = CreateGridForProjectsTasks(item);
 
@@ -602,14 +797,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             Canvas.SetLeft(grid, 0);
 
 
-
+            myCanvas.Height = grid.Height;
             myCanvas.Children.Add(grid);
-            Border brdr = CreateBorderForProjectCanvas();
-            brdr.Child = myCanvas;
 
-            // var gridsize= grid.re
-            myCanvas.Height = 30;
-            return brdr;
+            return myCanvas;
         }
         private static Border CreateBorderForProjectCanvas()
         {
@@ -634,7 +825,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 BorderThickness = new Thickness()
                 {
                     Bottom = 1,
-                    Left = 1,
+                    Left = 10,
                     Right = 1,
                     Top = 1
                 },
@@ -649,103 +840,42 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             grid.Margin = new Thickness(0);
 
             RowDefinition row1 = new RowDefinition();
-            row1.Height = new GridLength(0, GridUnitType.Auto);
-            //RowDefinition row2 = new RowDefinition();
-            //row2.Height = new GridLength(0, GridUnitType.Auto);
+            row1.Height = new GridLength(30);
 
             ColumnDefinition column1 = new ColumnDefinition();
 
             column1.Width = new GridLength(280, GridUnitType.Pixel);
-            //ColumnDefinition column2 = new ColumnDefinition();
-            //column1.Width = new GridLength(80, GridUnitType.Pixel);
 
             grid.RowDefinitions.Add(row1);
-            //grid.RowDefinitions.Add(row2);
-            grid.ColumnDefinitions.Add(column1);
-            //grid.ColumnDefinitions.Add(column2);
 
+            grid.ColumnDefinitions.Add(column1);
 
             TextBlock txtName = new TextBlock
             {
                 FontSize = 14,
                 Text = item.TaskName,
-
+                Padding = new Thickness(5, 1, 1, 1),
                 Foreground = new SolidColorBrush(Colors.White),
-                TextWrapping = TextWrapping.Wrap
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Center
             };
-
-
 
             Grid.SetRow(txtName, 0);
             Grid.SetColumn(txtName, 0);
 
 
-
+            grid.Height = row1.Height.Value + 10;
             grid.Children.Add(txtName);
 
             return grid;
         }
         private void CreateGridForSelectedProjectTask(Project item)
         {
-            //foreach (var task in item.Tasks)
-            //{
-            //    Canvas myCanvas = CreateCanvasPanel(item);
-            //    myCanvas.Width = 291;
 
-            //    myCanvas.MouseLeftButtonDown += ShowProject_Task;
-            //    myCanvas.MouseEnter += MyCanvas_MouseEnter;
-            //    myCanvas.MouseLeave += MyCanvas_MouseLeave;
-
-
-            //}
-
-
-
-
-            //Grid grid = new Grid();
-            //grid.Margin = new Thickness(0);
-
-            //RowDefinition row1 = new RowDefinition();
-            //row1.Height = new GridLength(0, GridUnitType.Auto);
-            //RowDefinition row2 = new RowDefinition();
-            //row2.Height = new GridLength(0, GridUnitType.Auto);
-
-            //ColumnDefinition column1 = new ColumnDefinition();
-            //column1.Width = new GridLength(280, GridUnitType.Pixel);
-
-
-            //grid.RowDefinitions.Add(row1);
-            //grid.RowDefinitions.Add(row2);
-            //grid.ColumnDefinitions.Add(column1);
-
-            //TextBlock txtName = new TextBlock
-            //{
-            //    FontSize = 14,
-            //    Text = item.ProjectName,
-
-            //    Foreground = new SolidColorBrush(Colors.White),
-            //    TextWrapping = TextWrapping.Wrap
-            //};
-
-            //if(item.Tasks.Count > 0)
-            //{
-            //    StackPanel stackPanel = new StackPanel();
-            //    stackPanel.Margin = new Thickness(5, 5, 5, 10);
-            //}
-
-
-
-            //Grid.SetRow(txtName, 0);
-            //Grid.SetColumn(txtName, 0);
-
-
-
-            //grid.Children.Add(txtName);
-
-            //return grid;
         }
 
-        private DataTable GetTaskListByProjectDIFromDB(Project project, int userID)
+
+        private DataTable GetTaskListByProjectIDFromDB(Project project, int userID)
         {
             DataTable dt = new DataTable();
             try
@@ -770,6 +900,42 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             return dt;
         }
+
+
+        private DataTable GetTaskListByTaskIDFromDB(ProjectTask task, int userID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+                SqlConnection sqlCon = new SqlConnection(conStr);
+
+                var sqlCmd = new SqlCommand("USPtblMasterProjectTask_GetByTaskID", sqlCon)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                //sqlCmd.Parameters.AddWithValue("@ProjectID", project.ProjectID);
+                //sqlCmd.Parameters.AddWithValue("@UserID", userID);
+
+                SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
+                da.Fill(dt);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        private void SetHeaderPanelStyle(Canvas canvas)
+        {
+            canvas.Height = 30;
+
+        }
+
+
+
     }
 
 

@@ -59,13 +59,21 @@ namespace QBA.Qutilize.ClientApp
         {
             Logger.Log("ExitApplication", "Info", $"Exiting application.");
             _isExit = true;
+            try
+            {
+                LogOutAndCloseApplication();
 
-            LogOutAndCloseApplication();
+                MainWindow.Close();
+                _notifyIcon.Dispose();
+                _notifyIcon = null;
+                Application.Current.Shutdown(99);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Some error occured.");
+                // throw;
+            }
 
-            MainWindow.Close();
-            _notifyIcon.Dispose();
-            _notifyIcon = null;
-            Application.Current.Shutdown(99);
         }
 
         private void LogOutAndCloseApplication()
