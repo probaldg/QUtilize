@@ -265,7 +265,6 @@ namespace QBA.Qutilize.ClientApp.Helper
 
         private Canvas CreateControlForTaskHeadingCanvas(ProjectTask projectTask)
         {
-            //throw new NotImplementedException();
 
             Canvas myCanvas = CreateCanvasPanel(projectTask);
             myCanvas.Width = 280;

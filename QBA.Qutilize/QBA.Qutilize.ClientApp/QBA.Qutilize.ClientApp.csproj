@@ -100,6 +100,7 @@
     <Compile Include="Helper\PasswordHelper.cs" />
     <Compile Include="Helper\ProjectViewHelper.cs" />
     <Compile Include="Helper\SelectedProjectViewHelper.cs" />
+    <Compile Include="Helper\SubTaskViewHelper.cs" />
     <Compile Include="Helper\TaskDetailsViewHelper.cs" />
     <Compile Include="Helper\ViewModelBase.cs" />
     <Compile Include="Helper\WebAPIHelper.cs" />

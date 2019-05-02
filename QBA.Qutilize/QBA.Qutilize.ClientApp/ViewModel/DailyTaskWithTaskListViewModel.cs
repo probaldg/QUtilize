@@ -430,13 +430,153 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     GetSubTaskByTaskIDAndGenrateView(User.Projects, task);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Some error occured.");
                 //throw;
             }
 
         }
+
+        //private void GetSubTaskByTaskIDAndGenrateView(ICollection<Project> projects, ProjectTask task)
+        //{
+
+        //    try
+        //    {
+        //        //TaskList has populated when user has clicked the Project panel
+        //        if (taskList.Count > 0)
+        //        {
+        //            var grid = (Grid)_dailyTaskView.FindName("grdProject");
+        //            grid.Children.Clear();
+
+        //            StackPanel stackPanel = new StackPanel();
+        //            stackPanel.Margin = new Thickness(5, 5, 5, 10);
+        //            Border border = new Border();
+
+        //            if (projects.Count > 0)
+        //            {
+        //                //Looping through all the projects.
+        //                foreach (var item in projects)
+        //                {
+        //                    if (item.ProjectID == task.ProjectID)
+        //                    {
+
+        //                        if (item.Tasks.Count > 0)
+        //                        {
+
+        //                            // Create project Heading
+        //                            TaskDetailsViewHelper ViewHelper = new TaskDetailsViewHelper(User);
+        //                            var Projectheaderbackcolor = ColorArray[0].ToString();
+        //                            var Projectheader = ViewHelper.CreateProjectHeadingControl(item, Projectheaderbackcolor);
+        //                            StackPanel TaskStackPanel = new StackPanel();
+        //                            TaskStackPanel.Children.Add(Projectheader);
+
+        //                            var OnlyParentTask = item.Tasks.Where(x => x.ParentTaskId == 0).ToList();
+        //                            //Looping through all the Parent Tasks only.
+        //                            foreach (var projecTask in OnlyParentTask)
+        //                            {
+
+        //                                if (projecTask.TaskId == task.TaskId )
+        //                                {
+        //                                    //TODO Check other task is having ParentID = taskId
+        //                                    var subTaskList = taskList.Where(x => x.ParentTaskId == projecTask.TaskId).ToList();
+        //                                    if (subTaskList.Count > 0)
+        //                                    {
+        //                                        SubTaskViewHelper subTaskViewHelper = new SubTaskViewHelper();
+        //                                        Canvas ProjectTaskHeading = subTaskViewHelper.CreateControlForTaskHeadingCanvas(subTaskList[0]);
+        //                                        var backgroundColor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+        //                                        ProjectTaskHeading.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backgroundColor));
+
+
+        //                                        StackPanel tasksSubStack = new StackPanel();
+        //                                        foreach (ProjectTask subTask in subTaskList)
+        //                                        {
+        //                                            Canvas canvas = new Canvas();
+        //                                            var backColor = ColorArray[subTask.TaskDepthLevel + 1].ToString();
+        //                                            canvas = subTaskViewHelper.CreateControlForTaskItem(subTask, backColor);
+        //                                            canvas.MouseDown += SubTaskClick;
+
+        //                                            Border subTaskBorder = subTaskViewHelper.CreateBorderForProjectCanvas();
+        //                                            subTaskBorder.Child = canvas;
+
+        //                                            tasksSubStack.Children.Add(subTaskBorder);
+        //                                        }
+
+
+        //                                        StackPanel taskAndSubTaskStackPanel = new StackPanel();
+        //                                        taskAndSubTaskStackPanel.Orientation = Orientation.Vertical;
+        //                                        taskAndSubTaskStackPanel.Children.Add(ProjectTaskHeading);
+        //                                        taskAndSubTaskStackPanel.Children.Add(tasksSubStack);
+        //                                        taskAndSubTaskStackPanel.Height = ProjectTaskHeading.Height + tasksSubStack.Height;
+
+        //                                        Border TaskSubTaskListBorder = CreateBorderForProjectCanvas();
+        //                                        TaskSubTaskListBorder.Margin = new Thickness(0);
+        //                                        TaskSubTaskListBorder.Child = taskAndSubTaskStackPanel;
+
+        //                                        TaskStackPanel.Children.Add(TaskSubTaskListBorder);
+        //                                    }
+        //                                    else
+        //                                    {
+
+        //                                        //TODO Create TaskDetails Template
+
+        //                                        TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+
+        //                                        var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+        //                                        var taskDetailPanel = taskDetailsViewHelper.CreateTemplateForTaskAtLastLevel(projecTask, backcolor);
+
+        //                                        TaskStackPanel.Children.Add(taskDetailPanel);
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    //TODO Create TaskPanel
+        //                                    TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+        //                                    var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+
+        //                                    var taskCanvas = taskDetailsViewHelper.CreateControlForTaskItem(projecTask, backcolor);
+        //                                    taskCanvas.MouseLeftButtonDown += TaskCanvas_MouseLeftButtonDown;
+        //                                    var panelBorder = CreateBorderForProjectCanvas();
+        //                                    panelBorder.Margin = new Thickness(0);
+        //                                    panelBorder.Child = taskCanvas;
+
+        //                                    TaskStackPanel.Children.Add(panelBorder);
+        //                                }
+        //                            }
+        //                            border = CreateBorderForSelectedProjectCanvas();
+
+        //                            border.Child = TaskStackPanel;
+        //                        }
+        //                        else
+        //                        {
+        //                            //TODO Create TaskDetailsPanel
+        //                            ProjectTask pTask = item.Tasks.FirstOrDefault();
+        //                            var backcolor = ColorArray[pTask.TaskDepthLevel + 1].ToString();
+
+        //                            TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        border = CreateControlForProjectCanvas(item);
+        //                    }
+
+        //                    stackPanel.Children.Add(border);
+        //                }
+
+        //                grid.Children.Add(stackPanel);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw ex;
+        //    }
+
+        //}
+
 
         private void GetSubTaskByTaskIDAndGenrateView(ICollection<Project> projects, ProjectTask task)
         {
@@ -455,75 +595,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     if (projects.Count > 0)
                     {
+                        //Looping through all the projects.
                         foreach (var item in projects)
                         {
                             if (item.ProjectID == task.ProjectID)
                             {
-
-                                if (item.Tasks.Count > 0)
-                                {
-
-                                    // Create project Heading
-                                    TaskDetailsViewHelper ViewHelper = new TaskDetailsViewHelper(User);
-                                    var Projectheaderbackcolor = ColorArray[0].ToString();
-                                    var Projectheader = ViewHelper.CreateProjectHeadingControl(item, Projectheaderbackcolor);
-                                    StackPanel TaskStackPanel = new StackPanel();
-                                    TaskStackPanel.Children.Add(Projectheader);
-
-                                    var OnlyParentTask = item.Tasks.Where(x => x.ParentTaskId == 0).ToList();
-
-                                    foreach (var projecTask in OnlyParentTask)
-                                    {
-
-                                        if (projecTask.TaskId == task.TaskId)
-                                        {
-                                            //TODO Check other task is having ParentID = taskId
-                                            var subTaskList = taskList.Where(x => x.ParentTaskId == projecTask.TaskId).ToList();
-                                            if (subTaskList.Count > 0)
-                                            {
-                                                //TODO Create subTask Template
-                                            }
-                                            else
-                                            {
-
-                                                //TODO Create TaskDetails Template
-
-                                                TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
-
-                                                var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
-                                                var taskDetailPanel = taskDetailsViewHelper.CreateTemplateForTaskAtLastLevel(projecTask, backcolor);
-
-                                                TaskStackPanel.Children.Add(taskDetailPanel);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //TODO Create TaskPanel
-                                            TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
-                                            var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
-
-                                            var taskCanvas = taskDetailsViewHelper.CreateControlForTaskItem(projecTask, backcolor);
-                                            taskCanvas.MouseLeftButtonDown += TaskCanvas_MouseLeftButtonDown;
-                                            var panelBorder = CreateBorderForProjectCanvas();
-                                            panelBorder.Margin = new Thickness(0);
-                                            panelBorder.Child = taskCanvas;
-
-                                            TaskStackPanel.Children.Add(panelBorder);
-                                        }
-                                    }
-                                    border = CreateBorderForSelectedProjectCanvas();
-
-                                    border.Child = TaskStackPanel;
-                                }
-                                else
-                                {
-                                    //TODO Create TaskDetailsPanel
-                                    ProjectTask pTask = item.Tasks.FirstOrDefault();
-                                    var backcolor = ColorArray[pTask.TaskDepthLevel + 1].ToString();
-
-                                    TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
-
-                                }
+                                border = CreateSelectedProjetTemplate(task, border, item);
                             }
                             else
                             {
@@ -545,6 +622,138 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         }
 
+        private Border CreateSelectedProjetTemplate(ProjectTask task, Border border, Project item)
+        {
+            if (item.Tasks.Count > 0)
+            {
+                // Create project Heading
+                Canvas Projectheader = CreateSelectedProjectHeading(item);
+
+                StackPanel TaskStackPanel = new StackPanel();
+                TaskStackPanel.Children.Add(Projectheader);
+
+                // var OnlyParentTask = item.Tasks.Where(x => x.ParentTaskId == 0).ToList();
+                //Looping through all the Parent Tasks only.
+
+                foreach (var projecTask in item.Tasks)
+                {
+
+                    if (projecTask.TaskId == task.TaskId)
+                    {
+                        //TODO Check other task is having ParentID = taskId
+                        var subTaskList = taskList.Where(x => x.ParentTaskId == projecTask.TaskId).ToList();
+                        if (subTaskList.Count > 0)
+                        {
+                            Border TaskSubTaskListBorder = CreateTaskSubTaskPanel(projecTask, subTaskList);
+
+                            TaskStackPanel.Children.Add(TaskSubTaskListBorder);
+                        }
+                        else
+                        {
+
+                            //TODO Create TaskDetails Template
+
+                            TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+
+                            var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+                            var taskDetailPanel = taskDetailsViewHelper.CreateTemplateForTaskAtLastLevel(projecTask, backcolor);
+
+                            TaskStackPanel.Children.Add(taskDetailPanel);
+                        }
+                    }
+                    else
+                    {
+                        ////TODO Create TaskPanel
+                        //if (projecTask.TaskDepthLevel < task.TaskDepthLevel)
+                        //{
+                        TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+                        var backcolor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+
+                        var taskCanvas = taskDetailsViewHelper.CreateControlForTaskItem(projecTask, backcolor);
+                        taskCanvas.MouseLeftButtonDown += TaskCanvas_MouseLeftButtonDown;
+                        var panelBorder = CreateBorderForProjectCanvas();
+                        panelBorder.Margin = new Thickness(0);
+                        panelBorder.Child = taskCanvas;
+
+                        TaskStackPanel.Children.Add(panelBorder);
+                        //}
+
+                    }
+                }
+                border = CreateBorderForSelectedProjectCanvas();
+
+
+                border.Child = TaskStackPanel;
+            }
+            else
+            {
+                //TODO Create TaskDetailsPanel
+                ProjectTask pTask = item.Tasks.FirstOrDefault();
+                var backcolor = ColorArray[pTask.TaskDepthLevel + 1].ToString();
+
+                TaskDetailsViewHelper taskDetailsViewHelper = new TaskDetailsViewHelper(User);
+
+            }
+
+            return border;
+        }
+
+        private Border CreateTaskSubTaskPanel(ProjectTask projecTask, List<ProjectTask> subTaskList)
+        {
+            SubTaskViewHelper subTaskViewHelper = new SubTaskViewHelper();
+            Canvas ProjectTaskHeading = subTaskViewHelper.CreateControlForTaskHeadingCanvas(subTaskList[0]);
+            var backgroundColor = ColorArray[projecTask.TaskDepthLevel + 1].ToString();
+            ProjectTaskHeading.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backgroundColor));
+
+
+            StackPanel tasksSubStack = new StackPanel();
+            foreach (ProjectTask subTask in subTaskList)
+            {
+                //TODO need to check weather sub task is having any nested task.
+                var nestedTask = taskList.Where(x => x.ParentTaskId == subTask.TaskId).ToList();
+                Canvas canvas = new Canvas();
+                Border subTaskBorder = new Border();
+                var backColor = ColorArray[subTask.TaskDepthLevel + 1].ToString();
+                canvas = subTaskViewHelper.CreateControlForTaskItem(subTask, backColor);
+                canvas.MouseDown += SubTaskClick;
+
+                subTaskBorder = subTaskViewHelper.CreateBorderForProjectCanvas();
+                subTaskBorder.Child = canvas;
+
+                tasksSubStack.Children.Add(subTaskBorder);
+            }
+
+
+            StackPanel taskAndSubTaskStackPanel = new StackPanel();
+            taskAndSubTaskStackPanel.Orientation = Orientation.Vertical;
+            taskAndSubTaskStackPanel.Children.Add(ProjectTaskHeading);
+            taskAndSubTaskStackPanel.Children.Add(tasksSubStack);
+            taskAndSubTaskStackPanel.Height = ProjectTaskHeading.Height + tasksSubStack.Height;
+            taskAndSubTaskStackPanel.Name = "testStack";
+            Border TaskSubTaskListBorder = CreateBorderForProjectCanvas();
+            TaskSubTaskListBorder.Margin = new Thickness(0);
+            TaskSubTaskListBorder.Child = taskAndSubTaskStackPanel;
+            return TaskSubTaskListBorder;
+        }
+
+        private Canvas CreateSelectedProjectHeading(Project item)
+        {
+            TaskDetailsViewHelper ViewHelper = new TaskDetailsViewHelper(User);
+            var Projectheaderbackcolor = ColorArray[0].ToString();
+            var Projectheader = ViewHelper.CreateProjectHeadingControl(item, Projectheaderbackcolor);
+            return Projectheader;
+        }
+
+        private void SubTaskClick(object sender, MouseButtonEventArgs e)
+        {
+            ShowProject_Task(sender, e);
+            //Canvas canvas = (Canvas)sender;
+            //var task = (ProjectTask)canvas.DataContext;
+
+            //var TaskCanvas = (Canvas)_dailyTaskView.FindName("testStack");
+            //TaskCanvas.Height = 300;
+        }
+
         private void TaskCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // throw new NotImplementedException();
@@ -553,10 +762,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         private void GetTaskByProjectIDAndGenrateView(Project project, int userID)
         {
-            DataTable taskData = GetTaskListByProjectIDFromDB(project, userID);
-            taskList.Clear();
+
+
             try
             {
+
+                DataTable taskData = GetTaskListByProjectIDFromDB(project, userID);
+                taskList.Clear();
                 if (taskData.Rows.Count > 0)
                 {
 
@@ -569,6 +781,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         task.TaskCode = item["TaskCode"].ToString();
                         task.TaskName = item["TaskName"].ToString();
                         task.ParentTaskId = Convert.ToInt32(item["ParentTaskID"]);
+                        task.ParentTaskName = item["ParentTaskName"].ToString();
                         task.TaskStatusID = Convert.ToInt32(item["StatusID"]);
                         task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
                         task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
@@ -587,7 +800,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     var selectedProject = projectList.FirstOrDefault(x => x.ProjectID == project.ProjectID);
                     var taskList0Level = taskList.Where(x => x.ParentTaskId == 0).ToList();
                     //selectedProject.Tasks = taskList.Select(x=> x.ParentTaskId ==0).ToList();
-                    selectedProject.Tasks = taskList0Level;
+                    //selectedProject.Tasks = taskList0Level;
+                    selectedProject.Tasks = taskList;
 
                     GenrateViewControl(projectList, project.ProjectID);
                 }
@@ -598,10 +812,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     GenrateViewControl(projectList, project.ProjectID);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
 
 
@@ -947,7 +1161,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             return dt;
         }
