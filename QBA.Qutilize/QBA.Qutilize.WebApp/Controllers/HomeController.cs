@@ -4,6 +4,7 @@ using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -15,6 +16,10 @@ namespace QBA.Qutilize.WebApp.Controllers
     {
         public ActionResult Index()
         {
+            //string st = null;
+            //string  st1 =st;
+            //DateTime dd;
+            //DateTime.TryParse(st, out dd);
             return View();
         }
 
@@ -252,7 +257,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)
             {
                 sbContent.Append("<div class='panel panel-info'>");
-                sbContent.Append("<div class='panel-heading'><label>User Wise details in minute:</label></div>");
+                sbContent.Append("<div class='panel-heading'><label>User wise details :</label></div>");
                 sbContent.Append("<div class='panel-body'>");
                 sbContent.Append("<div class='table-responsive'>");
                 sbContent.Append("<table id='TableuserWiseDetailsInMinutes' class='table table-bordered dataTable no-footer' width='100%'>");
@@ -323,7 +328,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     _chart.labels = arrrayDate;
                     _chart.datasets = new List<Datasets>();
                     List<Datasets> _dataSet = new List<Datasets>();
-                    string[] arrbg = new string[] {  "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7",    "#194C66", "#1F5D7C", "#246E93", "#2A7FAA", "#3090C0", "#3E9ECE", "#55AAD4", "#6BB5DA", "#82C0DF"};
+                    List<string> arrbg1 = new List<string>();
+                    var random = new Random();
+                    for (int iColor = 0; iColor < ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length); iColor++)
+                    {
+                        var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                        arrbg1.Add(color);
+                    }
+                    string[] arrbg = arrbg1.ToArray();// = new string[] {  "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7",    "#194C66", "#1F5D7C", "#246E93", "#2A7FAA", "#3090C0", "#3E9ECE", "#55AAD4", "#6BB5DA", "#82C0DF"};
                     int intColor = 0;
                     foreach (string stproj in arrrayProj)
                     {
@@ -339,7 +351,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 if (result.Length > 0)
                                 {
                                     int totalSec = Convert.ToInt32(result[0]["totalSec"]);
-                                    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                                 }
                                 else
                                 { arrData[i] = "0"; }
@@ -357,22 +370,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                         _dataSet.Add(dss);
                         intColor++;
                     }
-                    //_dataSet.Add(new Datasets()
-                    //{
-                    //    label = "Current Year",
-                    //    data = new string[] { "28", "48", "40", "19", "86", "27", "90", "20", "45", "65", "34", "22" },
-                    //    backgroundColor = new string[] { "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000", "#FF0000" },
-                    //    borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
-                    //    borderWidth = "1"
-                    //});
-                    //_dataSet.Add(new Datasets()
-                    //{
-                    //    label = "Last Year",
-                    //    data = new string[] { "65", "59", "80", "81", "56", "55", "40", "55", "66", "77", "88", "34" },
-                    //    backgroundColor = new string[] {  "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000", "#800000" },
-                    //    borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
-                    //    borderWidth = "1"
-                    //});
                     _chart.datasets = _dataSet;
                 }
             }
@@ -445,19 +442,27 @@ namespace QBA.Qutilize.WebApp.Controllers
                         try
                         {
                             int totalSec = Convert.ToInt32(ds.Tables[1].Rows[i]["totalSec"]);
-                            arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                            //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                            arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                         }
                         catch (Exception exo) { arrData[i] = "0"; }
                     }
                     _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
                     _chart.datasets = new List<Datasets>();
                     List<Datasets> _dataSet = new List<Datasets>();
+                    List<string> arrbg1 = new List<string>();
+                    var random = new Random();
+                    for (int iColor = 0; iColor < arrrayProj.Length; iColor++)
+                    {
+                        var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                        arrbg1.Add(color);
+                    }
                     _dataSet.Add(new Datasets()
                     {
                         label = "",
                         data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                        backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60",  "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60", "#65184B", "#7C1E5C", "#93246D", "#A9297E", "#C02F8F", "#CF3C9D", "#D453A9", "#DA6AB4", "#E081C0"},
-                        borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
+                        backgroundColor = arrbg1.ToArray(),// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60",  "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60", "#65184B", "#7C1E5C", "#93246D", "#A9297E", "#C02F8F", "#CF3C9D", "#D453A9", "#DA6AB4", "#E081C0"},
+                        borderColor = arrbg1.ToArray(),//new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                         borderWidth = "1"
                     });
                     _chart.datasets = _dataSet;
@@ -685,7 +690,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sumObject = ds.Tables[3].Compute("Sum(totalSec)", string.Empty);
                         TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
                         string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
-                                        t.Hours,
+                                        (t.Days*24)+t.Hours,
                                         t.Minutes//,
                                         //t.Seconds
                                         );//t.Milliseconds
@@ -707,7 +712,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9*60*60)) * 100)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9*60*60)) * 100)/(view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
@@ -743,18 +748,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 object sumObject;
                                 sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                 int totalSec = Convert.ToInt32(sumObject);
-                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                             }
                             catch (Exception exo) { arrData[i] = "0"; }
                         }
                         _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
+                        List<string> arrbg1 = new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < arrrayProj.Length; iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
                         _dataSet.Add(new Datasets()
                         {
                             label = "",
                             data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            backgroundColor = arrbg1.ToArray(),// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
                             borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                             borderWidth = "1"
                         });
@@ -786,18 +799,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 object sumObject;
                                 sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                 int totalSec = Convert.ToInt32(sumObject);
-                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                             }
                             catch (Exception exo) { arrData[i] = "0"; }
                         }
                         _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
+                        List<string> arrbg1 = new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < arrrayProj.Length; iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
                         _dataSet.Add(new Datasets()
                         {
                             label = "",
                             data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            backgroundColor = arrbg1.ToArray(),// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
                             borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                             borderWidth = "1"
                         });
@@ -825,7 +846,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                         _chart.labels = arrrayDate;
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
-                        string[] arrbg = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                        List<string> arrbg1 =new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length); iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
+                        string[] arrbg = arrbg1.ToArray();// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f" };
                         int intColor = 0;
                         foreach (string stproj in arrrayProj)
                         {
@@ -843,7 +871,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     object sumObject;
                                     sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                     int totalSec = Convert.ToInt32(sumObject);
-                                    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600)/60).ToString();
+                                    //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
                                     //if (result.Length > 0)
                                     //{
                                     //    int totalSec = Convert.ToInt32(result[0]["totalSec"]);
@@ -919,7 +948,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sumObject = ds.Tables[2].Compute("Sum(totalSec)", string.Empty);
                         TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
                         string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
-                                        t.Hours,
+                                        (t.Days * 24) + t.Hours,
                                         t.Minutes//,
                                         //t.Seconds
                                         );//t.Milliseconds
@@ -940,7 +969,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9 * 60 * 60)) * 100)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9 * 60 * 60)) * 100)/ (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
@@ -976,18 +1005,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 object sumObject;
                                 sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                 int totalSec = Convert.ToInt32(sumObject);
-                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                             }
                             catch (Exception exo) { arrData[i] = "0"; }
                         }
                         _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
+                        List<string> arrbg1 = new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < arrrayProj.Length; iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
                         _dataSet.Add(new Datasets()
                         {
                             label = "",
                             data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            backgroundColor = arrbg1.ToArray(),// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
                             borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                             borderWidth = "1"
                         });
@@ -1019,18 +1056,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 object sumObject;
                                 sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                 int totalSec = Convert.ToInt32(sumObject);
-                                arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                             }
                             catch (Exception exo) { arrData[i] = "0"; }
                         }
                         _chart.labels = arrrayProj;// new string[] { "January", "February", "March", "April", "May", "June", "July" };
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
+                        List<string> arrbg1 = new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < arrrayProj.Length; iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
                         _dataSet.Add(new Datasets()
                         {
                             label = "",
                             data = arrData,// new string[] { "28", "48", "40", "19", " 86", "27", "90" },
-                            backgroundColor = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
+                            backgroundColor = arrbg1.ToArray(),// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#1A5276", "#27AE60" },
                             borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" },
                             borderWidth = "1"
                         });
@@ -1058,7 +1103,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                         _chart.labels = arrrayDate;
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
-                        string[] arrbg = new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
+                        List<string> arrbg1 = new List<string>();
+                        var random = new Random();
+                        for (int iColor = 0; iColor < ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length); iColor++)
+                        {
+                            var color = String.Format("#{0:X6}", random.Next(0x1000000));
+                            arrbg1.Add(color);
+                        }
+                        string[] arrbg = arrbg1.ToArray();// new string[] { "#f39c12", "#00c0ef", "#0073b7", "#3c8dbc", "#00a65a", "#001f3f", "#39cccc", "#3d9970", "#01ff70", "#ff851b", "#f012be", "#605ca8", "#d81b60", "#020219", "#07074c", "#0f0f99", "#1616e5", "#4646ff", "#8c8cff", "#d1d1ff", "#a3a3ff", "#babaff", "#d1d1ff", "#e8e8ff", "#E6FCDD", "#EFF7B5", "#EFB5F7" };
                         int intColor = 0;
                         foreach (string stproj in arrrayProj)
                         {
@@ -1075,7 +1127,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     object sumObject;
                                     sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                     int totalSec = Convert.ToInt32(sumObject);
-                                    arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
+                                    arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                                 }
                                 catch (Exception exo) { arrData[i] = "0"; }
                                 i++;
@@ -1155,6 +1208,101 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     else
                     { sbContent.Append("<span class='progress-description'>No holiday found</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetNewsDetail()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUserAllData"] != null)
+                {
+                    DataSet ds = (DataSet)Session["sessUserAllData"];
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[7] != null && ds.Tables[7].Rows.Count > 0)
+                    {
+                        sbContent.Append("<marquee direction='up' onmouseover='this.stop();' onmouseout='this.start();' scrolldelay='150'><ul>");
+                        foreach (DataRow dr in ds.Tables[7].Rows)
+                        {
+                            try {
+                                sbContent.Append("<li><b>" + dr["Heading"] + "</b><br>" + dr["Description"] + "</li><br>");
+                            }
+                            catch (Exception exx) { }
+                        }
+                        sbContent.Append("</ul></marquee>");
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No News/Events found</span>"); }
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetOnlineUserActive(string CurrDate)
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                if (Session["sessUser"] != null)
+                {
+                    LoginViewModel objLoginViewModel = new LoginViewModel();
+                    DateTime dtCurr = Convert.ToDateTime(CurrDate.Replace("_"," "));// DateTime.ParseExact(CurrDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    DataSet ds = objLoginViewModel.GetOnlineUser(Convert.ToInt32(Session["sessUser"]), dtCurr);
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            try
+                            {
+                                if (Convert.ToString(dr["DRank"]).Trim() == "1")
+                                {
+                                    sbContent.Append("<div class='row'>");
+                                    sbContent.Append("<div class='col-md-3'>");
+                                    string[] arrName = Convert.ToString(dr["UserName"]).Substring(0, Convert.ToString(dr["UserName"]).IndexOf("(")).Trim().Split(' ');
+                                    string strShortName = "UN";
+                                    if (arrName.Length >= 2)
+                                    {
+                                        strShortName = arrName[0].FirstOrDefault().ToString() + "" + arrName[1].FirstOrDefault().ToString();
+                                    }
+                                    else if (arrName.Length == 1)
+                                    {
+                                        strShortName = arrName[0].FirstOrDefault().ToString();
+                                    }
+                                    sbContent.Append("<span class='btn btn-info user-image' style='font-size:15px;border-radius: 50%; color:white;'>" + strShortName + "</span>");
+                                    string strTimeElapsed = "";
+                                    int intElapsedHr = Convert.ToInt32(dr["TimeLeft"])/60;
+                                    if (Convert.ToInt32(dr["TimeLeft"]) < (8 * 60))
+                                    {
+                                        sbContent.Append("<div class='green_icon'></div>");
+                                        if (intElapsedHr == 0)
+                                        { strTimeElapsed = "<span style='color: #4cd137;'>(for last " + (Convert.ToInt32(dr["TimeLeft"]) % 60) + " minutes)</span>"; }
+                                        else
+                                        { strTimeElapsed = "<span style='color: #4cd137;'>(for last " + intElapsedHr + " hr/s)</span>"; }
+                                    }
+                                    else if (Convert.ToInt32(dr["TimeLeft"]) < (24 * 60))
+                                    {
+                                        sbContent.Append("<div class='orange_icon'></div>");
+                                        { strTimeElapsed = "<span style='color: #FFA500;'>(for last " + intElapsedHr + " hrs)</span>"; }
+                                    }
+                                    else
+                                    {
+                                        sbContent.Append("<div class='red_icon'></div>");
+                                        { strTimeElapsed = "<span style='color: #FF0000;'>(for last " + intElapsedHr + " hrs)</span>"; }
+                                    }
+                                    sbContent.Append("</div>");
+                                    sbContent.Append("<div class='col-md-9'>");
+                                    sbContent.Append("" + Convert.ToString(dr["UserName"]) + "<br><b>Working on:</b>" + Convert.ToString(dr["ProjectName"]) + "<br>"+ strTimeElapsed + "<br>");//
+                                    sbContent.Append("</div>");
+                                    sbContent.Append("</div>");
+                                }
+                            }
+                            catch (Exception exx) { }
+                        }
+                    }
+                    else
+                    { sbContent.Append("<span class='progress-description'>No News/Events found</span>"); }
                 }
             }
             catch (Exception exx) { }

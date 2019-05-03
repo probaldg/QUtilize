@@ -80,7 +80,20 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+        public DataSet GetOnlineUser(int UserID, DateTime CurrDate)
+        {
+            DataSet dt = null;
+            try
+            {
+                dt = DataAccess.GetOnlineUser(UserID, CurrDate);
+            }
+            catch (Exception ex)
+            {
 
+            }
+
+            return dt;
+        }
         public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID,int MainUser,string Role)
         {
             DataSet ds = null;

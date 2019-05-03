@@ -1,0 +1,207 @@
+﻿@model QBA.Qutilize.WebApp.Models.MasterSkill
+
+@{
+    ViewBag.Title = "ManageMasterSkill";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
+        <thead id="tblHeadListViewPost">
+            <tr>
+                <th class="text-center tblHeaderColor">ID</th>
+                <th class="text-center tblHeaderColor">Skill Code</th>
+                <th class="text-center tblHeaderColor">Skill Name</th>
+                <th class="text-center tblHeaderColor">Department</th>
+                <th class="text-center tblHeaderColor">Organisation</th>
+                <th class="text-center tblHeaderColor">Mandatory</th>
+                <th class="text-center tblHeaderColor">Active</th>
+                <th class="text-center tblHeaderColor">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Action("MasterSkills", "Admin")
+        </tbody>
+    </table>
+</div>
+
+<div class="col-md-12"><br /></div>
+<div class="form-horizontal col-md-12">
+    <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+        <span id="errormsg"></span>
+    </div>
+</div>
+
+@using (Html.BeginForm("ManageMasterSkill", "Admin", FormMethod.Post, new { onsubmit = "return checkSkillForm()" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Skill Details</h4>
+    <hr />
+
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SkillName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SkillName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SkillName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SkillCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SkillCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SkillCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+       
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.OrgID, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control", @onchange = "getDepartments();" })
+                @Html.HiddenFor(model => model.UserOrgId)
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.CategoryID, new SelectList(Model.DepartmentList, "DepartmentID", "Name"), "Please select", new { @class = "form-control" })                
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Rank, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.Rank, Enumerable.Range(1, 100).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Rank, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.isMandatory, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.isMandatory)
+                    @Html.ValidationMessageFor(model => model.isMandatory, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    var orgId = $('#UserOrgId').val();
+
+    if (orgId != 0) {
+        $('#OrgID').val(orgId);
+
+        if ($('#OrgID option').length == 2) {
+            $("#OrgID").prop("disabled", true);
+        }
+
+    }
+
+
+    function checkSkillForm() {
+        var SkillName = document.getElementById("SkillName").value;
+        var SkillCode = document.getElementById("SkillCode").value;
+        var OrgId = $('#OrgID').val();
+        var CategoryID = $('#CategoryID').val();
+        if (SkillName == "") {
+            document.getElementById("errormsg").innerHTML = "Please Provide Skill Name";
+            document.getElementById("ErrorMsg").style.display = 'block';
+
+            return false;
+        }
+
+        if (SkillCode == "") {
+            document.getElementById("errormsg").innerHTML = "Please Provide Skill Code";
+            document.getElementById("ErrorMsg").style.display = 'block';
+
+            return false;
+        }
+
+
+        if (OrgId == "" || OrgId == 0) {
+            document.getElementById("errormsg").innerHTML = "Please select Organisation Name";
+            document.getElementById("ErrorMsg").style.display = 'block';
+
+            return false;
+        }
+
+
+        if (CategoryID == "" || CategoryID == 0) {
+            document.getElementById("errormsg").innerHTML = "Please select Category Name";
+            document.getElementById("ErrorMsg").style.display = 'block';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    function getDepartments() {
+        //if (Session["OrgAdmin"] != null) {
+        //    var
+        //}
+        var OrgID = $('#OrgID').val();        
+        $.ajax({
+            url: '@Url.Action("GetDepartmentList", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            //data: { s_People_ID: People_ID },
+            data: JSON.stringify({
+                "OrgID": OrgID
+            }),
+            success: function (response) {
+                $("#CategoryID").empty();
+                $("#CategoryID").append($('<option></option>').val('0').html("select"));
+                $.each(response, function (key, value) {
+                    $("#CategoryID").append($('<option></option>').val(value.DepartmentID).html(value.Name));
+                });
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+    }
+
+</script>

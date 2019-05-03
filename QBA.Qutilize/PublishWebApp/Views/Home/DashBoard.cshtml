@@ -3,41 +3,7 @@
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
 <div class="row">
-    <div class="col-md-3">
-        <div class="info-box bg-yellow">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
-            <div style="padding: 5px 10px;">
-                @Html.Action("GetBirthDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-green">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
-            <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
-                @Html.Action("GetAnniversaryDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-aqua">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i> Upcoming News/Events</span>
-            <div style="padding: 5px 10px;">
-                @*@Html.Action("GetAnniversaryDayDetail", "Home")*@
-                <span class="progress-description">
-                    Upcoming!!
-                </span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-red">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
-            <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
-                @Html.Action("GetHoliDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-    </div>
+
     <div class="col-md-9">
         <div class="row">
             <div class="col-md-12" id="dashBoardDateRange">
@@ -75,7 +41,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChartAdmin" width="200" height="30"></canvas>
                                         </div>
@@ -94,7 +60,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
                                         </div>
@@ -102,7 +68,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
                                         </div>
@@ -139,7 +105,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChartPM" width="200" height="30"></canvas>
                                         </div>
@@ -157,7 +123,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
                                         </div>
@@ -165,7 +131,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
                                         </div>
@@ -191,7 +157,7 @@
                             <div class="row" id="divLoadDashBoardDataDayWise">
                                 <div class="col-md-12">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in minute:</label></div>
+                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="barChart" width="200" height="30"></canvas>
                                         </div>
@@ -209,7 +175,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in minute:</label></div>
+                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
                                         <div class="panel-body">
                                             <canvas id="DonutChart" width="200" height="100"></canvas>
                                         </div>
@@ -222,10 +188,48 @@
             </div>
         }
     </div>
+    <div class="col-md-3">
+        <div class="info-box bg-yellow">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
+            <div style="padding: 5px 10px;">
+                @Html.Action("GetBirthDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-green">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetAnniversaryDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-aqua">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i> Upcoming News/Events</span>
+            <div style="padding: 5px 10px;">
+                @Html.Action("GetNewsDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="info-box bg-red">
+            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
+            <div style="padding: 5px 10px;">
+                @*class="info-box-content"*@
+                @Html.Action("GetHoliDayDetail", "Home")
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <div class="box box-info box-solid">
+            <div class="box-body" id="divActiveUserData" style="text-align: left;">
+                @*@Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })*@
+            </div>
+        </div>
+    </div>
 </div>
+<Text>
+    
+</Text>
 <script>
-
-
     $(document).ready(function () {
         $('#tblAppraisalRating').DataTable({
             // "pageLength": 10,
@@ -395,11 +399,24 @@
 
 
         });
-    })
+
+        setInterval(function () {
+            var date = new Date();
+            var day = date.getDate();       // yields date
+            var month = date.getMonth() + 1;    // yields month (add one as '.getMonth()' is zero indexed)
+            var year = date.getFullYear();  // yields year
+            var hour = date.getHours();     // yields hours 
+            var minute = date.getMinutes(); // yields minutes
+            var second = date.getSeconds(); // yields seconds
+            // After this construct a string with the above results as below
+            var vCurrDateTime = month + "/" + day + "/" + year + "_" + hour + ':' + minute + ':' + second; 
+            //location.href = 'Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime;
+            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime);
+        }, 5000);
+    });
 
 
     $(document).ready(function () {
-
         //$(".datepicker").datepicker();
         $('#txtStartDate').datepicker();
         $('#txtEndDate').datepicker();
@@ -427,6 +444,15 @@
 
         }
     })
+    function alertFunc() {
+        alert("Refresh data");
+        try {
+            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
     function gerBarChartData(){
         try {
         //-----Single Bar --------------
@@ -447,7 +473,7 @@
                 },
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -479,7 +505,7 @@
                     }]
                 },
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -536,7 +562,7 @@
                 },
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -560,7 +586,7 @@
             options: {
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -584,7 +610,7 @@
             options: {
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -608,7 +634,7 @@
             options: {
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -632,7 +658,7 @@
             options: {
                 responsive: true,
                 legend: {
-                    display: true,
+                    display: false,
                     position: 'right'
                 },
                 tooltips: {
@@ -682,7 +708,7 @@
                 }),
                 success: function (response) {
                     if (response != "") {
-                        @*gerBarChartData();
+                        gerBarChartData();
                         gerDonutChartData();
                         $("#divActualData").html(response);
                         gerDonutChartDataUserWiseAdmin();
@@ -692,7 +718,7 @@
                         gerDonutChartDataUserWisePM();
                         gerDonutChartDataProjectWisePM();
                         gerBarChartDataPM();
-                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');*@
+                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
                         var url = '@Url.Action("DashBoard", "Home")';
                         window.location.href = url;
                     }
@@ -704,3 +730,35 @@
         }
     }
 </script>
+<style>
+    .green_icon {
+        background-color: #4cd137;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+    .orange_icon {
+        background-color: #FFA500;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+    .red_icon {
+        background-color: #FF0000;
+        position: absolute;
+        right: 10px;
+        bottom: -4px;
+        height: 14px;
+        width: 14px;
+        border: 1px solid white;
+        border-radius: 50%;
+    }
+</style>

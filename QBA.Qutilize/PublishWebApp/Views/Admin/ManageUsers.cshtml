@@ -221,7 +221,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", type = "number", maxlength = "10" } })
+                    @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control",  @maxlength = "10" ,type = "number"} })
                     @Html.ValidationMessageFor(model => model.ContactNo, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -229,7 +229,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.AlterNetContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.AlterNetContactNo, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                    @Html.EditorFor(model => model.AlterNetContactNo, new { htmlAttributes = new { @class = "form-control", @maxlength = "10",  @type = "number"  } })
                     @Html.ValidationMessageFor(model => model.AlterNetContactNo, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -344,7 +344,6 @@
         $('#birthDayToDisplay').datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: "dd/mm/yy",
             yearRange: "-90:+00",
             maxDate: new Date()
         });

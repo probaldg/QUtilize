@@ -2459,6 +2459,307 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(stringBuilder.ToString());
         }
         #endregion
+
+        #region Master skill
+        public ActionResult ManageMasterSkill(int ID = 0)
+        {
+            MasterSkill ms = new MasterSkill();
+            UserModel obj = new UserModel();
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+            {
+                ms.OrganisationList.Clear();
+                ms.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();
+            }
+
+            else
+            {
+                obj.OrganisationList.Clear();
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
+                obj.OrganisationList.Add(organisation);
+                ms.OrganisationList = obj.OrganisationList;
+                ms.UserOrgId = userInfo.UserOrganisationID;
+
+                obj.UsersList.Clear();
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.DepartmentList.Clear();
+                ms.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+            }
+
+
+            // MasterSkill ms = new MasterSkill();
+            //RoleModel obj = new RoleModel();
+            List<ProjectModel> objRole = new List<ProjectModel>();
+            //ms.OrganisationList = obj.GetAllOrgInList();
+
+            UserModel dptObj = new UserModel();
+            // ms.DepartmentList = dptObj.GetAllDepartmentInList();
+            try
+            {
+                if (ID > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = ms.GetMasterSkillByID(ID);
+                    ms.Id = int.Parse(dt.Rows[0]["Id"].ToString());
+                    ms.CategoryID = dt.Rows[0]["CategoryID"].ToString();
+                    ms.SkillName = dt.Rows[0]["SkillName"].ToString();
+                    ms.SkillCode = dt.Rows[0]["SkillCode"].ToString();
+                    ms.Rank = dt.Rows[0]["Rank"].ToString();
+                    ms.Description = dt.Rows[0]["Description"].ToString();
+                    ms.isMandatory = Convert.ToBoolean(dt.Rows[0]["isMandatory"].ToString());
+                    ms.OrgID = int.Parse(dt.Rows[0]["OrgID"].ToString());
+                    ms.DepartmentList = obj.GetAllDepartmentInList(ms.OrgID).Where(x => x.IsActive == true).ToList();
+                    ms.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
+
+                }
+                else
+                {
+                    ms.Id = 0;
+                    ms.CategoryID = "";
+                    ms.SkillName = "";
+                    ms.SkillCode = "";
+                    ms.Description = "";
+                    ms.Rank = "";
+                    ms.isMandatory = false;
+                    ms.OrgID = 0;
+                    ms.IsActive = false;
+
+                }
+            }
+            catch (Exception exx)
+            {
+
+            }
+
+            return View(ms);
+        }
+
+        public ActionResult GetDepartmentList(int OrgID)
+        {
+            UserModel obj = new UserModel();
+            List<DepartmentModel> viewModelList = obj.GetAllDepartmentInList(OrgID).Where(x => x.IsActive == true).ToList();
+            return Json(viewModelList);
+
+        }
+
+        public ActionResult MasterSkills()
+        {
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
+
+            MasterSkill MS = new MasterSkill();
+            string strMasterSkill = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                int i = 0;
+                dt = MS.GetAllMasterSkill(userInfo.IsRoleSysAdmin, userInfo.UserOrganisationID);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strMasterSkill += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["SkillCode"] + "</td><td class='text-center'>" + dr["SkillName"] + "</td>" + "<td class='text-center'>" + dr["Department"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["orgname"].ToString() + "</td>" + "<td class='text-center'>" + dr["isMandatory"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                       "<td  class='text-center'><a href = 'ManageMasterSkill?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
+                    i++;
+                }
+            }
+            catch (Exception exc)
+            {
+                //throw exc;
+            }
+            return Content(strMasterSkill);
+
+        }
+
+        [HttpPost]
+        public ActionResult ManageMasterSkill(MasterSkill MSmodel)
+        {
+            MasterSkill obj = new MasterSkill();
+            if (MSmodel.Id > 0)
+            {
+                try
+                {
+                    obj = MSmodel;
+                    obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
+                    obj.EditedDate = Convert.ToDateTime(DateTime.Now.ToString());
+                    obj.IsActive = Convert.ToBoolean(MSmodel.IsActive);
+                    obj.isMandatory = Convert.ToBoolean(MSmodel.isMandatory);
+                    obj.Update_MasterSkill(obj);
+
+                    //TempData["ErrStatus"] = obj.ISErr.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+
+                MSmodel.CreatedBy = int.Parse(Session["sessUser"].ToString());
+                MSmodel.CreateDate = DateTime.Now;
+
+                MSmodel.IsActive = Convert.ToBoolean(MSmodel.IsActive);
+                int outID = 0;
+                MSmodel.InsertSkillMasterdata(MSmodel, out outID);
+                //obj.InsertModuledata(model, out int id);
+                //if (id > 0)
+                //{
+
+                //}
+                //TempData["ErrStatus"] = MSmodel.ISErr.ToString();
+            }
+
+            return RedirectToAction("ManageMasterSkill", "Admin");
+        }
+        #endregion master skill
+
+        #region master skill rating
+        public ActionResult ManageMasterSkillRating(int ID = 0)
+        {
+            MasterSkillRating msr = new MasterSkillRating();
+            UserModel obj = new UserModel();
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
+            DataTable dtUsers = new DataTable();
+            if (userInfo.IsRoleSysAdmin)
+            {
+                msr.OrganisationList.Clear();
+                msr.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();               
+            }
+
+            else
+            {
+                obj.OrganisationList.Clear();
+                var organisation = obj.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
+                obj.OrganisationList.Add(organisation);
+                msr.OrganisationList = obj.OrganisationList;
+                msr.UserOrgId = userInfo.UserOrganisationID;
+                obj.UsersList.Clear();
+                obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.DepartmentList.Clear();                
+            }
+
+
+            // MasterSkill ms = new MasterSkill();
+            //RoleModel obj = new RoleModel();
+            List<ProjectModel> objRole = new List<ProjectModel>();
+            //ms.OrganisationList = obj.GetAllOrgInList();
+
+            UserModel dptObj = new UserModel();
+            // ms.DepartmentList = dptObj.GetAllDepartmentInList();
+            try
+            {
+                if (ID > 0)
+                {
+                    DataTable dt = new DataTable();
+                    dt = msr.GetMasterSkillRatingByID(ID);
+                    msr.ID = int.Parse(dt.Rows[0]["Id"].ToString());                                       
+                    msr.SkillCode = dt.Rows[0]["SkillCode"].ToString();
+                    msr.SkillLevel = dt.Rows[0]["SkillLevel"].ToString();
+                    msr.SkillScore = int.Parse(dt.Rows[0]["SkillScore"].ToString());
+                    msr.Description = dt.Rows[0]["Description"].ToString();                    
+                    msr.OrgID = int.Parse(dt.Rows[0]["OrgID"].ToString());                    
+                    msr.isActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
+
+                }
+                else
+                {
+                    msr.ID = 0;
+                    msr.SkillCode = "";
+                    msr.SkillLevel = "";
+                    msr.SkillCode = "";
+                    msr.Description = "";
+                    msr.SkillScore = 0;                    
+                    msr.OrgID = 0;
+                    msr.isActive = false;
+
+                }
+            }
+            catch (Exception exx)
+            {
+
+            }
+
+            return View(msr);
+        }
+
+        public ActionResult MasterSkillRatings()
+        {
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+            ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
+
+            MasterSkillRating MSR = new MasterSkillRating();
+            string strMasterSkill = string.Empty;
+            try
+            {
+                DataTable dt = new DataTable();
+                int i = 0;
+                dt = MSR.GetAllMasterSkillRating(userInfo.IsRoleSysAdmin, userInfo.UserOrganisationID);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    strMasterSkill += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["SkillCode"] + "</td><td class='text-center'>" + dr["SkillLevel"] + "</td>" + "<td class='text-center'>" + dr["Description"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["SkillScore"].ToString() + "</td>" + "<td class='text-center'>" + dr["OrgName"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                       "<td  class='text-center'><a href = 'ManageMasterSkillRating?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
+                    i++;
+                }
+            }
+            catch (Exception exc)
+            {
+                //throw exc;
+            }
+            return Content(strMasterSkill);
+
+        }
+
+        [HttpPost]
+        public ActionResult ManageMasterSkillRating(MasterSkillRating MSRmodel)
+        {
+            MasterSkillRating obj = new MasterSkillRating();
+            if (MSRmodel.ID > 0)
+            {
+                try
+                {
+                    obj = MSRmodel;
+                    obj.EditedBy = Convert.ToInt32(Session["sessUser"]);
+                    obj.EditedDate = Convert.ToDateTime(DateTime.Now.ToString());
+                    obj.isActive = Convert.ToBoolean(MSRmodel.isActive);
+                    //obj.upda(obj);
+                    MSRmodel.Update_MasterSkillRating(obj);
+                    //TempData["ErrStatus"] = obj.ISErr.ToString();
+                }
+                catch
+                {
+
+                }
+            }
+            else
+            {
+
+                MSRmodel.CreatedBy = int.Parse(Session["sessUser"].ToString());
+                MSRmodel.CreatedDate = DateTime.Now;
+
+                MSRmodel.isActive = Convert.ToBoolean(MSRmodel.isActive);
+                int outID = 0;
+                MSRmodel.InsertMasterSkillRatingdata(MSRmodel, out outID);
+                //obj.InsertModuledata(model, out int id);
+                //if (id > 0)
+                //{
+
+                //}
+                //TempData["ErrStatus"] = MSmodel.ISErr.ToString();
+            }
+
+            return RedirectToAction("ManageMasterSkillRating", "Admin");
+        }
+        #endregion
+
+
         public ActionResult GetUserActivityTracking(string userAgent, string absURL)
         {
             string strRet = string.Empty;

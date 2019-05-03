@@ -227,7 +227,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                      Role = "SysAdmin";
                 }
-                else if (HttpContext.Session["SysAdmin"] == null && HttpContext.Session["OrgAdmin"] != null && HttpContext.Session["OrgPM"] != null)
+                else if (HttpContext.Session["SysAdmin"] == null && HttpContext.Session["OrgAdmin"] != null &&( HttpContext.Session["OrgPM"] != null || HttpContext.Session["OrgPM"]== null) )
                 {
                      Role = "OrgAdmin";
                 }
