@@ -95,6 +95,7 @@
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Total Team Member</th>
+                    <th class="text-center tblHeaderColor sorting">Total Task </th>
                     <th class="text-center tblHeaderColor sorting">Edit</th>
                     <th class="text-center tblHeaderColor sorting">Add Task</th>
                     <th class="text-center tblHeaderColor sorting">Add User</th>
@@ -232,9 +233,9 @@
 
                                     <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                                 </div>
-                              
+
                             </div>
-                           
+
 
                             <div class="form-group">
                                 @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -312,9 +313,15 @@
 
                     <div class="col-md-12"><br /></div>
                     <div class="form-group">
-                      
-                        <div id="popupUserBody">
 
+                        <div id="popupUserBody">
+                            <table class="table table-striped" id="UserListForProjectPOPUP">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
 
                     </div>
@@ -330,6 +337,43 @@
 
         </div>
     </div>
+
+    <div id="TeamMemberListModel" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm" id="MemberListModel">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="headerForTeamMemeber" class="modal-title" style="color:#626262;"></h4>
+                </div>
+
+                <div class="modal-body">
+                        <div id="popupTeamMemberBody"  class="table-responsive-sm">
+                            <table class="table-bordered table table-striped  w-auto" id="tblTeamMemberList">
+                                <thead id="tblHeadListViewPost">
+                                    <tr>
+                                        <th class="text-center tblHeaderColor sorting">Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tBosyTaskList"></tbody>
+                            </table>
+                        </div>
+
+                   
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
 
     @*@Html.HiddenFor(model => model.DepartmentID)*@
     @using (Html.BeginForm("ManageProject", "Admin", FormMethod.Post, new { onsubmit = "return checkUserForm()" }))
@@ -724,34 +768,6 @@
            // alert('task save');
         })
 
-        @*$('#btnAddUser').click(function () {
-
-
-            var projectID = $('#SelectedProjectId').val();
-
-            $.ajax({
-                url: '@Url.Action("GetAllUserOfOrganisationByProjectID", "Admin")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    "projectID": projectID
-                }),
-                success: function (response) {
-                    $('#popupUserBody').html('');
-                    $('#popupUserBody').append(response);
-
-                    $('#divUserList').css('display', 'block');
-
-                },
-                error: function (response) {
-                    alert('error occured')
-                    console.log(response);
-                }
-            });
-
-        });*@
-
 
         function EditProjectTask(taskID) {
 
@@ -1071,7 +1087,7 @@
             var moduleid = [];
             var moduleids = [];
             var userName = [];
-          
+
             var projectID = document.getElementById("ProjectID").value;
             //$("#ddlUsersAssigned").multiselect('destroy');
 
@@ -1102,9 +1118,9 @@
                 alert('Please select a user');
                 return false;
             }
-            
 
-           
+
+
 
             lastpushedModuleid = moduleids[i];
 
@@ -1123,7 +1139,7 @@
                         $('#ProjectID').val('');
                         var url = '@Url.Action("ManageProject", "Admin")';
                         window.location.href = url;
-                       
+
 
                     } else {
                         alert("error");
@@ -1165,7 +1181,7 @@
                 $("#divUserList :containsIN(" + searchFilter + ")").css("text-decoration", "underline");
                 $("#divUserList :containsIN(" + searchFilter + ")").css("background", "#42f4eb");
                 $("#divUserList :containsIN(" + searchFilter + ")").css("color", "black");
-                
+
             }
 
         });
@@ -1201,7 +1217,7 @@
         });
 
         function ShowUserPopup(projectId, projectname) {
-           
+
             $('#ProjectID').val('');
             $('#ProjectID').val(projectId);
 
@@ -1236,6 +1252,46 @@
             //alert('Model closing')
             $('#ProjectID').val('');
         });
+
+        function ShowTeamMemberList(projectID, projectName) {
+            //alert(projectID);
+            $('#headerForTeamMemeber').html('Team members for ' + projectName);
+            $('#tblTeamMemberList tbody').html('');
+
+            //$('#popupUserBody').html('');
+            $.ajax({
+            url: '@Url.Action("GetAllUserOfProjectByProjectID", "Admin")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "projectID": projectID
+            }),
+                success: function (response) {
+                    var UserObj = JSON.parse(response);
+                    if (UserObj.length > 0) {
+                        for (var i = 0; i < UserObj.length; i++) {
+                            //alert(UserObj[i]);
+                            var userListHTML = "<tr><td class='text-center'>" + UserObj[i] + "</td> </td>";
+                            $('#tblTeamMemberList tbody').append(userListHTML);
+
+                        }
+                    }
+                    else {
+                        var userListHTML = "<tr><td class='text-center'>Users not available.</td> </td>";
+                        $('#tblTeamMemberList tbody').append(userListHTML);
+                    }
+                    $('#TeamMemberListModel').modal('show');
+
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+           
+        }
     </script>
     @if (TempData["JavaScriptFunction"] != null)
     {
@@ -1247,6 +1303,10 @@
     <style>
         .modal-dialog {
             width: 1125px;
+        }
+
+        #MemberListModel {
+            width: 350px;
         }
     </style>
 </body>
