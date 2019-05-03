@@ -400,6 +400,69 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         #region Project managment region"
 
+        //public ActionResult LoadProjectData()
+        //{
+        //    ProjectModel obj = new ProjectModel();
+        //    StringBuilder strUserData = new StringBuilder();
+        //    try
+        //    {
+        //        var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+        //        UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+        //        DataTable dt = new DataTable();
+
+        //        if (userInfo.IsRoleSysAdmin)
+        //        {
+        //            dt = obj.GetAllProjects();
+        //        }
+        //        else
+        //        {
+        //            dt = obj.GetAllProjects(userInfo.UserOrganisationID);
+        //        }
+
+
+        //        foreach (DataRow item in dt.Rows)
+        //        {
+        //            string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+        //            var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
+        //            var ManagerName = (item["ProjectManagerName"] == DBNull.Value) ? "" : item["ProjectManagerName"].ToString();
+        //            var clientName = (item["ClientName"] == DBNull.Value) ? "" : item["ClientName"].ToString();
+
+        //            strUserData.Append("<tr>");
+        //            strUserData.Append("<td class='text-center'>" + item["Id"].ToString() + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + item["Name"].ToString() + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + item["ProjectCode"].ToString() + "</td>");
+        //            strUserData.Append(" <td class='text-center'>" + item["Description"].ToString() + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + departmentName + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + ManagerName + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + clientName + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + status + "</td>");
+        //            strUserData.Append("<td class='text-center'>" + item["TotalMemberCount"] + " </td>");
+        //            strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
+        //            if (Convert.ToBoolean(item["IsActive"]))
+        //            {
+        //                strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskPopup({0},'{1}');""> Add Task </a> </td>", item["Id"].ToString(), item["Name"].ToString());
+        //            }
+        //            else
+        //            {
+        //                strUserData.Append("<td class='text-center'></td>");
+
+        //            }
+        //            strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowUserPopup({0},'{1}');""> Add User </a> </td>", item["Id"].ToString(), item["Name"].ToString());
+
+
+        //            strUserData.Append("</tr>");
+
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        ////throw;
+        //    }
+        //    return Content(strUserData.ToString());
+        //}
+
         public ActionResult LoadProjectData()
         {
             ProjectModel obj = new ProjectModel();
@@ -437,7 +500,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + clientName + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["TotalMemberCount"] + " </td>");
+
+                    strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList({0},'{1}');""> {2} </a> </td>", item["Id"].ToString(), item["Name"].ToString(), item["TotalMemberCount"].ToString());
+                    strUserData.Append("<td class='text-center'>" + item["TaskCount"] + " </td>");
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
                     if (Convert.ToBoolean(item["IsActive"]))
                     {
@@ -446,7 +511,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
                         strUserData.Append("<td class='text-center'></td>");
-
                     }
                     strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowUserPopup({0},'{1}');""> Add User </a> </td>", item["Id"].ToString(), item["Name"].ToString());
 
@@ -669,6 +733,33 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(builder.ToString());
         }
 
+
+        public ActionResult GetAllUserOfProjectByProjectID(int projectID)
+        {
+            ProjectModel obj = new ProjectModel();
+            List<string> userList = new List<string>();
+
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = obj.GetAllUserListByProjectID(projectID);
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        userList.Add(item["Name"].ToString());
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // throw ex;
+                return Json(ex);
+                //throw;
+            }
+            return Json(JsonConvert.SerializeObject(userList));
+        }
         #region Project task managment region"
         public ActionResult ManageProjectTask(int ProjectId = 0)
         {

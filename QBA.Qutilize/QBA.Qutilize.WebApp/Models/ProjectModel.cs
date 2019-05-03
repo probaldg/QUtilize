@@ -86,6 +86,23 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+
+        public DataTable GetAllUserListByProjectID(int projectID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@projectID",projectID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetProjectMemberList]", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public Boolean InsertProjectdata(ProjectModel model, out int id)
         {
             string str = string.Empty;
