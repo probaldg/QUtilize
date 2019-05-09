@@ -31,5 +31,8 @@ namespace QBA.Qutilize.Models
         public int? DifferenceInSecondsInCurrentDate { get; set; }
         public string TotalTimeWorkedInProject { get; set; }
         public TimeSpan PreviousElapsedTime { get; set; }
+
+        public int TaskCount { get; set; }
+
     }
 }
