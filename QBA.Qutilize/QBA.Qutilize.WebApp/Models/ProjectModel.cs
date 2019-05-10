@@ -103,6 +103,24 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+
+
+        public DataTable GetAllTaskListByProjectID(int projectID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@projectID",projectID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetProjectTaskList]", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public Boolean InsertProjectdata(ProjectModel model, out int id)
         {
             string str = string.Empty;
@@ -222,6 +240,7 @@ namespace QBA.Qutilize.WebApp.Models
                         department.DepartmentID = Convert.ToInt32(item["ID"]);
                         department.OrganisationName = item["OrganisationName"].ToString();
                         department.Name = item["NAME"].ToString();
+                        department.IsActive = Convert.ToBoolean(item["IsActive"]);
                         //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
                         department.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["NAME"].ToString();
 
@@ -302,6 +321,7 @@ namespace QBA.Qutilize.WebApp.Models
                         client.ClientID = Convert.ToInt32(item["ClientID"]);
                         client.OrganisationName = item["orgname"].ToString();
                         client.ClientName = item["ClientName"].ToString();
+                        client.IsActive = Convert.ToBoolean(item["IsActive"]);
                         client.OrgName_ClientNameForCombo = item["orgname"].ToString() + "-" + item["ClientName"].ToString();
                         clientsList.Add(client);
                     }
