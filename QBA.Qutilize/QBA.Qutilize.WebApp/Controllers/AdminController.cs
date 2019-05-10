@@ -400,6 +400,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         #region Project managment region"
 
+
         //public ActionResult LoadProjectData()
         //{
         //    ProjectModel obj = new ProjectModel();
@@ -437,7 +438,9 @@ namespace QBA.Qutilize.WebApp.Controllers
         //            strUserData.Append("<td class='text-center'>" + clientName + "</td>");
         //            strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
         //            strUserData.Append("<td class='text-center'>" + status + "</td>");
-        //            strUserData.Append("<td class='text-center'>" + item["TotalMemberCount"] + " </td>");
+
+        //            strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList({0},'{1}');""> {2} </a> </td>", item["Id"].ToString(), item["Name"].ToString(), item["TotalMemberCount"].ToString());
+        //            strUserData.Append("<td class='text-center'>" + item["TaskCount"] + " </td>");
         //            strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
         //            if (Convert.ToBoolean(item["IsActive"]))
         //            {
@@ -446,7 +449,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         //            else
         //            {
         //                strUserData.Append("<td class='text-center'></td>");
-
         //            }
         //            strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowUserPopup({0},'{1}');""> Add User </a> </td>", item["Id"].ToString(), item["Name"].ToString());
 
@@ -462,6 +464,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         //    }
         //    return Content(strUserData.ToString());
         //}
+
 
         public ActionResult LoadProjectData()
         {
@@ -502,7 +505,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
 
                     strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList({0},'{1}');""> {2} </a> </td>", item["Id"].ToString(), item["Name"].ToString(), item["TotalMemberCount"].ToString());
-                    strUserData.Append("<td class='text-center'>" + item["TaskCount"] + " </td>");
+                    strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup({0},'{1}');""> {2} </a> </td>", item["Id"].ToString(), item["Name"].ToString(), item["TaskCount"].ToString());
+                    // strUserData.Append("<td class='text-center'>" + item["TaskCount"] + " </td>");
+
+
                     strUserData.Append("<td class='text-center'><a href = 'ManageProject?ID=" + item["ID"].ToString() + "'>Edit </a> </td>");
                     if (Convert.ToBoolean(item["IsActive"]))
                     {
@@ -536,20 +542,19 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             if (userInfo.IsRoleSysAdmin)
             {
-                obj.DepartmentList = obj.GetDepartments().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
-                //obj.UserList = obj.GetManagers().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.DepartmentList = obj.GetDepartments().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.UserList = obj.GetManagers().Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
 
                 UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
                 obj.UserList.Remove(sysAdmin);
 
-                obj.ClientList = obj.GetClients().OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
+                obj.ClientList = obj.GetClients().Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
             }
             else
             {
-                obj.DepartmentList = obj.GetDepartments(userInfo.UserOrganisationID);
+                obj.DepartmentList = obj.GetDepartments(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.UserList = obj.GetManagers(userInfo.UserOrganisationID).Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
-                obj.ClientList = obj.GetClients(userInfo.UserOrganisationID).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
+                obj.ClientList = obj.GetClients(userInfo.UserOrganisationID).Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
 
             }
 
@@ -754,12 +759,40 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                // throw ex;
+
                 return Json(ex);
-                //throw;
+
             }
             return Json(JsonConvert.SerializeObject(userList));
         }
+
+        public ActionResult GetAllTasksOfProjectByProjectID(int projectID)
+        {
+            ProjectModel obj = new ProjectModel();
+            List<string> taskList = new List<string>();
+
+            DataTable dt = new DataTable();
+            try
+            {
+                dt = obj.GetAllTaskListByProjectID(projectID);
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        taskList.Add(item["TaskName"].ToString());
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                return Json(ex);
+
+            }
+            return Json(JsonConvert.SerializeObject(taskList));
+        }
+
         #region Project task managment region"
         public ActionResult ManageProjectTask(int ProjectId = 0)
         {
@@ -2629,7 +2662,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (userInfo.IsRoleSysAdmin)
             {
                 msr.OrganisationList.Clear();
-                msr.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();               
+                msr.OrganisationList = obj.GetAllOrgInList().Where(x => x.isActive == true).ToList();
             }
 
             else
@@ -2641,7 +2674,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 msr.UserOrgId = userInfo.UserOrganisationID;
                 obj.UsersList.Clear();
                 obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
-                obj.DepartmentList.Clear();                
+                obj.DepartmentList.Clear();
             }
 
 
@@ -2658,12 +2691,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     DataTable dt = new DataTable();
                     dt = msr.GetMasterSkillRatingByID(ID);
-                    msr.ID = int.Parse(dt.Rows[0]["Id"].ToString());                                       
+                    msr.ID = int.Parse(dt.Rows[0]["Id"].ToString());
                     msr.SkillCode = dt.Rows[0]["SkillCode"].ToString();
                     msr.SkillLevel = dt.Rows[0]["SkillLevel"].ToString();
                     msr.SkillScore = int.Parse(dt.Rows[0]["SkillScore"].ToString());
-                    msr.Description = dt.Rows[0]["Description"].ToString();                    
-                    msr.OrgID = int.Parse(dt.Rows[0]["OrgID"].ToString());                    
+                    msr.Description = dt.Rows[0]["Description"].ToString();
+                    msr.OrgID = int.Parse(dt.Rows[0]["OrgID"].ToString());
                     msr.isActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
                 }
@@ -2674,7 +2707,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     msr.SkillLevel = "";
                     msr.SkillCode = "";
                     msr.Description = "";
-                    msr.SkillScore = 0;                    
+                    msr.SkillScore = 0;
                     msr.OrgID = 0;
                     msr.isActive = false;
 

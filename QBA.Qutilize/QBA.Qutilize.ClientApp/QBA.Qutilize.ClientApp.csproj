@@ -102,10 +102,17 @@
     <Compile Include="Helper\SelectedProjectViewHelper.cs" />
     <Compile Include="Helper\SubTaskViewHelper.cs" />
     <Compile Include="Helper\TaskDetailsViewHelper.cs" />
+    <Compile Include="Helper\ViewHelper\Projecttask.cs" />
+    <Compile Include="Helper\ViewHelper\ProjectViewHelper.cs" />
+    <Compile Include="Helper\ViewHelper\TaskViewHelper.cs" />
     <Compile Include="Helper\ViewModelBase.cs" />
     <Compile Include="Helper\WebAPIHelper.cs" />
+    <Compile Include="Helper\WPFControlHelper\BorderControlHelper.cs" />
+    <Compile Include="Helper\WPFControlHelper\CanvasControlHelper.cs" />
+    <Compile Include="Helper\WPFControlHelper\WPFGridHelper.cs" />
     <Compile Include="ViewModel\DailyTaskViewModel.cs" />
     <Compile Include="ViewModel\DailyTaskWithTaskListViewModel.cs" />
+    <Compile Include="ViewModel\DTViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\ProjectListViewViewModel.cs" />
     <Compile Include="Views\DailyTask.xaml.cs">
