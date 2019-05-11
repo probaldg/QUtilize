@@ -3,7 +3,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Media;
 
 namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
@@ -15,14 +14,18 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             TextBlock txtName = new TextBlock
             {
                 Name = "txtName_" + project.ProjectID,
+                Padding = new Thickness(5, 0, 0, 0),
                 Text = project.ProjectName,
                 FontSize = 16,
                 Foreground = new SolidColorBrush(Colors.White),
                 TextWrapping = TextWrapping.NoWrap,
-                Padding = new Thickness(1, 1, 1, 1),
+
                 Visibility = Visibility.Visible,
                 FontWeight = FontWeights.Medium,
-                ToolTip = project.ProjectName
+                ToolTip = project.ProjectName,
+
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
             };
             TextBlock txtTaskCount = new TextBlock
             {
@@ -32,9 +35,10 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Foreground = new SolidColorBrush(Colors.White),
                 TextWrapping = TextWrapping.Wrap,
                 Visibility = Visibility.Visible,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Height = double.NaN,
-                MinHeight = 30
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Padding = new Thickness(1, 1, 5, 1),
+
 
             };
 
@@ -43,11 +47,11 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                Width = new GridLength(200, GridUnitType.Star)
+                Width = new GridLength(150, GridUnitType.Star)
             };
             ColumnDefinition column2 = new ColumnDefinition
             {
-                Width = new GridLength(140, GridUnitType.Star)
+                Width = new GridLength(130, GridUnitType.Star)
             };
 
             RowDefinition row1 = new RowDefinition
@@ -77,13 +81,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
         public static Grid CreateProjectDetailsGrid(Project item)
         {
 
-            Binding nameBinding = new Binding
-            {
-                Source = item,
-                Mode = BindingMode.TwoWay,
-                NotifyOnSourceUpdated = true,
-                NotifyOnTargetUpdated = true
-            };
+            //Binding nameBinding = new Binding
+            //{
+            //    Source = item,
+            //    Mode = BindingMode.TwoWay,
+            //    NotifyOnSourceUpdated = true,
+            //    NotifyOnTargetUpdated = true
+            //};
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -107,7 +111,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Width = 45,
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
-                HorizontalAlignment = HorizontalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Margin = new Thickness(0, 2, 5, 0),
                 IsChecked = false
@@ -136,7 +140,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Right
 
             };
 
@@ -157,13 +161,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                MinWidth = 200,
+                MinWidth = 150,
                 Width = new GridLength(2, GridUnitType.Star)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
-                MinWidth = 140,
+                MinWidth = 130,
                 Width = new GridLength(1, GridUnitType.Star)
             };
 
@@ -188,21 +192,22 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             grid.Children.Add(toggleButton);
             grid.Children.Add(txtElapsedTime);
 
-            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 10;
+            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 5;
             grid.Height = GridHeight;
             return grid;
         }
 
+
         public static Grid CreateProjectDetailsGridForSelectedProject(Project item)
         {
 
-            Binding nameBinding = new Binding
-            {
-                Source = item,
-                Mode = BindingMode.TwoWay,
-                NotifyOnSourceUpdated = true,
-                NotifyOnTargetUpdated = true
-            };
+            //Binding nameBinding = new Binding
+            //{
+            //    Source = item,
+            //    Mode = BindingMode.TwoWay,
+            //    NotifyOnSourceUpdated = true,
+            //    NotifyOnTargetUpdated = true
+            //};
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -226,8 +231,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Width = 45,
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
-
-                HorizontalAlignment = HorizontalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Margin = new Thickness(0, 2, 5, 0),
                 IsChecked = true
@@ -256,7 +260,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Right
 
             };
 
@@ -277,13 +281,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                MinWidth = 200,
+                MinWidth = 150,
                 Width = new GridLength(2, GridUnitType.Star)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
-                MinWidth = 140,
+                MinWidth = 130,
                 Width = new GridLength(1, GridUnitType.Star)
             };
 
@@ -308,10 +312,129 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             grid.Children.Add(toggleButton);
             grid.Children.Add(txtElapsedTime);
 
-            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 10;
+            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 5;
             grid.Height = GridHeight;
             return grid;
         }
+        //public static Grid CreateProjectDetailsGridForSelectedProject(Project item)
+        //{
+
+        //    //Binding nameBinding = new Binding
+        //    //{
+        //    //    Source = item,
+        //    //    Mode = BindingMode.TwoWay,
+        //    //    NotifyOnSourceUpdated = true,
+        //    //    NotifyOnTargetUpdated = true
+        //    //};
+
+        //    TextBlock txtProjectDesc = new TextBlock
+        //    {
+        //        FontSize = 14,
+        //        Padding = new Thickness(5, 0, 0, 0),
+        //        Text = (item.Description == "" || item.Description == null) ? "Description Not Available" : item.Description,
+        //        Foreground = new SolidColorBrush(Colors.Black),
+        //        Margin = new Thickness(0, 0, 0, 5),
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //        TextWrapping = TextWrapping.WrapWithOverflow
+
+        //    };
+
+        //    ResourceDictionary rd = new ResourceDictionary
+        //    {
+        //        Source = new Uri("../SwitchTypeToggleButton.xaml", UriKind.Relative)
+        //    };
+
+        //    ToggleButton toggleButton = new ToggleButton
+        //    {
+        //        Width = 45,
+        //        Height = 22,
+        //        Style = (Style)rd["SwitchTypeToggleButton"],
+
+        //        HorizontalAlignment = HorizontalAlignment.Center,
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //        Margin = new Thickness(0, 2, 5, 0),
+        //        IsChecked = true
+        //    };
+
+        //    if (item.DifferenceInSecondsInCurrentDate == null)
+        //    {
+        //        TimeSpan ts = TimeSpan.FromSeconds(0);
+        //        item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+        //        item.PreviousElapsedTime = ts;
+        //    }
+        //    else
+        //    {
+        //        TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
+        //        item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+        //        item.PreviousElapsedTime = ts;
+        //    }
+
+
+        //    TextBlock txtElapsedTime = new TextBlock
+        //    {
+        //        FontSize = 14,
+
+        //        Text = item.TimeElapsedValue,
+        //        Foreground = new SolidColorBrush(Colors.Black),
+        //        Margin = new Thickness(0, 0, 0, 5),
+        //        TextWrapping = TextWrapping.Wrap,
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //        HorizontalAlignment = HorizontalAlignment.Center
+
+        //    };
+
+        //    Grid grid = new Grid();
+        //    grid.Margin = new Thickness(0);
+
+        //    RowDefinition row1 = new RowDefinition
+        //    {
+        //        MinHeight = 30,
+        //        Height = new GridLength(30, GridUnitType.Auto)
+        //    };
+        //    RowDefinition row2 = new RowDefinition
+        //    {
+
+        //        MinHeight = 30,
+        //        Height = new GridLength(30, GridUnitType.Auto)
+        //    };
+
+        //    ColumnDefinition column1 = new ColumnDefinition
+        //    {
+        //        MinWidth = 150,
+        //        Width = new GridLength(2, GridUnitType.Star)
+        //    };
+
+        //    ColumnDefinition column2 = new ColumnDefinition
+        //    {
+        //        MinWidth = 130,
+        //        Width = new GridLength(1, GridUnitType.Star)
+        //    };
+
+        //    grid.RowDefinitions.Add(row1);
+        //    grid.RowDefinitions.Add(row2);
+
+        //    grid.ColumnDefinitions.Add(column1);
+        //    grid.ColumnDefinitions.Add(column2);
+
+
+        //    Grid.SetRow(txtProjectDesc, 0);
+        //    Grid.SetColumn(txtProjectDesc, 0);
+
+        //    Grid.SetRow(toggleButton, 0);
+        //    Grid.SetColumn(toggleButton, 1);
+
+        //    Grid.SetRow(txtElapsedTime, 1);
+        //    Grid.SetColumn(txtElapsedTime, 1);
+
+
+        //    grid.Children.Add(txtProjectDesc);
+        //    grid.Children.Add(toggleButton);
+        //    grid.Children.Add(txtElapsedTime);
+
+        //    double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 5;
+        //    grid.Height = GridHeight;
+        //    return grid;
+        //}
 
 
         public static Grid CreateTaskHeadingGrid(ProjectTask task)
@@ -320,10 +443,11 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             {
                 Name = "txtName_" + task.TaskId,
                 Text = task.TaskName,
+                Padding = new Thickness(5, 0, 0, 0),
                 FontSize = 16,
-                Foreground = new SolidColorBrush(Colors.White),
+                Foreground = new SolidColorBrush(Colors.Black),
                 TextWrapping = TextWrapping.NoWrap,
-                Padding = new Thickness(1, 1, 1, 1),
+
                 Visibility = Visibility.Visible,
                 FontWeight = FontWeights.Medium,
                 ToolTip = task.TaskName
@@ -333,12 +457,11 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Name = "txtTaskCount_" + task.TaskId,
                 Text = "SubTask Count(" + task.SubTaskCount.ToString() + ")",
                 FontSize = 12,
-                Foreground = new SolidColorBrush(Colors.White),
+                Foreground = new SolidColorBrush(Colors.Black),
                 TextWrapping = TextWrapping.Wrap,
                 Visibility = Visibility.Visible,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Height = double.NaN,
-                MinHeight = 30
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center
 
             };
 
@@ -347,11 +470,11 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                Width = new GridLength(200, GridUnitType.Star)
+                Width = new GridLength(150, GridUnitType.Star)
             };
             ColumnDefinition column2 = new ColumnDefinition
             {
-                Width = new GridLength(140, GridUnitType.Star)
+                Width = new GridLength(130, GridUnitType.Star)
             };
 
             RowDefinition row1 = new RowDefinition
@@ -370,7 +493,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             Grid.SetColumn(txtTaskCount, 1);
 
             grid.Width = column1.Width.Value + column2.Width.Value;
-            double GridHeight = (row1.MinHeight * row1.Height.Value) + 1;
+            double GridHeight = (row1.MinHeight * row1.Height.Value);
             grid.Height = GridHeight;
 
             grid.Children.Add(txtName);
@@ -381,13 +504,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
         public static Grid CreateTaskDetailsGrid(ProjectTask item)
         {
 
-            Binding nameBinding = new Binding
-            {
-                Source = item,
-                Mode = BindingMode.TwoWay,
-                NotifyOnSourceUpdated = true,
-                NotifyOnTargetUpdated = true
-            };
+            //Binding nameBinding = new Binding
+            //{
+            //    Source = item,
+            //    Mode = BindingMode.TwoWay,
+            //    NotifyOnSourceUpdated = true,
+            //    NotifyOnTargetUpdated = true
+            //};
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -411,7 +534,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Width = 45,
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
-                HorizontalAlignment = HorizontalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Margin = new Thickness(0, 2, 5, 0),
                 IsChecked = false
@@ -440,7 +563,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Right
 
             };
 
@@ -461,13 +584,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                MinWidth = 200,
+                MinWidth = 150,
                 Width = new GridLength(2, GridUnitType.Star)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
-                MinWidth = 140,
+                MinWidth = 130,
                 Width = new GridLength(1, GridUnitType.Star)
             };
 
@@ -492,20 +615,20 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             grid.Children.Add(toggleButton);
             grid.Children.Add(txtElapsedTime);
 
-            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 10;
+            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 5;
             grid.Height = GridHeight;
             return grid;
         }
         public static Grid CreateTaskDetailsGridForSelectedTask(ProjectTask item)
         {
 
-            Binding nameBinding = new Binding
-            {
-                Source = item,
-                Mode = BindingMode.TwoWay,
-                NotifyOnSourceUpdated = true,
-                NotifyOnTargetUpdated = true
-            };
+            //Binding nameBinding = new Binding
+            //{
+            //    Source = item,
+            //    Mode = BindingMode.TwoWay,
+            //    NotifyOnSourceUpdated = true,
+            //    NotifyOnTargetUpdated = true
+            //};
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -529,8 +652,8 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Width = 45,
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(0, 2, 5, 0),
                 IsChecked = true
             };
@@ -544,7 +667,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Right
 
             };
 
@@ -565,13 +688,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             ColumnDefinition column1 = new ColumnDefinition
             {
-                MinWidth = 200,
+                MinWidth = 150,
                 Width = new GridLength(2, GridUnitType.Star)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
-                MinWidth = 140,
+                MinWidth = 130,
                 Width = new GridLength(1, GridUnitType.Star)
             };
 
@@ -596,7 +719,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             grid.Children.Add(toggleButton);
             grid.Children.Add(txtElapsedTime);
 
-            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 10;
+            double GridHeight = (row1.MinHeight * row1.Height.Value) + (row2.MinHeight * row2.Height.Value) + 5;
             grid.Height = GridHeight;
             return grid;
         }

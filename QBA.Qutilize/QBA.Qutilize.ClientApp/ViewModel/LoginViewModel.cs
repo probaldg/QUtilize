@@ -229,6 +229,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                                 ParentTaskId = Convert.ToInt32(row["ParentTaskID"]),
                                                 ParentTaskName = row["ParentTaskName"].ToString(),
                                                 SubTaskCount = Convert.ToInt32(row["SubTaskCount"]),
+                                                TaskDepthLevel = Convert.ToInt32(row["lvl"]),
                                             });
                                         }
                                     }
@@ -259,6 +260,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                         ParentTaskId = Convert.ToInt32(row["ParentTaskID"]),
                                         ParentTaskName = row["ParentTaskName"].ToString(),
                                         SubTaskCount = Convert.ToInt32(row["SubTaskCount"]),
+                                        TaskDepthLevel = Convert.ToInt32(row["lvl"]),
+                                        ProjectID = Convert.ToInt32(row["ProjectID"]),
+                                        ProjectName = row["ProjectName"].ToString(),
                                     });
                                 }
 

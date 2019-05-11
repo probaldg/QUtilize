@@ -21,7 +21,6 @@
             <Setter Property="HorizontalAlignment" Value="left"/>
             <Setter Property="Width" Value="172"/>
             <Setter Property="FontWeight" Value="Normal"/>
-
         </Style>
 
         <Style TargetType="TextBox">

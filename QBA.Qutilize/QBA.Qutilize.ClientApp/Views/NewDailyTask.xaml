@@ -6,8 +6,18 @@
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
         Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="1">
+
+    <Window.Resources>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="10" ></Setter>
+            <Setter Property="MinWidth" Value="10" ></Setter>
+
+        </Style>
+    </Window.Resources>
     <Grid >
-        <ScrollViewer VerticalScrollBarVisibility="Visible">
+        
+        
+        <ScrollViewer x:Name="MainScrollBar" VerticalScrollBarVisibility="Visible">
             <Grid x:Name="grdProject" VerticalAlignment="Top"  ScrollViewer.CanContentScroll="False">
 
             </Grid>

@@ -10,16 +10,15 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         private Canvas CreateProjectHeadingControl(Project project)
         {
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
-            myCanvas.Width = 350;
-            myCanvas.DataContext = project;
-            myCanvas.Background = new SolidColorBrush(Colors.Black);
 
+            myCanvas.DataContext = project;
+            // myCanvas.Background = new SolidColorBrush(Colors.Black);
             Grid grid = WPFGridHelper.CreateProjectHeadingGrid(project);
             Canvas.SetTop(grid, 0);
             Canvas.SetLeft(grid, 0);
 
-            myCanvas.Height = grid.Height;
             myCanvas.Children.Add(grid);
+            myCanvas.Height = grid.Height;
             return myCanvas;
 
         }
@@ -27,7 +26,6 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         private Canvas CreateProjectDetailsControl(Project project)
         {
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
-            myCanvas.Width = 350;
             myCanvas.Background = new SolidColorBrush(Colors.White);
 
             Grid grid = WPFGridHelper.CreateProjectDetailsGrid(project);
@@ -43,27 +41,31 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         private Canvas CreateProjectDetailsControlForSelectedProject(Project project)
         {
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
-            myCanvas.Width = 350;
             myCanvas.Background = new SolidColorBrush(Colors.White);
 
             Grid grid = WPFGridHelper.CreateProjectDetailsGridForSelectedProject(project);
             Canvas.SetTop(grid, 0);
             Canvas.SetLeft(grid, 0);
-
             myCanvas.Height = grid.Height;
 
             myCanvas.Children.Add(grid);
             return myCanvas;
         }
 
-        public Canvas CreateProjectViewControl(Project project)
+        public Canvas CreateProjectViewControl(Project project, string backcolor)
         {
             if (project.TaskCount != 0)
             {
-                return CreateProjectHeadingControl(project);
+                //return CreateProjectHeadingControl(project);
+                var header = CreateProjectHeadingControl(project);
+                header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
+
+                header.Height = 50;
+                return header;
             }
 
             var headerControl = CreateProjectHeadingControl(project);
+            headerControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
 
             var bodyControl = CreateProjectDetailsControl(project);
             bodyControl.Background = new SolidColorBrush(Colors.White);
@@ -85,18 +87,25 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
             return myCanvas;
         }
 
-        public Canvas CreateProjectViewControlForSelectedProject(Project project)
+        public Canvas CreateProjectViewControlForSelectedProject(Project project, string backcolor)
         {
             if (project.TaskCount != 0)
             {
-                return CreateProjectHeadingControl(project);
+                var header = CreateProjectHeadingControl(project);
+                header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
+                header.Height = 50;
+                header.Width = 292;
+                return header;
             }
 
             var headerControl = CreateProjectHeadingControl(project);
+            headerControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
+
+            headerControl.Width = 292;
 
             var bodyControl = CreateProjectDetailsControlForSelectedProject(project);
             bodyControl.Background = new SolidColorBrush(Colors.White);
-
+            bodyControl.Width = 292;
 
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Vertical;
@@ -106,6 +115,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
             myCanvas.Height = headerControl.Height + bodyControl.Height;
+            myCanvas.Width = 292;
             myCanvas.DataContext = project;
             Canvas.SetTop(stackPanel, 0);
             Canvas.SetLeft(stackPanel, 0);
