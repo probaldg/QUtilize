@@ -13,7 +13,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 MinHeight = 30,
-                MinWidth = 304,
+                MinWidth = 309,
 
 
             };

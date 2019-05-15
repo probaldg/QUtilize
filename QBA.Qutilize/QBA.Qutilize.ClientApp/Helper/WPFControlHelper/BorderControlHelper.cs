@@ -19,7 +19,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 },
                 BorderBrush = new SolidColorBrush(Colors.Black),
 
-                Margin = new Thickness(10, 5, 5, 5)
+                Margin = new Thickness(2, 0, 2, 5)
             };
         }
 
@@ -36,7 +36,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 },
                 BorderBrush = new SolidColorBrush(Colors.Green),
 
-                Margin = new Thickness(10, 5, 5, 5)
+                Margin = new Thickness(2, 0, 2, 5)
             };
         }
         public static Border CreateBorderForTask()

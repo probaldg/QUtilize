@@ -76,15 +76,34 @@ namespace QBA.Qutilize.ClientApp
 
         }
 
+        //private void LogOutAndCloseApplication()
+        //{
+        //    try
+        //    {
+        //        var vm = MainWindow.DataContext;
+
+        //        if (vm.GetType().Name == "DailyTaskViewModel")
+        //        {
+        //            ((QBA.Qutilize.ClientApp.ViewModel.DailyTaskViewModel)vm).LogoutUser();
+
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Log("LogoutUser", "Error", ex.ToString());
+        //        // throw;
+        //    }
+
+        //}
         private void LogOutAndCloseApplication()
         {
             try
             {
                 var vm = MainWindow.DataContext;
 
-                if (vm.GetType().Name == "DailyTaskViewModel")
+                if (vm.GetType().Name == "DTViewModel")
                 {
-                    ((QBA.Qutilize.ClientApp.ViewModel.DailyTaskViewModel)vm).LogoutUser();
+                    ((QBA.Qutilize.ClientApp.ViewModel.DTViewModel)vm).LogoutUser();
 
                 }
             }
@@ -95,7 +114,6 @@ namespace QBA.Qutilize.ClientApp
             }
 
         }
-
         private void ShowAppWindow()
         {
             if (MainWindow.IsVisible)

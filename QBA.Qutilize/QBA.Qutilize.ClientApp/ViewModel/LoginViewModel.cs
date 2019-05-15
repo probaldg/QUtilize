@@ -171,7 +171,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     User authenticateduser = null;
 
-                    Logger.Log("AuthenticatUser", "Info", "Calling User authentication API");
+                    Logger.Log("AuthenticatUser", "Info", "Authenticating user from database");
 
                     await Task.Run(() =>
                     {
@@ -274,7 +274,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     StopLoadingAnimation();
 
-                    Logger.Log("AuthenticatUser", "Info", "successfully called authentication API");
+                    Logger.Log("AuthenticatUser", "Info", "successfully  authenticated User");
 
                     if (authenticateduser != null && authenticateduser.ID != 0)
                     {
@@ -366,8 +366,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 NewDailyTask dailyTask = new NewDailyTask();
 
                 DTViewModel taskListViewModel = new DTViewModel(dailyTask, user);
+                dailyTask.DataContext = taskListViewModel;
                 taskListViewModel.LoadAllProjects();
                 Application.Current.MainWindow = dailyTask;
+
                 dailyTask.Show();
                 dailyTask.Activate();
             }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QBA.Qutilize.ClientApp.Views"
         mc:Ignorable="d"
-        Title="DailyTask" MinHeight="350" Height="450"  Width="350" BorderThickness="1">
+        Title="DailyTask" MinHeight="350" Height="460"  Width="365" BorderThickness="1">
 
     <Window.Resources>
         <Style TargetType="ScrollBar">
@@ -14,14 +14,86 @@
 
         </Style>
     </Window.Resources>
-    <Grid >
-        
-        
-        <ScrollViewer x:Name="MainScrollBar" VerticalScrollBarVisibility="Visible">
-            <Grid x:Name="grdProject" VerticalAlignment="Top"  ScrollViewer.CanContentScroll="False">
+    <Grid x:Name="uiGridMain" Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="122*"/>
+            <ColumnDefinition Width="47*"/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Row="0" HorizontalAlignment="Left" Margin="2,2,0,0" 
+               Source="/QBA.Qutilize.ClientApp;component/Images/Qutilize.png" 
+               Width="135"  VerticalAlignment="Top" Height="35" />
 
-            </Grid>
-        </ScrollViewer>
+        <TextBlock Grid.Row="0" FontWeight="SemiBold" Foreground="Black"
+                   FontSize="15" Margin="0,3,40,0" 
+                   TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" 
+                   Text="{Binding CurrUser}" Grid.ColumnSpan="2" ></TextBlock>
+        <Button Grid.Row="0" Content="" FontSize="10" 
+                     Width="29" Height="28" Margin="0,0,0,0"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding Logout}" Grid.Column="1" BorderBrush="#FFF9F5F5">
+            <Button.Background>
+                <ImageBrush ImageSource="/QBA.Qutilize.ClientApp;component/Images/LogOut.PNG"/>
+            </Button.Background>
+        </Button>
+        <TextBlock FontWeight="SemiBold" FontSize="11" Margin="0,28,5,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FFE20BC5" Grid.IsSharedSizeScope="True" Text="{Binding CurrDate, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}" Grid.ColumnSpan="2"></TextBlock>
+        <GroupBox Header="Project List" 
+                  VerticalAlignment="Center"  
+                  BorderBrush="Blue"  HorizontalContentAlignment="Stretch" 
+                  Foreground="#FF121295" ForceCursor="True" 
+                  Grid.ColumnSpan="2" Grid.Row="2"  Margin="5,0,5,5">
+            <ScrollViewer x:Name="MainScrollBar" VerticalScrollBarVisibility="Visible" >
+                <Grid x:Name="grdProject" VerticalAlignment="Top"  ScrollViewer.CanContentScroll="False">
 
+                </Grid>
+            </ScrollViewer>
+        </GroupBox>
+
+
+        <Grid x:Name="grdFooter" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.Row="3" >
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button  Content="View" Cursor="Hand" Grid.Row="0" Grid.Column="0"  
+                        Command="{Binding DataContext.OpenURLCommand,ElementName=grdFooter}"  HorizontalAlignment="Left">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock TextDecorations="Underline">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="Blue" />
+                        <Setter Property="FontWeight" Value="Medium" />
+                        <Setter Property="FontSize" Value="14" />
+                        <Setter Property="Margin" Value="10,0,0,0" />
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Foreground" Value="Red" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
+                <Label Content="A product of" FontSize="12" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
+                <Label Content="(v 1.0.0.1)" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
