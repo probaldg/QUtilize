@@ -30,13 +30,13 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 BorderThickness = new Thickness()
                 {
                     Bottom = 1,
-                    Left = 8,
-                    Right = 5,
+                    Left = 5,
+                    Right = 1,
                     Top = 1
                 },
                 BorderBrush = new SolidColorBrush(Colors.Green),
 
-                Margin = new Thickness(10, 5, 1, 5)
+                Margin = new Thickness(10, 5, 5, 5)
             };
         }
         public static Border CreateBorderForTask()

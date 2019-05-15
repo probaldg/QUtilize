@@ -110,7 +110,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         {
             if (task.SubTaskCount != 0)
             {
-                //return CreateTaskHeadingControl(task
+
                 var header = CreateTaskHeadingControl(task, backColor);
                 //header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
                 return header;

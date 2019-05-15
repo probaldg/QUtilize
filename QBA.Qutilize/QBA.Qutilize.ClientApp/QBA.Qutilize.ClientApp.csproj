@@ -102,7 +102,6 @@
     <Compile Include="Helper\SelectedProjectViewHelper.cs" />
     <Compile Include="Helper\SubTaskViewHelper.cs" />
     <Compile Include="Helper\TaskDetailsViewHelper.cs" />
-    <Compile Include="Helper\ViewHelper\Projecttask.cs" />
     <Compile Include="Helper\ViewHelper\ProjectViewHelper.cs" />
     <Compile Include="Helper\ViewHelper\TaskViewHelper.cs" />
     <Compile Include="Helper\ViewModelBase.cs" />

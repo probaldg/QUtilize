@@ -56,7 +56,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         {
             if (project.TaskCount != 0)
             {
-                //return CreateProjectHeadingControl(project);
+
                 var header = CreateProjectHeadingControl(project);
                 header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
 
@@ -94,18 +94,18 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
                 var header = CreateProjectHeadingControl(project);
                 header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
                 header.Height = 50;
-                header.Width = 292;
+                header.Width = 265;
                 return header;
             }
 
             var headerControl = CreateProjectHeadingControl(project);
             headerControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
 
-            headerControl.Width = 292;
+            headerControl.Width = 265;
 
             var bodyControl = CreateProjectDetailsControlForSelectedProject(project);
             bodyControl.Background = new SolidColorBrush(Colors.White);
-            bodyControl.Width = 292;
+            bodyControl.Width = 265;
 
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Vertical;
@@ -115,7 +115,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
             myCanvas.Height = headerControl.Height + bodyControl.Height;
-            myCanvas.Width = 292;
+            myCanvas.Width = 265;
             myCanvas.DataContext = project;
             Canvas.SetTop(stackPanel, 0);
             Canvas.SetLeft(stackPanel, 0);

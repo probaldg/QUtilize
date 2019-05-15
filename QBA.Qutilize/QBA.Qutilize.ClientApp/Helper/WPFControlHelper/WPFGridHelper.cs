@@ -81,13 +81,6 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
         public static Grid CreateProjectDetailsGrid(Project item)
         {
 
-            //Binding nameBinding = new Binding
-            //{
-            //    Source = item,
-            //    Mode = BindingMode.TwoWay,
-            //    NotifyOnSourceUpdated = true,
-            //    NotifyOnTargetUpdated = true
-            //};
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -97,7 +90,9 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 VerticalAlignment = VerticalAlignment.Bottom,
-                TextWrapping = TextWrapping.WrapWithOverflow
+                TextWrapping = TextWrapping.Wrap,
+                ToolTip = (item.Description == "" || item.Description == null) ? "Description Not Available" : item.Description,
+
 
             };
 
@@ -114,28 +109,17 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Margin = new Thickness(0, 2, 5, 0),
-                IsChecked = false
+                IsChecked = false,
+                IsEnabled = false
             };
 
-            if (item.DifferenceInSecondsInCurrentDate == null)
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(0);
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-            else
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
 
 
             TextBlock txtElapsedTime = new TextBlock
             {
                 FontSize = 14,
 
-                Text = item.TimeElapsedValue,
+                Text = (item.TimeElapsedValue == "" || item.TimeElapsedValue == null) ? "00:00:00" : item.TimeElapsedValue,
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
@@ -162,13 +146,14 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             ColumnDefinition column1 = new ColumnDefinition
             {
                 MinWidth = 150,
-                Width = new GridLength(2, GridUnitType.Star)
+                //Width = new GridLength(2, GridUnitType.Star)
+                Width = new GridLength(150, GridUnitType.Pixel)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
                 MinWidth = 130,
-                Width = new GridLength(1, GridUnitType.Star)
+                Width = new GridLength(130, GridUnitType.Pixel)
             };
 
             grid.RowDefinitions.Add(row1);
@@ -201,13 +186,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
         public static Grid CreateProjectDetailsGridForSelectedProject(Project item)
         {
 
-            //Binding nameBinding = new Binding
-            //{
-            //    Source = item,
-            //    Mode = BindingMode.TwoWay,
-            //    NotifyOnSourceUpdated = true,
-            //    NotifyOnTargetUpdated = true
-            //};
+
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -217,7 +196,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 VerticalAlignment = VerticalAlignment.Bottom,
-                TextWrapping = TextWrapping.WrapWithOverflow
+                TextWrapping = TextWrapping.Wrap
 
             };
 
@@ -232,34 +211,24 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
                 HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 2, 5, 0),
-                IsChecked = true
+                IsChecked = true,
+                IsEnabled = false
             };
 
-            if (item.DifferenceInSecondsInCurrentDate == null)
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(0);
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-            else
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
 
 
             TextBlock txtElapsedTime = new TextBlock
             {
                 FontSize = 14,
 
-                Text = item.TimeElapsedValue,
+
+                Text = (item.TimeElapsedValue == "" || item.TimeElapsedValue == null) ? "00:00:00" : item.TimeElapsedValue,
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Right
 
             };
@@ -282,13 +251,14 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             ColumnDefinition column1 = new ColumnDefinition
             {
                 MinWidth = 150,
-                Width = new GridLength(2, GridUnitType.Star)
+                // Width = new GridLength(2, GridUnitType.Star)
+                Width = new GridLength(150, GridUnitType.Pixel)
             };
 
             ColumnDefinition column2 = new ColumnDefinition
             {
-                MinWidth = 130,
-                Width = new GridLength(1, GridUnitType.Star)
+                MinWidth = 110,
+                Width = new GridLength(110, GridUnitType.Pixel)
             };
 
             grid.RowDefinitions.Add(row1);
@@ -504,13 +474,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
         public static Grid CreateTaskDetailsGrid(ProjectTask item)
         {
 
-            //Binding nameBinding = new Binding
-            //{
-            //    Source = item,
-            //    Mode = BindingMode.TwoWay,
-            //    NotifyOnSourceUpdated = true,
-            //    NotifyOnTargetUpdated = true
-            //};
+
 
             TextBlock txtProjectDesc = new TextBlock
             {
@@ -520,7 +484,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 VerticalAlignment = VerticalAlignment.Bottom,
-                TextWrapping = TextWrapping.WrapWithOverflow
+                TextWrapping = TextWrapping.Wrap
 
             };
 
@@ -535,34 +499,22 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
                 Height = 22,
                 Style = (Style)rd["SwitchTypeToggleButton"],
                 HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 2, 5, 0),
                 IsChecked = false
             };
 
-            //if (item.DifferenceInSecondsInCurrentDate == null)
-            //{
-            //    TimeSpan ts = TimeSpan.FromSeconds(0);
-            //    item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-            //    item.PreviousElapsedTime = ts;
-            //}
-            //else
-            //{
-            //    TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-            //    item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-            //    item.PreviousElapsedTime = ts;
-            //}
+
 
 
             TextBlock txtElapsedTime = new TextBlock
             {
                 FontSize = 14,
-
-                Text = "00:00:00",
+                Text = (item.TimeElapsedValue == "" || item.TimeElapsedValue == null) ? "00:00:00" : item.TimeElapsedValue,
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Bottom,
+                VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Right
 
             };
@@ -661,8 +613,7 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
             TextBlock txtElapsedTime = new TextBlock
             {
                 FontSize = 14,
-
-                Text = "00:00:00",
+                Text = (item.TimeElapsedValue == "" || item.TimeElapsedValue == null) ? "00:00:00" : item.TimeElapsedValue,
                 Foreground = new SolidColorBrush(Colors.Black),
                 Margin = new Thickness(0, 0, 0, 5),
                 TextWrapping = TextWrapping.Wrap,

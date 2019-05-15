@@ -17,5 +17,7 @@ namespace QBA.Qutilize.Models
         // public DateTime StartDateTime { get; set; }
 
         public int? DifferenceInSecondsInCurrentDate { get; set; }
+        public int? ProjectTaskID { get; set; }
+        public string ProjectTaskName { get; set; }
     }
 }

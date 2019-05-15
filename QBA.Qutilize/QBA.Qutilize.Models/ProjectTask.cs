@@ -31,6 +31,12 @@ namespace QBA.Qutilize.Models
         public DateTime AddedTS { get; set; }
         public DateTime EditedTS { get; set; }
 
+
+        public string TimeElapsedHeading { get; set; }
+        public string TimeElapsedValue { get; set; }
+        public int? DifferenceInSecondsInCurrentDate { get; set; }
+        public string TotalTimeWorkedInProject { get; set; }
+        public TimeSpan PreviousElapsedTime { get; set; }
         //public List<ProjectTaskModel> TaskList { get; set; }
         //public List<ProjectStatusModel> StatusList { get; set; }
         //public List<UserModel> UserList { get; set; }

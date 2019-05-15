@@ -240,7 +240,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                         ProjectID = Convert.ToInt32(item["Id"]),
                                         ParentProjectID = item["ParentProjectId"] != DBNull.Value ? Convert.ToInt32(item["ParentProjectId"]) : (int?)null,
                                         Description = item["Description"].ToString(),
-                                        DifferenceInSecondsInCurrentDate = item["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(item["DifferenceInSecondsInCurrentDate"]) : (int?)null,
+                                        DifferenceInSecondsInCurrentDate = item["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(item["DifferenceInSecondsInCurrentDate"]) : 0,
                                         MaxProjectTimeInHours = item["MaxProjectTimeInHours"] != DBNull.Value ? Convert.ToInt32(item["MaxProjectTimeInHours"]) : 0,
                                         TaskCount = Convert.ToInt32(item["TaskCount"]),
                                         Tasks = taskList,
@@ -298,7 +298,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 Logger.Log("AuthenticatUser", "Error", $"{ex.ToString()}");
                 MessageBox.Show("Some error occurred.");
 
-                //throw ex;
+
             }
 
 
@@ -356,6 +356,9 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
         //}
 
+
+        //Current working code
+
         private static void ConfigureDailyTaskViewModel(User user)
         {
             try
@@ -363,7 +366,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 NewDailyTask dailyTask = new NewDailyTask();
 
                 DTViewModel taskListViewModel = new DTViewModel(dailyTask, user);
-                taskListViewModel.LoadAllProjects(dailyTask, user);
+                taskListViewModel.LoadAllProjects();
                 Application.Current.MainWindow = dailyTask;
                 dailyTask.Show();
                 dailyTask.Activate();
