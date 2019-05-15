@@ -56,8 +56,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                         int lvl = Convert.ToInt32(drParent[0]["lvl"]);
                         strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
                     }
-                    strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "'></a> &nbsp;");
-                    strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
+                    strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "' style='color: white;'></a> &nbsp;");
+                    strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' style='color: white;'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
                     strMenu.Append("<hr>");
                     strMenu.Append("</div>");
                     strMenu.Append("</div>");

@@ -712,7 +712,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble((t.Days * 24) + t.Hours) / Convert.ToDouble(distinctValues.Rows.Count * 9)) * 100)/(view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble((t.Days * 24) + t.Hours) / Convert.ToDouble(distinctValues.Rows.Count * 8)) * 100)/(view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
@@ -969,7 +969,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 9 * 60 * 60)) * 100)/ (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 8 * 60 * 60)) * 100)/ (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
