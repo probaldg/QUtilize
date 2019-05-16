@@ -177,99 +177,115 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         //authenticateduser = WebAPIHelper.CallWebApiForUserAuthentication(
                         //new User { UserName = UserID, Password = UserPassword, IsActive = true }).Result;
-
-                        string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
-                        SqlConnection sqlCon = new SqlConnection(conStr);
-                        DataTable dt = new DataTable();
-                        var sqlCmd = new SqlCommand("USP_AuthenticateUserAndGetProjectAndTasks", sqlCon)
+                        try
                         {
-                            CommandType = System.Data.CommandType.StoredProcedure
-                        };
-                        sqlCmd.Parameters.AddWithValue("@UserName", UserID);
-                        sqlCmd.Parameters.AddWithValue("@Password", UserPassword);
-                        sqlCmd.Parameters.AddWithValue("@StartTime", DateTime.Now);
-
-                        SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
-                        DataSet ds = new DataSet();
-                        da.Fill(ds);
-                        if (ds.Tables.Count > 0)
-                        {
-                            ds.Tables[0].TableName = "UserInfo";
-                            ds.Tables[1].TableName = "ProjectInfo";
-                            ds.Tables[2].TableName = "TaskInfo";
-                        }
-                        if (ds.Tables["UserInfo"].Rows.Count > 0)
-                        {
-                            //CreateUser(dt)
-                            User userModel = new User();
-
-                            userModel.ID = Convert.ToInt32(ds.Tables["UserInfo"].Rows[0]["Id"]); ;
-                            userModel.Password = ds.Tables["UserInfo"].Rows[0]["Password"].ToString();
-                            userModel.Name = ds.Tables["UserInfo"].Rows[0]["Name"].ToString();
-                            userModel.UserName = ds.Tables["UserInfo"].Rows[0]["UserName"].ToString();
 
 
-                            //ProjectInfo
-                            if (ds.Tables["ProjectInfo"].Rows.Count > 0)
+                            string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+                            SqlConnection sqlCon = new SqlConnection(conStr);
+                            DataTable dt = new DataTable();
+                            var sqlCmd = new SqlCommand("USP_AuthenticateUserAndGetProjectAndTasks", sqlCon)
                             {
-                                foreach (DataRow item in ds.Tables["ProjectInfo"].Rows)
+                                CommandType = System.Data.CommandType.StoredProcedure
+                            };
+                            sqlCmd.Parameters.AddWithValue("@UserName", UserID);
+                            sqlCmd.Parameters.AddWithValue("@Password", UserPassword);
+                            sqlCmd.Parameters.AddWithValue("@StartTime", DateTime.Now);
+
+                            SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
+                            DataSet ds = new DataSet();
+                            da.Fill(ds);
+                            if (ds != null)
+                            {
+                                if (ds.Tables.Count > 0)
                                 {
-                                    var TasksRow = ds.Tables["TaskInfo"].Select("ProjectID=" + Convert.ToInt32(item["Id"]));
-                                    List<ProjectTask> taskList = new List<ProjectTask>();
-                                    taskList.Clear();
-                                    if (TasksRow.Length > 0)
+                                    ds.Tables[0].TableName = "UserInfo";
+                                    ds.Tables[1].TableName = "ProjectInfo";
+                                    ds.Tables[2].TableName = "TaskInfo";
+                                }
+                                if (ds.Tables["UserInfo"].Rows.Count > 0)
+                                {
+                                    //CreateUser(dt)
+                                    User userModel = new User();
+
+                                    userModel.ID = Convert.ToInt32(ds.Tables["UserInfo"].Rows[0]["Id"]); ;
+                                    userModel.Password = ds.Tables["UserInfo"].Rows[0]["Password"].ToString();
+                                    userModel.Name = ds.Tables["UserInfo"].Rows[0]["Name"].ToString();
+                                    userModel.UserName = ds.Tables["UserInfo"].Rows[0]["UserName"].ToString();
+
+
+                                    //ProjectInfo
+                                    if (ds.Tables["ProjectInfo"].Rows.Count > 0)
                                     {
-                                        foreach (DataRow row in TasksRow)
+                                        foreach (DataRow item in ds.Tables["ProjectInfo"].Rows)
                                         {
-                                            taskList.Add(new ProjectTask()
+                                            var TasksRow = ds.Tables["TaskInfo"].Select("ProjectID=" + Convert.ToInt32(item["Id"]));
+                                            List<ProjectTask> taskList = new List<ProjectTask>();
+                                            taskList.Clear();
+                                            if (TasksRow.Length > 0)
+                                            {
+                                                foreach (DataRow row in TasksRow)
+                                                {
+                                                    taskList.Add(new ProjectTask()
+                                                    {
+                                                        TaskId = Convert.ToInt32(row["TaskID"]),
+                                                        ProjectID = Convert.ToInt32(row["ProjectID"]),
+                                                        TaskName = row["TaskName"].ToString(),
+                                                        ParentTaskId = Convert.ToInt32(row["ParentTaskID"]),
+                                                        ParentTaskName = row["ParentTaskName"].ToString(),
+                                                        SubTaskCount = Convert.ToInt32(row["SubTaskCount"]),
+                                                        TaskDepthLevel = Convert.ToInt32(row["lvl"]),
+                                                        DifferenceInSecondsInCurrentDate = row["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(row["DifferenceInSecondsInCurrentDate"]) : 0,
+                                                    });
+                                                }
+                                            }
+
+                                            userModel.Projects.Add(new Project
+                                            {
+                                                ProjectName = item["Name"].ToString(),
+                                                ProjectID = Convert.ToInt32(item["Id"]),
+                                                ParentProjectID = item["ParentProjectId"] != DBNull.Value ? Convert.ToInt32(item["ParentProjectId"]) : (int?)null,
+                                                Description = item["Description"].ToString(),
+                                                DifferenceInSecondsInCurrentDate = item["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(item["DifferenceInSecondsInCurrentDate"]) : 0,
+                                                MaxProjectTimeInHours = item["MaxProjectTimeInHours"] != DBNull.Value ? Convert.ToInt32(item["MaxProjectTimeInHours"]) : 0,
+                                                TaskCount = Convert.ToInt32(item["TaskCount"]),
+                                                Tasks = taskList,
+                                            });
+                                        }
+                                    }
+
+                                    //TaskInfo
+                                    if (ds.Tables["TaskInfo"].Rows.Count > 0)
+                                    {
+                                        foreach (DataRow row in ds.Tables["TaskInfo"].Rows)
+                                        {
+                                            userModel.Tasks.Add(new ProjectTask()
                                             {
                                                 TaskId = Convert.ToInt32(row["TaskID"]),
-                                                ProjectID = Convert.ToInt32(row["ProjectID"]),
                                                 TaskName = row["TaskName"].ToString(),
                                                 ParentTaskId = Convert.ToInt32(row["ParentTaskID"]),
                                                 ParentTaskName = row["ParentTaskName"].ToString(),
                                                 SubTaskCount = Convert.ToInt32(row["SubTaskCount"]),
                                                 TaskDepthLevel = Convert.ToInt32(row["lvl"]),
+                                                ProjectID = Convert.ToInt32(row["ProjectID"]),
+                                                ProjectName = row["ProjectName"].ToString(),
+                                                DifferenceInSecondsInCurrentDate = row["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(row["DifferenceInSecondsInCurrentDate"]) : 0,
                                             });
                                         }
+
                                     }
 
-                                    userModel.Projects.Add(new Project
-                                    {
-                                        ProjectName = item["Name"].ToString(),
-                                        ProjectID = Convert.ToInt32(item["Id"]),
-                                        ParentProjectID = item["ParentProjectId"] != DBNull.Value ? Convert.ToInt32(item["ParentProjectId"]) : (int?)null,
-                                        Description = item["Description"].ToString(),
-                                        DifferenceInSecondsInCurrentDate = item["DifferenceInSecondsInCurrentDate"] != DBNull.Value ? Convert.ToInt32(item["DifferenceInSecondsInCurrentDate"]) : 0,
-                                        MaxProjectTimeInHours = item["MaxProjectTimeInHours"] != DBNull.Value ? Convert.ToInt32(item["MaxProjectTimeInHours"]) : 0,
-                                        TaskCount = Convert.ToInt32(item["TaskCount"]),
-                                        Tasks = taskList,
-                                    });
+                                    authenticateduser = userModel;
                                 }
                             }
 
-                            //TaskInfo
-                            if (ds.Tables["TaskInfo"].Rows.Count > 0)
-                            {
-                                foreach (DataRow row in ds.Tables["TaskInfo"].Rows)
-                                {
-                                    userModel.Tasks.Add(new ProjectTask()
-                                    {
-                                        TaskId = Convert.ToInt32(row["TaskID"]),
-                                        TaskName = row["TaskName"].ToString(),
-                                        ParentTaskId = Convert.ToInt32(row["ParentTaskID"]),
-                                        ParentTaskName = row["ParentTaskName"].ToString(),
-                                        SubTaskCount = Convert.ToInt32(row["SubTaskCount"]),
-                                        TaskDepthLevel = Convert.ToInt32(row["lvl"]),
-                                        ProjectID = Convert.ToInt32(row["ProjectID"]),
-                                        ProjectName = row["ProjectName"].ToString(),
-                                    });
-                                }
-
-                            }
-
-                            authenticateduser = userModel;
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Some error occurred.");
+                            //throw;
+                        }
+
                     });
 
                     StopLoadingAnimation();
