@@ -18,5 +18,17 @@ namespace QBA.Qutilize.ClientApp.Helper.WPFControlHelper
 
             };
         }
+        public static Canvas CreateCanvasForSelectedControl()
+        {
+            return new Canvas
+            {
+                Margin = new Thickness(0),
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                MinHeight = 30,
+                MinWidth = 304.5,
+
+            };
+        }
     }
 }

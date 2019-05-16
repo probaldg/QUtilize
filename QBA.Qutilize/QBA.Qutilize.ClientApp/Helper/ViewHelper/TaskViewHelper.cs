@@ -10,7 +10,23 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         public Canvas CreateTaskHeadingControl(ProjectTask task, string backColor)
         {
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
-            // //myCanvas.Width = 350;
+
+            myCanvas.DataContext = task;
+            myCanvas.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
+
+            Grid grid = WPFGridHelper.CreateTaskHeadingGrid(task);
+            Canvas.SetTop(grid, 0);
+            Canvas.SetLeft(grid, 0);
+
+            myCanvas.Height = grid.Height;
+            myCanvas.Children.Add(grid);
+            return myCanvas;
+
+        }
+        public Canvas CreateTaskHeadingControlForSelectedControl(ProjectTask task, string backColor)
+        {
+            Canvas myCanvas = CanvasControlHelper.CreateCanvasForSelectedControl();
+
             myCanvas.DataContext = task;
             myCanvas.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
 
@@ -42,7 +58,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
         private Canvas CreateTaskDetailsControlForSelectedProject(ProjectTask task)
         {
-            Canvas myCanvas = CanvasControlHelper.CreateCanvas();
+            Canvas myCanvas = CanvasControlHelper.CreateCanvasForSelectedControl();
             //myCanvas.Width = 350;
             myCanvas.Background = new SolidColorBrush(Colors.White);
 
@@ -58,7 +74,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
         public Canvas CreateProjectHeadingControl(Project project)
         {
-            Canvas myCanvas = CanvasControlHelper.CreateCanvas();
+            Canvas myCanvas = CanvasControlHelper.CreateCanvasForSelectedControl();
             //myCanvas.Width = 350;
             myCanvas.DataContext = project;
             myCanvas.Background = new SolidColorBrush(Colors.Black);
@@ -77,12 +93,12 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
         {
             if (task.SubTaskCount != 0)
             {
-                var header = CreateTaskHeadingControl(task, backColor);
+                var header = CreateTaskHeadingControlForSelectedControl(task, backColor);
                 //header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
                 return header;
             }
 
-            var headerControl = CreateTaskHeadingControl(task, backColor);
+            var headerControl = CreateTaskHeadingControlForSelectedControl(task, backColor);
             headerControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
 
             var bodyControl = CreateTaskDetailsControl(task);
@@ -111,12 +127,12 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
             if (task.SubTaskCount != 0)
             {
 
-                var header = CreateTaskHeadingControl(task, backColor);
+                var header = CreateTaskHeadingControlForSelectedControl(task, backColor);
                 //header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
                 return header;
             }
 
-            var headerControl = CreateTaskHeadingControl(task, backColor);
+            var headerControl = CreateTaskHeadingControlForSelectedControl(task, backColor);
             headerControl.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backColor));
 
             var bodyControl = CreateTaskDetailsControlForSelectedProject(task);
