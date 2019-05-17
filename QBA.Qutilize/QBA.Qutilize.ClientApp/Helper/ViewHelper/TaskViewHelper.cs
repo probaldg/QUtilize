@@ -42,7 +42,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
         private Canvas CreateTaskDetailsControl(ProjectTask task)
         {
-            Canvas myCanvas = CanvasControlHelper.CreateCanvas();
+            Canvas myCanvas = CanvasControlHelper.CreateCanvasForSelectedControl();
             ////myCanvas.Width = 350;
             myCanvas.Background = new SolidColorBrush(Colors.White);
 

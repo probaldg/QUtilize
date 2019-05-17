@@ -202,6 +202,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                     ds.Tables[0].TableName = "UserInfo";
                                     ds.Tables[1].TableName = "ProjectInfo";
                                     ds.Tables[2].TableName = "TaskInfo";
+                                    //ds.Tables[3].TableName = "UserSessionLoggerID";
                                 }
                                 if (ds.Tables["UserInfo"].Rows.Count > 0)
                                 {

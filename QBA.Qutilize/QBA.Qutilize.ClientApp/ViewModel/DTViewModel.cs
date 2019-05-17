@@ -10,6 +10,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,6 +88,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
+        public string MACAddress { get; set; }
+
         public ICommand OpenURLCommand
         {
             get
@@ -155,7 +159,15 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     sqlCon.Close();
                     if (response > 0)
                     {
-                        Logger.Log("LogoutUser", "Info", "successfully called update end time API when user logout");
+                        UpdateUserSessionLog();
+                        var activitLogResult = ActivityLogHelper.UpdateUserActivityLog(User.ID, "LogOut", MACAddress, "Window");
+
+                        if (activitLogResult == "0")
+                        {
+                            MessageBox.Show("User activity logging failed.");
+                        }
+
+                        Logger.Log("LogoutUser", "Info", "successfully logout");
 
                         CurrentWorkingProject = null;
                         User = null;
@@ -170,6 +182,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         loginView.Activate();
                         _dailyTaskView.Close();
                     }
+
                     else
                     {
                         MessageBox.Show("Some error occured..");
@@ -287,8 +300,114 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
             // ConfigureTimersForApplication();
             CreateHeader();
+
+            MACAddress = GetMACAddress();
+            InsertIntolLog();
+            //TODO Add User session log
+            // Add User UserActivityLog
+
         }
 
+        private async void InsertIntolLog()
+        {
+            //throw new NotImplementedException();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var result = InsertUserSessionLog();
+                    if (result == "0")
+                    {
+                        MessageBox.Show("Session logging failed.");
+                    }
+                    var activitLogResult = ActivityLogHelper.UpdateUserActivityLog(User.ID, "LogIn", MACAddress, "Window");
+
+                    if (activitLogResult == "0")
+                    {
+                        MessageBox.Show("User activity logging failed.");
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+
+            });
+        }
+
+        private string InsertUserSessionLog()
+        {
+            string result = "";
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+                SqlConnection sqlCon = new SqlConnection(conStr);
+                DataTable dt = new DataTable();
+                var sqlCmd = new SqlCommand("USP_UserSessionLog_Insert", sqlCon)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+                sqlCmd.Parameters.AddWithValue("@LoggerId", Guid.NewGuid());
+                sqlCmd.Parameters.AddWithValue("@LogedUserId", User.ID);
+                sqlCmd.Parameters.AddWithValue("@IPAddress", DBNull.Value);
+                sqlCmd.Parameters.AddWithValue("@Application", "Console");
+                sqlCmd.Parameters.AddWithValue("@StartTime", DateTime.Now);
+                sqlCmd.Parameters.AddWithValue("@EndTime", DBNull.Value);
+                SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                if (ds != null)
+                {
+                    result = ds.Tables[0].Rows[0]["MESSAGE"].ToString();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        private string UpdateUserSessionLog()
+        {
+            string result = "";
+            try
+            {
+                string conStr = ConfigurationManager.ConnectionStrings["QBADBConnetion"].ConnectionString;
+                SqlConnection sqlCon = new SqlConnection(conStr);
+                DataTable dt = new DataTable();
+                var sqlCmd = new SqlCommand("USP_UserSessionLog_Update", sqlCon)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure
+                };
+
+                sqlCmd.Parameters.AddWithValue("@LogedUserId", User.ID);
+
+                sqlCmd.Parameters.AddWithValue("@Application", "Console");
+                sqlCmd.Parameters.AddWithValue("@EndTime", DateTime.Now);
+                SqlDataAdapter da = new SqlDataAdapter(sqlCmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                if (ds != null)
+                {
+                    result = ds.Tables[0].Rows[0]["MESSAGE"].ToString();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        private void InsertUserActivityLog()
+        {
+
+        }
         public void LoadAllProjects()
         {
             try
@@ -345,7 +464,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         {
 
                             AddElapsedTimeForTheProject(item);
-
                             canvas = projectViewHelper.CreateProjectViewControlForSelectedProject(item, backColor);
                             Border = BorderControlHelper.CreateBorderForSelectedControl();
                             Border.Child = canvas;
@@ -385,21 +503,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
-        private static void AddElapsedTimeForTheProject(Project item)
-        {
-            if (item.DifferenceInSecondsInCurrentDate == null)
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(0);
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-            else
-            {
-                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
-                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
-                item.PreviousElapsedTime = ts;
-            }
-        }
 
         private static void AddElapsedTimeForTheTask(ProjectTask item)
         {
@@ -740,20 +843,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     StackPanel stackPanel = new StackPanel();
                     stackPanel.Margin = new Thickness(0);
-
+                    List<Project> projects = new List<Project>();
+                    projects = ProjectList;
                     foreach (Project item in ProjectList)
                     {
                         if (item.ProjectID == SelectedProject.ProjectID)
                         {
-                            //var selectedProjectCanvas = CanvasControlHelper.CreateCanvas();
-                            //StackPanel stackPanelWithTasks = new StackPanel();
-
-                            //TaskViewHelper taskViewHelper = new TaskViewHelper();
-                            //var projectHeading = taskViewHelper.CreateProjectHeadingControl(item);
-                            //stackPanelWithTasks.Children.Add(projectHeading);
-
                             //TODO 1)Check for the subTaskCount.
-
                             if (item.TaskCount > 0)
                             {
                                 var selectedProjectCanvas = CanvasControlHelper.CreateCanvas();
@@ -845,11 +941,26 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                         MessageBox.Show("Please check your internet connection..");
                                     }
 
-
-
                                 }
                                 else
                                 {
+                                    Helper.ViewHelper.ProjectViewHelper projectViewHelper = new Helper.ViewHelper.ProjectViewHelper();
+                                    Canvas canvasProject = new Canvas();
+                                    var Border = new Border();
+                                    var backColor = ColorArray[0].ToString();
+                                    if (item.ProjectID == CurrentWorkingProject.ProjectID)
+                                    {
+
+                                        canvasProject = projectViewHelper.CreateProjectViewControlForSelectedProject(item, backColor);
+                                        Border = BorderControlHelper.CreateBorderForSelectedControl();
+                                        Border.Child = canvasProject;
+
+                                    }
+
+                                    canvasProject.MouseLeftButtonDown += ProjectClickHandler;
+                                    canvasProject.MouseEnter += ProjectMouseEnterHanlder;
+                                    canvasProject.MouseLeave += ProjectMouseLeaveHanlder;
+                                    stackPanel.Children.Add(Border);
                                     MessageBox.Show("This project is already selected.");
                                 }
 
@@ -875,6 +986,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     }
                     grid.Children.Add(stackPanel);
 
+                    ProjectList = projects;
                 }
                 SetScrollBarToTop();
 
@@ -887,48 +999,193 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
+        private static void AddElapsedTimeForTheProject(Project item)
+        {
+            if (item.DifferenceInSecondsInCurrentDate == null)
+            {
+                TimeSpan ts = TimeSpan.FromSeconds(0);
+                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+                item.PreviousElapsedTime = ts;
+            }
+            else
+            {
+                TimeSpan ts = TimeSpan.FromSeconds(Convert.ToDouble(item.DifferenceInSecondsInCurrentDate));
+                item.TimeElapsedValue = ts.ToString(@"hh\:mm\:ss");
+                item.PreviousElapsedTime = ts;
+            }
+        }
+
+        //private void UpdateProjectElapsedTime(Project item)
+        //{
+        //    CurrentWorkingProject.EndDateTime = DateTime.Now;
+        //    if (CurrentWorkingProject.ProjectTaskID != null)
+        //        CurrentWorkingProject.ProjectTaskEndDateTime = DateTime.Now;
+
+        //    var previosSelectedTask = User.Tasks.FirstOrDefault(x => x.TaskId == CurrentWorkingProject.ProjectTaskID);
+
+        //    if (item.PreviousElapsedTime == TimeSpan.Zero)
+        //    {
+        //        TimeSpan diffrence = DateTime.Now - CurrentWorkingProject.StartDateTime;
+
+        //        item.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + diffrence.TotalSeconds);
+        //        item.PreviousElapsedTime = item.PreviousElapsedTime.Add(diffrence);
+        //        item.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(item.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+        //        if (previosSelectedTask != null)
+        //        {
+        //            TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+        //            previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+        //            previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+        //            previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
+        //        item.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + diffrenceInTime.TotalSeconds);
+        //        item.PreviousElapsedTime = item.PreviousElapsedTime.Add(diffrenceInTime);
+        //        item.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(item.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+        //        if (previosSelectedTask != null)
+        //        {
+        //            TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+        //            previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+        //            previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+        //            previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+        //        }
+
+        //    }
+        //}
+
+
+        //private void UpdateTaskElapsedTime()
+        //{
+        //    CurrentWorkingProject.EndDateTime = DateTime.Now;
+        //    if (CurrentWorkingProject.ProjectTaskID != null)
+        //    {
+        //        CurrentWorkingProject.ProjectTaskEndDateTime = DateTime.Now;
+        //    }
+
+        //    var previosSelectedProject = ProjectList.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+
+        //    if (previosSelectedProject.PreviousElapsedTime == TimeSpan.Zero)
+        //    {
+        //        previosSelectedProject.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+        //        previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+        //    }
+        //    else
+        //    {
+        //        TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.ProjectTaskStartDateTime;
+        //        previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrenceInTime);
+        //        previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+        //    }
+        //}
+
+
         private void UpdateProjectElapsedTime()
         {
             CurrentWorkingProject.EndDateTime = DateTime.Now;
-
-            var previosSelectedProject = ProjectList.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
-
-            if (previosSelectedProject.PreviousElapsedTime == TimeSpan.Zero)
-            {
-                previosSelectedProject.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StartDateTime;
-                previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
-            }
-            else
-            {
-                TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
-                previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrenceInTime);
-                previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
-            }
-        }
-
-        private void UpdateTaskElapsedTime()
-        {
-            CurrentWorkingProject.EndDateTime = DateTime.Now;
             if (CurrentWorkingProject.ProjectTaskID != null)
-            {
                 CurrentWorkingProject.ProjectTaskEndDateTime = DateTime.Now;
+
+
+            try
+            {
+                var previosSelectedProject = ProjectList.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+                var previosSelectedTask = User.Tasks.FirstOrDefault(x => x.TaskId == CurrentWorkingProject.ProjectTaskID);
+
+                if (previosSelectedProject.PreviousElapsedTime == TimeSpan.Zero)
+                {
+                    TimeSpan diffrence = DateTime.Now - CurrentWorkingProject.StartDateTime;
+
+                    previosSelectedProject.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedProject.DifferenceInSecondsInCurrentDate + diffrence.TotalSeconds);
+                    previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrence);
+                    previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+                    if (previosSelectedTask != null)
+                    {
+                        TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+                        previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedTask.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+                        previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+                        previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+                    }
+                }
+                else
+                {
+                    TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
+
+                    previosSelectedProject.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedProject.DifferenceInSecondsInCurrentDate + diffrenceInTime.TotalSeconds);
+                    previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrenceInTime);
+                    previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+                    if (previosSelectedTask != null)
+                    {
+                        TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+                        previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedTask.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+                        previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+                        previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
             }
 
-            var previosSelectedProject = ProjectList.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+        }
+        private void UpdateTaskElapsedTime(ProjectTask task)
+        {
+            try
+            {
+                CurrentWorkingProject.EndDateTime = DateTime.Now;
+                if (CurrentWorkingProject.ProjectTaskID != null)
+                    CurrentWorkingProject.ProjectTaskEndDateTime = DateTime.Now;
 
-            if (previosSelectedProject.PreviousElapsedTime == TimeSpan.Zero)
-            {
-                previosSelectedProject.PreviousElapsedTime = DateTime.Now - CurrentWorkingProject.StartDateTime;
-                previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+                var previosSelectedProject = ProjectList.FirstOrDefault(x => x.ProjectID == CurrentWorkingProject.ProjectID);
+                var previosSelectedTask = User.Tasks.FirstOrDefault(x => x.TaskId == CurrentWorkingProject.ProjectTaskID);
+
+                if (previosSelectedProject.PreviousElapsedTime == TimeSpan.Zero)
+                {
+                    TimeSpan diffrence = DateTime.Now - CurrentWorkingProject.StartDateTime;
+
+                    previosSelectedProject.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedProject.DifferenceInSecondsInCurrentDate + diffrence.TotalSeconds);
+                    previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrence);
+                    previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+                    if (previosSelectedTask != null)
+                    {
+                        TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+                        previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedTask.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+                        previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+                        previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+                    }
+                }
+                else
+                {
+                    TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
+
+                    previosSelectedProject.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedProject.DifferenceInSecondsInCurrentDate + diffrenceInTime.TotalSeconds);
+                    previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrenceInTime);
+                    previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+                    if (previosSelectedTask != null)
+                    {
+                        TimeSpan diffrenceForTask = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+                        previosSelectedTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(previosSelectedTask.DifferenceInSecondsInCurrentDate + diffrenceForTask.TotalSeconds);
+                        previosSelectedTask.PreviousElapsedTime = previosSelectedTask.PreviousElapsedTime.Add(diffrenceForTask);
+                        previosSelectedTask.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedTask.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+                    }
+
+                }
             }
-            else
+            catch (Exception)
             {
-                TimeSpan diffrenceInTime = CurrentWorkingProject.EndDateTime - CurrentWorkingProject.StartDateTime;
-                previosSelectedProject.PreviousElapsedTime = previosSelectedProject.PreviousElapsedTime.Add(diffrenceInTime);
-                previosSelectedProject.TimeElapsedValue = TimeSpan.FromSeconds(Convert.ToDouble(previosSelectedProject.PreviousElapsedTime.TotalSeconds)).ToString(@"hh\:mm\:ss");
+
+                throw;
             }
         }
-
         private void SetScrollBarToTop()
         {
             var scrollBar = (ScrollViewer)_dailyTaskView.FindName("MainScrollBar");
@@ -973,9 +1230,10 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         {
             try
             {
+                List<Project> projects = new List<Project>();
+                projects = ProjectList;
 
-
-                foreach (Project project in ProjectList)
+                foreach (Project project in projects)
                 {
                     if (project.ProjectID == selectedTask.ProjectID)
                     {
@@ -995,7 +1253,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                         {
                             if (pTask.ParentTaskId == 0)
                             {
-
                                 ProjectTask IsContainTask = IsTaskContainSelectedTaskID(selectedTask.TaskId, pTask);
                                 if (IsContainTask != null)
                                 {
@@ -1004,8 +1261,6 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                     {
                                         stackPanelForParentTask.Children.Add(taskHeading);
                                     }
-
-
                                     if (IsContainTask.SubTaskCount == 0)
                                     {
                                         if (CheckForInternetConnection() == false)
@@ -1014,35 +1269,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                             return;
                                         }
 
-                                        //AddElapsedTimeForTheTask(IsContainTask);
-                                        //UpdateTaskElapsedTime();
-                                        //var backColor = ColorArray[IsContainTask.TaskDepthLevel + 1].ToString();
-                                        //taskCanvas = taskViewHelper.CreateTaskViewControlForSelectedTask(IsContainTask, backColor);
-                                        //var TaskBorder = BorderControlHelper.CreateBorderForTask();
-                                        //TaskBorder.Child = taskCanvas;
-                                        //taskCanvas.MouseLeftButtonDown += TaskClickEventHandler;
-                                        //stackPanelForParentTask.Children.Add(TaskBorder);
-
                                         if (IsContainTask.TaskId != CurrentWorkingProject.ProjectTaskID)
                                         {
                                             if (selectedTask.TaskId == IsContainTask.TaskId)
                                             {
-                                                UpdateTaskElapsedTime();
-                                                var backColor = ColorArray[IsContainTask.TaskDepthLevel + 1].ToString();
-                                                taskCanvas = taskViewHelper.CreateTaskViewControlForSelectedTask(IsContainTask, backColor);
-                                                var TaskBorder = BorderControlHelper.CreateBorderForTask();
-                                                TaskBorder.Child = taskCanvas;
-                                                taskCanvas.MouseLeftButtonDown += TaskClickEventHandler;
-                                                stackPanelForParentTask.Children.Add(TaskBorder);
+                                                UpdateTaskElapsedTime(IsContainTask);
 
-
-
-                                                SelectedTask = pTask;
-                                                CurrentWorkingProject.EndDateTime = DateTime.Now;
+                                                SelectedTask = IsContainTask;
+                                                // CurrentWorkingProject.EndDateTime = DateTime.Now;
                                                 if (CurrentWorkingProject.ProjectTaskID != null)
                                                     CurrentWorkingProject.ProjectTaskEndDateTime = DateTime.Now;
 
-                                                SetPreviousTaskElapsedTimeValue();
+                                                // SetPreviousTaskElapsedTimeValue();
                                                 int newDailyTaskID = UpdatedProjectTask();
 
                                                 if (newDailyTaskID > 0)
@@ -1061,6 +1299,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                                     };
 
 
+
+                                                    AddElapsedTimeForTheTask(IsContainTask);
+
+
+
+
+                                                    var backColor = ColorArray[IsContainTask.TaskDepthLevel + 1].ToString();
+                                                    taskCanvas = taskViewHelper.CreateTaskViewControlForSelectedTask(IsContainTask, backColor);
+                                                    var TaskBorder = BorderControlHelper.CreateBorderForTask();
+                                                    TaskBorder.Child = taskCanvas;
+                                                    taskCanvas.MouseLeftButtonDown += TaskClickEventHandler;
+                                                    stackPanelForParentTask.Children.Add(TaskBorder);
                                                     StartProjectTimeElapseShowTimer();
                                                 }
                                             }
@@ -1085,7 +1335,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                                             if (nestedProjectTask.TaskId == selectedTask.TaskId)
                                             {
-                                                UpdateTaskElapsedTime();
+                                                //UpdateTaskElapsedTime();
+                                                AddElapsedTimeForTheTask(nestedProjectTask);
                                                 var nestedtaskCanvas = taskViewHelper.CreateTaskViewControlForSelectedTask(nestedProjectTask, backColor);
                                                 var nestedTaskBorder = BorderControlHelper.CreateBorderForTask();
                                                 nestedTaskBorder.Child = nestedtaskCanvas;
@@ -1129,6 +1380,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                             }
                                             else
                                             {
+                                                AddElapsedTimeForTheTask(nestedProjectTask);
                                                 var nestedtaskCanvas = taskViewHelper.CreateTaskViewControl(nestedProjectTask, backColor);
                                                 var nestedTaskBorder = BorderControlHelper.CreateBorderForTask();
                                                 nestedTaskBorder.Child = nestedtaskCanvas;
@@ -1176,6 +1428,8 @@ namespace QBA.Qutilize.ClientApp.ViewModel
 
                     }
                 }
+
+                ProjectList = projects;
             }
             catch (Exception ex)
             {
@@ -1380,7 +1634,7 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             };
             try
             {
-                Logger.Log("InsertProjectStartTime", "Info", "Calling insert start time API");
+                Logger.Log("InsertProjectStartTime", "Info", "Inserting records in database.");
 
                 DataTable dt = new DataTable();
 
@@ -1512,6 +1766,34 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 return false;
             }
+        }
+
+
+        public string GetMACAddress()
+        {
+            string strMAC = string.Empty;
+            try
+            {
+                NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+                for (int j = 0; j <= 1; j++)
+                {
+                    PhysicalAddress address = nics[j].GetPhysicalAddress();
+                    byte[] bytes = address.GetAddressBytes();
+                    string M = nics[j].Name + ":";
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        M = M + bytes[i].ToString("X2");
+                        if (i != bytes.Length - 1)
+                        {
+                            M = M + ("-");
+                        }
+                    }
+                    strMAC = M;
+                }
+            }
+            catch (Exception exx)
+            { strMAC = string.Empty; }
+            return strMAC;
         }
     }
 }

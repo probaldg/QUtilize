@@ -102,6 +102,7 @@
             <Button.Background>
                 <ImageBrush ImageSource="/QBA.Qutilize.ClientApp;component/Images/LogOut.PNG"/>
             </Button.Background>
+            
         </Button>
         <TextBlock FontWeight="SemiBold" FontSize="11" Margin="0,28,5,0" TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FFE20BC5" Grid.IsSharedSizeScope="True" Text="{Binding CurrDate, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}" Grid.ColumnSpan="2"></TextBlock>
         <GroupBox Header="Project List"  Margin="3,52,3,35"

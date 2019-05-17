@@ -94,6 +94,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helper\ActivityLogHelper.cs" />
     <Compile Include="Helper\CommandHandler.cs" />
     <Compile Include="Helper\EncryptionHelper.cs" />
     <Compile Include="Helper\Logger.cs" />
