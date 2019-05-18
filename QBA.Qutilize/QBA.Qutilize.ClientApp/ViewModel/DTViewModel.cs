@@ -120,6 +120,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                 return;
             System.Diagnostics.Process.Start(url);
 
+            var activitLogResult = ActivityLogHelper.UpdateUserActivityLog(User.ID, $"Clicked on View button User Name = {User.UserName} ", MACAddress, "Window");
+
+            if (activitLogResult == "0")
+            {
+                MessageBox.Show("User activity logging failed.");
+            }
+
         }
 
         public void LogoutUser()
@@ -849,6 +856,13 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                     {
                         if (item.ProjectID == SelectedProject.ProjectID)
                         {
+                            var activitLogResult = ActivityLogHelper.UpdateUserActivityLog(User.ID, $"Clicked on Project ID = {item.ProjectID} ", MACAddress, "Window");
+
+                            if (activitLogResult == "0")
+                            {
+                                MessageBox.Show("User activity logging failed.");
+                            }
+
                             //TODO 1)Check for the subTaskCount.
                             if (item.TaskCount > 0)
                             {
@@ -1261,6 +1275,14 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                     {
                                         stackPanelForParentTask.Children.Add(taskHeading);
                                     }
+
+                                    var activitLogResult = ActivityLogHelper.UpdateUserActivityLog(User.ID, $"Clicked on task Task ID = {IsContainTask.TaskId} ", MACAddress, "Window");
+
+                                    if (activitLogResult == "0")
+                                    {
+                                        MessageBox.Show("User activity logging failed.");
+                                    }
+
                                     if (IsContainTask.SubTaskCount == 0)
                                     {
                                         if (CheckForInternetConnection() == false)
