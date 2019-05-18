@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,6 +86,17 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             {
                 _currentWorkingProject = value;
                 OnPropertyChanged("CurrentWorkingProject");
+            }
+        }
+        private string _version;
+
+        public string Version
+        {
+            get { return GetVersion(); }
+            set
+            {
+                _version = value;
+                OnPropertyChanged("Version");
             }
         }
 
@@ -1817,5 +1829,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             { strMAC = string.Empty; }
             return strMAC;
         }
+
+        public string GetVersion()
+        {
+
+            return $"V({Assembly.GetExecutingAssembly().GetName().Version.ToString()})";
+        }
     }
 }
+

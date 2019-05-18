@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,6 +47,18 @@ namespace QBA.Qutilize.ClientApp.ViewModel
             }
         }
 
+
+        private string _version;
+
+        public string Version
+        {
+            get { return GetVersion(); }
+            set
+            {
+                _version = value;
+                OnPropertyChanged("Version");
+            }
+        }
         public ICommand Login
         {
             get
@@ -410,6 +423,12 @@ namespace QBA.Qutilize.ClientApp.ViewModel
         private string ConvertToMD5(string password)
         {
             return EncryptionHelper.ConvertStringToMD5(password);
+        }
+
+        public string GetVersion()
+        {
+
+            return $"V({Assembly.GetExecutingAssembly().GetName().Version.ToString()})";
         }
 
     }

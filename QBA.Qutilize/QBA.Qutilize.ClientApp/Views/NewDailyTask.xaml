@@ -110,7 +110,7 @@
             <StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">
                 <Label Content="A product of" FontSize="12" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
                 <Image Source="/QBA.Qutilize.ClientApp;component/Images/smalllogo.png" Width="50"  VerticalAlignment="Bottom" ></Image>
-                <Label Content="(v 1.0.0.1)" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right"/>
+                <Label Content="{Binding Version, Mode=TwoWay}" FontSize="10" Height="30" VerticalAlignment="Bottom" VerticalContentAlignment="Center" HorizontalAlignment="Right" FontWeight="Bold"/>
 
             </StackPanel>
         </Grid>
