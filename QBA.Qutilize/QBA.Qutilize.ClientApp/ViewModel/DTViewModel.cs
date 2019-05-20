@@ -588,16 +588,34 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                 {
                                     TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.StartDateTime;
 
+                                    //if (item.PreviousElapsedTime != TimeSpan.Zero)
+                                    //{
+                                    //    TimeSpan currentDiffrence = diffrenceInTime - item.PreviousElapsedTime;
+                                    //    item.TimeElapsedValue = currProject.PreviousElapsedTime.Add(currentDiffrence).ToString(@"hh\:mm\:ss");
+
+                                    //}
+                                    //else
+                                    //{
+                                    //    item.DifferenceInSecondsInCurrentDate = Convert.ToInt32(diffrenceInTime.TotalSeconds);
+
+                                    //    item.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
+                                    //    item.PreviousElapsedTime = diffrenceInTime;
+                                    //}
+
                                     if (item.PreviousElapsedTime != TimeSpan.Zero)
                                     {
+                                        TimeSpan currentDiffrence = diffrenceInTime - item.PreviousElapsedTime;
                                         item.TimeElapsedValue = currProject.PreviousElapsedTime.Add(diffrenceInTime).ToString(@"hh\:mm\:ss");
+                                        item.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + currentDiffrence.TotalSeconds);
+
                                     }
                                     else
                                     {
                                         item.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
                                         item.PreviousElapsedTime = diffrenceInTime;
-                                    }
+                                        item.DifferenceInSecondsInCurrentDate = Convert.ToInt32(item.DifferenceInSecondsInCurrentDate + diffrenceInTime.TotalSeconds);
 
+                                    }
                                     projectCanvas = projectViewHelper.CreateProjectViewControlForSelectedProject(item, backColor);
                                     Border = BorderControlHelper.CreateBorderForSelectedControl();
                                     Border.Child = projectCanvas;
@@ -685,15 +703,32 @@ namespace QBA.Qutilize.ClientApp.ViewModel
                                         if (IsContainTask.SubTaskCount == 0)
                                         {
 
+                                            //TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
+                                            //if (IsContainTask.PreviousElapsedTime != TimeSpan.Zero)
+                                            //{
+                                            //    TimeSpan currentDiffrence = diffrenceInTime - IsContainTask.PreviousElapsedTime;
+                                            //    IsContainTask.TimeElapsedValue = IsContainTask.PreviousElapsedTime.Add(currentDiffrence).ToString(@"hh\:mm\:ss");
+                                            //}
+                                            //else
+                                            //{
+                                            //    IsContainTask.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
+                                            //    IsContainTask.PreviousElapsedTime = diffrenceInTime;
+                                            //}
+
                                             TimeSpan diffrenceInTime = DateTime.Now - CurrentWorkingProject.ProjectTaskStartDateTime;
                                             if (IsContainTask.PreviousElapsedTime != TimeSpan.Zero)
                                             {
+                                                TimeSpan currentDiffrence = diffrenceInTime - IsContainTask.PreviousElapsedTime;
                                                 IsContainTask.TimeElapsedValue = IsContainTask.PreviousElapsedTime.Add(diffrenceInTime).ToString(@"hh\:mm\:ss");
+                                                IsContainTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(IsContainTask.DifferenceInSecondsInCurrentDate + currentDiffrence.TotalSeconds);
+
                                             }
                                             else
                                             {
                                                 IsContainTask.TimeElapsedValue = diffrenceInTime.ToString(@"hh\:mm\:ss");
                                                 IsContainTask.PreviousElapsedTime = diffrenceInTime;
+                                                IsContainTask.DifferenceInSecondsInCurrentDate = Convert.ToInt32(IsContainTask.DifferenceInSecondsInCurrentDate + diffrenceInTime.TotalSeconds);
+
                                             }
 
 
