@@ -14,6 +14,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
             myCanvas.DataContext = project;
             // myCanvas.Background = new SolidColorBrush(Colors.Black);
             Grid grid = WPFGridHelper.CreateProjectHeadingGrid(project);
+
             Canvas.SetTop(grid, 0);
             Canvas.SetLeft(grid, 0);
 
@@ -88,8 +89,6 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
                 var header = CreateProjectHeadingControl(project);
                 header.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(backcolor));
-
-                header.Height = 50;
                 return header;
             }
 
@@ -107,6 +106,7 @@ namespace QBA.Qutilize.ClientApp.Helper.ViewHelper
 
 
             Canvas myCanvas = CanvasControlHelper.CreateCanvas();
+            //myCanvas.Height = headerControl.Height + bodyControl.Height;
             myCanvas.Height = headerControl.Height + bodyControl.Height;
             myCanvas.DataContext = project;
             Canvas.SetTop(stackPanel, 0);

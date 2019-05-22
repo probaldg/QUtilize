@@ -116,6 +116,9 @@ namespace QBA.Qutilize.ClientApp
         }
         private void ShowAppWindow()
         {
+            if (MainWindow == null)
+                return;
+
             if (MainWindow.IsVisible)
             {
                 if (MainWindow.WindowState == WindowState.Minimized)
