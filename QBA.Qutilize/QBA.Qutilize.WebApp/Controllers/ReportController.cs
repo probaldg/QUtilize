@@ -251,15 +251,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         double hours=0;
                         double seconds = 0;
+                        string strHr = string.Empty;
                         if (ds.Tables[0].Rows[i]["enddatetime"].ToString() != "")
                         {
                             TimeSpan diff = Convert.ToDateTime(ds.Tables[0].Rows[i]["enddatetime"].ToString()) - Convert.ToDateTime(ds.Tables[0].Rows[i]["startdatetime"].ToString());
                              hours = Math.Round(diff.TotalHours,2);
+                            strHr = diff.Hours.ToString() + ":" + diff.Minutes.ToString() + ":" + diff.Seconds.ToString();
                              seconds = diff.TotalSeconds;
+                            seconds = diff.Hours * 3600 + diff.Minutes * 60 + diff.Seconds;
                         }
                             
                         
-                        sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + hours  + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
+                        sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + strHr + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
                     }
                     
                 }

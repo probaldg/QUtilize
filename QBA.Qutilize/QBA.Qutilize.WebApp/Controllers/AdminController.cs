@@ -329,7 +329,45 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
+        public ActionResult GetTask(int ProjID)
+        {
+            UserModel user = new UserModel();
+            
+            string strTaskData = string.Empty;
+            
+            try
+            {
+                if (ProjID == 0)
+                    strTaskData += "<option value = 0>Please select</option>";
+                else
+                {
+                    ProjectTaskModel taskModel = new ProjectTaskModel();
+                    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                    DataSet dsTaskData = taskModel.GetTasksData(ProjID, userInfo.UserOrganisationID);
+                    strTaskData += "<option value = 0>Please select</option>";
+                    if (dsTaskData != null && dsTaskData.Tables.Count > 0 && dsTaskData.Tables[0] != null && dsTaskData.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in dsTaskData.Tables[0].Rows)
+                        {
+                            strTaskData += "<option value=" + Convert.ToInt32(item["TaskID"]) + ">" + Convert.ToString(item["TaskName"]) + "</option>";
+                        }
+                    }
+                    //var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
 
+                    //foreach (UserModel item in listUsers)
+                    //{
+                    //    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
+                    //}
+                }
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
+            return Json(strTaskData);
+        }
         public ActionResult GetDepartments(int orgId)
         {
             UserModel user = new UserModel();

@@ -29,47 +29,47 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(strMenu.ToString());
         }
-        public string GetSideMenuContent(DataTable orgDT, string parentID)
-        {
-            StringBuilder strMenu = new StringBuilder();
-            if (parentID.Trim() == "")
+            public string GetSideMenuContent(DataTable orgDT, string parentID)
             {
-                DataRow[] drParentAll = orgDT.Select("lvl = 0");
-                if (drParentAll.Length > 0)
+                StringBuilder strMenu = new StringBuilder();
+                if (parentID.Trim() == "")
                 {
-                    foreach (DataRow dr in drParentAll)
+                    DataRow[] drParentAll = orgDT.Select("lvl = 0");
+                    if (drParentAll.Length > 0)
+                    {
+                        foreach (DataRow dr in drParentAll)
+                        {
+                            strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
+                        }
+                    }
+                }
+                else
+                {
+                    DataRow[] drParent = orgDT.Select("ID = " + parentID);
+                    if (drParent.Length > 0)
+                    {
+                        strMenu.Append("<div class='row lien'>");
+                        if (Convert.ToInt32(drParent[0]["lvl"]) == 0)
+                            strMenu.Append("<div class='col-md-12'>");
+                        else
+                        {
+                            int lvl = Convert.ToInt32(drParent[0]["lvl"]);
+                            strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
+                        }
+                        strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "' style='color: white;'></a> &nbsp;");
+                        strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' style='color: white;'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
+                        strMenu.Append("<hr>");
+                        strMenu.Append("</div>");
+                        strMenu.Append("</div>");
+                    }
+                    DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
+                    foreach (DataRow dr in dtChild)
                     {
                         strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
                     }
                 }
+                return strMenu.ToString();
             }
-            else
-            {
-                DataRow[] drParent = orgDT.Select("ID = " + parentID);
-                if (drParent.Length > 0)
-                {
-                    strMenu.Append("<div class='row lien'>");
-                    if (Convert.ToInt32(drParent[0]["lvl"]) == 0)
-                        strMenu.Append("<div class='col-md-12'>");
-                    else
-                    {
-                        int lvl = Convert.ToInt32(drParent[0]["lvl"]);
-                        strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
-                    }
-                    strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "' style='color: white;'></a> &nbsp;");
-                    strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' style='color: white;'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
-                    strMenu.Append("<hr>");
-                    strMenu.Append("</div>");
-                    strMenu.Append("</div>");
-                }
-                DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
-                foreach (DataRow dr in dtChild)
-                {
-                    strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
-                }
-            }
-            return strMenu.ToString();
-        }
 
         public ActionResult MyAccount()
         {

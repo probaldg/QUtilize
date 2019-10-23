@@ -16,15 +16,19 @@ namespace QBA.Qutilize.WebApp.Models
             ProjectsList = new List<Project>();
             DailyTaskList = new List<DailyTaskModel>();
             DailyTaskModel = new DailyTaskModel();
+            ProjectTaskList = new List<ProjectTaskModel>();
         }
         public DateTime WeekStartDate { get; set; }
         public DateTime WeekEndDate { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public int UserId { get; set; }
+        public int ProjectID { get; set; }
+        public string TaskName { get; set; }
         public DailyTaskModel DailyTaskModel { get; set; }
         public SelectList ProjecSelectList { get; set; }
         public List<Project> ProjectsList { get; set; }
+        public List<ProjectTaskModel> ProjectTaskList { get; set; }
         public List<DailyTaskModel> DailyTaskList { get; set; }
         public bool ISErr { get; set; }
         public string ErrString { get; set; }

@@ -16,6 +16,7 @@ namespace QBA.Qutilize.WebApp.Models
 
         public DateTime EndTime { get; set; }
         public string EndTimeString { get; set; }
+
         public string TaskName { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }
