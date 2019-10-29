@@ -243,7 +243,8 @@
         var last = first + 6;
 
         $('#TaskDateInsert').datepicker({
-            minDate: new Date(curr.setDate(first)),
+            //minDate: new Date(curr.setDate(first)),
+            minDate: new Date(),
             maxDate: new Date()
         });
         //$("#StartTimeInsert").timepicker({ 'scrollDefault': 'now' })
@@ -254,7 +255,8 @@
 
         $(".datepicker").datepicker({
             autoclose: true, todayBtn: 'linked',
-            minDate: new Date(curr.setDate(first)),
+            //minDate: new Date(curr.setDate(first)),
+            minDate: new Date(),
             maxDate: new Date()
         })
 

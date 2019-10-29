@@ -66,12 +66,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet GetDashBoardData(int userID, DateTime startDate, DateTime endDate)
+        public DataSet GetDashBoardData(int userID, DateTime startDate, DateTime endDate, string strUser, string strProject)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetDashBoardData(userID,  startDate,  endDate);
+                ds = DataAccess.GetDashBoardData(userID,  startDate,  endDate, strUser, strProject);
             }
             catch (Exception ex)
             {

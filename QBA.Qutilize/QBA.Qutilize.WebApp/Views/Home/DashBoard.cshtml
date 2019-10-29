@@ -700,13 +700,21 @@
         try {
             var vStartDate = $('#txtStartDate').val();
             var vEndDate = $('#txtEndDate').val();
+            var vUser = $("#ddlUsers").val();
+            var vProject = $("#ddlProjects").val();
+            if (typeof vUser === "undefined") {
+                vUser = 0;
+            }
+            if (typeof vProject === "undefined") {
+                vProject = 0;
+            }
             $.ajax({
                 url: '@Url.Action("GetRefreshedData", "Home")',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    startdate: vStartDate, endDate: vEndDate
+                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject
                 }),
                 success: function (response) {
                     if (response != "") {

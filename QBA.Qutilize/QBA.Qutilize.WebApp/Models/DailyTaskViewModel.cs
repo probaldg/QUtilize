@@ -44,12 +44,18 @@ namespace QBA.Qutilize.WebApp.Models
             int iVisibleDaysEdit = 0;
             int iVisibleDaysDisplay = 0;
 
-            WeekStartDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
-            WeekEndDate = WeekStartDate.AddDays(6 + iVisibleDaysEdit);
+            //WeekStartDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
+            //WeekEndDate = WeekStartDate.AddDays(6 + iVisibleDaysEdit);
 
-            DateTime startDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
+            //DateTime startDate = DateTime.Now.AddDays(-(idays + iVisibleDaysEdit));
+            //StartDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
+            //EndDate = $"{ startDate.AddDays(6 + iVisibleDaysEdit).Day}/{ startDate.AddDays(6 + iVisibleDaysEdit).Month}/{ startDate.AddDays(6 + iVisibleDaysEdit).Year}";
+
+            WeekStartDate = DateTime.Now;
+            WeekEndDate = DateTime.Now;
+            DateTime startDate = DateTime.Now;
             StartDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
-            EndDate = $"{ startDate.AddDays(6 + iVisibleDaysEdit).Day}/{ startDate.AddDays(6 + iVisibleDaysEdit).Month}/{ startDate.AddDays(6 + iVisibleDaysEdit).Year}";
+            EndDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
         }
 
         public List<Project> GetAllProjects(int userId)
@@ -151,7 +157,7 @@ namespace QBA.Qutilize.WebApp.Models
             {
                 SqlParameter[] param ={
                     new SqlParameter("@UserID",userID),
-                    new SqlParameter("@STARTDT",startDate),
+                    new SqlParameter("@STARTDT", startDate),
                     new SqlParameter("@ENDDT", endTime)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[USPDailyTask_GetByDateRange]", param);

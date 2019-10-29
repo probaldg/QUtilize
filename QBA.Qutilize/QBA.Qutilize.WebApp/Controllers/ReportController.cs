@@ -40,7 +40,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     endDate = Convert.ToDateTime(arrdate[1]);
                 }
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate);
+                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate,"0" ,"0");
                 if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) || (ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0) || (ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0) || (ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)))
                 {
                     Session.Add("DashBoardDetail", ds);

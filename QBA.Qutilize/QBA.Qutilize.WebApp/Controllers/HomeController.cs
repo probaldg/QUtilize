@@ -209,40 +209,108 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 DateTime startdate = DateTime.Now;
                 DateTime endDate = DateTime.Now;
+                string strUser = "0";
+                string strProject = "0";
                 if (Session["DateRange"] == null)
                 {
                     DayOfWeek day = DateTime.Now.DayOfWeek;
                     int days = day - DayOfWeek.Monday;
                     startdate = DateTime.Now.AddDays(-days);
                     endDate = startdate.AddDays(6);
-                    Session.Add("DateRange", startdate + "|" + endDate);
+                    Session.Add("DateRange", startdate + "|" + endDate + "|" + strUser + "|" + strProject);
                 }
                 else
                 {
                     string[] arrdate = Session["DateRange"].ToString().Split('|');
                     startdate =Convert.ToDateTime(arrdate[0]);
                     endDate = Convert.ToDateTime(arrdate[1]);
+                    strUser = arrdate[2];
+                    strProject = arrdate[3];
                 }
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate);
+                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate,strUser,  strProject);
                 if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) || (ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0) || (ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0) || (ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)))
                 {
                     Session.Add("DashBoardDetail", ds);
                 }
-                sbOut.Append("<div class='form-group col-md-12'>");
-                sbOut.Append("<label class='control-label col-md-2'>Start Date: </label>");
-                sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<input type='text' class='form-control' id='txtStartDate' value='" + startdate.ToShortDateString() + "'  />");
-                sbOut.Append("</div>");
-                sbOut.Append("<label class='control-label col-md-2'>End Date: </label>");
-                sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<input type='text' class='form-control' id='txtEndDate' value='" + endDate.ToShortDateString() + "' />");
-                sbOut.Append("</div>");
-                sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
-                sbOut.Append("</div>");
-                sbOut.Append("</div>");
-                sbOut.Append("<hr>");
+                sbOut.Append("<table class='table myTable' id='tblFilter'>");
+                sbOut.Append("<tr>");
+                sbOut.Append("<td class='text-right control-label'>Start Date: </td>");
+                sbOut.Append("<td class='text-left'><input type='text' class='form-control' id='txtStartDate' value='" + startdate.ToShortDateString() + "' /></td>");
+                sbOut.Append("<td class='text-right control-label'>End Date: </td>");
+                sbOut.Append("<td class='text-left'><input type='text' class='form-control' id='txtEndDate' value='" + endDate.ToShortDateString() + "' /></td>");
+                #region organization admin option
+                if (HttpContext.Session["OrgAdmin"] != null)
+                {
+                    UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                    UserProjectMappingModel USM = new UserProjectMappingModel();
+                    DataTable dt = new DataTable();
+                    sbOut.Append("<td class='text-right control-label'>Select User: </td>");
+                    sbOut.Append("<td class='text-left'>");
+                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers'>");
+                    sbOut.Append("<option value='0'>Select</option>");
+                    try
+                    {
+                        var dtActiveUsers = USM.GetAllUsers(UIH.UserOrganisationID).Select("IsActive=1");
+                        if (dtActiveUsers.Length > 0)
+                        {
+                            dt = dtActiveUsers.CopyToDataTable();
+                            for (int i = 0; i < dtActiveUsers.Length; i++)
+                            {
+                                if(strUser==Convert.ToString(dt.Rows[i]["Id"]))
+                                    sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "' selected>" + dt.Rows[i]["Name"] + "</option>");
+                                else
+                                    sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "'>" + dt.Rows[i]["Name"] + "</option>");
+                            }
+                        }
+                    }
+                    catch (Exception ex) { }
+                    sbOut.Append("</select>");
+                    sbOut.Append("</td>");
+
+                    sbOut.Append("<td class='text-right control-label'>Select Project: </td>");
+                    ProjectModel pm = new ProjectModel();
+                    DataTable dtAllProjects = new DataTable();
+                    dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
+                    sbOut.Append("<td class='text-left'>");
+                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                    sbOut.Append("<option value='0'>Select</option>");
+                    try
+                    {
+                        if (dtAllProjects.Rows.Count > 0)
+                        {
+                            for (int i = 0; i < dtAllProjects.Rows.Count; i++)
+                            {
+                                if (strProject == Convert.ToString(dtAllProjects.Rows[i]["Id"]))
+                                    sbOut.Append("<option value='" + dtAllProjects.Rows[i]["Id"] + "' selected>" + dtAllProjects.Rows[i]["Name"] + "</option>");
+                                else
+                                    sbOut.Append("<option value='" + dtAllProjects.Rows[i]["Id"] + "'>" + dtAllProjects.Rows[i]["Name"] + "</option>");
+                            }
+                        }
+                    }
+                    catch (Exception ex) { }
+                    sbOut.Append("</select>");
+                    sbOut.Append("</td>");
+                }
+                #endregion
+                sbOut.Append("<td class='text-center'><input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' /></td>");
+                sbOut.Append("</tr>");
+                sbOut.Append("</table>");
+
+                //sbOut.Append("<div class='form-group col-md-12'>");
+                //sbOut.Append("<label class='control-label col-md-2'>Start Date: </label>");
+                //sbOut.Append("<div class='col-md-2'>");
+                //sbOut.Append("<input type='text' class='form-control' id='txtStartDate' value='" + startdate.ToShortDateString() + "'  />");
+                //sbOut.Append("</div>");
+                //sbOut.Append("<label class='control-label col-md-2'>End Date: </label>");
+                //sbOut.Append("<div class='col-md-2'>");
+                //sbOut.Append("<input type='text' class='form-control' id='txtEndDate' value='" + endDate.ToShortDateString() + "' />");
+                //sbOut.Append("</div>");
+                //sbOut.Append("<div class='col-md-2'>");
+                //sbOut.Append("<input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
+                //sbOut.Append("</div>");
+                //sbOut.Append("</div>");
+                //sbOut.Append("<hr>");
 
             }
             catch (Exception exx)
@@ -486,60 +554,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return arrRet;
         }
-        public ActionResult GetRefreshedData(string startdate, string endDate)
+        public ActionResult GetRefreshedData(string startdate, string endDate, string User, string Project)
         {
             StringBuilder sbContent = new StringBuilder();
             try
             {
                 Session.Remove("DashBoardDetail");
                 if (Session["DateRange"] == null) Session.Remove("DateRange");
-                Session.Add("DateRange", startdate + "|" + endDate);
+                Session.Add("DateRange", startdate + "|" + endDate + "|" + User + "|" + Project);
                 sbContent.Append("Reload");
-                //LoginViewModel lvm = new LoginViewModel();
-                //DataSet dsNew = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]),Convert.ToDateTime(startdate),Convert.ToDateTime(endDate));
-                //Session.Add("DashBoardDetail", dsNew);
-
-                //DataSet ds = (DataSet)Session["DashBoardDetail"];
-                //if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
-                //{
-                //    DataTable uniqueColsProj = ds.Tables[0].DefaultView.ToTable(true, "projectName");
-                //    string[] arrrayProj = uniqueColsProj.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
-                //    DataTable uniqueColsDate = ds.Tables[0].DefaultView.ToTable(true, "Date");
-                //    string[] arrrayDate = uniqueColsDate.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
-                //    //sbContent.Append("<div class='panel-body dvBorder form-group'>");
-                //    sbContent.Append("<div class='table-responsive'>");
-                //    sbContent.Append("<table class='table table-bordered' id='tblAppraisalRating'  width='100%'>");
-                //    sbContent.Append("<thead>");
-                //    sbContent.Append("<tr>");
-                //    sbContent.Append("<th class='text-center tblHeaderColor'>Date</th>");
-                //    foreach (string strProjName in arrrayProj)
-                //    {
-                //        sbContent.Append("<th class='text-center tblHeaderColor'>" + strProjName + "</th>");
-                //    }
-                //    sbContent.Append("</tr>");
-                //    sbContent.Append("</thead>");
-                //    sbContent.Append("<tbody id='tbodyDateWiseData'>");
-                //    foreach (string stDate in arrrayDate)
-                //    {
-                //        sbContent.Append("<tr>");
-                //        sbContent.Append("<td><span class='control-text'>" + stDate + "</span></td>");
-                //        foreach (string stproj in arrrayProj)
-                //        {
-                //            DataRow[] result = ds.Tables[0].Select("projectName = '" + stproj + "' AND Date = '" + stDate + "'");
-                //            if (result.Length > 0)
-                //            {
-                //                sbContent.Append("<td><span class='control-text'>" + result[0]["hms"] + "</span></td>");
-                //            }
-                //            else
-                //            { sbContent.Append("<td><span class='control-text'> - </span></td>"); }
-                //        }
-                //        sbContent.Append("</tr>");
-                //    }
-                //    sbContent.Append("</tbody>");
-                //    sbContent.Append("</table>");
-                //    sbContent.Append("</div>");
-                //    //sbContent.Append("</div>");
-                //}
             }
             catch (Exception exx) { }
             return Json(sbContent.ToString());

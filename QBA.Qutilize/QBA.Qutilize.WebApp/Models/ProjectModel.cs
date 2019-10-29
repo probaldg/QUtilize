@@ -13,8 +13,11 @@ namespace QBA.Qutilize.WebApp.Models
         public int ProjectID { get; set; }
         public string ProjectName { get; set; }
         public string ProjectCode { get; set; }
-
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
+        public int ProjectTypeID { get; set; }
+        [Display(Name = "Project Type")]
+        public List<ProjectTypeModel> ProjectTypeList { get; set; }
         public int? ParentProjectID { get; set; }
         public string ParentProjectName { get; set; }
         [Display(Name = "Maximum Time for Project In Hours")]
@@ -24,11 +27,8 @@ namespace QBA.Qutilize.WebApp.Models
         public int ClientD { get; set; }
         [Display(Name = "Department List")]
         public List<DepartmentModel> DepartmentList { get; set; }
-
-
         [Display(Name = "Manager List")]
         public List<UserModel> UserList { get; set; }
-
         [Display(Name = "Client List")]
         public List<ClientModel> ClientList { get; set; }
 
@@ -144,6 +144,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@CreatedDate",model.CreateDate),
                     new SqlParameter("@IsActive",model.IsActive),
                     new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours),
+                    new SqlParameter("@ProjectTypeID",model.ProjectTypeID)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjecs_Insert]", param);
 
@@ -192,7 +193,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@IsActive",model.IsActive),
-                    new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours)
+                    new SqlParameter("@MaxProjectTimeInHours",model.MaxProjectTimeInHours),
+                    new SqlParameter("@ProjectTypeID",model.ProjectTypeID)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Update]", param);
                 if (dt != null)
@@ -371,4 +373,69 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
     }
-}
+
+    public class ProjectTypeModel
+    {
+        [Key]
+        public int ID { get; set; }
+        [Display(Name = "Project Type Code")]
+        public string CODE { get; set; }
+        [Display(Name = "Project Type Name")]
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int OrganisationID { get; set; }
+        [Display(Name = "Organisation Name")]
+        public string OrganisationName { get; set; }
+
+        public bool IsActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedTS { get; set; }
+        public DateTime EditedTS { get; set; }
+        public int EditedBy { get; set; }
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
+        public string DisplayTextForCumboWithOrgName { get; set; }
+
+        SqlHelper objSQLHelper = new SqlHelper();
+
+        public List<ProjectTypeModel> GetProjectType(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<ProjectTypeModel> lstProjType = new List<ProjectTypeModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjectType_Get]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjectType_Get]");
+
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        ProjectTypeModel projectType = new ProjectTypeModel();
+                        projectType.ID = Convert.ToInt32(item["ID"]);
+                        projectType.OrganisationName = item["OrganisationName"].ToString();
+                        projectType.Name = item["NAME"].ToString();
+                        projectType.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        projectType.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["NAME"].ToString();
+                        lstProjType.Add(projectType);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstProjType;
+        }
+    }
+    }
