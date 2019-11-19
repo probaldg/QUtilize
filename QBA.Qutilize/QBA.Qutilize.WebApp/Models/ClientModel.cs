@@ -10,12 +10,18 @@ namespace QBA.Qutilize.WebApp.Models
     public class ClientModel
     {
         public int ClientID { get; set; }
-        [Display(Name = "Name")]
+        [Display(Name = "Customer Name")]
         public string ClientName { get; set; }
 
-        [Display(Name = "Code")]
+        [Display(Name = "Customer Code")]
         public string ClientCode { get; set; }
 
+        [Display(Name = "Customer Address")]
+        public string ClientAddress { get; set; }
+
+        [Display(Name = "Customer Phone No.")]
+        public string ClientPhno { get; set; }
+        public string Location { get; set; }
         public int ClientOrganisationID { get; set; }
         public string OrganisationName { get; set; }
 
@@ -128,8 +134,10 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@orgId",model.ClientOrganisationID),
                     new SqlParameter("@createdBy",model.CreatedBy),
                     new SqlParameter("@createdDate",model.CreateDate),
-                    new SqlParameter("@isActive",model.IsActive)
-
+                    new SqlParameter("@isActive",model.IsActive),
+                    new SqlParameter("@ClientAddress ",model.ClientAddress==null?"":model.ClientAddress),
+                    new SqlParameter("@ClientContactNo ",model.ClientPhno),
+                    new SqlParameter("@ClientLocation ",model.Location)
                 };
 
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPtblMasterClient_Insert]", param);
@@ -172,7 +180,10 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
                     new SqlParameter("@isActive",model.IsActive),
-                    new SqlParameter("@ClientID",model.ClientID)
+                    new SqlParameter("@ClientID",model.ClientID),
+                     new SqlParameter("@ClientAddress",model.ClientAddress==null?"":model.ClientAddress),
+                    new SqlParameter("@ClientContactNo",model.ClientPhno),
+                    new SqlParameter("@ClientLocation",model.Location)
 
                 };
 

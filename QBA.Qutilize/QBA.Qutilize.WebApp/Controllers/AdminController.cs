@@ -2268,6 +2268,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                         clientModel.ClientID = ID;
                         clientModel.ClientName = dt.Rows[0]["ClientName"].ToString();
                         clientModel.ClientCode = dt.Rows[0]["ClientCode"].ToString();
+                        clientModel.ClientAddress= dt.Rows[0]["ClientAddress"].ToString();
+                        clientModel.ClientPhno= dt.Rows[0]["ClientContactNo"].ToString();
+                        clientModel.Location= dt.Rows[0]["ClientLocation"].ToString();
                         clientModel.ClientOrganisationID = Convert.ToInt32(dt.Rows[0]["ORGID"]);
                         clientModel.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"]);
                     }
@@ -2353,6 +2356,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strClienData.Append("<td class='text-center'>" + item["ClientID"].ToString() + "</td>");
                     strClienData.Append("<td class='text-center'>" + item["ClientCode"].ToString() + "</td>");
                     strClienData.Append(" <td class='text-center'>" + item["ClientName"].ToString() + "</td>");
+                    strClienData.Append(" <td class='text-center'>" + item["ClientAddress"].ToString() + "</td>");
+                    strClienData.Append(" <td class='text-center'>" + item["ClientContactNo"].ToString() + "</td>");
+                    strClienData.Append(" <td class='text-center'>" + item["ClientLocation"].ToString() + "</td>");
                     strClienData.Append("<td class='text-center'>" + item["orgname"].ToString() + "</td>");
                     strClienData.Append("<td class='text-center'>" + status + "</td>");
                     strClienData.Append("<td class='text-center'><a href = 'ManageClient?ID=" + item["ClientID"].ToString() + "'>Edit </a> </td>");
