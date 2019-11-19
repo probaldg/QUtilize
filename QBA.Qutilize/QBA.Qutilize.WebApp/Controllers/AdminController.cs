@@ -20,6 +20,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
+        string strTaskData = string.Empty;
+        string strspace = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
         // GET: Admin
         public ActionResult Index()
         {
@@ -86,7 +88,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
 
 
-
+             
 
                     if (dt.Rows[0]["BirthDate"] != DBNull.Value)
                     {
@@ -332,9 +334,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult GetTask(int ProjID)
         {
             UserModel user = new UserModel();
-            
-            string strTaskData = string.Empty;
-            
+           
             try
             {
                 if (ProjID == 0)
@@ -343,24 +343,46 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     ProjectTaskModel taskModel = new ProjectTaskModel();
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                    DataSet dsTaskData = taskModel.GetTasksData(ProjID, userInfo.UserOrganisationID);
+                    DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID);
                     strTaskData += "<option value = 0>Please select</option>";
                     if (dsTaskData != null && dsTaskData.Tables.Count > 0 && dsTaskData.Tables[0] != null && dsTaskData.Tables[0].Rows.Count > 0)
                     {
+                        //try
+                        //{
+                        //    strMenu.Append(GetSideMenuContent(dt, ""));
+                        //}
+                        //catch (Exception exx) { }
+
+                        //foreach (DataRow item in dsTaskData.Tables[0].Rows)
+                        //{
+                        //    strTaskData += "<option value=" + Convert.ToInt32(item["TaskID"]) + ">" + Convert.ToString(item["TaskName"]) + "</option>";
+                        //}
+
+                       //create by malabika 14-11-2019
+
                         foreach (DataRow item in dsTaskData.Tables[0].Rows)
                         {
-                            strTaskData += "<option value=" + Convert.ToInt32(item["TaskID"]) + ">" + Convert.ToString(item["TaskName"]) + "</option>";
+                            if (Convert.ToInt32(item["ParentTaskID"]) == 0)
+                            {
+                                strTaskData += "<option value=" + Convert.ToInt32(item["TaskID"]) + ">" + Convert.ToString(item["TaskName"])+ "</option>";
+                                GetSubTaskDetails(dsTaskData.Tables[0], Convert.ToInt32(item["TaskID"]));
+                                
+                            }    
                         }
-                    }
-                    //var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
+                        //End****
 
-                    //foreach (UserModel item in listUsers)
-                    //{
-                    //    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
-                    //}
-                }
+                    }
+
+                    
+            //var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
+
+            //foreach (UserModel item in listUsers)
+            //{
+            //    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
+            //}
+        }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 //throw;
@@ -368,8 +390,32 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strTaskData);
         }
-        public ActionResult GetDepartments(int orgId)
+        //create by malabika 14-11-2019
+        public string GetSubTaskDetails(DataTable TaskDt, int TaskID)
         {
+            
+            for (int i = 0; i < TaskDt.Rows.Count; i++)
+            {
+                if (TaskID == Convert.ToInt32(TaskDt.Rows[i]["ParentTaskID"]))
+                {
+                    strTaskData += "<option value="+ Convert.ToInt32(TaskDt.Rows[i]["TaskID"]) +">" + strspace + (TaskDt.Rows[i]["TaskName"])+ "</option>";
+                    strspace += "&nbsp;&nbsp;&nbsp";
+                    GetSubTaskDetails(TaskDt,Convert.ToInt32(TaskDt.Rows[i]["TaskId"]));
+                   
+                }
+            }
+
+            //strTaskData = strTaskData1;
+            strspace = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
+            return strTaskData;
+
+
+        }
+        //***End
+
+
+            public ActionResult GetDepartments(int orgId)
+         {
             UserModel user = new UserModel();
             string strDeptData = string.Empty;
             try
@@ -768,7 +814,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                DataSet dsTaskData = taskModel.GetTasksData(ProjectId, userInfo.UserOrganisationID);
+                DataSet dsTaskData = taskModel.GetTasksData("ManageTask",ProjectId, userInfo.UserOrganisationID);
                 dsTaskData.Tables[0].TableName = "TaskList";
                 dsTaskData.Tables[1].TableName = "StatusList";
                 dsTaskData.Tables[2].TableName = "UserList";

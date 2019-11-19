@@ -139,7 +139,7 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-        public DataSet GetTasksData(int? projectId = 0, int? OrgId = 0)
+        public DataSet GetTasksData(string strGetTaskFor, int? projectId = 0, int? OrgId = 0)
         {
             DataSet dataSet = null;
             try
@@ -147,7 +147,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={
                                         new SqlParameter("@OrgId",OrgId ==0? null: OrgId),
                                         new SqlParameter("@ProjectId",projectId ==0? null: projectId),
-
+                                        new SqlParameter("@TaskFor",strGetTaskFor),
                                       };
                 dataSet = objSQLHelper.ExecuteDataset("USPGetProjectTaskData", param);
             }

@@ -13,18 +13,25 @@ namespace QBA.Qutilize.WebApp.Models
         public DailyTaskViewModel()
         {
             SetWeekStartDate();
+            
             ProjectsList = new List<Project>();
             DailyTaskList = new List<DailyTaskModel>();
             DailyTaskModel = new DailyTaskModel();
             ProjectTaskList = new List<ProjectTaskModel>();
+            
         }
+        public string Ticketno { get; set; }
+       
         public DateTime WeekStartDate { get; set; }
         public DateTime WeekEndDate { get; set; }
         public string StartDate { get; set; }
+        public DateTime TaskDate { get; set; }
+        public string CurrentTaskdate { get; set; }
         public string EndDate { get; set; }
         public int UserId { get; set; }
         public int ProjectID { get; set; }
         public string TaskName { get; set; }
+        public int ProjectTaskID { get; set; } //create by malabika 14-11-2019
         public DailyTaskModel DailyTaskModel { get; set; }
         public SelectList ProjecSelectList { get; set; }
         public List<Project> ProjectsList { get; set; }
@@ -52,10 +59,28 @@ namespace QBA.Qutilize.WebApp.Models
             //EndDate = $"{ startDate.AddDays(6 + iVisibleDaysEdit).Day}/{ startDate.AddDays(6 + iVisibleDaysEdit).Month}/{ startDate.AddDays(6 + iVisibleDaysEdit).Year}";
 
             WeekStartDate = DateTime.Now;
+            //create by Malabika 13-11-2019*********
+            int weekday = Convert.ToInt32(DateTime.Now.DayOfWeek);
+            DateTime Previous_startDate = DateTime.Now;
+            if (weekday == 1)
+            {
+                Previous_startDate = WeekStartDate.AddDays(-3);
+                WeekStartDate= WeekStartDate.AddDays(-3);
+            }
+            else if (weekday > 1 && weekday <= 5)
+            {
+                Previous_startDate = WeekStartDate.AddDays(-1);
+                WeekStartDate = WeekStartDate.AddDays(-1);
+            }
+           //*****End*****
+          
             WeekEndDate = DateTime.Now;
+           
+
             DateTime startDate = DateTime.Now;
-            StartDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
+           // StartDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";  //changed by malabika
             EndDate = $"{startDate.Day}/{startDate.Month}/{startDate.Year}";
+            StartDate = $"{Previous_startDate.Day}/{Previous_startDate.Month}/{Previous_startDate.Year}";  //create by malabika
         }
 
         public List<Project> GetAllProjects(int userId)
@@ -167,18 +192,53 @@ namespace QBA.Qutilize.WebApp.Models
                     foreach (DataRow item in dt.Rows)
                     {
                         DailyTaskModel dailyTaskModel = new DailyTaskModel();
-
+                        DailyTaskViewModel dailyTaskViewModel = new DailyTaskViewModel();
                         dailyTaskModel.DailyTaskId = Convert.ToInt32(item["DailyTaskId"]);
                         dailyTaskModel.ProjectID = Convert.ToInt32(item["ProjectId"]);
                         dailyTaskModel.ProjectName = item["ProjectName"].ToString();
                         dailyTaskModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
+
+                        dailyTaskViewModel.TaskDate = Convert.ToDateTime(item["TaskDate"]);
+
                         dailyTaskModel.TaskName = item["TaskName"] == null ? "" : item["TaskName"].ToString();
 
-
+                        dailyTaskModel.CreateDate= Convert.ToDateTime(item["CreateDate"]);
 
                         dailyTaskModel.StartTime = Convert.ToDateTime(item["ActualStartTime"]);
                         dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
-
+                        dailyTaskModel.Ticketno= item["ShortDesc"].ToString();
+                        if (item["duration"].ToString() == "")
+                        {
+                            dailyTaskModel.StartTimeToDisplay = item["duration"].ToString();
+                        }
+                        else
+                        {
+                            string duration = (item["duration"]).ToString();
+                          
+                            string[] a = duration.Split('.');
+                            string hour = "";
+                            string minute = "";
+                            if(a[0].Length==1)
+                            {
+                                hour = "0" + a[0];
+                            }
+                            else
+                            {
+                                hour =  a[0];
+                            }
+                            if(a[1].Length == 1)
+                            {
+                                minute = a[1] + "0";
+                            }
+                            else
+                            {
+                                minute = a[1];
+                            }
+                           
+                            dailyTaskModel.StartTimeToDisplay = hour + ":" + minute;
+                            dailyTaskModel.Duration = Convert.ToDouble(item["duration"]);
+                        }
+                      
                         if (!DBNull.Value.Equals(item["ActualEndTime"]))
                         {
                             dailyTaskModel.EndTime = Convert.ToDateTime(item["ActualEndTime"]);
@@ -213,18 +273,21 @@ namespace QBA.Qutilize.WebApp.Models
                 {
                     Direction = ParameterDirection.Output
                 };
+                
                 SqlParameter[] param ={Status,
                     new SqlParameter("@UserID",model.UserID),
                     new SqlParameter("@ProjectID",model.ProjectID),
-                    new SqlParameter("@StartDateTime", model.StartTime),
-                    new SqlParameter("@EndDateTime",model.EndTime),
-                    new SqlParameter("@TaskName",model.TaskName),
+                   // new SqlParameter("@StartDateTime", model.StartTime),
+                   // new SqlParameter("@EndDateTime",model.EndTime),
+                    new SqlParameter("@TaskName", model.TaskName.Trim()),
                     new SqlParameter("@Description",model.Description),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreateDate",model.CreateDate),
                     new SqlParameter("@TaskDate",model.TaskDate),
                     new SqlParameter("@IsActive",model.IsActive),
-
+                    new SqlParameter("@ProjectTaskID",model.ProjectTaskID), 
+                    new SqlParameter("@Duration", model.Duration),
+                    new SqlParameter("@ShortDesc", model.Ticketno)
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDailyTask_Insert]", param);
 
@@ -265,12 +328,14 @@ namespace QBA.Qutilize.WebApp.Models
 
                 SqlParameter[] param ={
                     new SqlParameter("@DailyTaskId",model.DailyTaskId),
-                    new SqlParameter("@StartDateTime", model.StartTime),
-                    new SqlParameter("@EndDateTime",model.EndTime),
+                    //new SqlParameter("@StartDateTime", model.StartTime),
+                   // new SqlParameter("@EndDateTime",model.EndTime),
                     new SqlParameter("@TaskName",model.TaskName),
                     new SqlParameter("@Description",model.Description),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
+                    new SqlParameter("@Duration",model.Duration),
+                    new SqlParameter("@ShortDesc",model.Ticketno==null?"":model.Ticketno),
 
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPDailyTask_UpdateForWeb]", param);
@@ -332,5 +397,7 @@ namespace QBA.Qutilize.WebApp.Models
             }
         }
 
+
+      
     }
 }

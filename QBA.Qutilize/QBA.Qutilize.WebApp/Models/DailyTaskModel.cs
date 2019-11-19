@@ -4,12 +4,17 @@ namespace QBA.Qutilize.WebApp.Models
 {
     public class DailyTaskModel
     {
+
+        public string Ticketno { get; set; }
+        
         public int DailyTaskId { get; set; }
         public int UserID { get; set; }
         public int ProjectID { get; set; }
         public string ProjectName { get; set; }
         public DateTime TaskDate { get; set; }
+        public string CurrentTaskdate { get; set; }
         public DateTime StartTime { get; set; }
+        public double Duration { get; set; }
         public string StartTimeString { get; set; }
         public string StartTimeToDisplay { get; set; }
         public string EndTimeToDisplay { get; set; }
@@ -18,6 +23,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string EndTimeString { get; set; }
 
         public string TaskName { get; set; }
+        public int ProjectTaskID { get; set; }
         public string Description { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }

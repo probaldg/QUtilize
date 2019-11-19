@@ -27,6 +27,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     // model.GetAllProjects(model.UserId);
                     model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
                     model.ProjectsList = model.GetAllProjects(model.UserId);
+
                     return View(model);
                 }
                 else
@@ -41,7 +42,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
         [HttpPost]
-        public ActionResult InsertDailyTask(string taskDate, int projectID, DateTime startTime, DateTime endTime, string taskName, string descreption)
+        public ActionResult InsertDailyTask(string taskDate, int projectID,  string taskName, string descreption,int ProjectTaskID, double Duration,string Ticketno)
 
         {
             string result = string.Empty;
@@ -49,34 +50,39 @@ namespace QBA.Qutilize.WebApp.Controllers
             DailyTaskViewModel model = new DailyTaskViewModel();
             try
             {
-                model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
+                 model.DailyTaskModel.TaskDate = DateTime.ParseExact(taskDate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
 
-                if (startTime.ToShortDateString() != Convert.ToDateTime(model.DailyTaskModel.TaskDate).ToShortDateString())
-                {
-                    var tempStartTime = startTime.TimeOfDay;
-                    var tempEndTime = endTime.TimeOfDay;
+                //if (startTime.ToShortDateString() != Convert.ToDateTime(model.DailyTaskModel.TaskDate).ToShortDateString())
+                //{
+                //    var tempStartTime = startTime.TimeOfDay;
+                //    var tempEndTime = endTime.TimeOfDay;
 
-                    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
+                //    //DateTime NewstartTimeAB = DateTime.Parse(startTime);
 
-                    DateTime newStartTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, startTime.Second);
-                    DateTime newEndtTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
-                    startTime = newStartTime;
-                    endTime = newEndtTime;
-                }
+                //    DateTime newStartTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempStartTime.Hours, tempStartTime.Minutes, startTime.Second);
+                //    DateTime newEndtTime = new DateTime(model.DailyTaskModel.TaskDate.Year, model.DailyTaskModel.TaskDate.Month, model.DailyTaskModel.TaskDate.Day, tempEndTime.Hours, tempEndTime.Minutes, tempEndTime.Seconds);
+                //    startTime = newStartTime;
+                //    endTime = newEndtTime;
+                //}
+               
 
-                if (ValidateMaxTaskTimeInsert(startTime, endTime))
+
+                if (ValidateMaxTaskTimeInsert(Duration ,taskDate,0))  //endTime
+                 
                 {
                     int userId = Convert.ToInt32(Session["sessUser"]);
 
                     if (userId != 0)
-                        model.DailyTaskModel.UserID = userId;
+                    model.DailyTaskModel.UserID = userId;
+                    model.DailyTaskModel.ProjectTaskID = ProjectTaskID;  //create by malabika 14-11-2019
 
                     model.DailyTaskModel.ProjectID = projectID;
                     model.DailyTaskModel.TaskName = taskName;
 
-                    model.DailyTaskModel.StartTime = startTime;
-                    model.DailyTaskModel.EndTime = endTime;
-
+                    //model.DailyTaskModel.StartTime = startTime;
+                    //  model.DailyTaskModel.EndTime = endTime;
+                    model.DailyTaskModel.Duration = Duration;
+                    model.DailyTaskModel.Ticketno = Ticketno;
                     model.DailyTaskModel.Description = descreption;
                     model.DailyTaskModel.CreatedBy = userId.ToString();
                     model.DailyTaskModel.CreateDate = DateTime.Now;
@@ -95,10 +101,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else
                 {
                     result = "Invalid";
+                    
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = "Error";
 
@@ -174,40 +181,54 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult UpdateDailyTask(DailyTaskModel model)
         {
             string result = string.Empty;
+            CultureInfo provider = CultureInfo.InvariantCulture;
             DailyTaskViewModel dailyTaskViewModel = new DailyTaskViewModel();
             try
             {
-
+                 
                 DateTime startTime = Convert.ToDateTime(model.StartTimeString);
-
+               // string startTime1 = model.StartTime;
                 model.StartTime = startTime;
-                DateTime endTime = Convert.ToDateTime(model.EndTimeString);
-                model.EndTime = endTime;
+                //  DateTime endTime = Convert.ToDateTime(model.EndTimeString);
+                //  model.EndTime = endTime;
+               
 
-
-                DailyTaskModel taskModel = new DailyTaskModel();
-                taskModel.DailyTaskId = model.DailyTaskId;
-                taskModel.TaskDate = model.TaskDate;
-                taskModel.TaskName = model.TaskName;
-                taskModel.StartTime = startTime;
-                taskModel.EndTime = endTime;
-                taskModel.Description = model.Description;
-                taskModel.EditedBy = Session["sessUser"].ToString();
-                taskModel.EditedDate = DateTime.Now;
-
-                bool updateResut = dailyTaskViewModel.UpdateDailyTaskdata(taskModel);
-                if (updateResut)
+              if  (ValidateMaxTaskTimeInsert(model.Duration, model.CurrentTaskdate, model.DailyTaskId))
                 {
-                    result = "Success";
-                }
 
-                else
-                {
-                    return null;
+                    DailyTaskModel taskModel = new DailyTaskModel();
+                    taskModel.DailyTaskId = model.DailyTaskId;
+                    //  taskModel.TaskDate = model.TaskDate;
+                    taskModel.TaskDate = DateTime.ParseExact(model.CurrentTaskdate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
+                    taskModel.TaskName = model.TaskName;
+                    taskModel.StartTime = startTime;
+                    // taskModel.EndTime = endTime;
+                    taskModel.Description = model.Description;
+                    taskModel.EditedBy = Session["sessUser"].ToString();
+                    taskModel.EditedDate = DateTime.Now;
+                    taskModel.Duration = model.Duration;
+                    taskModel.Ticketno = model.Ticketno;
+
+
+                    bool updateResut = dailyTaskViewModel.UpdateDailyTaskdata(taskModel);
+                    if (updateResut)
+                    {
+                        result = "Success";
+                    }
+
+                    else
+                    {
+                        return null;
+                    }
                 }
+                else{
+                    result = "Invalid";
+                    
+                }
+               
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = "Error";
 
@@ -216,13 +237,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(new
             {
                 DailyTaskId = model.DailyTaskId,
-                TaskDate = model.TaskDate.ToShortDateString(),
-
+                //  TaskDate = model.TaskDate.ToShortDateString(),
+                Ticketno = model.Ticketno,
                 StartTime = model.StartTime.ToString("HH:mm"),
                 EndTime = model.EndTime.ToString("HH:mm"),
                 TaskDescription = model.Description,
                 TaskName = model.TaskName,
-                Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
+                ReturnResult = result
+                // Hours = CalculateTimeDiffrence(model.StartTime, model.EndTime)
+
             });
 
         }
@@ -251,13 +274,35 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(result);
 
         }
-        private string CalculateTimeDiffrence(DateTime startTime, DateTime endTime)
+        //private string CalculateTimeDiffrence(DateTime startTime, DateTime endTime)  
+        //{
+        //    try
+        //    {
+        //        TimeSpan ts = endTime - startTime;  
+
+        //        return ts.ToString(@"hh\:mm");
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        private string CalculateTimeDiffrence(double duration)
         {
             try
             {
-                TimeSpan ts = endTime - startTime;
 
-                return ts.ToString(@"hh\:mm");
+                double Totalduration;
+
+                //  string []hms = duration.ToString().Split('.'); // split it at the colons
+                // minutes are worth 60 seconds. Hours are worth 60 minutes.
+                //  double seconds = (Convert.ToDouble(hms[0])) * 60 * 60 + (Convert.ToDouble(hms[1])) * 60;
+                // Totalduration = seconds / 3600;
+                Totalduration = duration;
+             
+                return Totalduration.ToString();  //.ToString(@"hh\:mm");
 
             }
             catch (Exception ex)
@@ -265,37 +310,115 @@ namespace QBA.Qutilize.WebApp.Controllers
                 throw ex;
             }
         }
-
-
-        private bool ValidateMaxTaskTimeInsert(DateTime startTime, DateTime endTime)
+        private bool ValidateMaxTaskTimeInsert(double duration,string taskdate,int taskid)
         {
             bool result = false;
+            CultureInfo provider = CultureInfo.InvariantCulture;
             DailyTaskViewModel model = new DailyTaskViewModel();
+
+
             try
             {
                 model.UserId = Convert.ToInt32(Session["sessUser"]);
+                string[] Array_Duration;
                 model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
-                var dailyTasks = from r in model.DailyTaskList
-                                 where r.StartTime.ToShortDateString() == startTime.ToShortDateString()
-                                 select r;
-                var dateTaskList = dailyTasks.ToList();
-                TimeSpan PreviousTaskSum = TimeSpan.Zero;
-
-                foreach (var item in dateTaskList)
+                DateTime CurrentTaskdate = DateTime.ParseExact(taskdate, new string[] { "MM.dd.yyyy", "MM-dd-yyyy", "MM/dd/yyyy" }, provider, DateTimeStyles.None);
+                var TodayDate = CurrentTaskdate.Date;
+                var task_duration_time = 0.0;
+                string hour = "";
+                string minute = "";
+                for (var i = 0; i < model.DailyTaskList.Count; i++)
                 {
-                    var hour = CalculateTimeDiffrence(item.StartTime, item.EndTime);
-                    PreviousTaskSum = PreviousTaskSum.Add(TimeSpan.Parse(hour));
+                    var TodayCreateDate = model.DailyTaskList[i].TaskDate.Date;
+                    if (model.DailyTaskList[i].DailyTaskId != taskid)
+                    {
+                        if (TodayCreateDate == TodayDate)
+                        {
+                            Array_Duration = model.DailyTaskList[i].Duration.ToString().Split('.');
+                            if (Array_Duration.Length == 2)
+                            {
+                                if (Array_Duration[0].Length == 1)
+                                {
+                                    hour = "0" + Array_Duration[0].ToString();
+                                }
+                                else
+                                {
+                                    hour = Array_Duration[0].ToString();
+                                }
+                                if (Array_Duration[1].Length == 1)
+                                {
+                                    minute = Array_Duration[1].ToString() + "0";
+                                }
+                                else
+                                {
+                                    minute = Array_Duration[1].ToString();
+                                }
+                            }
+                            else
+                            {
+                                if (Array_Duration[0].Length == 1)
+                                {
+                                    hour = "0" + Array_Duration[0].ToString();
+                                }
+                                else
+                                {
+                                    hour = Array_Duration[0].ToString();
+                                }
+                                minute = "0";
+                            }
+
+                            double Previous_duration_minute = (Convert.ToDouble(hour) * 60 ) + (Convert.ToDouble(minute));
+                            double Previouse_task_duration_time = Previous_duration_minute / 60;
+                            task_duration_time = task_duration_time + Previouse_task_duration_time;
+                        }
+                    }
+                   
+                }
+      
+                Array_Duration = duration.ToString().Split('.');
+
+                if (Array_Duration.Length == 2)
+                {
+                    if (Array_Duration[0].Length == 1)
+                    {
+                        hour = "0" + Array_Duration[0].ToString();
+                    }
+                    else
+                    {
+                        hour = Array_Duration[0].ToString();
+                    }
+                    if (Array_Duration[1].Length == 1)
+                    {
+                        minute = Array_Duration[1].ToString() + "0";
+                    }
+                    else
+                    {
+                        minute = Array_Duration[1].ToString();
+                    }
+                }
+                else
+                {
+                    if (Array_Duration[0].Length == 1)
+                    {
+                        hour = "0" + Array_Duration[0].ToString();
+                    }
+                    else
+                    {
+                        hour = Array_Duration[0].ToString();
+                    }
+                    minute = "0";
                 }
 
-                var currentTaskSum = CalculateTimeDiffrence(startTime, endTime);
-
-                if (PreviousTaskSum.Add(TimeSpan.Parse(currentTaskSum)).TotalHours > 24)
+                double duration_minute = (Convert.ToDouble(hour) * 60  )+ (Convert.ToDouble(minute));
+               duration = duration_minute / 60;
+               if (task_duration_time+duration >24)
+              
                     result = false;
                 else
                     result = true;
-
+                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
@@ -303,6 +426,43 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return result;
         }
+
+        //private bool ValidateMaxTaskTimeInsert(DateTime startTime, DateTime endTime) 
+        //{
+        //    bool result = false;
+        //    DailyTaskViewModel model = new DailyTaskViewModel();
+        //    try
+        //    {
+        //        model.UserId = Convert.ToInt32(Session["sessUser"]);
+        //        model.DailyTaskList = model.GetAllTaskByDateRange(model.UserId, model.WeekStartDate, model.WeekEndDate);
+        //        var dailyTasks = from r in model.DailyTaskList
+        //                         where r.StartTime.ToShortDateString() == startTime.ToShortDateString()
+        //                         select r;
+        //        var dateTaskList = dailyTasks.ToList();
+        //        TimeSpan PreviousTaskSum = TimeSpan.Zero;
+
+        //        foreach (var item in dateTaskList)
+        //        {
+        //            var hour = CalculateTimeDiffrence(item.StartTime, item.EndTime);
+        //            PreviousTaskSum = PreviousTaskSum.Add(TimeSpan.Parse(hour));
+        //        }
+
+        //        var currentTaskSum = CalculateTimeDiffrence(startTime, endTime);  
+
+        //        if (PreviousTaskSum.Add(TimeSpan.Parse(currentTaskSum)).TotalHours > 24)
+        //            result = false;
+        //        else
+        //            result = true;
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+
+        //    return result;
+        //}
 
         public ActionResult SkillManagement()
         {
