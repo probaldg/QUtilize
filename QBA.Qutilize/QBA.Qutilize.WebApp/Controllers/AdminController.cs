@@ -2240,29 +2240,34 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageClient(int ID = 0)
         {
             ClientModel clientModel = new ClientModel();
+           
             try
             {
-
+                DataTable MgrDetlDT = new DataTable();
                 UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                clientModel.OrganisationList.Clear();
+                clientModel.OrganisationList.Clear(); 
 
                 if (!userInfo.IsRoleSysAdmin)
                 {
                     var organisation = clientModel.GetAllOrgInList().FirstOrDefault(x => x.id == userInfo.UserOrganisationID && x.isActive == true);
                     clientModel.OrganisationList.Add(organisation);
                     clientModel.ClientOrganisationID = userInfo.UserOrganisationID;
+                   
                 }
                 else
                 {
                     var list = clientModel.GetAllOrgInList().Where(x => x.isActive == true).ToList();
                     if (list.Count > 0)
                         clientModel.OrganisationList = list;
+                    
 
                 }
                 if (ID > 0)
                 {
                     DataTable dt = new DataTable();
+                   
                     dt = clientModel.GetClientByID(ID);
+                    MgrDetlDT = clientModel.GetClientManagerByID(ID);
                     if (dt.Rows.Count > 0)
                     {
                         clientModel.ClientID = ID;
@@ -2274,7 +2279,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                         clientModel.ClientOrganisationID = Convert.ToInt32(dt.Rows[0]["ORGID"]);
                         clientModel.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"]);
                     }
+                   
                 }
+         
+
+                StringBuilder sbOut = new StringBuilder();
+                ViewBag.HtmlStr = sbOut.Append(BindClintManagerDetail(ID.ToString(), MgrDetlDT));
+
             }
             catch (Exception ex)
             {
@@ -2282,22 +2293,40 @@ namespace QBA.Qutilize.WebApp.Controllers
                 TempData["ErrStatus"] = true;
             }
 
-            return View(clientModel);
+            return View(clientModel);  
         }
 
         [HttpPost]
-        public ActionResult ManageClient(ClientModel model)
+        public ActionResult ManageClient(ClientModel model,string vManagerName,string vMgrAddress,string vMgrPhno,string vMgrEmail)
         {
 
             ClientModel cm = new ClientModel();
 
             try
             {
+                //start 
+                string[] ArrManagerName = vManagerName.Split('|');
+                string[] ArrManagerAddress = vMgrAddress.Split('|');
+                string[] ArrManagerPhno = vMgrPhno.Split('|');
+                string[] ArrManagerEmail = vMgrEmail.Split('|');
+
+                List<ClientManagerDetail> lstClientMgrDetails = new List<ClientManagerDetail>();
+                for (int i = 0; i < ArrManagerName.Length; i++)
+                {
+                    ClientManagerDetail MgrDetl = new ClientManagerDetail();
+                    MgrDetl.ClientMgrName = ArrManagerName[i];
+                    MgrDetl.ClientMgrAddress = ArrManagerAddress[i];
+                    MgrDetl.ClientMgrPhno = ArrManagerPhno[i];
+                    MgrDetl.ClientMgrEmail = ArrManagerEmail[i];
+
+                    lstClientMgrDetails.Add(MgrDetl);
+                }
+                //end
                 if (model.ClientID > 0)
                 {
                     model.EditedBy = loggedInUser.ToString();
                     model.EditedDate = DateTime.Now;
-                    var insertResult = cm.UpdateClientdata(model);
+                    var insertResult =  cm.UpdateClientdata(model, lstClientMgrDetails);
                     if (insertResult)
                     {
                         TempData["ErrStatus"] = false;
@@ -2312,7 +2341,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     model.CreateDate = DateTime.Now;
                     model.CreatedBy = loggedInUser.ToString();
 
-                    var insertResult = cm.InsertClientdata(model, out int clientID);
+
+                    var insertResult = cm.InsertClientdata(model, out int clientID, lstClientMgrDetails);
                     if (insertResult && clientID > 0)
                     {
                         TempData["ErrStatus"] = false;
@@ -2327,12 +2357,14 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 TempData["ErrStatus"] = true;
             }
-            return RedirectToAction("ManageClient", "Admin");
+            return Json(TempData["ErrStatus"]);
         }
+      
         public ActionResult LoadClientData()
         {
             ClientModel obj = new ClientModel();
             StringBuilder strClienData = new StringBuilder();
+            
             try
             {
                 var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
@@ -2862,6 +2894,85 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx)
             { strMAC = string.Empty; }
             return strMAC;
+        }
+
+
+        private string BindClintManagerDetail( string ManagerID,DataTable dt)
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                sbContent.Append("<div class='row'>");
+                sbContent.Append("<div class='col-md-12'>");
+                sbContent.Append("<div class='panel-body dvBorder form-group'>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table class='table table-bordered' id='tblManagerDetail'  width='100%'>");
+                sbContent.Append("<thead>");
+                sbContent.Append("<tr>");
+              
+                sbContent.Append("<th class='text-center tblHeaderColor' width='30%'>Manager Name</th>");
+                sbContent.Append("<th class='text-center tblHeaderColor' width='30%'>Address</th>");
+                sbContent.Append("<th class='text-center tblHeaderColor' width='20%'>Phone No.</th>");
+                sbContent.Append("<th class='text-center tblHeaderColor' width='20%'>Email</th>");
+                sbContent.Append("<th class='text-center tblHeaderColor'><div class='pull-right'><button type='button' id='btnMgrAddNew' class='btn btn-xs btn-primary classAdd'><span class='glyphicon glyphicon-plus'></span></button></div></th>");
+
+                sbContent.Append("</tr>");
+                sbContent.Append("</thead>");
+                #region Bind table body
+                if (ManagerID != "0" && dt != null && dt.Rows.Count > 0)
+                {
+                    int counter = 1;
+                    sbContent.Append("<tbody id='tbodyMgrDetail'>");
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sbContent.Append("<tr class='trMgrDetail'>");
+                        sbContent.Append("<td><input class='form-control' name='txtManagerName[]' value='" + Convert.ToString(dr["Name"]) + "' id='txtManagerName"+ counter + "'> </input></td>");
+                        sbContent.Append("<td><input class='form-control' name='txtMgrAddress[]' value='" + Convert.ToString(dr["Address"]) + "' id='txtMgrAddress" + counter + "'> </input></td>");
+                        sbContent.Append("<td><input class='form-control'  name='txtMgrPhno[]' value='" + Convert.ToString(dr["phone"]) + "' id='txtMgrPhno" + counter + "'> </input></td>");
+                        sbContent.Append("<td><input class='form-control' name='txtMgrEmail[]' value='" + Convert.ToString(dr["email"]) + "' id='txtMgrEmail" + counter + "'> </input></td>");
+                       
+                        sbContent.Append("<td><button type='button' id='btnMgrDelete' name='btnMgrDelete' class='btnMgrDelete btn btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span></button></td>");
+                        sbContent.Append("</tr>");
+                        counter++;
+                    }
+                    sbContent.Append("</tbody>");
+                }
+                else 
+                {
+                    sbContent.Append("<tbody id='tbodyMgrDetail'>");
+                    sbContent.Append("<tr class='trMgrDetail'>");
+                    sbContent.Append("<td><input class='form-control' type='txtManagerName[]' name='txtManagerName[]' id='txtManagerName1' ></input></td>");
+                    sbContent.Append("<td><input class='form-control' type='text' name='txtMgrAddress[]' id='txtMgrAddress1' /></td>");
+                    sbContent.Append("<td><input class='form-control' type='number'   name='txtMgrPhno[]' id='txtMgrPhno1' /></td>");
+                    sbContent.Append("<td><input class='form-control' type='text' name='txtMgrEmail[]' id='txtMgrEmail1' /></td>");
+                    sbContent.Append("<td><button type='button' id='btnMgrDelete' name='btnMgrDelete' class='btnMgrDelete btn btn btn-danger btn-xs'><span class='glyphicon glyphicon-remove'></span></button></td>");
+                    sbContent.Append("</tr>");
+                    sbContent.Append("</tbody>");
+                }
+               
+                #endregion
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+             
+
+
+
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return sbContent.ToString();
         }
     }
 }

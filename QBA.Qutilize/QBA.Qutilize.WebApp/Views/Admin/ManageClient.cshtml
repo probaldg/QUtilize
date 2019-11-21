@@ -83,14 +83,14 @@
         </tbody>
     </table>
 </div>
-<div class="col-md-12"><br /></div>
-@using (Html.BeginForm("ManageClient", "Admin", FormMethod.Post, new { onsubmit = "return checkClientForm()" }))
+<div class="col-md-12 "><br /></div>
+@using (Html.BeginForm("ManageClient", "Admin", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <h4>Client Details</h4>
     <hr />
 
-    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <div class="form-horizontal col-md-12 dvBorder" style="border: 1px solid #f1f1f1; padding:15px">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ClientID)
 
@@ -119,12 +119,12 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ClientPhno, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ClientPhno, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.ClientPhno, new { htmlAttributes = new { @class = "form-control" , @maxlength = "10", type = "number" } })
                 @Html.ValidationMessageFor(model => model.ClientPhno, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        
+
         <div class="form-group">
             @Html.Label("Location", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -157,13 +157,20 @@
             </div>
         </div>
         <div class="form-group">
+            <h4>Client Manager Details</h4>
+            @Html.Raw(ViewBag.HtmlStr)
+
+
+        </div>
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                @*<input type="submit" value="Save" class="btn btn-default" />*@
+                <input type="button" value="Save"   id="btnSave" class="btn btn-primary" />
             </div>
         </div>
     </div>
 }
-
+    
 <script type="text/javascript">
     $("#tblGridListViewPost").dataTable();
 
@@ -181,41 +188,7 @@
             $("#OrganisationList").prop("disabled", true);
         }
     }
-
-    function Bind_Location_list() {
-        $('#ClientLocation').append('<option>International</option>');
-
-    }
-    function checkClientForm() {
-        //alert('test');
-        var clientName = $('#ClientName').val();
-        var clientCode = $('#ClientCode').val();
-        var ClientPhno = $('#ClientPhno').val();
-        orgId = $('#OrganisationList').val();
-
-        if (clientName == "") {
-            showErrorMessage("Please provide client name")
-            return false;
-        }
-        else {
-            hideErrorMessage();
-        }
-        if (clientCode == "") {
-            showErrorMessage("Please provide client code")
-            return false;
-        }
-        else {
-            hideErrorMessage();
-        }
-        if (ClientPhno == "") {
-            showErrorMessage("Please provide client Phone No")
-            return false;
-        }
-        else {
-            hideErrorMessage();
-        }
-        return true;
-    }
+     
 
     function showErrorMessage(message) {
         document.getElementById("errormsg").innerHTML = message;
@@ -226,4 +199,174 @@
         document.getElementById("ErrorMsg").style.display = 'none';
     }
 </script>
+<script>
 
+    $(document).ready(function () {
+        var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+        $("#btnMgrAddNew").click(function () {
+            intTableRowCount_++;
+            var appendRow = '<tr class="trMgrDetail">' +
+                '<td><input class="form-control" type="text" name="txtManagerName[]" id="txtManagerName' + intTableRowCount_ + '" ></input></td>' +
+                '<td><input class="form-control" type="text" name="txtMgrAddress[]" id="txtMgrAddress' + intTableRowCount_ + '" /></td>' +
+                '<td><input class="form-control" type="number" name="txtMgrPhno[]" id="txtMgrPhno' + intTableRowCount_ + '" /></td>' +
+                '<td><input class="form-control" type="text" name="txtMgrEmail[]"  id="txtMgrEmail' + intTableRowCount_ + '" /></td>' +
+
+                '<td><button type="button" id="btnMgrDelete' + intTableRowCount_ + '" name="btnMgrDelete" class="btnMgrDelete btn btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>' +
+                '</tr>';
+            $('#tblManagerDetail').append(appendRow);
+        });
+
+        $(document).on("click", ".btnMgrDelete", function () {
+            var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+            if (intTableRowCount_ > 1) {
+                $(this).closest("tr").remove();
+            }
+        });
+        
+
+
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnSave").click(function () {
+
+            //**
+            var msg = "";
+            var clientName1 = $('#ClientName').val();
+            var clientCode1 = $('#ClientCode').val();
+            var ClientPhno1 = $('#ClientPhno').val();
+            orgId = $('#OrganisationList').val();
+
+            if (clientName1 == "") {
+                showErrorMessage("Please provide client name")
+                msg = "Please provide client name";
+                $('#ClientName').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+            if (clientCode1 == "") {
+                showErrorMessage("Please provide client code")
+                msg = "Please provide client code";
+                $('#clientCode').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+            if (ClientPhno1 == "") {
+                showErrorMessage("Please provide client Phone No")
+                msg = "Please provide client Phone No";
+                $('#ClientPhno').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+
+            $('#tblManagerDetail tbody>tr').each(function () {
+                $('td', this).each(function () {
+
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtManagerName[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Name.")
+                                msg = "Please provide Manager Name.";
+                                 $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtMgrPhno[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Phone No.")
+                                msg = "Please provide Manager Phone No.";
+                                 $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtMgrEmail[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Email Id.")
+                                msg = "Please provide Manager Email Id.";
+                                $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+
+                });
+            });
+
+            //*** Post data
+            if (msg == "") {
+               
+            var ClientID = $("#ClientID").val();
+            var ClientCode = $("#ClientCode").val();
+            var ClientName = $("#ClientName").val();
+            var ClientAddress = $("#ClientAddress").val();
+            var ClientPhno = $("#ClientPhno").val();
+            var Location = $("#Location").val();
+            var ClientOrganisationID = $("#ClientOrganisationID").val();
+            var IsActive = $("#IsActive").val();
+
+            //Child
+
+            var vManagerName = $('#tblManagerDetail input[name="txtManagerName[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrAddress = $('#tblManagerDetail input[name="txtMgrAddress[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrPhno = $('#tblManagerDetail input[name="txtMgrPhno[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrEmail = $('#tblManagerDetail input[name="txtMgrEmail[]"]').map(function () { return this.value }).get().join("|");
+            
+
+            $.ajax(
+                {
+
+                    type: "POST", //HTTP POST Method
+                    url: '@Url.Action("ManageClient", "Admin")',
+                    dataType: "Json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ //Passing data
+                        "ClientID": ClientID,
+                        "ClientCode": ClientCode,
+                        "ClientName": ClientName,
+                        "ClientAddress": ClientAddress,
+                        "ClientPhno": ClientPhno,
+                        "Location": Location,
+                        "ClientPhno": ClientPhno,
+                        "ClientOrganisationID": ClientOrganisationID,
+                        "IsActive": IsActive,
+                        "vManagerName": vManagerName, "vMgrAddress": vMgrAddress, "vMgrPhno": vMgrPhno,
+                        "vMgrEmail": vMgrEmail
+
+
+
+                    }),
+                    success: function (response) {
+
+                        alert("Save Successfully.");
+                        window.location.href = "/Admin/ManageClient";
+
+                    },
+
+
+                });
+
+
+        }
+
+        });
+    });
+
+</script>
