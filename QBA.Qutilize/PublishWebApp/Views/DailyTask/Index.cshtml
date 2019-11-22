@@ -84,10 +84,10 @@
                 <tr class="text-center tblHeaderColor">
                     <th class="text-center tblHeaderColor">Task Date (MM/DD/YYYY)</th>
                     <th class="text-center tblHeaderColor">Projects</th>
+                    <th class="text-center tblHeaderColor">Ticket No</th>
                     <th class="text-center tblHeaderColor">Task Name</th>
                     <th class="text-center tblHeaderColor">Description</th>
-                    <th class="text-center tblHeaderColor">Start Time</th>
-                    <th class="text-center tblHeaderColor">End Time</th>
+                    <th class="text-center tblHeaderColor">Duration</th>
                     <th class="text-center tblHeaderColor"></th>
 
                 </tr>
@@ -95,15 +95,21 @@
             <tr>
 
                 <td>
-                    <input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">
+                    @*<input type="text" class="form-control input-sm datepicker" id="TaskDateInsert">*@
+                    <select class="Bind_workingday form-control" id="TaskDateInsert"></select>
+                    
                 </td>
                 <td>
                     @Html.DropDownListFor(M => M.ProjectsList, new SelectList(Model.ProjectsList, "ProjectID", "ProjectName"), "Please select", new { @class = "form-control" })
                     @Html.HiddenFor(model => model.ProjectID)
                 </td>
                 <td>
+                    <input type="text" class="form-control input-sm" id="TicketnoInsert">
+                </td>
+                <td>
                     @Html.DropDownListFor(model => model.ProjectTaskList, new SelectList(Model.ProjectTaskList, "TaskId", "TaskName"), "Please select", new { @class = "form-control" })
                     @Html.HiddenFor(model => model.TaskName)
+                    @Html.HiddenFor(model => model.ProjectTaskID)
                     @*<input type="text" class="form-control input-sm" id="TaskNameInsert">*@
                 </td>
                 <td>
@@ -114,9 +120,9 @@
                     <input type="text" class="form-control input-sm" id="StartTimeInsert">
 
                 </td>
-                <td>
-                    <input type="text" class="form-control input-sm" id="EndTimeInsert">
-                </td>
+                @*<td>
+            <input type="text" class="form-control input-sm" id="EndTimeInsert">
+        </td>*@
 
                 <td colspan="3">
                     @*<input type="button" class="btn btn-primary" value="Create" onclick="location.href='@Url.Action("InsertDailyTask", "DailyTask")'" />*@
@@ -145,82 +151,89 @@
              style: "col2",
              format: @<text>
                     <span id="TaskDate_@item.DailyTaskId" class="display-mode">@item.TaskDate.ToString("MM/dd/yyyy") </span>
-
-                    @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToString("MM/dd/yyyy"), new { @class = "edit-mode datepicker", @id = "TaskDate-Edit" + item.DailyTaskId })
-
-            </text>),
-             grid.Column("ProjectName",
-            style: "col2",
-            format: @<text>
-                <span id="ProjectName" class="display-mode">@item.ProjectName</span>
-                <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
+                    @Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToString("MM/dd/yyyy"), new { @class = "edit-mode datepicker", disabled = "true", @id = "TaskDate-Edit" + item.DailyTaskId })
+                    @*changed by malabika date:12-11-2019*@
+                    @*@Html.TextBox("TaskDate-Edit", ((DateTime)item.TaskDate).ToString("MM/dd/yyyy"), new { @class = "edit-mode datepicker", @id = "TaskDate-Edit" + item.DailyTaskId })*@
 
             </text>),
+                             grid.Column("ProjectName",
+                            style: "col2",
+                            format: @<text>
+                                <span id="ProjectName" class="display-mode">@item.ProjectName</span>
+                                <span id="ProjectName" class="edit-mode">@item.ProjectName</span>
 
-              grid.Column("TaskName",
-             style: "col2",
-             format: @<text>
-                <span id="TaskName" class="display-mode">@item.TaskName</span>
-                <span id="TaskName" class="edit-mode">@item.TaskName</span>
+                            </text>),
+                              grid.Column("Ticket No",
+                                                       style: "col2",
+                                                       format: @<text>
+                                                        <span id="Ticketno_@item.DailyTaskId" class="display-mode">@item.Ticketno</span>
+                                                        @Html.TextBox("Ticketno-Edit", (string)item.Ticketno, new { @class = "edit-mode", @id = "Ticketno-Edit" + item.DailyTaskId })
+                                                    </text>),
 
-            </text>),
-                        @*grid.Column("TaskName",
-                        style: "col2",
-                        format: @<text>
-                            <span id="TaskName_@item.DailyTaskId" class="display-mode">@item.TaskName</span>
-
-                            @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode", @id = "TaskName-Edit" + item.DailyTaskId })
-                        </text>),*@ /*second column end*/
-
-
-                               grid.Column("Description",
-                           style: "col2",
-                           format: @<text>
-                            <span id="Description_@item.DailyTaskId" class="display-mode">@item.Description</span>
-                            @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode", @id = "Description-Edit" + item.DailyTaskId })
-                        </text>),/*fourth column end*/
-
-                                 grid.Column("Start Time",
-                                    style: "col2",
-                                    format: @<text>
-                                        <span id="StartTime_@item.DailyTaskId" class="display-mode">@item.StartTimeToDisplay</span>
-                                        <span id="ActualStartTime_@item.DailyTaskId" style="display:none">@item.StartTime</span>
-                                        @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker", @id = "StartTime-Edit" + item.DailyTaskId })
-                                    </text>),
-                                          grid.Column("End Time",
-                                          style: "col2",
-                                          format: @<text>
-                                            <span id="EndTime_@item.DailyTaskId" class="display-mode">@item.EndTimeToDisplay</span>
-                                            <span id="ActualEndTime_@item.DailyTaskId" style="display:none">@item.EndTime</span>
-
-                                            @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker", @id = "EndTime-Edit" + item.DailyTaskId })
-                                        </text>),
-
-                                                         grid.Column("Hours",
-                                                         style: "col2",
-                                                         format: @<text>
-                                                            @* <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>*@
-                                                            <span id="hours_@item.DailyTaskId" class="display-mode">@item.HoursToDisplay</span>
-
+                                                         grid.Column("TaskName",
+                                                        style: "col2",
+                                                        format: @<text>
+                                                            <span id="TaskName" class="display-mode">@item.TaskName</span>
+                                                            <span id="TaskName" class="edit-mode">@item.TaskName</span>
 
                                                         </text>),
+                                                                @*grid.Column("TaskName",
+                                                            style: "col2",
+                                                            format: @<text>
+                                                                <span id="TaskName_@item.DailyTaskId" class="display-mode">@item.TaskName</span>
 
-                                                           grid.Column("",
-                                                           style: "col1",
-                                                           format: @<text><div style="padding-left:0px; float:right;width:100px;">
+                                                                @Html.TextBox("TaskName-Edit", (string)item.TaskName, new { @class = "edit-mode", @id = "TaskName-Edit" + item.DailyTaskId })
+                                                            </text>),*@ /*second column end*/
 
 
-                                                                @*<button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>*@
-                                                                <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId" title="Edit"> <span class="glyphicon">&#x270f;</span></button>
-                                                                <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId"><span class="glyphicon" title="Delete">&#xe014;</span></button>
-                                                                <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Update">&#xe013;</span></button>
-                                                                <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Cancel">&#xe014;</span></button>
-                                                            </div>
-                                                        </text>)) /*End of Coloumns*/
-                                                             ) @*end of grid*@
+                                                                grid.Column("Description",
+                                                            style: "col2",
+                                                            format: @<text>
+                                                                <span id="Description_@item.DailyTaskId" class="display-mode">@item.Description</span>
+                                                                @Html.TextBox("Description-Edit", (string)item.Description, new { @class = "edit-mode", @id = "Description-Edit" + item.DailyTaskId })
+                                                            </text>),/*fourth column end*/
 
-                                                        </div>
-                                                                                                }
+                                                                                                grid.Column("Duration",
+                                                                                                   style: "col2",
+                                                                                                   format: @<text>
+                                                                                                    <span id="StartTime_@item.DailyTaskId" class="display-mode">@item.StartTimeToDisplay</span>
+
+                                                                                                    <span id="ActualStartTime_@item.DailyTaskId" style="display:none">@item.StartTime</span>
+                                                                                                    @Html.TextBox("StartTime-Edit", (string)item.StartTimeToDisplay, new { @class = "edit-mode timePicker", @id = "StartTime-Edit" + item.DailyTaskId })
+                                                                                                </text>),
+                                                                                                @*grid.Column("End Time",
+                                                                                              style: "col2",
+                                                                                              format: @<text>
+                                                                                                <span id="EndTime_@item.DailyTaskId" class="display-mode">@item.EndTimeToDisplay</span>
+                                                                                                <span id="ActualEndTime_@item.DailyTaskId" style="display:none">@item.EndTime</span>
+
+                                                                                                @Html.TextBox("EndTime-Edit", (string)item.EndTimeToDisplay, new { @class = "edit-mode timePicker", @id = "EndTime-Edit" + item.DailyTaskId })
+                                                                                            </text>),*@
+
+                                                                                                @*grid.Column("Hours",
+                                                                                            style: "col2",
+                                                                                            format: @<text>*@
+                                                                                                @* <span id="hours" class="display-mode">@item.Hours.ToString("#,0.00")</span>*@
+                                                                                                //    <span id="hours_@item.DailyTaskId" class="display-mode">@item.HoursToDisplay</span>
+
+                                                                                                //</text>),
+
+                                                                                                grid.Column("",
+                                                                                                style: "col1",
+                                                                                                format: @<text><div style="padding-left:0px; float:right;width:100px;">
+
+
+                                                                                                        @*<button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId">Edit</button>*@
+                                                                                                        <button class="btn btn-primary edit-item display-mode" id="@item.DailyTaskId" title="Edit"> <span class="glyphicon">&#x270f;</span></button>
+                                                                                                        <button class="btn btn-primary display-mode delete-item" id="@item.DailyTaskId"><span class="glyphicon" title="Delete">&#xe014;</span></button>
+                                                                                                        <button class="btn btn-primary save-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Update">&#xe013;</span></button>
+                                                                                                        <button class="btn btn-primary cancel-item edit-mode" id="@item.DailyTaskId"><span class="glyphicon" title="Cancel">&#xe014;</span></button>
+                                                                                                    </div>
+                                                                                                </text>)) /*End of Coloumns*/
+                                                      ) @*end of grid*@
+
+                                                </div>
+                                                                         }
         }
     </div>
 
@@ -234,6 +247,45 @@
             z-index: 9999;
         }
     </style>
+    @* Start Created by Malabika*@
+    <script type="text/javascript">
+        function Bind_Workingday_list() {
+            var d = new Date();  //Get today date
+
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+            var weekday = parseInt(new Date().getDay());                                                             //day of week
+            var Array_Workingday = [];                                                                              //Today and previous working day insert in this array
+
+            var Today_date = (month < 10 ? '0' : '') + month + '/' + (day < 10 ? '0' : '') + day + '/' + d.getFullYear();   //create today date
+            Array_Workingday.push(Today_date);                                                                             //insert today date in this array
+
+            if (weekday == 1) {                                                                                           //if today is monday then this code will be executed
+                d.setDate(d.getDate() - 3);                                                                              //create previouse working date
+                month = d.getMonth() + 1;
+                day = d.getDate();
+                var Previous_Working_Date = (month < 10 ? '0' : '') + month + '/' + (day < 10 ? '0' : '') + day + '/' + d.getFullYear();
+                Array_Workingday.push(Previous_Working_Date);
+            }
+            else if (weekday > 1 && weekday <= 5) {                                                                   //if today is tuesday to friday then this code will be executed
+
+                d.setDate(d.getDate() - 1);                                                                          //create previouse working date
+                month = d.getMonth() + 1;
+                day = d.getDate();
+                var Previous_Working_Date = (month < 10 ? '0' : '') + month + '/' + (day < 10 ? '0' : '') + day + '/' + d.getFullYear();
+                Array_Workingday.push(Previous_Working_Date);
+
+            }
+            for (i = 0; i < 2; i++) {                                                                                //insert working day in this array
+                var data = '<option>' + Array_Workingday[i] + '</option>'
+                $('#TaskDateInsert').append(data);
+            }
+        }
+        $(document).ready(function () {
+            Bind_Workingday_list();
+        });
+    </script>
+    @* End*@
     <script type="text/javascript">
         var curr = new Date;
         var first = curr.getDate() - curr.getDay();
@@ -243,15 +295,17 @@
         var last = first + 6;
 
         $('#TaskDateInsert').datepicker({
+
             //minDate: new Date(curr.setDate(first)),
             minDate: new Date(),
-            maxDate: new Date()
+
+           maxDate: new Date()
         });
         //$("#StartTimeInsert").timepicker({ 'scrollDefault': 'now' })
         //$("#EndTimeInsert").timepicker({ 'scrollDefault': 'now' })
 
         $("#StartTimeInsert").timepicker({ timeFormat: 'HH:mm' });
-        $("#EndTimeInsert").timepicker({ timeFormat: 'HH:mm' });
+       // $("#EndTimeInsert").timepicker({ timeFormat: 'HH:mm' });
 
         $(".datepicker").datepicker({
             autoclose: true, todayBtn: 'linked',
@@ -295,77 +349,107 @@
 
         $('.save-item').on('click', function () {
 
+          
             var tr = $(this).parents('tr:first');
             var DailyTaskId = $(this).prop('id');
             var taskDate = tr.find('#TaskDate-Edit' + DailyTaskId).val();
             var taskName = tr.find('#TaskName-Edit' + DailyTaskId).val();
             var Description = tr.find('#Description-Edit' + DailyTaskId).val();
             var startTime = tr.find('#StartTime-Edit' + DailyTaskId).val();
+            var Ticketno=tr.find('#Ticketno-Edit' + DailyTaskId).val();
+            
             var actualStartTime = tr.find('#ActualStartTime_' + DailyTaskId).html();
-            var actualEndTime = tr.find('#ActualEndTime_' + DailyTaskId).html();
-            var EndTime = tr.find('#EndTime-Edit' + DailyTaskId).val();
+
+            //comment by malabika
+           // var actualEndTime = tr.find('#ActualEndTime_' + DailyTaskId).html();
+        //    var EndTime = tr.find('#EndTime-Edit' + DailyTaskId).val();
 
             if (taskDate == "") {
                 ShowError("Task date is required to edit the task.");
                 return false;
             }
 
-            if (Description == "") {
-                ShowError("Description is required to edit the task.");
-                return false;
-            }
+            //if (Description == "") {
+            //    ShowError("Description is required to edit the task.");
+            //    return false;
+            //}
 
             if (startTime == "") {
                 ShowError("Start time is required to edit the task.");
                 return false;
             }
-            if (EndTime == "") {
-                ShowError("End time is required to edit the task.");
-                return false;
-            }
+            //comment by malabika
+            //if (Ticketno == "") {
+            //    ShowError("Ticketnois required to edit the task.");
+            //    return false;
+            //}
+            //if (EndTime == "") {
+            //    ShowError("End time is required to edit the task.");
+            //    return false;
+            //}
+
+           
 
             var CreatedTaskDate = new Date(taskDate);
             var ActualDateInStartTime = new Date(actualStartTime);
-
+           
             var updatedStartTimeString;
             var updatedStartTime;
 
-            var updatedEndTimeString;
-            var updatedEndTime;
+          //  var updatedEndTimeString;
+          //  var updatedEndTime;
 
             if (CreatedTaskDate.toDateString() == ActualDateInStartTime.toDateString()) {
+
                 updatedStartTimeString = ActualDateInStartTime.getFullYear().toString() + '-' + (ActualDateInStartTime.getMonth() + 1).toString() + '-' + ActualDateInStartTime.getDate().toString() + ' ' + startTime.split(':')[0].toString() + ':' + startTime.split(':')[1].toString();
                 updatedStartTime = new Date(updatedStartTimeString);
 
-                if (EndTime != "") {
-                    
-                     updatedEndTimeString = ActualDateInStartTime.getFullYear().toString() + '-' + (ActualDateInStartTime.getMonth() + 1).toString() + '-' + ActualDateInStartTime.getDate().toString() + ' ' + EndTime.split(':')[0].toString() + ':' + EndTime.split(':')[1].toString();
-                    updatedEndTime = new Date(updatedEndTimeString);
-                }
+
+                //if (EndTime != "") {
+
+                //     updatedEndTimeString = ActualDateInStartTime.getFullYear().toString() + '-' + (ActualDateInStartTime.getMonth() + 1).toString() + '-' + ActualDateInStartTime.getDate().toString() + ' ' + EndTime.split(':')[0].toString() + ':' + EndTime.split(':')[1].toString();
+                //    updatedEndTime = new Date(updatedEndTimeString);
+                //}
             }
             else {
                 updatedStartTimeString = CreatedTaskDate.getFullYear().toString() + '-' + (CreatedTaskDate.getMonth() + 1).toString() + '-' + CreatedTaskDate.getDate().toString() + ' ' + startTime.split(':')[0].toString() + ':' + startTime.split(':')[1].toString();
                 updatedStartTime = new Date(updatedStartTimeString);
 
-                if (EndTime != "") {
-                   
-                    var updatedEndTimeString = CreatedTaskDate.getFullYear().toString() + '-' + (CreatedTaskDate.getMonth() + 1).toString() + '-' + CreatedTaskDate.getDate().toString() + ' ' + EndTime.split(':')[0].toString() + ':' + EndTime.split(':')[1].toString();
-                    updatedEndTime = new Date(updatedEndTimeString);
-                }
+                //if (EndTime != "") {
+
+                //    var updatedEndTimeString = CreatedTaskDate.getFullYear().toString() + '-' + (CreatedTaskDate.getMonth() + 1).toString() + '-' + CreatedTaskDate.getDate().toString() + ' ' + EndTime.split(':')[0].toString() + ':' + EndTime.split(':')[1].toString();
+                //    updatedEndTime = new Date(updatedEndTimeString);
+                //}
             }
+           
+            //var diff = (updatedEndTime - updatedStartTime) / 1000;
 
-            var diff = (updatedEndTime - updatedStartTime) / 1000;
-            diff /= 3600;
+           // var diff = ( updatedStartTime) / 1000;
+           // diff /= 3600;
 
-            if (diff >= 24) {
+            var duration;
+            var hour;
+            var hms = startTime;   // your input string
+            var a = hms.split(':'); // split it at the colons
+           
+            duration = a[0] + '.' + a[1];
+            // minutes are worth 60 seconds. Hours are worth 60 minutes.
+            var seconds = (+a[0]) * 60  + (+a[1]) ;
+            hour = seconds / 60;
+          
+            if (hour >= 24) {
                 ShowError("time diffrence can not be greater than 24 hours..");
                 return false;
             }
-
-            if (updatedStartTime > updatedEndTime) {
-                ShowError("start time can not be greater than end time..");
+            if (hour == 0) {
+                ShowError("time  can not be  0 hours..");
                 return false;
             }
+            //comment by malabika
+            //if (updatedStartTime > updatedEndTime) {
+            //    ShowError("start time can not be greater than end time..");
+            //    return false;
+            //}
 
 
 
@@ -385,26 +469,37 @@
             tr.find('.edit-mode, .display-mode').toggle();
             $('#ErrorMsg').css("display", "none");*@
 
-
+           
             $.post(
                 '@Url.Action("UpdateDailyTask", "DailyTask")',
-                { DailyTaskId: DailyTaskId, TaskDate: taskDate, TaskName: taskName, Description: Description, StartTimeString: updatedStartTimeString, EndTimeString: updatedEndTimeString},
+            //    { DailyTaskId: DailyTaskId, TaskDate: taskDate, TaskName: taskName, Description: Description, StartTimeString: updatedStartTimeString, EndTimeString: updatedEndTimeString},
+                { DailyTaskId: DailyTaskId, CurrentTaskdate: taskDate, TaskName: taskName, Description: Description, StartTimeString: updatedStartTimeString, Duration: duration, Ticketno: Ticketno},
                 function (item) {
                     console.log(item);
-                   // alert(item.TaskDate);
+        
                     tr.find('#TaskDate_' + DailyTaskId).text(item.TaskDate);
                     tr.find('#TaskName_' + DailyTaskId).text(item.TaskName == null ? "" : item.TaskName);
                     tr.find('#Description_' + DailyTaskId).text(item.TaskDescription == null ? "" : item.TaskDescription);
                     tr.find('#StartTime_' + DailyTaskId).text(item.StartTime);
-                    tr.find('#EndTime_' + DailyTaskId).text(item.EndTime== null?"":item.EndTime);
-                    tr.find('#hours_' + DailyTaskId).text(item.Hours);
+                    tr.find('#Ticketno_' + DailyTaskId).text(item.Ticketno == null ? "" : item.Ticketno);
+                  //  tr.find('#EndTime_' + DailyTaskId).text(item.EndTime== null?"":item.EndTime);//comment by malabika
+                    //   tr.find('#hours_' + DailyTaskId).text(item.Hours);
 
+                    if (item.ReturnResult == "Invalid") {
+                        //alert("Task time can not be greater than 24 hours..");
+                        
+                        ShowError("Task time can not be greater than 24 hours..")
+                        return false;
+                       
+                    }
                 }, "json").done(function () {
-                    tr.find('.edit-mode, .display-mode').toggle();
-                    $('#ErrorMsg').css("display", "none");
+                   tr.find('.edit-mode, .display-mode').toggle();
+                  //  $('#ErrorMsg').css("display", "none");
+                  //  ShowSuccessfully("Data Update Successfully..")        
                 })
+               
                 .fail(function () {
-                    
+
                     ShowError("some error occured.")
                     return false;
                 });
@@ -423,16 +518,19 @@
 
              var taskDate = $('#TaskDateInsert').val();
 
+             //
              var projectID = $('#ProjectsList').val();
+             var ProjectTaskID = $('#ProjectTaskList').val();
 
              var taskNameID = $('#ProjectTaskList').val();// $('#TaskNameInsert').val();
              var taskName = $("#ProjectTaskList option:selected").text();
              var startTime = $('#StartTimeInsert').val();
 
-             var endTime = $('#EndTimeInsert').val();
+             //var endTime = $('#EndTimeInsert').val();
              var dsec = $('#DescriptionInsert').val();
+             var Ticketno = $('#TicketnoInsert').val();
 
-
+           
                 if (taskDate == "") {
                     ShowError("Task date is required..")
                     return false;
@@ -454,51 +552,69 @@
                 if (startTime== "") {
                     ShowError("Plese insert start time");
                     return false;
-                }
-                if (endTime == "") {
-                    ShowError("Plese insert end time");
-                    return false;
-                }
+             }
+             //changed by malabika
+                //if (endTime == "") {
+                //    ShowError("Plese insert end time");
+                //    return false;
+                //}
 
 
-             var stt = new Date("November 13, 2013 " + startTime);
-             stt = stt.getTime();
+            // var stt = new Date("November 13, 2013 " + startTime);
+           //  stt = stt.getTime();
+             
+            
 
-             var endt = new Date("November 13, 2013 " + endTime);
-             endt = endt.getTime();
+            // var endt = new Date("November 13, 2013 " + endTime);
+            // endt = endt.getTime();
 
-             var diff = (endt - stt) / 1000;
-             diff /= 3600;
-
-             if (diff >= 24) {
-                 ShowError(" time diffrence can not be greater than 24 hours..");
+           //  var diff = (endt - stt) / 1000;
+            // var diff = (stt) / 1000;
+            // diff /= 3600;
+             //15-11-2019
+             var hour;
+             var hms = startTime;   // your input string
+             var a = hms.split(':'); // split it at the colons
+             var duration = (a[0] + '.' + a[1]);
+        
+             var min = (+a[0]) * 60 + (+a[1]);
+             hour = (min / 60);
+            
+            
+             if (hour >= 24) {
+                 ShowError("time diffrence can not be greater than 24 hours..");
                  return false;
              }
-             if (stt > endt) {
-                 ShowError("start time can not be greater than end time..");
+             if (hour == 0) {
+                 ShowError("time  can not be  0 hours..");
                  return false;
              }
-
-
+             //if (stt > endt) {
+             //    ShowError("start time can not be greater than end time..");
+             //    return false;
+             //}
+            
                 $.ajax({
                     url: '@Url.Action("InsertDailyTask", "DailyTask")',
                     type: 'POST',
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
+        
                     data: JSON.stringify({
                         "taskDate": taskDate,
                         "projectID": projectID,
-                        "startTime": startTime,
-                        "endTime":endTime,
                         "taskName": taskName,
                         "descreption": dsec,
-                    }), //Data end
+                        "ProjectTaskID": ProjectTaskID,
+                        "Duration": duration,
+                        "Ticketno": Ticketno
+                        
+                    }), //Data end                         // "endTime":endTime,
                     success: function (response) {
 
                         if (response == "Success") {
                             //console.log(response);
                             // @strMSGforSave=response.val();
-                           // alert('Task saved succesfully');
                             location.reload();
                         }
                         else if (response == "Invalid") {
@@ -516,7 +632,10 @@
             document.getElementById("errormsg").innerHTML = message;
             document.getElementById("ErrorMsg").style.display = 'block';
         }
-
+        function ShowSuccessfully(message) {
+            document.getElementById("divSuccessMeassage").innerHTML = message;
+            document.getElementById("divSuccessMeassage").style.display = 'block';
+        }
         function diff_inHour(dt2, dt1) {
 
             var diff = (dt2.getTime() - dt1.getTime()) / 1000;
@@ -562,5 +681,7 @@
                 });
         });
     </script>
+
+
 </body>
 </html>
