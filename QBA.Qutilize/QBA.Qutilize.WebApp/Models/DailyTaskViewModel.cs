@@ -204,29 +204,29 @@ namespace QBA.Qutilize.WebApp.Models
 
                         dailyTaskModel.CreateDate= Convert.ToDateTime(item["CreateDate"]);
 
-                        dailyTaskModel.StartTime = Convert.ToDateTime(item["ActualStartTime"]);
-                        dailyTaskModel.StartTimeToDisplay = item["StartTime"].ToString();
+                        dailyTaskModel.StartTime = Convert.ToDateTime(item["TaskDate"]);
+                        dailyTaskModel.StartTimeToDisplay = string.Empty;
                         dailyTaskModel.Ticketno= item["ShortDesc"].ToString();
-                        if (item["duration"].ToString() == "")
+                        if (Convert.ToString(item["duration"]) == "")
                         {
-                            dailyTaskModel.StartTimeToDisplay = item["duration"].ToString();
+                            dailyTaskModel.StartTimeToDisplay = string.Empty;
                         }
                         else
                         {
                             string duration = (item["duration"]).ToString();
-                          
+
                             string[] a = duration.Split('.');
                             string hour = "";
                             string minute = "";
-                            if(a[0].Length==1)
+                            if (a[0].Length == 1)
                             {
                                 hour = "0" + a[0];
                             }
                             else
                             {
-                                hour =  a[0];
+                                hour = a[0];
                             }
-                            if(a[1].Length == 1)
+                            if (a[1].Length == 1)
                             {
                                 minute = a[1] + "0";
                             }
@@ -234,7 +234,6 @@ namespace QBA.Qutilize.WebApp.Models
                             {
                                 minute = a[1];
                             }
-                           
                             dailyTaskModel.StartTimeToDisplay = hour + ":" + minute;
                             dailyTaskModel.Duration = Convert.ToDouble(item["duration"]);
                         }

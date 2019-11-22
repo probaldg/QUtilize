@@ -2960,10 +2960,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbContent.Append("</div>");
                 sbContent.Append("</div>");
                 sbContent.Append("</div>");
-             
-
-
-
             }
             catch (Exception exE)
             {
@@ -2989,7 +2985,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in dt.Rows)
                     {
                       
+<<<<<<< Updated upstream
                         ManagerList.Add("<tr class='trMgrDetail1'>");
+=======
+                        ManagerList.Add("<tr>");
+>>>>>>> Stashed changes
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Address"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["phone"]) + "</td>");
@@ -3001,11 +3001,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else
                 {
-                    ManagerList.Add("<tr class='trMgrDetail1'>");
-                    ManagerList.Add("<td><span class='control-text'></span></td>");
-                    ManagerList.Add("<td><span class='control-text'></span></td>");
-                    ManagerList.Add("<td><span class='control-text'></span></td>");
-                    ManagerList.Add("<td><span class='control-text'></span></td>");
+                    ManagerList.Add("<tr>");
+                    ManagerList.Add("<td></td>");
+                    ManagerList.Add("<td></td>");
+                    ManagerList.Add("<td></td>");
+                    ManagerList.Add("<td></td>");
                     ManagerList.Add("</tr>");
                    
                 }
@@ -3023,6 +3023,48 @@ namespace QBA.Qutilize.WebApp.Controllers
             
             return ManagerList;
         }
+        private string GetClintManagerDetail(DataTable dt)
+        {
+            StringBuilder sbContent = new StringBuilder();
+            List<string> ManagerList = new List<string>();
+            try
+            {
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["Address"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["phone"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["email"]) + "</td>");
+                        sbContent.Append("</tr>");
+                    }
+                }
+                else
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td></td>");
+                    sbContent.Append("<td></td>");
+                    sbContent.Append("<td></td>");
+                    sbContent.Append("<td></td>");
+                    sbContent.Append("</tr>");
+                }
+
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return sbContent.ToString();
+        }
         public ActionResult GetManagerDetailsById(string ID)
         {
             ClientModel clientModel = new ClientModel();
@@ -3033,16 +3075,16 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 DataTable MgrDetlDT = new DataTable();
                 MgrDetlDT = clientModel.GetClientManagerByID(id);
-                MgrList=(GetClintManagerDetail(ID, MgrDetlDT));
-              
+                //MgrList=(GetClintManagerDetail(ID, MgrDetlDT));
+                sbOut.Append(GetClintManagerDetail(MgrDetlDT));
             }
             catch (Exception ex)
             {
 
                 TempData["ErrStatus"] = true;
             }
-
-            return Json(JsonConvert.SerializeObject(MgrList));
+            return Json(sbOut.ToString());
+            //return Json(JsonConvert.SerializeObject(MgrList));
         }
     }
 }

@@ -437,9 +437,9 @@
             data: JSON.stringify({ "ID": ID }),
             success: function (response) {
               
-                var ListHTML = JSON.parse(response);
+                //var ListHTML = JSON.parse(response);
                 
-                $('#tblManagerDetail1 tbody').append(ListHTML);
+                $('#tblManagerDetail1 tbody').append(response);
     
                    $('#mymodal').modal('show');
                  
