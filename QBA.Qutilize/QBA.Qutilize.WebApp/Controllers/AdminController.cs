@@ -414,7 +414,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         //***End
 
 
-            public ActionResult GetDepartments(int orgId)
+        public ActionResult GetDepartments(int orgId)
          {
             UserModel user = new UserModel();
             string strDeptData = string.Empty;
@@ -2980,6 +2980,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             StringBuilder sbContent = new StringBuilder();
             List<string> ManagerList = new List<string>();
+            ManagerList.Clear();
             try
             {
     
@@ -2989,10 +2990,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                       
                         ManagerList.Add("<tr class='trMgrDetail1'>");
-                        ManagerList.Add("<td><span style='text-align: center' class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["Address"]) + "</span></td>");
-                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["phone"]) + "</span></td>");
-                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["email"]) + "</span></td>");
+                        ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Address"]) + "</td>");
+                        ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["phone"]) + "</td>");
+                        ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["email"]) + "</td>");
                         ManagerList.Add("</tr>");
                       
 
