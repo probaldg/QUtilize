@@ -36,6 +36,7 @@ namespace QBA.Qutilize.WebApp.Models
         public bool IsActive { get; set; }
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
+       
 
         public ClientModel()
         {

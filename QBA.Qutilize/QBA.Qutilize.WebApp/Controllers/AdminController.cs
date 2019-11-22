@@ -2285,7 +2285,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 StringBuilder sbOut = new StringBuilder();
                 ViewBag.HtmlStr = sbOut.Append(BindClintManagerDetail(ID.ToString(), MgrDetlDT));
-
+               
             }
             catch (Exception ex)
             {
@@ -2393,6 +2393,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strClienData.Append(" <td class='text-center'>" + item["ClientLocation"].ToString() + "</td>");
                     strClienData.Append("<td class='text-center'>" + item["orgname"].ToString() + "</td>");
                     strClienData.Append("<td class='text-center'>" + status + "</td>");
+                   
+                    strClienData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowManagerDetlPopup({0});""> view </a> </td>",Convert.ToInt32( item["ClientID"]));
                     strClienData.Append("<td class='text-center'><a href = 'ManageClient?ID=" + item["ClientID"].ToString() + "'>Edit </a> </td>");
                     strClienData.Append("</tr>");
 
@@ -2973,6 +2975,73 @@ namespace QBA.Qutilize.WebApp.Controllers
                 catch (Exception exC) { }
             }
             return sbContent.ToString();
+        }
+        private List<string> GetClintManagerDetail(string ManagerID, DataTable dt)
+        {
+            StringBuilder sbContent = new StringBuilder();
+            List<string> ManagerList = new List<string>();
+            try
+            {
+    
+                if (ManagerID != "0" && dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                      
+                        ManagerList.Add("<tr class='trMgrDetail1'>");
+                        ManagerList.Add("<td><span style='text-align: center' class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["Address"]) + "</span></td>");
+                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["phone"]) + "</span></td>");
+                        ManagerList.Add("<td><span class='text-center control-text'>" + Convert.ToString(dr["email"]) + "</span></td>");
+                        ManagerList.Add("</tr>");
+                      
+
+                    }
+                }
+                else
+                {
+                    ManagerList.Add("<tr class='trMgrDetail1'>");
+                    ManagerList.Add("<td><span class='control-text'></span></td>");
+                    ManagerList.Add("<td><span class='control-text'></span></td>");
+                    ManagerList.Add("<td><span class='control-text'></span></td>");
+                    ManagerList.Add("<td><span class='control-text'></span></td>");
+                    ManagerList.Add("</tr>");
+                   
+                }
+
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            
+            return ManagerList;
+        }
+        public ActionResult GetManagerDetailsById(string ID)
+        {
+            ClientModel clientModel = new ClientModel();
+            List<string> MgrList = new List<string>();
+            StringBuilder sbOut = new StringBuilder();
+           int id = Convert.ToInt32(ID);
+            try
+            {
+                DataTable MgrDetlDT = new DataTable();
+                MgrDetlDT = clientModel.GetClientManagerByID(id);
+                MgrList=(GetClintManagerDetail(ID, MgrDetlDT));
+              
+            }
+            catch (Exception ex)
+            {
+
+                TempData["ErrStatus"] = true;
+            }
+
+            return Json(JsonConvert.SerializeObject(MgrList));
         }
     }
 }

@@ -74,6 +74,7 @@
                 <th class="text-center tblHeaderColor">Customer Location</th>
                 <th class="text-center tblHeaderColor">Organisation</th>
                 <th class="text-center tblHeaderColor">Active</th>
+                <th class="text-center tblHeaderColor">View</th>
                 <th class="text-center tblHeaderColor">Edit</th>
 
             </tr>
@@ -119,7 +120,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ClientPhno, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ClientPhno, new { htmlAttributes = new { @class = "form-control" , @maxlength = "10", type = "number" } })
+                @Html.EditorFor(model => model.ClientPhno, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", type = "number" } })
                 @Html.ValidationMessageFor(model => model.ClientPhno, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -159,77 +160,129 @@
         <div class="form-group">
             <h4>Client Manager Details</h4>
             @Html.Raw(ViewBag.HtmlStr)
-
-
+            
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 @*<input type="submit" value="Save" class="btn btn-default" />*@
-                <input type="button" value="Save"   id="btnSave" class="btn btn-primary" />
+                <input type="button" value="Save" id="btnSave" class="btn btn-primary" />
             </div>
         </div>
     </div>
 }
-    
-<script type="text/javascript">
-    $("#tblGridListViewPost").dataTable();
+    <div id="mymodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
 
-    var orgId = $('#ClientOrganisationID').val();
+            <!-- Modal content-->
+            <div class="modal-content">
 
-    $('#OrganisationList').change(function () {
-        var OrgId = $('#OrganisationList').val();
-        $('#ClientOrganisationID').val(OrgId)
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  
+                </div>
+                <div class="modal-body">
 
-    });
+                    <div class="form-group">
+                     
+                        <div id="popupUserBody">
+                            <h5 style=" text-align:center">Manager Details</h5>
+                            <div class='row'>
+                                <div class='col-md-12'>
+                                    <div class='panel-body  form-group'>
+                                        <div class='panel-body'>
+                                            <div class='table-responsive'>
+                                                <table class='table table-bordered' id='tblManagerDetail1'>
+                                                       
+                                                    <thead>
+                                                        <tr>
+                                                            
+                                                            <th class='text-center tblHeaderColor' width='30%'>Manager Name</th>
+                                                            <th class='text-center tblHeaderColor' width='30%'>Address</th>
+                                                            <th class='text-center tblHeaderColor' width='20%'>Phone No.</th>
+                                                            <th class='text-center tblHeaderColor' width='20%'>Email</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id='tbodyMgrDetail1'>
+                                                      
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    if (orgId != 0) {
-        $('#OrganisationList').val(orgId);
-        if ($('#OrganisationList option').length == 2) {
-            $("#OrganisationList").prop("disabled", true);
-        }
-    }
-     
+                    </div>
+                </div>
 
-    function showErrorMessage(message) {
-        document.getElementById("errormsg").innerHTML = message;
-        document.getElementById("ErrorMsg").style.display = 'block';
-    }
-    function hideErrorMessage() {
-        document.getElementById("errormsg").innerHTML = '';
-        document.getElementById("ErrorMsg").style.display = 'none';
-    }
-</script>
-<script>
 
-    $(document).ready(function () {
-        var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
-        $("#btnMgrAddNew").click(function () {
-            intTableRowCount_++;
-            var appendRow = '<tr class="trMgrDetail">' +
-                '<td><input class="form-control" type="text" name="txtManagerName[]" id="txtManagerName' + intTableRowCount_ + '" ></input></td>' +
-                '<td><input class="form-control" type="text" name="txtMgrAddress[]" id="txtMgrAddress' + intTableRowCount_ + '" /></td>' +
-                '<td><input class="form-control" type="number" name="txtMgrPhno[]" id="txtMgrPhno' + intTableRowCount_ + '" /></td>' +
-                '<td><input class="form-control" type="text" name="txtMgrEmail[]"  id="txtMgrEmail' + intTableRowCount_ + '" /></td>' +
+                <div class="modal-footer">
 
-                '<td><button type="button" id="btnMgrDelete' + intTableRowCount_ + '" name="btnMgrDelete" class="btnMgrDelete btn btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>' +
-                '</tr>';
-            $('#tblManagerDetail').append(appendRow);
-        });
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
 
-        $(document).on("click", ".btnMgrDelete", function () {
-            var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
-            if (intTableRowCount_ > 1) {
-                $(this).closest("tr").remove();
+            </div>
+          
+        </div>
+        </div>
+        <script type="text/javascript">
+            $("#tblGridListViewPost").dataTable();
+
+            var orgId = $('#ClientOrganisationID').val();
+
+            $('#OrganisationList').change(function () {
+                var OrgId = $('#OrganisationList').val();
+                $('#ClientOrganisationID').val(OrgId)
+
+            });
+
+            if (orgId != 0) {
+                $('#OrganisationList').val(orgId);
+                if ($('#OrganisationList option').length == 2) {
+                    $("#OrganisationList").prop("disabled", true);
+                }
             }
-        });
-        
 
 
-    });
-</script>
+            function showErrorMessage(message) {
+                document.getElementById("errormsg").innerHTML = message;
+                document.getElementById("ErrorMsg").style.display = 'block';
+            }
+            function hideErrorMessage() {
+                document.getElementById("errormsg").innerHTML = '';
+                document.getElementById("ErrorMsg").style.display = 'none';
+            }
+        </script>
+        <script>
+
+            $(document).ready(function () {
+                var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+                $("#btnMgrAddNew").click(function () {
+                    intTableRowCount_++;
+                    var appendRow = '<tr class="trMgrDetail">' +
+                        '<td><input class="form-control" type="text" name="txtManagerName[]" id="txtManagerName' + intTableRowCount_ + '" ></input></td>' +
+                        '<td><input class="form-control" type="text" name="txtMgrAddress[]" id="txtMgrAddress' + intTableRowCount_ + '" /></td>' +
+                        '<td><input class="form-control" type="number" name="txtMgrPhno[]" id="txtMgrPhno' + intTableRowCount_ + '" /></td>' +
+                        '<td><input class="form-control" type="text" name="txtMgrEmail[]"  id="txtMgrEmail' + intTableRowCount_ + '" /></td>' +
+
+                        '<td><button type="button" id="btnMgrDelete' + intTableRowCount_ + '" name="btnMgrDelete" class="btnMgrDelete btn btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>' +
+                        '</tr>';
+                    $('#tblManagerDetail').append(appendRow);
+                });
+
+                $(document).on("click", ".btnMgrDelete", function () {
+                    var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+                    if (intTableRowCount_ > 1) {
+                        $(this).closest("tr").remove();
+                    }
+                });
 
 
-<script>
+
+            });
+        </script>
+        <script>
     $(document).ready(function () {
 
         $("#btnSave").click(function () {
@@ -312,7 +365,7 @@
 
             //*** Post data
             if (msg == "") {
-               
+
             var ClientID = $("#ClientID").val();
             var ClientCode = $("#ClientCode").val();
             var ClientName = $("#ClientName").val();
@@ -328,7 +381,7 @@
             var vMgrAddress = $('#tblManagerDetail input[name="txtMgrAddress[]"]').map(function () { return this.value }).get().join("|");
             var vMgrPhno = $('#tblManagerDetail input[name="txtMgrPhno[]"]').map(function () { return this.value }).get().join("|");
             var vMgrEmail = $('#tblManagerDetail input[name="txtMgrEmail[]"]').map(function () { return this.value }).get().join("|");
-            
+
 
             $.ajax(
                 {
@@ -369,4 +422,37 @@
         });
     });
 
-</script>
+        </script>
+        <script>
+    function ShowManagerDetlPopup(clientID) {
+ 
+        $('#tblManagerDetail1 tbody').html('');  
+        var ID = clientID;
+
+        $.ajax({
+            url: '@Url.Action("GetManagerDetailsById", "Admin")',
+            type: "POST",
+            dataType: "json",
+           contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "ID": ID }),
+            success: function (response) {
+              
+                var ListHTML = JSON.parse(response);
+                
+                $('#tblManagerDetail1 tbody').append(ListHTML);
+    
+                   $('#mymodal').modal('show');
+                 
+
+            },
+            error: function (response) {
+                
+                    alert('Some error occurred.');
+                           
+            }
+        });
+
+
+        }
+
+        </script>
