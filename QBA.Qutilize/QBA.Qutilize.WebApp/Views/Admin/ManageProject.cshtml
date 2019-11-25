@@ -72,9 +72,17 @@
                     <th class="text-center tblHeaderColor sorting">Project Code</th>
                     <th class="text-center tblHeaderColor sorting">Description</th>
                     <th class="text-center tblHeaderColor sorting">Project Type</th>
+                    <th class="text-center tblHeaderColor sorting">Project Pricing</th>
+                    <th class="text-center tblHeaderColor sorting">Project Billing Type</th>
                     <th class="text-center tblHeaderColor sorting">Department</th>
                     <th class="text-center tblHeaderColor sorting">Manager Name</th>
                     <th class="text-center tblHeaderColor sorting">Client Name</th>
+                    <th class="text-center tblHeaderColor sorting">Client PO No</th>
+                    <th class="text-center tblHeaderColor sorting">Client PO Date</th>
+                    <th class="text-center tblHeaderColor sorting">Project Start Date</th>
+                    <th class="text-center tblHeaderColor sorting">Project End Date</th>
+                    <th class="text-center tblHeaderColor sorting">Currency</th>
+                    <th class="text-center tblHeaderColor sorting">Project Rate</th>
                     <th class="text-center tblHeaderColor sorting">Organisation</th>
                     <th class="text-center tblHeaderColor sorting">Status</th>
                     <th class="text-center tblHeaderColor sorting">Total Team Member</th>
@@ -431,6 +439,24 @@
                     @Html.HiddenFor(model => model.ProjectTypeID)
                 </div>
             </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectPricingList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.ProjectPricingList, new SelectList(Model.ProjectPricingList, "ID", "Name"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.ProjectPricingID)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectBillingList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.ProjectBillingList, new SelectList(Model.ProjectBillingList, "ID", "Name"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.ProjectBillingID)
+                </div>
+            </div>
+
+
             <div class="form-group">
                 @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -454,10 +480,60 @@
                 </div>
             </div>
 
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientPoNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ClientPoNo, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ClientPoNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientPoDateToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ClientPoDateToDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ClientPoDateToDisplay, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectStartDateToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectStartDateToDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProjectStartDateToDisplay, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectEndDateToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectEndDateToDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProjectEndDateToDisplay, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CurrencyList, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.CurrencyList, new SelectList(Model.CurrencyList, "ID", "Name"), "Select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.CurrencyID)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ProjectRate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ProjectRate, new { htmlAttributes = new { @class = "form-control" , type = "number" } })
+                    @Html.ValidationMessageFor(model => model.ProjectRate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
             <div class="form-group">
                 @Html.LabelFor(model => model.MaxProjectTimeInHours, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control" , type = "number" } })
                     @Html.ValidationMessageFor(model => model.MaxProjectTimeInHours, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -484,7 +560,24 @@
 
     <script type="text/javascript">
 
-
+        $('#ProjectEndDateToDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true
+           // yearRange: "-90:+00"
+          //  maxDate: new Date()
+        });
+        $('#ProjectStartDateToDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true
+          //  yearRange: "-90:+00",
+           // maxDate: new Date()
+        });
+        $('#ClientPoDateToDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true
+           // yearRange: "-90:+00",
+           // maxDate: new Date()
+        });
         $("#tblGridListViewPost").dataTable();
         $("#ProjectTask_TaskStartDateDisplay").datepicker({
 
@@ -514,6 +607,26 @@
             $('#DepartmentList').val(DeptId);
         }
 
+        var ProjectTypeId = $('#ProjectTypeID').val();
+        if (ProjectTypeId > 0) {
+            $('#ProjectTypeList').val(ProjectTypeId);
+        }
+
+        var BillingTypeId = $('#ProjectBillingID').val();
+        if (BillingTypeId > 0) {
+            $('#ProjectBillingList').val(BillingTypeId);
+        }
+
+        var ProjectPricingId = $('#ProjectPricingID').val();
+        if (ProjectPricingId > 0) {
+            $('#ProjectPricingList').val(ProjectPricingId);
+        }
+
+        var CurrencyId = $('#CurrencyID').val();
+       
+        if (CurrencyId > 0) {
+            $('#CurrencyList').val(CurrencyId);
+        }
         var managerId = $('#PMUserID').val();
         if (managerId > 0) {
             $('#UserList').val(managerId);
@@ -529,26 +642,96 @@
             var DepartmentId = $("#DepartmentList").val();
             var managerId = $("#UserList").val();
             var MaxProjectTimeInHours = $('#MaxProjectTimeInHours').val();
+            var ClientPoNo = $('#ClientPoNo').val();
+            var ClientPoDate = $('#ClientPoDateToDisplay').val();
+            var ProjectStartDate = $('#ProjectStartDateToDisplay').val();
+            var ProjectEndDate = $('#ProjectEndDateToDisplay').val();
+            var ProjectRate = $('#ProjectRate').val();
+            var PricingModelId = $("#ProjectPricingID").val();
+            var BillingTypeId = $("#ProjectBillingID").val();
+            var CurrencyId = $("#CurrencyID").val();
+
+   
+           
             if (ProjectName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Project Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#ProjectName').focus();
                 return false;
             }
             if (projectCode == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide Project code";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#ProjectCode').focus();
+                return false;
+            }
+            if (PricingModelId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Project Pricing ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectPricingList').focus();
+                return false;
+            }
+            if (BillingTypeId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Project Billing Type ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectBillingList').focus();
                 return false;
             }
             if (DepartmentId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select a department";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#DepartmentList').focus();
                 return false;
             }
             if (managerId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select a manager";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#UserList').focus();
+                return false;
+            }
+           
+            if (ClientPoNo == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Client PO No.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ClientPoNo').focus();
+                return false;
+            }
+            if (ClientPoDate == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Client PO Date";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ClientPoDate').focus();
+                return false;
+            }
+
+            if (ProjectStartDate == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project Start Date";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectStartDateToDisplay').focus();
+                return false;
+            }
+            if (ProjectEndDate == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project End Date";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectEndDateToDisplay').focus();
+                return false;
+            }
+
+            if (CurrencyId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Currency ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#CurrencyList').focus();
+                return false;
+            }
+            if (ProjectRate == "") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project Rate";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectRate').focus();
+                return false;
+            }
+            if (ProjectRate == "0") {
+                document.getElementById("errormsg").innerHTML = "Please Provide Project Rate";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectRate').focus();
                 return false;
             }
             if ($.isNumeric(MaxProjectTimeInHours) == false) {
@@ -565,6 +748,33 @@
             $('#ProjectTypeID').val(vProjectTypeID);
 
         });
+
+        $("#ProjectPricingList").change(function () {
+
+            var vProjectPricingID = $("#ProjectPricingList").val();
+
+            $('#ProjectPricingID').val(vProjectPricingID);
+           
+
+        });
+
+        $("#ProjectBillingList").change(function () {
+
+            var vProjectBillingID = $("#ProjectBillingList").val();
+
+            $('#ProjectBillingID').val(vProjectBillingID);
+           
+
+        });
+
+        $("#CurrencyList").change(function () {
+
+            var vCurrencyID = $("#CurrencyList").val();
+
+            $('#CurrencyID').val(vCurrencyID);
+
+        });
+
         $("#DepartmentList").change(function () {
 
             var departmentId = $("#DepartmentList").val();

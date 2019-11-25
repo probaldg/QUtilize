@@ -188,9 +188,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else
                 {
-
-
-
                     if (ValidateRequest)
                     {
                         if (System.Web.HttpContext.Current.Session["sessUser"] != null)
@@ -202,10 +199,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             var stringDateArray = model.birthDayToDisplay.Split('/');
                             DateTime dob = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
-
                             model.BirthDate = dob;
-
-
                         }
 
                         model.CreateDate = DateTime.Now;
@@ -510,6 +504,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var ManagerName = (item["ProjectManagerName"] == DBNull.Value) ? "" : item["ProjectManagerName"].ToString();
                     var clientName = (item["ClientName"] == DBNull.Value) ? "" : item["ClientName"].ToString();
                     var strProjectTypeName = (item["ProjectTypeName"] == DBNull.Value) ? "" : item["ProjectTypeName"].ToString();
+                    var PricingModelName= (item["PricingModelName"] == DBNull.Value) ? "" : item["PricingModelName"].ToString();
+                    var BillingTypeName = (item["BillingTypeName"] == DBNull.Value) ? "" : item["BillingTypeName"].ToString();
+                    var CurrencyTypeName = (item["CurrencyTypeName"] == DBNull.Value) ? "" : item["CurrencyTypeName"].ToString();
 
                     strUserData.Append("<tr>");
                     strUserData.Append("<td class='text-center'>" + item["Id"].ToString() + "</td>");
@@ -517,9 +514,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["ProjectCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" + item["Description"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + strProjectTypeName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + PricingModelName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + BillingTypeName + "</td>");
                     strUserData.Append("<td class='text-center'>" + departmentName + "</td>");
                     strUserData.Append("<td class='text-center'>" + ManagerName + "</td>");
                     strUserData.Append("<td class='text-center'>" + clientName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ClientPoNo"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ClientPoDate"].ToString()+ "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["StartDate"].ToString()+ "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["EndDate"].ToString()+ "</td>");
+                    strUserData.Append("<td class='text-center'>" + CurrencyTypeName+ "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectRate"].ToString()+ "</td>");
                     strUserData.Append("<td class='text-center'>" + item["OrgName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
 
@@ -555,7 +560,10 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             ProjectModel obj = new ProjectModel();
             ProjectTypeModel PTM = new ProjectTypeModel();
+            ProjectPricingModel PPM = new ProjectPricingModel();
+            ProjectBillingModel PBM = new ProjectBillingModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
+            MasterCurrencyModel currency = new MasterCurrencyModel();
 
             var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
@@ -570,6 +578,9 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 obj.ClientList = obj.GetClients().Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
                 obj.ProjectTypeList = PTM.GetProjectType().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.ProjectPricingList = PPM.Get_ProjectPricingDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.ProjectBillingList = PBM.Get_ProjectBillingDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.CurrencyList = currency.Get_CurrencyDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
             }
             else
             {
@@ -577,6 +588,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                 obj.UserList = obj.GetManagers(userInfo.UserOrganisationID).Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.ClientList = obj.GetClients(userInfo.UserOrganisationID).Where(x => x.IsActive == true).OrderBy(x => x.OrganisationName).ThenBy(x => x.ClientName).ToList();
                 obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.ProjectPricingList = PPM.Get_ProjectPricingDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.ProjectBillingList = PBM.Get_ProjectBillingDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.CurrencyList = currency.Get_CurrencyDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+
             }
 
             if (ID > 0)
@@ -589,6 +604,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     obj.ProjectName = dt.Rows[0]["Name"].ToString();
                     obj.ProjectCode = dt.Rows[0]["ProjectCode"]?.ToString();
                     obj.Description = dt.Rows[0]["Description"].ToString();
+                    obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
+                    obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
                     if (dt.Rows[0]["PMUserID"] != System.DBNull.Value)
                     {
                         obj.PMUserID = Convert.ToInt32(dt.Rows[0]["PMUserID"]);
@@ -616,8 +633,28 @@ namespace QBA.Qutilize.WebApp.Controllers
                         obj.ProjectTypeID = Convert.ToInt32(dt.Rows[0]["ProjectTypeID"]);
 
                     }
-                    obj.MaxProjectTimeInHours = Convert.ToInt32(dt.Rows[0]["MaxProjectTimeInHours"]);
-                    obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
+                    if (dt.Rows[0]["PricingModelID"] != System.DBNull.Value)
+                    {
+                        obj.ProjectPricingID = Convert.ToInt32(dt.Rows[0]["PricingModelID"]);
+
+                    }
+                    if (dt.Rows[0]["BillingTypeID"] != System.DBNull.Value)
+                    {
+                        obj.ProjectBillingID = Convert.ToInt32(dt.Rows[0]["BillingTypeID"]);
+
+                    }
+                    if (dt.Rows[0]["CurrencyTypeID"] != System.DBNull.Value)
+                    {
+                        obj.CurrencyID = Convert.ToInt32(dt.Rows[0]["CurrencyTypeID"]);
+
+                    }
+                    obj.ClientPoNo= dt.Rows[0]["ClientPoNo"].ToString(); 
+                    obj.ClientPoDateToDisplay= dt.Rows[0]["ClientPoDate"].ToString();
+                    obj.ProjectStartDateToDisplay= dt.Rows[0]["StartDate"].ToString();
+                    obj.ProjectEndDateToDisplay= dt.Rows[0]["EndDate"].ToString();
+                    obj.ProjectRate = Convert.ToDouble(dt.Rows[0]["ProjectRate"]);
+
+                   
                 }
                 catch
                 {
@@ -630,13 +667,27 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return View(obj);
         }
-
+        public DateTime GetDate(string date)
+        {
+            return DateTime.ParseExact(date, "MM/dd/yyyy", null);
+        }
         [HttpPost]
         public ActionResult ManageProject(ProjectModel model)
         {
             ProjectModel obj = new ProjectModel();
             try
             {
+                string formattedClientPoDate = GetDate(model.ClientPoDateToDisplay).ToString("dd/MM/yyyy");
+                model.ClientPoDate = Convert.ToDateTime(formattedClientPoDate);
+
+                string formattedStartDate = GetDate(model.ProjectStartDateToDisplay).ToString("dd/MM/yyyy");
+                model.ProjectStartDate = Convert.ToDateTime(formattedStartDate);
+
+                string formattedEndDate = GetDate(model.ProjectEndDateToDisplay).ToString("dd/MM/yyyy");
+                model.ProjectEndDate = Convert.ToDateTime(formattedEndDate);
+
+              
+
                 if (model.ProjectID > 0)
                 {
                     try
@@ -674,7 +725,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     model.CreateDate = DateTime.Now;
                     model.IsActive = model.IsActive;
                     //TODO need to test.....
-                    bool result = obj.InsertProjectdata(model, out int id);
+                    bool result =  obj.InsertProjectdata(model, out int id);
+                    
                     if (result && id > 0)
                     {
                         obj.ProjectID = id;
@@ -2972,7 +3024,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return sbContent.ToString();
         }
-        private List<string> GetClintManagerDetail(string ManagerID, DataTable dt)
+     /*   private List<string> GetClintManagerDetail(string ManagerID, DataTable dt)
         {
             StringBuilder sbContent = new StringBuilder();
             List<string> ManagerList = new List<string>();
@@ -2985,11 +3037,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in dt.Rows)
                     {
                       
-<<<<<<< Updated upstream
+
                         ManagerList.Add("<tr class='trMgrDetail1'>");
-=======
+
                         ManagerList.Add("<tr>");
->>>>>>> Stashed changes
+
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Address"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["phone"]) + "</td>");
@@ -3022,7 +3074,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             
             return ManagerList;
-        }
+        }*/
         private string GetClintManagerDetail(DataTable dt)
         {
             StringBuilder sbContent = new StringBuilder();
