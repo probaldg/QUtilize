@@ -337,7 +337,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     ProjectTaskModel taskModel = new ProjectTaskModel();
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                    DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID);
+                    DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID,userInfo.UserId);
                     strTaskData += "<option value = 0>Please select</option>";
                     if (dsTaskData != null && dsTaskData.Tables.Count > 0 && dsTaskData.Tables[0] != null && dsTaskData.Tables[0].Rows.Count > 0)
                     {
