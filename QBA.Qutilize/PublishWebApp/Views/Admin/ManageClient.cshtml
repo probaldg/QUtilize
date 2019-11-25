@@ -67,10 +67,14 @@
         <thead id="tblHeadListViewPost">
             <tr>
                 <th class="text-center tblHeaderColor">ID</th>
-                <th class="text-center tblHeaderColor">Code</th>
-                <th class="text-center tblHeaderColor">Name</th>
+                <th class="text-center tblHeaderColor">Customer Code</th>
+                <th class="text-center tblHeaderColor">Customer Name</th>
+                <th class="text-center tblHeaderColor">Customer Address</th>
+                <th class="text-center tblHeaderColor">Customer Phone No.</th>
+                <th class="text-center tblHeaderColor">Customer Location</th>
                 <th class="text-center tblHeaderColor">Organisation</th>
                 <th class="text-center tblHeaderColor">Active</th>
+                <th class="text-center tblHeaderColor">View</th>
                 <th class="text-center tblHeaderColor">Edit</th>
 
             </tr>
@@ -80,18 +84,24 @@
         </tbody>
     </table>
 </div>
-<div class="col-md-12"><br /></div>
-@using (Html.BeginForm("ManageClient", "Admin", FormMethod.Post, new { onsubmit = "return checkClientForm()" }))
+<div class="col-md-12 "><br /></div>
+@using (Html.BeginForm("ManageClient", "Admin", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
     <h4>Client Details</h4>
     <hr />
 
-    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <div class="form-horizontal col-md-12 dvBorder" style="border: 1px solid #f1f1f1; padding:15px">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ClientID)
 
-
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClientCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ClientCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ClientCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.ClientName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -99,11 +109,34 @@
                 @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
             </div>
         </div>
+
         <div class="form-group">
-            @Html.LabelFor(model => model.ClientCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ClientAddress, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ClientCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ClientCode, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.ClientAddress, new { htmlAttributes = new { @class = "form-control" } })
+
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClientPhno, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ClientPhno, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.ClientPhno, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.Label("Location", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{
+                    var listItems = new List<SelectListItem>();
+                    listItems.Add(new SelectListItem { Text = "Domestic" });
+                    listItems.Add(new SelectListItem { Text = "International" });
+                }
+
+                @Html.DropDownListFor(model => model.Location, listItems, new { @class = "form-control" })
+
             </div>
         </div>
 
@@ -125,62 +158,301 @@
             </div>
         </div>
         <div class="form-group">
+            <h4>Client Manager Details</h4>
+            @Html.Raw(ViewBag.HtmlStr)
+            
+        </div>
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                @*<input type="submit" value="Save" class="btn btn-default" />*@
+                <input type="button" value="Save" id="btnSave" class="btn btn-primary" />
             </div>
         </div>
     </div>
 }
+    <div id="mymodal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
 
-<script type="text/javascript">
-    $("#tblGridListViewPost").dataTable();
+            <!-- Modal content-->
+            <div class="modal-content">
 
-    var orgId = $('#ClientOrganisationID').val();
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  
+                </div>
+                <div class="modal-body">
 
-    $('#OrganisationList').change(function () {
-        var OrgId = $('#OrganisationList').val();
-        $('#ClientOrganisationID').val(OrgId)
+                    <div class="form-group">
+                     
+                        <div id="popupUserBody">
+                            <h5 style=" text-align:center">Manager Details</h5>
+                            <div class='row'>
+                                <div class='col-md-12'>
+                                    <div class='panel-body  form-group'>
+                                        <div class='panel-body'>
+                                            <div class='table-responsive'>
+                                                <table class='table table-bordered' id='tblManagerDetail1'>
+                                                       
+                                                    <thead>
+                                                        <tr>
+                                                            
+                                                            <th class='text-center tblHeaderColor' width='30%'>Manager Name</th>
+                                                            <th class='text-center tblHeaderColor' width='30%'>Address</th>
+                                                            <th class='text-center tblHeaderColor' width='20%'>Phone No.</th>
+                                                            <th class='text-center tblHeaderColor' width='20%'>Email</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id='tbodyMgrDetail1'>
+                                                      
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+          
+        </div>
+        </div>
+        <script type="text/javascript">
+            $("#tblGridListViewPost").dataTable();
+
+            var orgId = $('#ClientOrganisationID').val();
+
+            $('#OrganisationList').change(function () {
+                var OrgId = $('#OrganisationList').val();
+                $('#ClientOrganisationID').val(OrgId)
+
+            });
+
+            if (orgId != 0) {
+                $('#OrganisationList').val(orgId);
+                if ($('#OrganisationList option').length == 2) {
+                    $("#OrganisationList").prop("disabled", true);
+                }
+            }
+
+
+            function showErrorMessage(message) {
+                document.getElementById("errormsg").innerHTML = message;
+                document.getElementById("ErrorMsg").style.display = 'block';
+            }
+            function hideErrorMessage() {
+                document.getElementById("errormsg").innerHTML = '';
+                document.getElementById("ErrorMsg").style.display = 'none';
+            }
+        </script>
+        <script>
+
+            $(document).ready(function () {
+                var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+                $("#btnMgrAddNew").click(function () {
+                    intTableRowCount_++;
+                    var appendRow = '<tr class="trMgrDetail">' +
+                        '<td><input class="form-control" type="text" name="txtManagerName[]" id="txtManagerName' + intTableRowCount_ + '" ></input></td>' +
+                        '<td><input class="form-control" type="text" name="txtMgrAddress[]" id="txtMgrAddress' + intTableRowCount_ + '" /></td>' +
+                        '<td><input class="form-control" type="number" name="txtMgrPhno[]" id="txtMgrPhno' + intTableRowCount_ + '" /></td>' +
+                        '<td><input class="form-control" type="text" name="txtMgrEmail[]"  id="txtMgrEmail' + intTableRowCount_ + '" /></td>' +
+
+                        '<td><button type="button" id="btnMgrDelete' + intTableRowCount_ + '" name="btnMgrDelete" class="btnMgrDelete btn btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>' +
+                        '</tr>';
+                    $('#tblManagerDetail').append(appendRow);
+                });
+
+                $(document).on("click", ".btnMgrDelete", function () {
+                    var intTableRowCount_ = $('#tblManagerDetail .trMgrDetail').length;
+                    if (intTableRowCount_ > 1) {
+                        $(this).closest("tr").remove();
+                    }
+                });
+
+
+
+            });
+        </script>
+        <script>
+    $(document).ready(function () {
+
+        $("#btnSave").click(function () {
+
+            //**
+            var msg = "";
+            var clientName1 = $('#ClientName').val();
+            var clientCode1 = $('#ClientCode').val();
+            var ClientPhno1 = $('#ClientPhno').val();
+            orgId = $('#OrganisationList').val();
+
+            if (clientName1 == "") {
+                showErrorMessage("Please provide client name")
+                msg = "Please provide client name";
+                $('#ClientName').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+            if (clientCode1 == "") {
+                showErrorMessage("Please provide client code")
+                msg = "Please provide client code";
+                $('#clientCode').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+            if (ClientPhno1 == "") {
+                showErrorMessage("Please provide client Phone No")
+                msg = "Please provide client Phone No";
+                $('#ClientPhno').focus();
+                return false;
+            }
+            else {
+                hideErrorMessage();
+            }
+
+            $('#tblManagerDetail tbody>tr').each(function () {
+                $('td', this).each(function () {
+
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtManagerName[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Name.")
+                                msg = "Please provide Manager Name.";
+                                 $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtMgrPhno[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Phone No.")
+                                msg = "Please provide Manager Phone No.";
+                                 $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+
+                    $(this).find('input').each(function () {
+                        if ($(this).attr("name") == "txtMgrEmail[]") {
+                            var value = $(this).val();
+                            if (value == "") {
+                                showErrorMessage("Please provide Manager Email Id.")
+                                msg = "Please provide Manager Email Id.";
+                                $(this).focus();
+                                return false;
+                            }
+                        }
+                    });
+
+                });
+            });
+
+            //*** Post data
+            if (msg == "") {
+
+            var ClientID = $("#ClientID").val();
+            var ClientCode = $("#ClientCode").val();
+            var ClientName = $("#ClientName").val();
+            var ClientAddress = $("#ClientAddress").val();
+            var ClientPhno = $("#ClientPhno").val();
+            var Location = $("#Location").val();
+            var ClientOrganisationID = $("#ClientOrganisationID").val();
+            var IsActive = $("#IsActive").val();
+
+            //Child
+
+            var vManagerName = $('#tblManagerDetail input[name="txtManagerName[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrAddress = $('#tblManagerDetail input[name="txtMgrAddress[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrPhno = $('#tblManagerDetail input[name="txtMgrPhno[]"]').map(function () { return this.value }).get().join("|");
+            var vMgrEmail = $('#tblManagerDetail input[name="txtMgrEmail[]"]').map(function () { return this.value }).get().join("|");
+
+
+            $.ajax(
+                {
+
+                    type: "POST", //HTTP POST Method
+                    url: '@Url.Action("ManageClient", "Admin")',
+                    dataType: "Json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ //Passing data
+                        "ClientID": ClientID,
+                        "ClientCode": ClientCode,
+                        "ClientName": ClientName,
+                        "ClientAddress": ClientAddress,
+                        "ClientPhno": ClientPhno,
+                        "Location": Location,
+                        "ClientPhno": ClientPhno,
+                        "ClientOrganisationID": ClientOrganisationID,
+                        "IsActive": IsActive,
+                        "vManagerName": vManagerName, "vMgrAddress": vMgrAddress, "vMgrPhno": vMgrPhno,
+                        "vMgrEmail": vMgrEmail
+
+
+
+                    }),
+                    success: function (response) {
+
+                        alert("Save Successfully.");
+                        window.location.href = "/Admin/ManageClient";
+
+                    },
+
+
+                });
+
+
+        }
+
+        });
     });
 
-    if (orgId != 0) {
-        $('#OrganisationList').val(orgId);
-        if ($('#OrganisationList option').length == 2) {
-            $("#OrganisationList").prop("disabled", true);
-        }
-    }
+        </script>
+        <script>
+    function ShowManagerDetlPopup(clientID) {
+ 
+        $('#tblManagerDetail1 tbody').html('');  
+        var ID = clientID;
 
-    function checkClientForm() {
-        //alert('test');
-        var clientName = $('#ClientName').val();
-        var clientCode = $('#ClientCode').val();
-        orgId = $('#OrganisationList').val();
+        $.ajax({
+            url: '@Url.Action("GetManagerDetailsById", "Admin")',
+            type: "POST",
+            dataType: "json",
+           contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "ID": ID }),
+            success: function (response) {
+              
+                //var ListHTML = JSON.parse(response);
+                // Direct call from json
+                $('#tblManagerDetail1 tbody').append(response);
+    
+                   $('#mymodal').modal('show');
+                 
 
-        if (clientName == "") {
-            showErrorMessage("Please provide client name")
-            return false;
-        }
-        else {
-            hideErrorMessage();
-        }
-        if (clientCode == "") {
-            showErrorMessage("Please provide client code")
-            return false;
-        }
-        else {
-            hideErrorMessage();
+            },
+            error: function (response) {
+                
+                    alert('Some error occurred.');
+                           
+            }
+        });
+
+
         }
 
-        return true;
-    }
-
-    function showErrorMessage(message) {
-        document.getElementById("errormsg").innerHTML = message;
-        document.getElementById("ErrorMsg").style.display = 'block';
-    }
-    function hideErrorMessage() {
-        document.getElementById("errormsg").innerHTML = '';
-        document.getElementById("ErrorMsg").style.display = 'none';
-    }
-</script>
-
+        </script>

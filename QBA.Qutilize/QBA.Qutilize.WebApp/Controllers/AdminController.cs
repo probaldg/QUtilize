@@ -343,7 +343,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     ProjectTaskModel taskModel = new ProjectTaskModel();
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                    DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID);
+                    DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID,userInfo.UserId);
                     strTaskData += "<option value = 0>Please select</option>";
                     if (dsTaskData != null && dsTaskData.Tables.Count > 0 && dsTaskData.Tables[0] != null && dsTaskData.Tables[0].Rows.Count > 0)
                     {
@@ -414,7 +414,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         //***End
 
 
-        public ActionResult GetDepartments(int orgId)
+            public ActionResult GetDepartments(int orgId)
          {
             UserModel user = new UserModel();
             string strDeptData = string.Empty;
@@ -2976,7 +2976,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             StringBuilder sbContent = new StringBuilder();
             List<string> ManagerList = new List<string>();
-            ManagerList.Clear();
             try
             {
     
@@ -2985,11 +2984,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in dt.Rows)
                     {
                       
-<<<<<<< Updated upstream
-                        ManagerList.Add("<tr class='trMgrDetail1'>");
-=======
                         ManagerList.Add("<tr>");
->>>>>>> Stashed changes
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["Address"]) + "</td>");
                         ManagerList.Add("<td class='text-center'>" + Convert.ToString(dr["phone"]) + "</td>");
