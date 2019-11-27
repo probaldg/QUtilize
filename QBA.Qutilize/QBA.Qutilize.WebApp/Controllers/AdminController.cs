@@ -677,13 +677,13 @@ namespace QBA.Qutilize.WebApp.Controllers
             ProjectModel obj = new ProjectModel();
             try
             {
-                string formattedClientPoDate = GetDate(model.ClientPoDateToDisplay).ToString("dd/MM/yyyy");
+                string formattedClientPoDate = GetDate(model.ClientPoDateToDisplay).ToString();//.ToString("dd/MM/yyyy");
                 model.ClientPoDate = Convert.ToDateTime(formattedClientPoDate);
 
-                string formattedStartDate = GetDate(model.ProjectStartDateToDisplay).ToString("dd/MM/yyyy");
+                string formattedStartDate = GetDate(model.ProjectStartDateToDisplay).ToString();//.ToString("dd/MM/yyyy");
                 model.ProjectStartDate = Convert.ToDateTime(formattedStartDate);
 
-                string formattedEndDate = GetDate(model.ProjectEndDateToDisplay).ToString("dd/MM/yyyy");
+                string formattedEndDate = GetDate(model.ProjectEndDateToDisplay).ToString();//.ToString("dd/MM/yyyy");
                 model.ProjectEndDate = Convert.ToDateTime(formattedEndDate);
 
               
