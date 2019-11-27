@@ -199,12 +199,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                 }
-                
-
+                sbOut.Append("<div class='form-group col-md-12'>");
+                sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
+                sbOut.Append("<div class='col-md-2'>");
+                sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlReportType'>");
+                sbOut.Append("<option value='0'>Select</option>");
+                if (HttpContext.Session["OrgAdmin"] != null)
+                {
+                    sbOut.Append("<option value='1'>Get detail break up</option>");
+                    sbOut.Append("<option value='2'>Project Wise Summary</option>");
+                    sbOut.Append("<option value='3'>Resource Utilization</option>");
+                }
+                else
+                    sbOut.Append("<option value='1'>Get detail break up</option>");
+                sbOut.Append("</select>");
+                sbOut.Append("</div>");
 
 
                 sbOut.Append("<div class='col-md-1 pull-right' style='margin: 7px;'>");
                 sbOut.Append("<input type='submit' id='btnSearch' value='Search' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
+                sbOut.Append("</div>");
                 sbOut.Append("</div>");
                 sbOut.Append("</div>");
                 sbOut.Append("<hr>");
@@ -217,7 +231,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
 
-        public ActionResult GetReportData(DateTime startdate, DateTime endDate, int userid, int projectid)
+        public ActionResult GetReportData(DateTime startdate, DateTime endDate, int userid, int projectid, int ReportType)
         {
             StringBuilder sbOut = new StringBuilder();
             try

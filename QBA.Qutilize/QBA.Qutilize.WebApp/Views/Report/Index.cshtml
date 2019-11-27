@@ -28,7 +28,6 @@
             // dateFormat: "dd-mm-yy"
         });
     });
-
     $(function () {
         $("#txtEndDate").datepicker({
             minDate: '-365'
@@ -42,7 +41,12 @@
         var vEndDate = $('#txtEndDate').val();
         var vUserID = $('#ddlUsers').val();
         var vProjectID = $('#ddlProjects').val();
-
+        var vReportType = $('#ddlReportType').val();
+        if (vReportType == "0") {
+            alert("Select Report type");
+            $('#ddlReportType').focus();
+            return false;
+        }
         if (vStartDate != "" && vEndDate != "") {
             $.ajax({
                 url: '@Url.Action("GetReportData", "Report")',
@@ -50,7 +54,7 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    startdate: vStartDate, endDate: vEndDate, userid: vUserID, projectID: vProjectID
+                    startdate: vStartDate, endDate: vEndDate, userid: vUserID, projectID: vProjectID, ReportType: vReportType
                 }),
                 success: function (response) {
 
@@ -99,8 +103,6 @@
             }
             
         }
-
-   
     }
     catch (e) {
     alert(e);
