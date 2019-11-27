@@ -268,6 +268,16 @@
                                     </div>
                                 </div>
                             </div>
+                       
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTask.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.ProjectTask.IsValueAdded)
+                                        @Html.ValidationMessageFor(model => model.ProjectTask.IsValueAdded, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                     }
@@ -509,7 +519,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.ProjectEndDateToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectEndDateToDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.ProjectEndDateToDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateEndDate()" } })
                     @Html.ValidationMessageFor(model => model.ProjectEndDateToDisplay, "", new { @class = "text-danger" })
 
                 </div>
@@ -522,18 +532,18 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectRate, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectRate, new { htmlAttributes = new { @class = "form-control" , type = "number" } })
-                    @Html.ValidationMessageFor(model => model.ProjectRate, "", new { @class = "text-danger" })
-                </div>
+             <div class="form-group">
+            @Html.LabelFor(model => model.ProjectRate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProjectRate, new { htmlAttributes = new { @class = "form-control" , type = "number", onkeypress= "return MaxLengthOfTextbox()" } })
+                @Html.ValidationMessageFor(model => model.ProjectRate, "", new { @class = "text-danger" })
             </div>
+        </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.MaxProjectTimeInHours, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control" , type = "number" } })
+                    @Html.EditorFor(model => model.MaxProjectTimeInHours, new { htmlAttributes = new { @class = "form-control", type = "number" } })
                     @Html.ValidationMessageFor(model => model.MaxProjectTimeInHours, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -559,6 +569,32 @@
 
 
     <script type="text/javascript">
+       
+        function ValidateEndDate() {
+            var startDate = $('#ProjectStartDateToDisplay').val();
+            
+            var endDate = $('#ProjectEndDateToDisplay').val();
+            if (startDate != '' && endDate != '') {
+               
+                if (Date.parse(startDate) > Date.parse(endDate)) {
+                    $('#ProjectEndDateToDisplay').val('');
+                    alert("Start date should not be greater than end date");
+                    return false;
+                }
+           }
+           
+        };
+
+        function MaxLengthOfTextbox() {
+            var ProjectRate = $('#ProjectRate').val();
+
+            var Length = ProjectRate.length;
+            if (Length > 6) {
+                return false; 
+            }
+            return true;
+
+        };
 
         $('#ProjectEndDateToDisplay').datepicker({
             changeMonth: true,
@@ -636,7 +672,7 @@
             $('#ClientList').val(clientID);
         }
         function checkUserForm() {
-
+         
             var ProjectName = document.getElementById("ProjectName").value;
             var projectCode = document.getElementById("ProjectCode").value;
             var DepartmentId = $("#DepartmentList").val();
@@ -796,7 +832,10 @@
 
         });
 
+        
         function ShowTaskPopup(projectId, projectname) {
+
+           
 
             //alert(projectname);
             $('#hProjectNameHeader').html('');
@@ -835,6 +874,8 @@
                         }
 
                         $("#ddlParentTask").html('')
+
+                      
 
                         if ($.fn.DataTable.isDataTable('#tblTasklist')) {
                             $('#tblTasklist').DataTable().destroy();
@@ -875,7 +916,73 @@
                             $('#tblTasklist tbody').html('');
                             $('#ddlParentTask').attr("disabled", "disabled");
                         }
+                        ///Malabika start
+                        $("#ddlParentTask").change(function () {
+                            var SelectTaskId = $('#ddlParentTask').val();
+                            var taskList1 = obj.TaskList;
+     
+                            for (var i = 0; i < taskList1.length; i++) {
+                                var ParentTaskID = taskList1[i].ParentTaskId;
+                                if (SelectTaskId == ParentTaskID) {
 
+                                    $.ajax({
+                                        url: '@Url.Action("GetProjectTaskByID", "Admin")',
+                                        type: "POST",
+                                        dataType: "json",
+                                        contentType: "application/json; charset=utf-8",
+                                        data: JSON.stringify({
+                                            "taskId": SelectTaskId
+                                        }),
+                                        success: function (response) {
+
+                                            var taskObj = JSON.parse(response);
+
+                                            $('#ddlUsersAssigned').multiselect('deselectAll', false);
+                                            $('#ddlUsersAssigned').multiselect('updateButtonText');
+                                            $("#ddlUsersAssigned").html('')
+                                            $('#ddlUsersAssigned').multiselect('rebuild');
+                                            var userIds = taskObj.UserIdsTaskAssigned;
+                                            var selectedOptions = taskObj.UserIdsTaskAssigned.split(',');
+                                            var SelectedName = taskObj.UserNameTaskAssigned.split(',');
+                                            for (i = 0; i < selectedOptions.length; i++) {
+                                              
+                                                $("#ddlUsersAssigned").append($("<option></option>").val(selectedOptions[i]).html(SelectedName[i]));
+                                                $('#ddlUsersAssigned').multiselect('rebuild');
+                                                $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
+                                            }
+
+                                            $("#ddlUsersAssigned").multiselect({
+                                                enableCaseInsensitiveFiltering: true,
+                                                buttonWidth: 550,
+                                                enableFiltering: true
+                                            });
+                                            $('#UserIdsInString').val(userIds);
+
+                                        },
+                                        error: function (response) {
+                                            alert('error occured')
+                                            // console.log(response);
+                                        }
+                                    });
+
+                                }
+                                else {
+                                    $("#ddlUsersAssigned").html('')
+                                    $('#ddlUsersAssigned').multiselect('rebuild');
+                                    var UserList2 = obj.UserList;
+                                   
+                                    for (var k = 0; k < UserList2.length; k++) {
+
+                                        $("#ddlUsersAssigned").append($("<option></option>").val(UserList2[k].ID).html(UserList2[k].Name));
+                                        $('#ddlUsersAssigned').multiselect('rebuild');
+                                    }
+
+                                }
+                               
+                            }
+
+                        });
+                        //Malabika End
                         $("#ddlUsersAssigned").html('')
 
                         if (obj.UserList.length > 0) {
@@ -884,7 +991,7 @@
                            // $('#divUserDDL').removeClass('col-md-7');
                             //$('#divUserDDL').addClass('col-md-10') ;
                             var UserList = obj.UserList;
-
+                            
                             for (var i = 0; i < UserList.length; i++) {
 
                                 $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
@@ -926,10 +1033,10 @@
 
         }
         $('#ddlUsersAssigned').change(function () {
+           
 
             var userIds = $("#ddlUsersAssigned option:selected").map(function () { return this.value }).get().join(",");
-
-
+           
             $('#UserIdsInString').val(userIds);
             console.log(userIds);
 
@@ -951,6 +1058,8 @@
             var completePercent = $('#ddlPercentage').val();
             var taskStatusId = $('#ddlTaskStatus').val();
             var IsActive = $('#ProjectTask_IsActive').is(':checked');
+            var IsValueAdded = $('#ProjectTask_IsValueAdded').is(':checked');
+        
             var IsMilestone = $('#ProjectTask_IsMilestone').is(':checked');
             var userIds = $('#UserIdsInString').val();
 
@@ -974,7 +1083,8 @@
                 "IsActive": IsActive,
                 "IsMilestone": IsMilestone,
                 "TaskStatusID": taskStatusId,
-                "UserIdsTaskAssigned": userIds
+                "UserIdsTaskAssigned": userIds,
+                "IsValueAdded": IsValueAdded
             };
 
             $.ajax({
@@ -1077,12 +1187,15 @@
                      }
                      $('#ddlTaskStatus').val(taskObj.TaskStatusID);
                      $('#ProjectTask_IsActive').prop('checked', taskObj.IsActive);
+                     $('#ProjectTask_IsValueAdded').prop('checked', taskObj.IsValueAdded);
                      $('#ProjectTask_UserIdsTaskAssigned').val(taskObj.UserIdsTaskAssigned);
 
 
                      $('#ddlUsersAssigned').multiselect('deselectAll', false);
                      $('#ddlUsersAssigned').multiselect('updateButtonText');
 
+                  
+                   
                      var userIds = taskObj.UserIdsTaskAssigned;
                      var selectedOptions = taskObj.UserIdsTaskAssigned.split(',');
                      for (i = 0; i < selectedOptions.length; i++) {
@@ -1147,9 +1260,12 @@
             $('#UserIdsInString').val('');
             $('#ddlParentTask').val(0);
             $('#ddlPercentage').val(0);
-            $('#ddlTaskStatus').val(0);
+            $('#ddlTaskStatus').val(0); 
             $('#ProjectTask_IsActive').val(false);
             $('#ProjectTask_IsActive').prop("checked", false);
+
+            $('#ProjectTask_IsValueAdded').val(false);
+            $('#ProjectTask_IsValueAdded').prop("checked", false);
             $('#ProjectTask_IsMilestone').val(false);
             $('#ProjectTask_IsMilestone').prop("checked", false);
         }

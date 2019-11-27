@@ -61,9 +61,11 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Actual End Date")]
         public string ActualTaskEndDateDisplay { get; set; }
         public bool IsActive { get; set; }
+        public bool IsValueAdded { get; set; }
         public bool? IsMilestone { get; set; }
 
         public string UserIdsTaskAssigned { get; set; }
+        public string UserNameTaskAssigned { get; set; }
         // public string UsereIdsInString { get; set; }
         public int AddedBy { get; set; }
         public int EditedBy { get; set; }
@@ -201,6 +203,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@isACTIVE",model.IsActive),
+                    new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
                     new SqlParameter("@UserIds",model.UserIdsTaskAssigned)
@@ -267,6 +270,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate),
                     new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate),
                     new SqlParameter("@isACTIVE",model.IsActive),
+                    new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@EditedBY",model.EditedBy),
                     new SqlParameter("@EditedTS",model.EditedTS),
                     new SqlParameter("@UserIds",model.UserIdsTaskAssigned)

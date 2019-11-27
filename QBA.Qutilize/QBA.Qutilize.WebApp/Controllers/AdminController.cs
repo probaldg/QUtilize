@@ -914,6 +914,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                 }
 
+                DataTable dt = new DataTable();
+                dt = dsTaskData.Tables["UserList"];
                 if (dsTaskData.Tables["UserList"].Rows.Count > 0)
                 {
                     foreach (DataRow item in dsTaskData.Tables["UserList"].Rows)
@@ -968,6 +970,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     task.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
                     task.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
                     task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
+                    task.IsValueAdded= Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
                     task.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
 
                     foreach (DataRow item in dtTaskData.Rows)
@@ -981,6 +984,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         };
 
                         task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ",";
+                        task.UserNameTaskAssigned+= (item["UserName"]).ToString() + ",";
                         task.UserList.Add(userModel);
                     }
                     task.UserIdsTaskAssigned = task.UserIdsTaskAssigned.TrimEnd(',');
