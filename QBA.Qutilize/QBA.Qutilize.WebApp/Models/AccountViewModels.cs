@@ -108,6 +108,34 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+        public DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.GetReportDataProjectWiseSummary(userID, startDate, endDate, ProjectID, MainUser, Role);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.GetReportDataResourceUtilizationSummary(userID, startDate, endDate, ProjectID, MainUser, Role);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
         public DataSet getSessionHistory(int userID, int limit = 0)
         {
             DataSet ds = null;

@@ -202,7 +202,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbOut.Append("<div class='form-group col-md-12'>");
                 sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
                 sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlReportType'>");
+                sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType'>");
                 sbOut.Append("<option value='0'>Select</option>");
                 if (HttpContext.Session["OrgAdmin"] != null)
                 {
@@ -214,8 +214,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<option value='1'>Get detail break up</option>");
                 sbOut.Append("</select>");
                 sbOut.Append("</div>");
-
-
                 sbOut.Append("<div class='col-md-1 pull-right' style='margin: 7px;'>");
                 sbOut.Append("<input type='submit' id='btnSearch' value='Search' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
                 sbOut.Append("</div>");
@@ -228,9 +226,6 @@ namespace QBA.Qutilize.WebApp.Controllers
             { }
             return Content(sbOut.ToString());
         }
-
-
-
         public ActionResult GetReportData(DateTime startdate, DateTime endDate, int userid, int projectid, int ReportType)
         {
             StringBuilder sbOut = new StringBuilder();
@@ -255,38 +250,97 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
 
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetReportData(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
-                sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
-                sbOut.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>User</th><th class='text-center tblHeaderColor'>Client</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Milestone</th><th class='text-center tblHeaderColor'>Activity Group</th><th class='text-center tblHeaderColor'>Activity</th><th class='text-center tblHeaderColor'>Naration</th><th class='text-center tblHeaderColor'>Total Hours</th><th style='display: none;'>Total Sec</th></tr></thead>");
-                sbOut.Append("<tbody id='tableBodyReportData'>");
-                if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                if (ReportType == 1)
                 {
-                    for(int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    DataSet ds = lvm.GetReportData(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>User</th><th class='text-center tblHeaderColor'>Client</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Milestone</th><th class='text-center tblHeaderColor'>Activity Group</th><th class='text-center tblHeaderColor'>Activity</th><th class='text-center tblHeaderColor'>Naration</th><th class='text-center tblHeaderColor'>Total Hours</th><th style='display: none;'>Total Sec</th></tr></thead>");
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        double hours=0;
-                        double seconds = 0;
-                        string strHr = string.Empty;
-                        if (ds.Tables[0].Rows[i]["enddatetime"].ToString() != "")
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
-                            TimeSpan diff = Convert.ToDateTime(ds.Tables[0].Rows[i]["enddatetime"].ToString()) - Convert.ToDateTime(ds.Tables[0].Rows[i]["startdatetime"].ToString());
-                             hours = Math.Round(diff.TotalHours,2);
-                            strHr = diff.Hours.ToString() + ":" + diff.Minutes.ToString() + ":" + diff.Seconds.ToString();
-                             seconds = diff.TotalSeconds;
-                            seconds = diff.Hours * 3600 + diff.Minutes * 60 + diff.Seconds;
+                            double hours = 0;
+                            double seconds = 0;
+                            string strHr = string.Empty;
+                            if (ds.Tables[0].Rows[i]["enddatetime"].ToString() != "")
+                            {
+                                TimeSpan diff = Convert.ToDateTime(ds.Tables[0].Rows[i]["enddatetime"].ToString()) - Convert.ToDateTime(ds.Tables[0].Rows[i]["startdatetime"].ToString());
+                                hours = Math.Round(diff.TotalHours, 2);
+                                strHr = diff.Hours.ToString() + ":" + diff.Minutes.ToString() + ":" + diff.Seconds.ToString();
+                                seconds = diff.TotalSeconds;
+                                seconds = diff.Hours * 3600 + diff.Minutes * 60 + diff.Seconds;
+                            }
+                            sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["clientName"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + strHr + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
                         }
-                            
-                        
-                        sbOut.Append("<tr><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["clientName"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>-</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["TaskName"] + "</span></td><td><span class='control-text'>"+ ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + ds.Tables[0].Rows[i]["Description"] + "</span></td><td><span class='control-text'>" + strHr + "</span></td><td style='display: none;'><span class='control-text'>" + seconds + "</span></td></tr>");
                     }
-                    
+                    sbOut.Append("</tbody></table>");
                 }
-                sbOut.Append("</tbody></table>");
+                else if (ReportType == 2)
+                {
+                    DataSet ds = lvm.GetReportDataProjectWiseSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead><tr>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Billable Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % VA</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Non-Billable Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % NV</th>");
+                    sbOut.Append("</tr></thead>");
+
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            sbOut.Append("<tr>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["UserName"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Total"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable%"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable%"]) + "</span></td>");
+                            sbOut.Append("</tr>");
+                        }
+                    }
+                    sbOut.Append("</tbody></table>");
+                }
+                else if (ReportType ==3)
+                {
+                    DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead><tr>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Billable Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % VA</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Non-Billable Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % NV</th>");
+                    sbOut.Append("</tr></thead>");
+
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            sbOut.Append("<tr>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["UserName"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Total"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable%"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable"]) + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable%"]) + "</span></td>");
+                            sbOut.Append("</tr>");
+                        }
+                    }
+                    sbOut.Append("</tbody></table>");
+                }
             }
             catch (Exception exx)
             {
                 
             }
-           
             return Json(sbOut.ToString());
         }
 
