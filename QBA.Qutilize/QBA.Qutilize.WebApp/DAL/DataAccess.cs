@@ -218,7 +218,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
-                    ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndResourceUtilizationSummary", param);
+                    ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndResourceUtilization", param);
                 }
             }
             catch (Exception ex)

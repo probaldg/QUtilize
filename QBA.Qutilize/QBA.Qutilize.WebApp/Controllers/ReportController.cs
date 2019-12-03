@@ -309,30 +309,66 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else if (ReportType ==3)
                 {
                     DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
                     sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
-                    sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
-                    sbOut.Append("<th class='text-center tblHeaderColor'>Billable Hour(HH:MM)</th>");
-                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % VA</th>");
-                    sbOut.Append("<th class='text-center tblHeaderColor'>Non-Billable Hour(HH:MM)</th>");
-                    sbOut.Append("<th class='text-center tblHeaderColor'>Utilized % NV</th>");
-                    sbOut.Append("</tr></thead>");
+                   
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        foreach (DataTable table in ds.Tables)
+                        {
+                            foreach (DataColumn column in table.Columns)
+                            {
+                                if (column.ColumnName != "UserName")
+                                {
+                                    sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(Hour)</th>");
+                                    sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(%)</th>");
+                                }
+                            }
 
+                        }
+                    }
+                  
+                    sbOut.Append("</tr></thead>");
+                   
                     sbOut.Append("<tbody id='tableBodyReportData'>");
+                    DataTable dt = new DataTable();
+                    dt = ds.Tables[0];
+                    string[] Arr = new string[2];
+                    
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
-                            sbOut.Append("<tr>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["UserName"]) + "</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Total"]) + "</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable"]) + "</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["Billable%"]) + "</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable"]) + "</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i]["NonBillable%"]) + "</span></td>");
+
+                            for (int j = 0; j < ds.Tables[0].Columns.Count; j++)
+                            {
+                                if (j!=0)
+                                {
+                                    string totalHour = Convert.ToString(ds.Tables[0].Rows[i][j]);
+                                    if (totalHour != "")
+                                    {
+                                        Arr = totalHour.Split('/');
+                                    }
+                                    else
+                                    {
+                                        Arr[0] = "";
+                                        Arr[1] = "";
+                                    }
+                                    sbOut.Append("<td><span class='control-text'>" + Arr[0] + "</span></td>");
+                                    sbOut.Append("<td><span class='control-text'>" + Arr[1] + "</span></td>");
+                                }
+                                else
+                                {
+                                    sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i][j]) + "</span></td>");
+                                }
+                                
+                            }
                             sbOut.Append("</tr>");
                         }
+                       
+
                     }
                     sbOut.Append("</tbody></table>");
                 }
