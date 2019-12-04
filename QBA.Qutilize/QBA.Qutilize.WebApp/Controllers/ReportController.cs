@@ -329,14 +329,15 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         }
                     }
-                  
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Total Hour</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Total % </th>");
                     sbOut.Append("</tr></thead>");
                    
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     DataTable dt = new DataTable();
                     dt = ds.Tables[0];
                     string[] Arr = new string[2];
-                    
+                    double TotalHr = 0, TotalPercentage = 0;
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -346,10 +347,15 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 if (j!=0)
                                 {
-                                    string totalHour = Convert.ToString(ds.Tables[0].Rows[i][j]);
-                                    if (totalHour != "")
+                                    string totalduration = Convert.ToString(ds.Tables[0].Rows[i][j]);
+                                    
+                                    if (totalduration != "")
                                     {
-                                        Arr = totalHour.Split('/');
+                                        
+                                        Arr = totalduration.Split('/');
+                                        TotalHr = TotalHr + Convert.ToDouble(Arr[0]);
+                                        TotalPercentage = TotalPercentage + Convert.ToDouble(Arr[1]);
+                                        Arr[1] = Arr[1] + "%";
                                     }
                                     else
                                     {
@@ -365,7 +371,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 }
                                 
                             }
+                            sbOut.Append("<td><span class='control-text'>" + TotalHr + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + TotalPercentage + "%</span></td>");
                             sbOut.Append("</tr>");
+                            TotalHr = 0; TotalPercentage = 0;
                         }
                        
 
