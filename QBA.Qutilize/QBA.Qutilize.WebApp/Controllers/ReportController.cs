@@ -394,7 +394,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             foreach (DataColumn column in table.Columns)
                             {
-                                if (column.ColumnName != "UserName")
+                                if (column.ColumnName != "UserName" )
                                 {
                                     sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(%)</th>");
                                     sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(Cost)</th>");
@@ -405,13 +405,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     sbOut.Append("<th class='text-center tblHeaderColor'>Total %</th>");
                     sbOut.Append("<th class='text-center tblHeaderColor'>Total Cost </th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>NB %</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>NB Cost </th>");
                     sbOut.Append("</tr></thead>");
 
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     DataTable dt = new DataTable();
                     dt = ds.Tables[0];
                     string[] Arr = new string[2];
-                    double TotalCost = 0, TotalPercentage = 0;
+                    String[] Arr_UsernameAndcost= new string[2];
+                    double TotalCost = 0, TotalPercentage = 0 , NB_Percentage = 0, NB_Cost = 0; 
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -439,14 +442,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 }
                                 else
                                 {
-                                    sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i][j]) + "</span></td>");
+                                    Arr_UsernameAndcost = Convert.ToString(ds.Tables[0].Rows[i][j]).Split(',');
+                                    sbOut.Append("<td><span class='control-text'>" + Arr_UsernameAndcost[0] + "</span></td>");
                                 }
 
                             }
+                            NB_Percentage = Math.Round((100 - TotalPercentage), 2);
+                            NB_Cost = Math.Round((Convert.ToDouble(Arr_UsernameAndcost[1]) - TotalCost), 2);
                             sbOut.Append("<td><span class='control-text'>" + TotalPercentage + "%</span></td>");
-                            sbOut.Append("<td><span class='control-text'>" + TotalCost + "</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + TotalCost + "</span></td>"); 
+                            sbOut.Append("<td><span class='control-text'>" + NB_Percentage + "%</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + NB_Cost + "</span></td>");
                             sbOut.Append("</tr>");
-                            TotalCost = 0; TotalPercentage = 0;
+                            TotalCost = 0; TotalPercentage = 0; NB_Percentage = 0; NB_Cost = 0;
                         }
 
                     }
