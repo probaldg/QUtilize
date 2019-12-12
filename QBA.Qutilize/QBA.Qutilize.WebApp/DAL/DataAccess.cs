@@ -203,6 +203,30 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
+
+        public static DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                     
+                                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
+                                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
+                                        new SqlParameter("@ProjectID",ProjectID)
+                                        
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndProjectWiseCosting", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
         public static DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
         {
             DataSet ds = null;
@@ -219,6 +243,29 @@ namespace QBA.Qutilize.WebApp.DAL
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
                     ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndResourceUtilization", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
+        public static DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                       
+                                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
+                                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
+                                        
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USPDailyTask_GetByDateRangeAndResourceCosting", param);
                 }
             }
             catch (Exception ex)

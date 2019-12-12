@@ -35,6 +35,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else
                 {
+                    string ss = Session["DateRange"].ToString();
                     string[] arrdate = Session["DateRange"].ToString().Split('|');
                     startdate = Convert.ToDateTime(arrdate[0]);
                     endDate = Convert.ToDateTime(arrdate[1]);
@@ -52,7 +53,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbOut.Append("</div>");
                 sbOut.Append("<label class='control-label col-md-1'>End Date: </label>");
                 sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<input type='text' class='form-control' id='txtEndDate' value='" + endDate.ToShortDateString() + "' />");
+                sbOut.Append("<input type='text' class='form-control' onchange='ValidateEndDate();' id='txtEndDate' value='" + endDate.ToShortDateString() + "' />");
                 sbOut.Append("</div>");
                 sbOut.Append("<label class='control-label col-md-1'>Select User: </label>");
                 
@@ -76,9 +77,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
-
-
-                    
                     sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
@@ -199,6 +197,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                 }
+                
                 sbOut.Append("<div class='form-group col-md-12'>");
                 sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
                 sbOut.Append("<div class='col-md-2'>");
@@ -209,6 +208,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<option value='1'>Get detail break up</option>");
                     sbOut.Append("<option value='2'>Project Wise Summary</option>");
                     sbOut.Append("<option value='3'>Resource Utilization</option>");
+                    sbOut.Append("<option value='4'>Resource Costing</option>");
+                    sbOut.Append("<option value='5'>Project Wise Resource Costing</option>");
                 }
                 else
                     sbOut.Append("<option value='1'>Get detail break up</option>");
@@ -308,7 +309,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else if (ReportType ==3)
                 {
-                    DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    projectid = 0;
+                     DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
                     
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
@@ -342,7 +344,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                         {
-
                             for (int j = 0; j < ds.Tables[0].Columns.Count; j++)
                             {
                                 if (j!=0)
@@ -350,8 +351,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     string totalduration = Convert.ToString(ds.Tables[0].Rows[i][j]);
                                     
                                     if (totalduration != "")
-                                    {
-                                        
+                                    {  
                                         Arr = totalduration.Split('/');
                                         TotalHr = TotalHr + Convert.ToDouble(Arr[0]);
                                         TotalPercentage = TotalPercentage + Convert.ToDouble(Arr[1]);
@@ -377,9 +377,120 @@ namespace QBA.Qutilize.WebApp.Controllers
                             TotalHr = 0; TotalPercentage = 0;
                         }
                        
+                    }
+                    sbOut.Append("</tbody></table>");
+                }
+                else if (ReportType == 4)
+                {
+                    DataSet ds = lvm.GetReportDataResourceCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead><tr>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
+
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        foreach (DataTable table in ds.Tables)
+                        {
+                            foreach (DataColumn column in table.Columns)
+                            {
+                                if (column.ColumnName != "UserName")
+                                {
+                                    sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(%)</th>");
+                                    sbOut.Append("<th class='text-center tblHeaderColor'>" + column.ColumnName + "(Cost)</th>");
+                                }
+                            }
+
+                        }
+                    }
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Total %</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Total Cost </th>");
+                    sbOut.Append("</tr></thead>");
+
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    DataTable dt = new DataTable();
+                    dt = ds.Tables[0];
+                    string[] Arr = new string[2];
+                    double TotalCost = 0, TotalPercentage = 0;
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            for (int j = 0; j < ds.Tables[0].Columns.Count; j++)
+                            {
+                                if (j != 0)
+                                {
+                                    string totalCostingPersentage = Convert.ToString(ds.Tables[0].Rows[i][j]);
+
+                                    if (totalCostingPersentage != "")
+                                    {
+                                        Arr = totalCostingPersentage.Split('/');
+                                        TotalPercentage = TotalPercentage + Convert.ToDouble(Arr[0]);
+                                        Arr[0] = Arr[0] + "%";
+                                        TotalCost = TotalCost + Convert.ToDouble(Arr[1]);
+                                    }
+                                    else
+                                    {
+                                        Arr[0] = "";
+                                        Arr[1] = "";
+                                    }
+                                    sbOut.Append("<td><span class='control-text'>" + Arr[0] + "</span></td>");
+                                    sbOut.Append("<td><span class='control-text'>" + Arr[1] + "</span></td>");
+                                }
+                                else
+                                {
+                                    sbOut.Append("<td><span class='control-text'>" + Convert.ToString(ds.Tables[0].Rows[i][j]) + "</span></td>");
+                                }
+
+                            }
+                            sbOut.Append("<td><span class='control-text'>" + TotalPercentage + "%</span></td>");
+                            sbOut.Append("<td><span class='control-text'>" + TotalCost + "</span></td>");
+                            sbOut.Append("</tr>");
+                            TotalCost = 0; TotalPercentage = 0;
+                        }
 
                     }
                     sbOut.Append("</tbody></table>");
+                }
+                else if (ReportType == 5)
+                {
+                    double TotalPercentage = 0, TotalCost = 0, TotalHr = 0;
+                    DataSet ds = lvm.GetReportDataProjectWiseCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead><tr>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Project %</th>");    
+                    sbOut.Append("<th class='text-center tblHeaderColor'>Project Cost</th>");
+                 
+                    sbOut.Append("</tr></thead>");
+
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            TotalPercentage = TotalPercentage + Convert.ToDouble(ds.Tables[0].Rows[i]["TotalPer"]);
+                            TotalCost = TotalCost + Convert.ToDouble(ds.Tables[0].Rows[i]["Usercost"]);
+                            TotalHr= TotalHr+ Convert.ToDouble(ds.Tables[0].Rows[i]["TotalHr"]);
+                            sbOut.Append("<tr>");
+                            sbOut.Append("<td class='text-center '>" + Convert.ToString(ds.Tables[0].Rows[i]["UserName"]) + "</td>");
+                            sbOut.Append("<td class='text-center '>" + Convert.ToString(ds.Tables[0].Rows[i]["TotalHr"]) + "</td>");
+                            sbOut.Append("<td class='text-center '>" + Convert.ToString(ds.Tables[0].Rows[i]["TotalPer"]) + "</td>");
+                            sbOut.Append("<td class='text-center '>" + Convert.ToString(ds.Tables[0].Rows[i]["Usercost"]) + "</td>");
+                            sbOut.Append("</tr>");
+                        }
+                    }
+
+                  
+                    sbOut.Append("</tbody><tfoot  > ");   
+                    sbOut.Append("<tr>");
+                    sbOut.Append("<td class='text-center '> Total </td>");
+                    sbOut.Append("<td class='text-center '>" + TotalHr + "</td>");
+                    sbOut.Append("<td class='text-center '>" + TotalPercentage + "</td>");
+                    sbOut.Append("<td class='text-center '>" + TotalCost + "</td>");
+                    sbOut.Append("</tr>");
+                    sbOut.Append("</tfoot></ table >");
                 }
             }
             catch (Exception exx)
