@@ -35,6 +35,22 @@
         });
     });
 
+    function ValidateEndDate() {
+        
+        var startDate = $('#txtStartDate').val();
+
+        var endDate = $('#txtEndDate').val();
+        if (startDate != '' && endDate != '') {
+
+            if (Date.parse(startDate) > Date.parse(endDate)) {
+                $('#txtEndDate').val('');
+                alert("Start date should not be greater than end date");
+                return false;
+            }
+        }
+
+    };
+
     function RefreshData() {
     try {
     var vStartDate = $('#txtStartDate').val();
@@ -47,6 +63,36 @@
             $('#ddlReportType').focus();
             return false;
         }
+        if (vReportType == "1") {
+            if (vProjectID == "0") {
+                alert("Select Project ");
+                $('#ddlProjects').focus();
+                return false;
+
+            }
+            if (vUserID == "0") {
+                alert("Select User ");
+                $('#ddlUsers').focus();
+                return false;
+
+            }
+        }
+      
+        if (vReportType == "2" || vReportType == "5") {
+            $("select#ddlUsers")[0].selectedIndex = 0;
+            if (vProjectID == "0") {
+                alert("Select Project ");
+                $('#ddlProjects').focus();
+                return false;
+
+            }
+        }
+        if (vReportType == "3" || vReportType == "4" ) {
+            $("select#ddlProjects")[0].selectedIndex = 0;
+            $("select#ddlUsers")[0].selectedIndex = 0;
+        }
+       
+
         if (vStartDate != "" && vEndDate != "") {
             $.ajax({
                 url: '@Url.Action("GetReportData", "Report")',

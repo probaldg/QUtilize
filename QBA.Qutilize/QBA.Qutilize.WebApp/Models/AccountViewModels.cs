@@ -166,6 +166,34 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+        public DataSet TimeSheet_ByResource_CurrentMonth()
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.TimeSheet_ByResource_CurrentMonth();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet TimeSheet_ByResource_PreviousMonth()
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.TimeSheet_ByResource_PreviousMonth();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
         public DataSet getSessionHistory(int userID, int limit = 0)
         {
             DataSet ds = null;
