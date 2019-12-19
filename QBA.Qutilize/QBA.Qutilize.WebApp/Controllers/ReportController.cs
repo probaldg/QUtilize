@@ -210,6 +210,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<option value='3'>Resource Utilization</option>");
                     sbOut.Append("<option value='4'>Resource Costing</option>");
                     sbOut.Append("<option value='5'>Project Wise Resource Costing</option>");
+                    sbOut.Append("<option value='6'>TimeSheet ByResource CurrentWeek</option>");
+                    sbOut.Append("<option value='7'>TimeSheet ByResource LastWeek</option>");
+                    sbOut.Append("<option value='8'>TimeSheet ByResource CurrentMonth</option>");
+                    sbOut.Append("<option value='9'>TimeSheet ByResource PreviousMonth</option>");
+                    sbOut.Append("<option value='10'>TimeSheet ByProject CurrentWeek</option>");
+                    sbOut.Append("<option value='11'>TimeSheet ByProject LastWeek</option>");
+                    sbOut.Append("<option value='12'>TimeSheet ByProject CurrentMonth</option>");
+                    sbOut.Append("<option value='13'>TimeSheet ByProject PreviousMonth</option>");
                 }
                 else
                     sbOut.Append("<option value='1'>Get detail break up</option>");
@@ -499,6 +507,187 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<td class='text-center '>" + TotalCost + "</td>");
                     sbOut.Append("</tr>");
                     sbOut.Append("</tfoot></ table >");
+                }
+                else if (ReportType == 8)
+                {
+                    double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
+                    DataSet ds = lvm.TimeSheet_ByResource_CurrentMonth();
+                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    sbOut.Append("<tr>");
+                    sbOut.Append("<td class='text-center' colspan='"+ (ds.Tables[0].Columns.Count-1)+ "'><h2>TimeSheet By Resource for <b>"+ DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </td>");
+                    sbOut.Append("</tr>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        sbOut.Append("<tr>");
+                        foreach (DataColumn dc in ds.Tables[0].Columns)
+                        {
+                            if(dc.ColumnName.Trim()!= "EmployeeName")
+                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                        }
+                        sbOut.Append("</tr>");
+                        string strName = string.Empty;
+                        int intRowNo = 0;
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            if (strName.Trim() != Convert.ToString(dr["EmployeeName"]))
+                            {
+                                strName = Convert.ToString(dr["EmployeeName"]);
+                                sbOut.Append("<tr>");
+                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count-1) + "'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td>");
+                                sbOut.Append("</tr>");
+                            }
+                            sbOut.Append("<tr>");
+                            //sbOut.Append("<td class='text-left'></td>");
+                            sbOut.Append("<td class='text-left '>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 1"]) + "</td>");
+                            w1 = w1 + Convert.ToDouble(Convert.ToString(dr["WEEK 1"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 2"]) + "</td>");
+                            w2 = w2 + Convert.ToDouble(Convert.ToString(dr["WEEK 2"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 3"]) + "</td>");
+                            w3 = w3 + Convert.ToDouble(Convert.ToString(dr["WEEK 3"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 4"]) + "</td>");
+                            w4 = w4 + Convert.ToDouble(Convert.ToString(dr["WEEK 4"]));
+                            if (ds.Tables[0].Columns.Count == 8)
+                            {
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 5"]) + "</td>");
+                                w5 = w5 + Convert.ToDouble(Convert.ToString(dr["WEEK 5"]));
+                            }
+                                if (ds.Tables[0].Columns.Count == 9)
+                            {
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 5"]) + "</td>");
+                                w5 = w5 + Convert.ToDouble(Convert.ToString(dr["WEEK 5"]));
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 6"]) + "</td>");
+                                w6 = w6 + Convert.ToDouble(Convert.ToString(dr["WEEK 6"]));
+                            }
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["Month Total"]) + "</td>");
+                            t = t + Convert.ToDouble(Convert.ToString(dr["Month Total"]));
+                            sbOut.Append("</tr>");
+                            intRowNo++;
+
+                            if (intRowNo == (ds.Tables[0].Rows.Count) || Convert.ToString(ds.Tables[0].Rows[intRowNo]["EmployeeName"]) != strName)
+                            {
+                                sbOut.Append("<tr>");
+                                sbOut.Append("<td class='text-left tblHeaderColor'><b> Total of " + strName + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w1) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w2) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w3) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w4) + "</b></td>");
+                                if (ds.Tables[0].Columns.Count == 8)
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w5) + "</b></td>");
+                                if (ds.Tables[0].Columns.Count == 9)
+                                {
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w5) + "</b></td>");
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w6) + "</b></td>");
+                                }
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", t) + "</b></td>");
+                                sbOut.Append("</tr>");
+                                w1 =  w2 = w3 = w4 =  w5 =  w6 =  t = 0.00;
+                            }
+                        }
+                    }
+                    sbOut.Append("</tbody>");
+                    //sbOut.Append("<tfoot  > ");
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center '> Total </td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalHr + "</td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalPercentage + "</td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalCost + "</td>");
+                    //sbOut.Append("</tr>");
+                    //sbOut.Append("</tfoot>");
+                    sbOut.Append("</ table >");
+                }
+                else if (ReportType == 9)
+                {
+                    double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
+                    DataSet ds = lvm.TimeSheet_ByResource_PreviousMonth();
+                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
+                    sbOut.Append("<tbody id='tableBodyReportData'>");
+                    sbOut.Append("<tr>");
+                    var now = DateTime.Now;
+                    var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
+                    var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
+                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString() + "</b></h2> </td>");
+                    sbOut.Append("</tr>");
+                    if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
+                    {
+                        sbOut.Append("<tr>");
+                        foreach (DataColumn dc in ds.Tables[0].Columns)
+                        {
+                            if (dc.ColumnName.Trim() != "EmployeeName")
+                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                        }
+                        sbOut.Append("</tr>");
+                        string strName = string.Empty;
+                        int intRowNo = 0;
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            if (strName.Trim() != Convert.ToString(dr["EmployeeName"]))
+                            {
+                                strName = Convert.ToString(dr["EmployeeName"]);
+                                sbOut.Append("<tr>");
+                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td>");
+                                sbOut.Append("</tr>");
+                            }
+                            sbOut.Append("<tr>");
+                            //sbOut.Append("<td class='text-left'></td>");
+                            sbOut.Append("<td class='text-left '>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 1"]) + "</td>");
+                            w1 = w1 + Convert.ToDouble(Convert.ToString(dr["WEEK 1"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 2"]) + "</td>");
+                            w2 = w2 + Convert.ToDouble(Convert.ToString(dr["WEEK 2"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 3"]) + "</td>");
+                            w3 = w3 + Convert.ToDouble(Convert.ToString(dr["WEEK 3"]));
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 4"]) + "</td>");
+                            w4 = w4 + Convert.ToDouble(Convert.ToString(dr["WEEK 4"]));
+                            if (ds.Tables[0].Columns.Count == 8)
+                            {
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 5"]) + "</td>");
+                                w5 = w5 + Convert.ToDouble(Convert.ToString(dr["WEEK 5"]));
+                            }
+                            if (ds.Tables[0].Columns.Count == 9)
+                            {
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 5"]) + "</td>");
+                                w5 = w5 + Convert.ToDouble(Convert.ToString(dr["WEEK 5"]));
+                                sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["WEEK 6"]) + "</td>");
+                                w6 = w6 + Convert.ToDouble(Convert.ToString(dr["WEEK 6"]));
+                            }
+                            sbOut.Append("<td class='text-right '>" + Convert.ToString(dr["Month Total"]) + "</td>");
+                            t = t + Convert.ToDouble(Convert.ToString(dr["Month Total"]));
+                            sbOut.Append("</tr>");
+                            intRowNo++;
+
+                            if (intRowNo == (ds.Tables[0].Rows.Count) || Convert.ToString(ds.Tables[0].Rows[intRowNo]["EmployeeName"]) != strName)
+                            {
+                                sbOut.Append("<tr>");
+                                sbOut.Append("<td class='text-left tblHeaderColor'><b> Total of " + strName + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w1) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w2) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w3) + "</b></td>");
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w4) + "</b></td>");
+                                if (ds.Tables[0].Columns.Count == 8)
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w5) + "</b></td>");
+                                if (ds.Tables[0].Columns.Count == 9)
+                                {
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w5) + "</b></td>");
+                                    sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", w6) + "</b></td>");
+                                }
+                                sbOut.Append("<td class='text-right tblHeaderColor'><b>" + string.Format("{0:0.00}", t) + "</b></td>");
+                                sbOut.Append("</tr>");
+                                w1 = w2 = w3 = w4 = w5 = w6 = t = 0.00;
+                            }
+                        }
+                    }
+                    sbOut.Append("</tbody>");
+                    //sbOut.Append("<tfoot  > ");
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center '> Total </td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalHr + "</td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalPercentage + "</td>");
+                    //sbOut.Append("<td class='text-center '>" + TotalCost + "</td>");
+                    //sbOut.Append("</tr>");
+                    //sbOut.Append("</tfoot>");
+                    sbOut.Append("</ table >");
                 }
             }
             catch (Exception exx)

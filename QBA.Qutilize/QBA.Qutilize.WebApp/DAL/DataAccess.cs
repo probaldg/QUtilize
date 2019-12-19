@@ -274,7 +274,50 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
+        public static DataSet TimeSheet_ByResource_CurrentMonth()
+        {
+            DataSet ds = null;
+            try
+            {
+                //SqlParameter[] param ={
 
+                //                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
+                //                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
+
+                //                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_CurrentMonth");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public static DataSet TimeSheet_ByResource_PreviousMonth()
+        {
+            DataSet ds = null;
+            try
+            {
+                //SqlParameter[] param ={
+
+                //                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
+                //                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
+
+                //                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_PreviousMonth");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
         public static DataSet GetUserDetailData(int userID)
         {
             DataSet ds = null;
