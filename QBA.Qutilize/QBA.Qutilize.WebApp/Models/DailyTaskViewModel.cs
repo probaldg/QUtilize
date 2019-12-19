@@ -18,10 +18,10 @@ namespace QBA.Qutilize.WebApp.Models
             DailyTaskList = new List<DailyTaskModel>();
             DailyTaskModel = new DailyTaskModel();
             ProjectTaskList = new List<ProjectTaskModel>();
-            
+            IssueList = new List<ProjectIssueModel>();
         }
         public string Ticketno { get; set; }
-       
+       public int IssueId { get; set; }
         public DateTime WeekStartDate { get; set; }
         public DateTime WeekEndDate { get; set; }
         public string StartDate { get; set; }
@@ -35,6 +35,7 @@ namespace QBA.Qutilize.WebApp.Models
         public DailyTaskModel DailyTaskModel { get; set; }
         public SelectList ProjecSelectList { get; set; }
         public List<Project> ProjectsList { get; set; }
+        public List<ProjectIssueModel> IssueList { get; set; }
         public List<ProjectTaskModel> ProjectTaskList { get; set; }
         public List<DailyTaskModel> DailyTaskList { get; set; }
         public bool ISErr { get; set; }
@@ -396,7 +397,28 @@ namespace QBA.Qutilize.WebApp.Models
             }
         }
 
-
       
+        public DataTable GetIssueListByProject(int? Projectid =0, int? UserId =0, int? OrgId=0)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@ProjectId",Projectid ==0? null: Projectid),
+                                        new SqlParameter("@UserId",UserId ==0? null: UserId),
+                                        new SqlParameter("@OrgId",OrgId ==0? null: OrgId)
+                                       
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetIssueListByProject]", param);
+              
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return dt;
+        }
+        
+
     }
 }

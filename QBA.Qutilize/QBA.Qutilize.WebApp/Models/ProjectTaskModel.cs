@@ -11,6 +11,7 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int TaskId { get; set; }
         public int ProjectID { get; set; }
+        public int ProjectTypeID { get; set; }
         [Display(Name = "Task Code")]
         public string TaskCode { get; set; }
         [Display(Name = "Task Name")]

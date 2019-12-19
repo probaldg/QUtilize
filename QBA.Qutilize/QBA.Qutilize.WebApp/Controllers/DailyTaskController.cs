@@ -1,4 +1,5 @@
-﻿using QBA.Qutilize.WebApp.Helper;
+﻿using Newtonsoft.Json;
+using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 {
     public class DailyTaskController : Controller
     {
-
+        readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         // GET: DailyTask
         public ActionResult Index()
         {
@@ -75,12 +76,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (userId != 0)
                     model.DailyTaskModel.UserID = userId;
                     model.DailyTaskModel.ProjectTaskID = ProjectTaskID;  //create by malabika 14-11-2019
-
                     model.DailyTaskModel.ProjectID = projectID;
                     model.DailyTaskModel.TaskName = taskName;
-
                     //model.DailyTaskModel.StartTime = startTime;
-                    //  model.DailyTaskModel.EndTime = endTime;
+                    //model.DailyTaskModel.EndTime = endTime;
                     model.DailyTaskModel.Duration = Duration;
                     model.DailyTaskModel.Ticketno = Ticketno;
                     model.DailyTaskModel.Description = descreption;
@@ -295,14 +294,12 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
 
                 double Totalduration;
-
                 //  string []hms = duration.ToString().Split('.'); // split it at the colons
                 // minutes are worth 60 seconds. Hours are worth 60 minutes.
                 //  double seconds = (Convert.ToDouble(hms[0])) * 60 * 60 + (Convert.ToDouble(hms[1])) * 60;
                 // Totalduration = seconds / 3600;
-                Totalduration = duration;
-             
-                return Totalduration.ToString();  //.ToString(@"hh\:mm");
+                Totalduration = duration;     
+                return Totalduration.ToString(); 
 
             }
             catch (Exception ex)
@@ -624,5 +621,41 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(sb.ToString());
         }
+
+
+        //public ActionResult BindIssueList(int ProjectId)
+        //{
+          
+        //    DailyTaskViewModel model = new DailyTaskViewModel();
+        //    ProjectIssueModel issue = new ProjectIssueModel();
+        //    try
+        //    {
+               
+        //        model.IssueList = model.Get_IssueListByProject(ProjectId, model.UserId);
+        //       // model.ProjectsList = model.GetAllProjects(model.UserId);
+        //        //if (dt.Rows.Count > 0)
+        //        //{
+        //        //    foreach (DataRow item in dt.Rows)
+        //        //    {
+        //        //         issue = new ProjectIssueModel();
+        //        //        issue.IssueId = Convert.ToInt32(item["IssueID"]);
+        //        //        issue.IssueCode = item["IssueCode"].ToString();
+        //        //        issue.IssueName = item["IssueName"].ToString();
+        //        //        dailyViewTaskModel.IssueList.Add(issue);
+
+        //        //    }
+        //        //}
+
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        //throw;
+        //    }
+        //    return Json(JsonConvert.SerializeObject(model.IssueList));
+
+
+        //}
     }
 }

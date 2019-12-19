@@ -104,7 +104,9 @@
                     @Html.HiddenFor(model => model.ProjectID)
                 </td>
                 <td>
-                    <input type="text" class="form-control input-sm" id="TicketnoInsert">
+                    @*<input type="text" class="form-control input-sm" id="TicketnoInsert">*@
+                    @Html.DropDownListFor(M => M.IssueList, new SelectList(Model.IssueList, "IssueId", "IssueCode"), "Please select", new { @class = "form-control" })
+                    @Html.HiddenFor(model => model.IssueId)
                 </td>
                 <td>
                     @Html.DropDownListFor(model => model.ProjectTaskList, new SelectList(Model.ProjectTaskList, "TaskId", "TaskName"), "Please select", new { @class = "form-control" })
@@ -287,6 +289,9 @@
     </script>
     @* End*@
     <script type="text/javascript">
+
+     
+
         var curr = new Date;
         var first = curr.getDate() - curr.getDay();
         var first = first + 1
@@ -514,23 +519,28 @@
         }
 
 
-         $('#btnInsert').click(function () {
+        $('#btnInsert').click(function () {
 
-             var taskDate = $('#TaskDateInsert').val();
+            var taskDate = $('#TaskDateInsert').val();
 
-             //
-             var projectID = $('#ProjectsList').val();
-             var ProjectTaskID = $('#ProjectTaskList').val();
+            //
+            var projectID = $('#ProjectsList').val();
+            var ProjectTaskID = $('#ProjectTaskList').val();
 
-             var taskNameID = $('#ProjectTaskList').val();// $('#TaskNameInsert').val();
-             var taskName = $("#ProjectTaskList option:selected").text();
-             var startTime = $('#StartTimeInsert').val();
+            var taskNameID = $('#ProjectTaskList').val();// $('#TaskNameInsert').val();
+            var taskName = $("#ProjectTaskList option:selected").text();
+            var startTime = $('#StartTimeInsert').val();
 
-             //var endTime = $('#EndTimeInsert').val();
-             var dsec = $('#DescriptionInsert').val();
-             var Ticketno = $('#TicketnoInsert').val();
-
-           
+            //var endTime = $('#EndTimeInsert').val();
+            var dsec = $('#DescriptionInsert').val();
+            var Issueid = $('#IssueList').val();
+            var Ticketno;
+            if (Issueid != 0) {
+                Ticketno = $('#IssueList option:selected').text();
+            }
+            else {
+                Ticketno = "";
+            }  
                 if (taskDate == "") {
                     ShowError("Task date is required..")
                     return false;
@@ -671,8 +681,11 @@
                     }),
                     success: function (result) {
                         //console.log(result);
+                        var str = result.split("|");
                         $("#ProjectTaskList").html("");
-                        $("#ProjectTaskList").append(result);
+                        $("#ProjectTaskList").append(str[0]);
+                        $("#IssueList").html("");
+                        $("#IssueList").append(str[1]);
 
                     },
                     error: function () {

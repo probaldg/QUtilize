@@ -1,6 +1,5 @@
 
 using Newtonsoft.Json;
-
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
@@ -21,6 +20,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
         string strTaskData = string.Empty;
+        String strIssueData = string.Empty;
         string strspace = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
         // GET: Admin
         public ActionResult Index()
@@ -328,32 +328,35 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult GetTask(int ProjID)
         {
             UserModel user = new UserModel();
-           
+            DailyTaskViewModel model = new DailyTaskViewModel();
             try
             {
                 if (ProjID == 0)
-                    strTaskData += "<option value = 0>Please select</option>";
+                {   
+                strTaskData += "<option value = 0>Please select</option>";
+                strIssueData += "<option value = 0>Please select</option>";
+                }
                 else
                 {
                     ProjectTaskModel taskModel = new ProjectTaskModel();
+                  
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                   // model.IssueList = model.Get_IssueListByProject(ProjID, loggedInUser);
+                    DataTable dt= model.GetIssueListByProject(ProjID, loggedInUser, userInfo.UserOrganisationID);
+                    strIssueData += "<option value = 0>Please select</option>";
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            strIssueData += "<option value=" + Convert.ToInt32(item["IssueId"]) + ">" + Convert.ToString(item["IssueCode"]) + "</option>";
+                        }
+                    }
                     DataSet dsTaskData = taskModel.GetTasksData("DailyTask",ProjID, userInfo.UserOrganisationID,userInfo.UserId);
                     strTaskData += "<option value = 0>Please select</option>";
                     if (dsTaskData != null && dsTaskData.Tables.Count > 0 && dsTaskData.Tables[0] != null && dsTaskData.Tables[0].Rows.Count > 0)
                     {
-                        //try
-                        //{
-                        //    strMenu.Append(GetSideMenuContent(dt, ""));
-                        //}
-                        //catch (Exception exx) { }
-
-                        //foreach (DataRow item in dsTaskData.Tables[0].Rows)
-                        //{
-                        //    strTaskData += "<option value=" + Convert.ToInt32(item["TaskID"]) + ">" + Convert.ToString(item["TaskName"]) + "</option>";
-                        //}
 
                        //create by malabika 14-11-2019
-
                         foreach (DataRow item in dsTaskData.Tables[0].Rows)
                         {
                             if (Convert.ToInt32(item["ParentTaskID"]) == 0)
@@ -367,14 +370,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     }
 
-                    
-            //var listUsers = user.GetAllUsersInList(orgId).Where(x => x.IsActive == true).ToList();
-
-            //foreach (UserModel item in listUsers)
-            //{
-            //    strUserData += "<option value=" + Convert.ToInt32(item.ID) + ">" + item.Name + "</option>";
-            //}
-        }
+         }
             }
             catch (Exception ex)
             {
@@ -382,9 +378,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                 //throw;
             }
 
-            return Json(strTaskData);
+            return Json(strTaskData+'|'+strIssueData);
+           // return View(model);
         }
-        //create by malabika 14-11-2019
+        //created by malabika 14-11-2019
         public string GetSubTaskDetails(DataTable TaskDt, int TaskID)
         {
             
@@ -478,7 +475,62 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         #region Project managment region"
 
+        public ActionResult LoadProjectIssueData()
+        {
+            ProjectIssueModel obj = new ProjectIssueModel();
+            StringBuilder strUserData = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
 
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.GetAllProjectsIssue();
+                }
+                else
+                {
+                    dt = obj.GetAllProjectsIssue(userInfo.UserOrganisationID);
+                }
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                   
+                    var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
+                    var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
+
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["IssueName"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["IssueDescription"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueStartDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueEndDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+
+
+
+                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
+                  
+
+                    strUserData.Append("</tr>");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ////throw;
+            }
+            return Content(strUserData.ToString());
+        }
         public ActionResult LoadProjectData()
         {
             ProjectModel obj = new ProjectModel();
@@ -556,6 +608,43 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(strUserData.ToString());
         }
+
+        //****
+        
+        public ActionResult ManageProjectIssue(int ID = 0)
+        {
+
+            ProjectModel obj = new ProjectModel();
+            ProjectModel pm = new ProjectModel();
+            ProjectTypeModel PTM = new ProjectTypeModel();
+            MasterSeverityModel MSM = new MasterSeverityModel();
+         
+            List<ProjectModel> objRole = new List<ProjectModel>();
+           
+
+            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            if (userInfo.IsRoleSysAdmin)
+            {
+                UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
+                obj.UserList.Remove(sysAdmin);
+                obj.ProjectTypeList = PTM.GetProjectType().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.SeverityList = MSM.Get_SeverityDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.ActiveProjectList = obj.Get_ActiveProject().Where(x => x.IsActive == true).ToList().OrderBy(x=>x.ProjectName).ToList();
+            }
+            else
+            {
+                obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.SeverityList=MSM.Get_SeverityDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.ActiveProjectList=obj.Get_ActiveProject(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+
+            }
+           
+
+            return View(obj);
+        }
+        //**
         public ActionResult ManageProject(int ID = 0)
         {
             ProjectModel obj = new ProjectModel();
@@ -889,7 +978,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         task.ProjectName = item["ProjectName"].ToString();
                         task.TaskStartDate = Convert.ToDateTime(item["TaskStartDate"]);
                         task.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
-
+                        task.ProjectTypeID= Convert.ToInt32(item["ProjectTypeID"]);
                         task.ActualTaskStartDate = (item["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskStartDateActual"]) : (DateTime?)null;
                         task.ActualTaskEndDate = (item["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(item["TaskEndDateActual"]) : (DateTime?)null;
                         task.TaskStatusName = item["StatusName"].ToString() ?? "";
@@ -1001,6 +1090,66 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
         }
+
+        public ActionResult GetProjectIssueByID(int IssueId)
+        {
+            ProjectIssueModel projectIssue = new ProjectIssueModel();
+
+            try
+            {
+
+                DataTable dtIssueData = projectIssue.GetProjectIssueByIssueId(IssueId);
+                if (dtIssueData.Rows.Count > 0)
+                {
+
+                    projectIssue.IssueId = Convert.ToInt32(dtIssueData.Rows[0]["IssueID"]);
+                    projectIssue.IssueCode = dtIssueData.Rows[0]["IssueCode"].ToString() ?? "";
+                    projectIssue.IssueName = dtIssueData.Rows[0]["IssueName"].ToString();
+                    projectIssue.IssueDescription = dtIssueData.Rows[0]["IssueDescription"].ToString() ?? "";
+                    projectIssue.ProjectName =dtIssueData.Rows[0]["ProjectName"].ToString();
+                    projectIssue.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
+                    projectIssue.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
+                    projectIssue.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
+                   
+                    projectIssue.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
+                    projectIssue.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
+                    projectIssue.StatusName = dtIssueData.Rows[0]["StatusName"].ToString() ?? "";
+                    projectIssue.StatusID = Convert.ToInt32(dtIssueData.Rows[0]["StatusID"]);
+                    projectIssue.SeverityID = Convert.ToInt32(dtIssueData.Rows[0]["SeverityID"]);
+                    projectIssue.SeverityName = dtIssueData.Rows[0]["SeverityName"].ToString();
+                    projectIssue.IsActive = Convert.ToBoolean(dtIssueData.Rows[0]["isACTIVE"]);
+                    projectIssue.IsValueAdded = Convert.ToBoolean(dtIssueData.Rows[0]["isValueAdded"]);
+                    projectIssue.CompletePercent = Convert.ToInt32(dtIssueData.Rows[0]["CompletePercent"]);
+
+                    foreach (DataRow item in dtIssueData.Rows)
+                    {
+                        UserModel userModel = new UserModel
+                        {
+                            ID = Convert.ToInt32(item["UserID"]),
+                            Name = item["UserName"].ToString(),
+                            IsActive = Convert.ToBoolean(item["IsUserActive"])
+
+                        };
+
+                        projectIssue.UserIdAssigned += (item["UserID"]).ToString() + ",";
+                        projectIssue.UserNameAssigned += (item["UserName"]).ToString() + ",";
+                        projectIssue.UserList.Add(userModel);
+                    }
+                    projectIssue.UserIdAssigned = projectIssue.UserIdAssigned.TrimEnd(',');
+                    // task.TaskList.Add(task);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                //throw;
+            }
+            return Json(JsonConvert.SerializeObject(projectIssue));
+
+
+        }
+
         public ActionResult SaveProjectTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
@@ -1094,6 +1243,115 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             }
             return Json(result);
+        }
+
+        public ActionResult SaveProjectIssue(ProjectIssueModel model)
+        {
+            ProjectIssueModel pm = new ProjectIssueModel();
+            string result = "";
+            try
+            {
+
+                if (model.IssueId > 0)
+                {
+
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+                    if (model.IssueStartDateDisplay != null)
+                    {
+                        model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(model.IssueStartDateDisplay);
+                    }
+                    if (model.IssueEndDateDisplay != null)
+                    {
+                        model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.IssueEndDateDisplay);
+                    }
+                    if (model.ActualIssueStartDateDisplay != null)
+                    {
+                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueStartDateDisplay);
+                    }
+                    if (model.ActualIssueEndDateDisplay != null)
+                    {
+                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplay);
+
+                    }
+
+
+
+                    var updateStatus = pm.UpdateIssuedata(model);
+
+                    if (updateStatus)
+                    {
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Success";
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Error";
+                    }
+
+                }
+
+                else
+                {
+                    //TODO check the time format and the insert
+                    if (model.IssueStartDateDisplay != null)
+                    {
+                        model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(model.IssueStartDateDisplay);
+                    }
+                    if (model.IssueEndDateDisplay != null)
+                    {
+                        model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.IssueEndDateDisplay);
+                    }
+                    if (model.ActualIssueStartDateDisplay != null)
+                    {
+                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueStartDateDisplay);
+                    }
+                    if (model.ActualIssueEndDateDisplay != null)
+                    {
+                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplay);
+
+                    }
+
+
+                    model.AddedBy = loggedInUser;
+                    model.AddedTS = DateTime.Now;
+                    var insertStatus = pm.InsertIssuedata(model, out int id);
+                    if (insertStatus)
+                    {
+                        if (id > 0)
+                        {
+                            model.ISErr = false;
+                            model.ErrString = "Data Saved Successfully.";
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString.ToString();
+                            result = "Success";
+                        }
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Error";
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                result = "Error";
+                return Json(result);
+
+            }
+             return Json(result);
+            //return RedirectToAction("ManageProjectIssue", "Admin");
         }
 
 

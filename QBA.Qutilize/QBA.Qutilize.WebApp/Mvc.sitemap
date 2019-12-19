@@ -19,6 +19,7 @@
       <mvcSiteMapNode title="Skill Master"  controller="Admin" action="ManageMasterSkill"/>
       <mvcSiteMapNode title="Skill Rating Master"  controller="Admin" action="ManageMasterSkillRating"/>
       <mvcSiteMapNode title="Project Status Management"  controller="Admin" action="ManageTaskStatus"/>
+      <mvcSiteMapNode title="Project Issue Management"  controller="Admin" action="ManageProjectIssue"/>
     </mvcSiteMapNode>
     <mvcSiteMapNode title="Dailytask"  controller="Dailytask" action="index"/>
     <mvcSiteMapNode title="Skill Matrix"  controller="Dailytask" action="SkillManagement"/>

@@ -17,6 +17,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string Description { get; set; }
         public int ProjectTypeID { get; set; }
         public int ProjectPricingID { get; set; }
+        public string ProjectTypeName { get; set; }
 
         [Display(Name = "Project Type")]
         public List<ProjectTypeModel> ProjectTypeList { get; set; }
@@ -25,6 +26,8 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Currency")]
         public List<MasterCurrencyModel> CurrencyList { get; set; }
         public int CurrencyID { get; set; }
+
+
         [Display(Name = "Project Billing Type")]
         public List<ProjectBillingModel> ProjectBillingList { get; set; }
 
@@ -69,8 +72,13 @@ namespace QBA.Qutilize.WebApp.Models
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
 
+        [Display(Name = "Severity")]
+        public List<MasterSeverityModel> SeverityList { get; set; }
+        public int SeverityID { get; set; }
 
-
+        [Display(Name = "Project Name")]
+        public List<ProjectModel> ActiveProjectList { get; set; }
+        public int ActiveProjectID { get; set; }
 
         public SelectList ProjectList { get; set; }
         #region Global Variable Decleartion::
@@ -78,14 +86,14 @@ namespace QBA.Qutilize.WebApp.Models
         #endregion
 
         public ProjectTaskModel ProjectTask { get; set; }
+        public ProjectIssueModel ProjectIssue { get; set; }
 
         public ProjectModel()
         {
             DepartmentList = new List<DepartmentModel>();
             UserList = new List<UserModel>();
         }
-
-        
+    
         public DataTable GetAllProjects(int orgId = 0)
         {
             DataTable dt = null;
@@ -103,6 +111,46 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+        //**
+        public List<ProjectModel> Get_ActiveProject(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<ProjectModel> lstProjectDetl = new List<ProjectModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]", param);
+
+                }
+               
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        ProjectModel projectModel = new ProjectModel();
+                        projectModel.ProjectID = Convert.ToInt32(item["Id"]);
+                        projectModel.ProjectCode = item["ProjectCode"].ToString();
+                        projectModel.ProjectName = item["Name"].ToString();
+                        projectModel.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        projectModel.ProjectTypeName= item["ProjectTypeName"].ToString();
+                        projectModel.ProjectTypeID = Convert.ToInt32(item["ProjectTypeID"]);
+                       // projectModel.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["SeverityName"].ToString();
+                        lstProjectDetl.Add(projectModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstProjectDetl;
+        }
+        //**
+
         public DataTable GetProjectByID(int id)
         {
             DataTable dt = null;
@@ -136,7 +184,6 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
-
 
         public DataTable GetAllTaskListByProjectID(int projectID)
         {
@@ -306,7 +353,6 @@ namespace QBA.Qutilize.WebApp.Models
             return departments;
         }
 
-
         public List<UserModel> GetManagers(int orgID = 0)
         {
             DataTable dt = null;
@@ -384,7 +430,6 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return clientsList;
         }
-
 
         public DataTable GetAllUserByProjectID(int projectId)
         {
@@ -685,4 +730,75 @@ namespace QBA.Qutilize.WebApp.Models
         }
         //**
     }
+
+    public class MasterSeverityModel
+    {
+        [Key]
+        public int ID { get; set; }
+        [Display(Name = "Severity Code")]
+        public string CODE { get; set; }
+        [Display(Name = "Severity Name")]
+        public string Name { get; set; }
+        public int Rank { get; set; }
+      
+        public int OrganisationID { get; set; }
+        [Display(Name = "Organisation Name")]
+        public string OrganisationName { get; set; }
+
+        public bool IsActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedTS { get; set; }
+        public DateTime EditedTS { get; set; }
+        public int EditedBy { get; set; }
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
+        public string DisplayTextForCumboWithOrgName { get; set; }
+
+        SqlHelper objSQLHelper = new SqlHelper();
+
+        //***
+        public List<MasterSeverityModel> Get_SeverityDetails(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<MasterSeverityModel> lstSeverityDetl = new List<MasterSeverityModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterSeverity_GET]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterSeverity_GET]");
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        MasterSeverityModel masterSeverity = new MasterSeverityModel();
+                        masterSeverity.ID = Convert.ToInt32(item["SeverityID"]);
+                        masterSeverity.OrganisationName = item["OrganisationName"].ToString();
+                        masterSeverity.Name = item["SeverityName"].ToString();
+                        masterSeverity.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        masterSeverity.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["SeverityName"].ToString();
+                        lstSeverityDetl.Add(masterSeverity);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstSeverityDetl;
+        }
+        //**
+    }
+
+   
+
+ 
 }
