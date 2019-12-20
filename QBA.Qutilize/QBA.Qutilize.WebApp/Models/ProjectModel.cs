@@ -149,6 +149,43 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return lstProjectDetl;
         }
+        public List<ProjectModel> Get_ActiveProjectMappedwithUser(int userID = 0)
+        {
+            DataTable dt = null;
+            List<ProjectModel> lstProjectDetl = new List<ProjectModel>();
+            try
+            {
+                if (userID != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_ActiveAndAssignedtoUser_Get]", param);
+
+                }
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        ProjectModel projectModel = new ProjectModel();
+                        projectModel.ProjectID = Convert.ToInt32(item["Id"]);
+                        projectModel.ProjectCode = item["ProjectCode"].ToString();
+                        projectModel.ProjectName = item["Name"].ToString();
+                        projectModel.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        projectModel.ProjectTypeName = item["ProjectTypeName"].ToString();
+                        projectModel.ProjectTypeID = Convert.ToInt32(item["ProjectTypeID"]);
+                        // projectModel.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["SeverityName"].ToString();
+                        lstProjectDetl.Add(projectModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstProjectDetl;
+        }
         //**
 
         public DataTable GetProjectByID(int id)
@@ -797,8 +834,5 @@ namespace QBA.Qutilize.WebApp.Models
         }
         //**
     }
-
-   
-
  
 }

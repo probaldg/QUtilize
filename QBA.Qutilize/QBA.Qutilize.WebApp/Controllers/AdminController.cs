@@ -637,8 +637,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.SeverityList=MSM.Get_SeverityDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
-                obj.ActiveProjectList=obj.Get_ActiveProject(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
-
+                obj.ActiveProjectList=obj.Get_ActiveProjectMappedwithUser(loggedInUser);
             }
            
 

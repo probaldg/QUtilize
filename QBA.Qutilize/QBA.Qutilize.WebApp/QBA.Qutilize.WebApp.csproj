@@ -191,6 +191,7 @@
     <Compile Include="Models\ModuleModel.cs" />
     <Compile Include="Models\OrganisationModel.cs" />
     <Compile Include="Models\PortalLogger.cs" />
+    <Compile Include="Models\ProjectIssueModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectStatusModel.cs" />
     <Compile Include="Models\ProjectTaskModel.cs" />
@@ -790,6 +791,7 @@
     <Content Include="Views\Admin\ManageTaskStatus.cshtml" />
     <Content Include="Views\Admin\ManageMasterSkillRating.cshtml" />
     <Content Include="Views\Admin\ManageMasterSkill.cshtml" />
+    <Content Include="Views\Admin\ManageProjectIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
