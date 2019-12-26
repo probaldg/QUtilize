@@ -21,6 +21,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         UserModel um = new UserModel();
         string strTaskData = string.Empty;
         String strIssueData = string.Empty;
+        string strStatusData = String.Empty;
         string strspace = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
         // GET: Admin
         public ActionResult Index()
@@ -325,6 +326,32 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
+        public ActionResult LoadStatus()
+        {
+            try
+            {
+                    ProjectIssueModel issueModel = new ProjectIssueModel();
+                    UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                  
+                    DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
+                    strStatusData += "<option value = 0>Please select</option>";
+                    if (dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow item in dt.Rows)
+                        {
+                        strStatusData += "<option value=" + Convert.ToInt32(item["StatusID"]) + ">" + Convert.ToString(item["StatusName"]) + "</option>";
+                        }
+                    }
+                  
+            }
+              catch (Exception ex)
+             {
+
+                //throw;
+             }
+
+            return Json(strStatusData);
+        }
         public ActionResult GetTask(int ProjID)
         {
             UserModel user = new UserModel();
@@ -484,14 +511,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                 var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
                 UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
                 DataTable dt = new DataTable();
-
                 if (userInfo.IsRoleSysAdmin)
                 {
                     dt = obj.GetAllProjectsIssue();
                 }
                 else
                 {
-                    dt = obj.GetAllProjectsIssue(userInfo.UserOrganisationID);
+                    dt = obj.GetAllProjectsIssue(loggedInUser);
                 }
                 foreach (DataRow item in dt.Rows)
                 {
@@ -511,14 +537,80 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["IssueStartDateActual"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["IssueEndDateActual"].ToString() + "</td>");
+                  
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
 
 
+                    if (item["StatusName"].ToString() != "COMPLETED")
+                    {
+                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
+                    }
+                    else
+                    {
+                        strUserData.Append("<td class='text-center'></td>");
+                    }
 
-                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
-                  
+                    strUserData.Append("</tr>");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ////throw;
+            }
+            return Content(strUserData.ToString());
+        }
+
+        public ActionResult LoadProjectIssueAssignedtoUser()
+        {
+            ProjectIssueModel obj = new ProjectIssueModel();
+            StringBuilder strUserData = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+                
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.Get_ProjectIssueAssignedToUser();
+                }
+                else
+                {
+                    dt = obj.Get_ProjectIssueAssignedToUser(loggedInUser);
+                }
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+
+                    var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
+                    var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
+
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["IssueName"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["IssueDescription"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
+                    strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
+
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+
+
+                    if (item["StatusName"].ToString() != "CLOSED")
+                    {
+                        //strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='Changestatus' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Change Status</a> </td>");
+                        strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforChangeStatus({0},'{1}');""> Change Status </a> </td>", Convert.ToInt32(item["IssueID"]), item["StatusID"].ToString());
+                    }
+                    else
+                    {
+                        strUserData.Append("<td class='text-center'></td>");
+                    }
 
                     strUserData.Append("</tr>");
 
@@ -631,13 +723,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                 obj.UserList.Remove(sysAdmin);
                 obj.ProjectTypeList = PTM.GetProjectType().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.SeverityList = MSM.Get_SeverityDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
-                obj.ActiveProjectList = obj.Get_ActiveProject().Where(x => x.IsActive == true).ToList().OrderBy(x=>x.ProjectName).ToList();
+                obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
             }
             else
             {
                 obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.SeverityList=MSM.Get_SeverityDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
-                obj.ActiveProjectList=obj.Get_ActiveProjectMappedwithUser(loggedInUser);
+                obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
             }
            
 
@@ -1243,7 +1335,62 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(result);
         }
+        public ActionResult UpdateStatusIssue(ProjectIssueModel model)
+        {
+            ProjectIssueModel pm = new ProjectIssueModel();
+            string result = "";
+            try
+            {
 
+                if (model.IssueId > 0)
+                {
+
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+                 
+                    if (model.ActualIssueStartDateDisplay != null)
+                    {
+                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueStartDateDisplay);
+                    }
+                    if (model.ActualIssueEndDateDisplay != null)
+                    {
+                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplay);
+
+                    }
+                    
+
+
+                    var updateStatus = model.UpdateIssuestatus(model);
+
+                    if (updateStatus)
+                    {
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Success";
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Error";
+                    }
+
+                }
+
+                
+            }
+            catch (Exception)
+            {
+                result = "Error";
+                return Json(result);
+
+            }
+            return Json(result);
+        }
         public ActionResult SaveProjectIssue(ProjectIssueModel model)
         {
             ProjectIssueModel pm = new ProjectIssueModel();

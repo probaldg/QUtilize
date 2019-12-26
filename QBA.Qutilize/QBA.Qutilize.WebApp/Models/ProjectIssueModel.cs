@@ -18,6 +18,12 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Issue Description")]
         public string IssueDescription { get; set; }
 
+        [Display(Name = "Comment")]
+        public String Comment { get; set; }
+
+        [Display(Name = "Time Spent")]
+        public string Timespent { get; set; }
+        public double Duration { get; set; }
         public string ProjectName { get; set; }
      
         public DateTime IssuestartDate { get; set; }
@@ -80,13 +86,13 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetAllProjectsIssue(int orgId = 0)
+        public DataTable GetAllProjectsIssue(int userId = 0)
         {
             DataTable dt = null;
             try
             {
                 SqlParameter[] param ={
-                                        new SqlParameter("@OrgID",orgId)
+                                        new SqlParameter("@Id",userId)
                                       };
 
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_tblMasterProjectIssue_Get]", param);
@@ -96,6 +102,49 @@ namespace QBA.Qutilize.WebApp.Models
 
             }
             return dt;
+        }
+
+        public DataTable Get_MasterStatus(int OrgId = 0)
+        {
+            DataTable dt = null;
+            try
+            {
+                if (OrgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
+
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterStatus_GET]", param);
+                }
+                else
+                {
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterStatus_GET]");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
+        public DataTable Get_ProjectIssueAssignedToUser(int UserId=0)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserId",UserId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USP_UserWiseProjectIssueAssigned_Get", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+
         }
 
         public DataTable GetProjectIssueByIssueId(int TaskId)
@@ -224,6 +273,39 @@ namespace QBA.Qutilize.WebApp.Models
             return result;
 
         }
-      
+
+
+        public Boolean UpdateIssuestatus(ProjectIssueModel model)
+        {
+            string str = string.Empty;
+            bool result = false;
+            DataTable dt = null;
+
+            try
+            {
+
+                SqlParameter[] param ={
+                    new SqlParameter("@IssueID",model.IssueId),
+                    new SqlParameter("@StatusID",model.StatusID),
+                    new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate),
+                    new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate),
+                    new SqlParameter("@Comment",model.Comment),
+                    new SqlParameter("@Timespent",model.Duration),
+                    new SqlParameter("@EditedBY",model.EditedBy),
+                    new SqlParameter("@EditedTS",model.EditedTS)
+                   
+                };
+                dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_UpdateStatus", param);
+
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+            return result;
+
+        }
     }
 }
