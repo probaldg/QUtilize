@@ -177,28 +177,28 @@
 
                         <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            @Html.HiddenFor(model => model.ProjectIssue.IssueId)
+                            @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
 
 
                             <div class="form-group">
                                 @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    <select id="ddlIssueStatus" class="form-control"><option value="0">Select</option></select>
+                                    <select id="ddlIssueStatusChange" class="form-control"><option value="0">Select</option></select>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDate()" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="form-group">
@@ -398,7 +398,7 @@
 
     <script type="text/javascript">
         function ShowPopupforChangeStatus(issueid, StatusID) {
-            $('#ProjectIssue_IssueId').val(issueid);
+            $('#ProjectIssue_IssueIdforstatus').val(issueid);
             document.getElementById("ErrorMsgTask").innerHTML = "";
             document.getElementById("ErrorMsgTask").style.display = 'none';
             $.ajax({
@@ -410,9 +410,9 @@
                  data: JSON.stringify({ }),                
                  success: function (result) {
 
-                               $("#ddlIssueStatus").html("");
-                              $("#ddlIssueStatus").append(result);
-                              $('#ddlIssueStatus').val(StatusID);
+                     $("#ddlIssueStatusChange").html("");
+                     $("#ddlIssueStatusChange").append(result);
+                     $('#ddlIssueStatusChange').val(StatusID);
                                $('#mymodal').modal('show');
       
                  },
@@ -423,7 +423,20 @@
 
         }
 
+        function ValidateActualEndDateForStatus() {
+            var startDate = $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val();
 
+            var endDate = $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val();
+            if (startDate != '' && endDate != '') {
+
+                if (Date.parse(startDate) > Date.parse(endDate)) {
+                    $('#ProjectIssue_IssueEndDateDisplay').val('');
+                    alert("Start date should not be greater than end date");
+                    return false;
+                }
+            }
+
+        };
         function ValidateEndDate() {
             var startDate = $('#ProjectIssue_IssueStartDateDisplay').val();
 
@@ -459,7 +472,7 @@
 
             var IssueName = $('#ProjectIssue_IssueName').val();
             var IssueCode = $('#ProjectIssue_IssueCode').val();
-            var IssueDescription = $('#ProjectIssue_IssueDescription').val();
+            //var IssueDescription = $('#ProjectIssue_IssueDescription').val();
 
             var startDate = $('#ProjectIssue_IssueStartDateDisplay').val();
             var endDate = $('#ProjectIssue_IssueEndDateDisplay').val();
@@ -472,18 +485,15 @@
 
             var userIds = $('#UserIdsInString').val();
 
-            if (projectID <= 0) {
-                document.getElementById("errormsg").innerHTML = "Please select Project ";
+          
+         
+            if (IssueCode == "") {
+                document.getElementById("errormsg").innerHTML = "Issue code is required..";
                 document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ActiveProjectList').focus();
+                $('#ProjectIssue_IssueCode').focus();
                 return false;
             }
-            if (SeverityId <= 0) {
-                document.getElementById("errormsg").innerHTML = "Please select Severity ";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#SeverityList').focus();
-                return false;
-            }
+
 
             if (IssueName == "") {
                 document.getElementById("errormsg").innerHTML = "Issue name is required..";
@@ -492,18 +502,6 @@
                 return false;
             }
 
-            if (IssueCode == "") {
-                document.getElementById("errormsg").innerHTML = "Issue code is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueCode').focus();
-                return false;
-            }
-            if (IssueDescription == "") {
-                document.getElementById("errormsg").innerHTML = "Issue Description is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueDescription').focus();
-                return false;
-            }
 
             if (startDate == "") {
                 document.getElementById("errormsg").innerHTML = "Start date is required..";
@@ -514,14 +512,22 @@
             if (endDate == "") {
                 document.getElementById("errormsg").innerHTML = "End date is required..";
                 document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
+                $('#ProjectIssue_IssueEndDateDisplay').focus();
                 return false;
             }
 
+          
+            if (SeverityId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Severity ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#SeverityList').focus();
+                return false;
+            }
             if (actualStartDate == "") {
                 document.getElementById("errormsg").innerHTML = "Actual start date required..";
                 document.getElementById("ErrorMsg").style.display = 'block';
                 $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+                
                 return false;
             }
 
@@ -529,18 +535,11 @@
                 document.getElementById("errormsg").innerHTML = "Actual end date required..";
                 document.getElementById("ErrorMsg").style.display = 'block';
                 $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
-                    return false;
-
-            }
-
-
-            if (userIds == "") {
-                document.getElementById("errormsg").innerHTML = "Please select a user to assign task'";
-                document.getElementById("ErrorMsg").style.display = 'block';
-
+               
                 return false;
-            }
 
+            }
+ 
             return true;
         }
         $("#ProjectIssue_Timespent").timepicker({ timeFormat: 'HH:mm' });
@@ -569,48 +568,55 @@
 
 
         });
+
+        $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').datepicker({
+            changeMonth: true,
+            changeYear: true
+
+
+        });
+        $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').datepicker({
+            changeMonth: true,
+            changeYear: true
+
+
+        });
          //Issue Status Update
         $('#btnStatusUpdate').click(function () {
-            var IssueID = $('#ProjectIssue_IssueId').val();
-            var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplay').val();
-            var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplay').val();
-            var IssueStatusId = $('#ddlIssueStatus').val();
+            var IssueID = $('#ProjectIssue_IssueIdforstatus').val();
+            var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val();
+            var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val();
+            var IssueStatusId = $('#ddlIssueStatusChange').val();
             var Comment = $('#ProjectIssue_Comment').val();
             var Timespent = $('#ProjectIssue_Timespent').val();
 
             if (IssueStatusId <= 0) {
                 document.getElementById("ErrorMsgTask").innerHTML = "Please select Status ";
                 document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ddlIssueStatus').focus();
+                $('#ddlIssueStatusChange').focus();
                 return false;
             }
-            if (actualStartDate == "") {
+            if (actualStartDate == "" && IssueStatusId == 11) {
                 document.getElementById("ErrorMsgTask").innerHTML = "Actual start date required..";
                 document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+                $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').focus();
                 return false;
             }
-            if (actualEndDate == "") {
+            if (actualEndDate == "" && IssueStatusId == 11) {
                 document.getElementById("ErrorMsgTask").innerHTML = "Actual end date required..";
                 document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
+                $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').focus();
                 return false;
 
             }
-            if (Timespent == "") {
+            if (Timespent == "" && IssueStatusId==11) {
                 document.getElementById("ErrorMsgTask").innerHTML = "Time Spent required..";
                 document.getElementById("ErrorMsgTask").style.display = 'block';
                 $('#ProjectIssue_Timespent').focus();
                 return false;
 
             }
-            if (Comment == "") {
-                document.getElementById("ErrorMsgTask").innerHTML = "Comment required..";
-                document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_Comment').focus();
-                return false;
-
-            }
+          
 
            
             var hms = Timespent;   // your input string
@@ -618,9 +624,9 @@
 
             Timespent = a[0] + '.' + a[1];
              var data = {
-                "IssueID": IssueID,
-                "ActualIssueStartDateDisplay": actualStartDate,
-                "ActualIssueEndDateDisplay": actualEndDate,
+                "IssueIdforstatus": IssueID,
+                "ActualIssueStartDateDisplayforstatus": actualStartDate,
+                "ActualIssueEndDateDisplayforstatus": actualEndDate,
                  "StatusID": IssueStatusId,
                  "Comment": Comment,
                  "Duration": Timespent
@@ -672,10 +678,84 @@
             var IsValueAdded = $('#ProjectIssue_IsValueAdded').is(':checked');
 
             var SeverityId = $('#SeverityList').val();
-            //var userIds = $('#ddlUsersAssigned').val();
             var userIds = $('#UserIdsInString').val();
-            validateIssueSave();
+           
+            //validateIssueSave();
+            if (projectID <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Project ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ActiveProjectList').focus();
+                return false;
+            }
+            if (IssueCode == "") {
+                document.getElementById("errormsg").innerHTML = "Issue code is required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_IssueCode').focus();
+                return false;
+            }
 
+
+            if (IssueName == "") {
+                document.getElementById("errormsg").innerHTML = "Issue name is required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_IssueName').focus();
+                return false;
+            }
+
+
+            if (startDate == "") {
+                document.getElementById("errormsg").innerHTML = "Start date is required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_IssueStartDateDisplay').focus();
+                return false;
+            }
+            if (endDate == "") {
+                document.getElementById("errormsg").innerHTML = "End date is required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_IssueEndDateDisplay').focus();
+                return false;
+            }
+
+
+            if (SeverityId <= 0) {
+                document.getElementById("errormsg").innerHTML = "Please select Severity ";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#SeverityList').focus();
+                return false;
+            }
+            if (actualStartDate == "") {
+                document.getElementById("errormsg").innerHTML = "Actual start date required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+
+                return false;
+            }
+
+            if (actualEndDate == "") {
+                document.getElementById("errormsg").innerHTML = "Actual end date required..";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
+
+                return false;
+
+            }
+            if (Date.parse(actualStartDate) > Date.parse(actualEndDate)) {
+                alert("Actual end date can not be less than actual start date..");
+                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+                return false;
+            }
+            if (Date.parse(startDate) > Date.parse(endDate)) {
+                alert("End date can not be less than  start date..");
+                $('#ProjectIssue_IssueStartDateDisplay').focus();
+                return false;
+            }
+            if (userIds == "") {
+
+                alert("Please select a user to assign task");
+                $('#ddlUsersAssigned').focus();
+
+                return false;
+            }
 
             var data = {
                 "IssueID": IssueID,

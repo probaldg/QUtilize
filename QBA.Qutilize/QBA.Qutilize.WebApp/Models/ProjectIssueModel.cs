@@ -18,12 +18,7 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Issue Description")]
         public string IssueDescription { get; set; }
 
-        [Display(Name = "Comment")]
-        public String Comment { get; set; }
 
-        [Display(Name = "Time Spent")]
-        public string Timespent { get; set; }
-        public double Duration { get; set; }
         public string ProjectName { get; set; }
      
         public DateTime IssuestartDate { get; set; }
@@ -58,6 +53,18 @@ namespace QBA.Qutilize.WebApp.Models
 
         [Display(Name = "Actual Start Date")]
         public string ActualIssueStartDateDisplay { get; set; }
+
+        [Display(Name = "Actual Start Date")]
+        public string ActualIssueStartDateDisplayforstatus { get; set; }
+        [Display(Name = "Actual End Date")]
+        public string ActualIssueEndDateDisplayforstatus { get; set; }
+        public int IssueIdforstatus { get; set; }
+        [Display(Name = "Comment")]
+        public String Comment { get; set; }
+
+        [Display(Name = "Time Spent")]
+        public string Timespent { get; set; }
+        public double Duration { get; set; }
 
 
         public DateTime? ActualIssueEndDate { get; set; }
@@ -179,7 +186,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ProjectID",model.ProjectID),
                     new SqlParameter("@IssueCode",model.IssueCode),
                     new SqlParameter("@IssueName",model.IssueName),
-                    new SqlParameter("@IssueDescription", model.IssueDescription),
+                    new SqlParameter("@IssueDescription", model.IssueDescription!= null?model.IssueDescription:""),
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
                     new SqlParameter("@SeverityID",model.SeverityID),
@@ -247,7 +254,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@IssueID",model.IssueId),
                     new SqlParameter("@IssueCode",model.IssueCode),
                     new SqlParameter("@IssueName",model.IssueName),
-                    new SqlParameter("@IssueDescription", model.IssueDescription),
+                    new SqlParameter("@IssueDescription",  model.IssueDescription!= null?model.IssueDescription:""),
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
                     new SqlParameter("@SeverityID",model.SeverityID),
@@ -285,12 +292,12 @@ namespace QBA.Qutilize.WebApp.Models
             {
 
                 SqlParameter[] param ={
-                    new SqlParameter("@IssueID",model.IssueId),
+                    new SqlParameter("@IssueID",model.IssueIdforstatus),
                     new SqlParameter("@StatusID",model.StatusID),
-                    new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate),
-                    new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate),
-                    new SqlParameter("@Comment",model.Comment),
-                    new SqlParameter("@Timespent",model.Duration),
+                    new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!=null?model.ActualIssueStartDate:null),
+                    new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate!=null?model.ActualIssueEndDate:null),
+                    new SqlParameter("@Comment", model.Comment!= null?model.Comment:""),
+                    new SqlParameter("@Timespent",model.Duration!=0?model.Duration:0),
                     new SqlParameter("@EditedBY",model.EditedBy),
                     new SqlParameter("@EditedTS",model.EditedTS)
                    

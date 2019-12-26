@@ -1342,19 +1342,19 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
 
-                if (model.IssueId > 0)
+                if (model.IssueIdforstatus > 0)
                 {
 
                     model.EditedBy = loggedInUser;
                     model.EditedTS = DateTime.Now;
                  
-                    if (model.ActualIssueStartDateDisplay != null)
+                    if (model.ActualIssueStartDateDisplayforstatus != null)
                     {
-                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueStartDateDisplay);
+                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueStartDateDisplayforstatus);
                     }
-                    if (model.ActualIssueEndDateDisplay != null)
+                    if (model.ActualIssueEndDateDisplayforstatus != null)
                     {
-                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplay);
+                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplayforstatus);
 
                     }
                     
