@@ -75,16 +75,16 @@
 
     <div>
         <ul class="nav nav-tabs">
-            <li class="active">
+            <li class="active" >
                 <a href="#tab1" style="font-weight:bold; font-size:medium">Issue created</a>
             </li>
-            <li>
+            <li >
                 <a href="#tab2" style="font-weight:bold; font-size:medium">Issue assigned to me</a>
             </li>
 
         </ul>
     </div>
-    <section id="tab1" class="tab-content active">
+    <section id="tab1"  class="tab-content active">
         <div>
 
             <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -113,7 +113,7 @@
             </div>
         </div>
     </section>
-    <section id="tab2" class="tab-content hide">
+    <section id="tab2" class="tab-content  hide">
         <div>
 
             <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -145,7 +145,7 @@
     <div id="mymodal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <input type="hidden" id="SelectedProjectId" />
-           
+
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
@@ -179,7 +179,20 @@
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                             @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
 
-
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCodeforChangeStatus, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueNameforChangeStatus, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
                             <div class="form-group">
                                 @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
@@ -397,8 +410,9 @@
     }
 
     <script type="text/javascript">
-        function ShowPopupforChangeStatus(issueid, StatusID) {
+        function ShowPopupforChangeStatus(issueid, StatusID,Issuecode,Issuename) {
             $('#ProjectIssue_IssueIdforstatus').val(issueid);
+          
             document.getElementById("ErrorMsgTask").innerHTML = "";
             document.getElementById("ErrorMsgTask").style.display = 'none';
             $.ajax({
@@ -406,18 +420,20 @@
                     type: 'POST',
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
-        
-                 data: JSON.stringify({ }),                
+
+                 data: JSON.stringify({ }),
                  success: function (result) {
 
                      $("#ddlIssueStatusChange").html("");
                      $("#ddlIssueStatusChange").append(result);
                      $('#ddlIssueStatusChange').val(StatusID);
-                               $('#mymodal').modal('show');
-      
+                     $('#ProjectIssue_IssueCodeforChangeStatus').val(Issuecode);
+                     $('#ProjectIssue_IssueNameforChangeStatus').val(Issuename);
+                     $('#mymodal').modal('show');
+
                  },
                  error: function () {
-                     
+
                  },
                 });
 
@@ -485,8 +501,8 @@
 
             var userIds = $('#UserIdsInString').val();
 
-          
-         
+
+
             if (IssueCode == "") {
                 document.getElementById("errormsg").innerHTML = "Issue code is required..";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -516,30 +532,16 @@
                 return false;
             }
 
-          
+
             if (SeverityId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select Severity ";
                 document.getElementById("ErrorMsg").style.display = 'block';
                 $('#SeverityList').focus();
                 return false;
             }
-            if (actualStartDate == "") {
-                document.getElementById("errormsg").innerHTML = "Actual start date required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
-                
-                return false;
-            }
 
-            if (actualEndDate == "") {
-                document.getElementById("errormsg").innerHTML = "Actual end date required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
-               
-                return false;
 
-            }
- 
+
             return true;
         }
         $("#ProjectIssue_Timespent").timepicker({ timeFormat: 'HH:mm' });
@@ -616,9 +618,9 @@
                 return false;
 
             }
-          
 
-           
+
+
             var hms = Timespent;   // your input string
             var a = hms.split(':'); // split it at the colons
 
@@ -642,14 +644,12 @@
                 success: function (response) {
                     if (response == "Success") {
                         response = null;
-                        location.reload();
-
-
-                    } 
+                        window.location.reload();
+                        //activaTab();
+                    }
 
                     },
                 error: function (response) {
-
 
 
                     }
@@ -679,7 +679,7 @@
 
             var SeverityId = $('#SeverityList').val();
             var userIds = $('#UserIdsInString').val();
-           
+
             //validateIssueSave();
             if (projectID <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select Project ";
@@ -723,32 +723,19 @@
                 $('#SeverityList').focus();
                 return false;
             }
-            if (actualStartDate == "") {
-                document.getElementById("errormsg").innerHTML = "Actual start date required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
-
-                return false;
-            }
-
-            if (actualEndDate == "") {
-                document.getElementById("errormsg").innerHTML = "Actual end date required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ActualIssueEndDateDisplay').focus();
-
-                return false;
-
-            }
-            if (Date.parse(actualStartDate) > Date.parse(actualEndDate)) {
-                alert("Actual end date can not be less than actual start date..");
-                $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
-                return false;
-            }
             if (Date.parse(startDate) > Date.parse(endDate)) {
                 alert("End date can not be less than  start date..");
                 $('#ProjectIssue_IssueStartDateDisplay').focus();
                 return false;
             }
+            if (actualStartDate != "" && actualEndDate != "") {
+                if (Date.parse(actualStartDate) > Date.parse(actualEndDate)) {
+                    alert("Actual end date can not be less than actual start date..");
+                    $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+                    return false;
+                }
+            }
+
             if (userIds == "") {
 
                 alert("Please select a user to assign task");
@@ -1065,7 +1052,7 @@
                 },
                 error: function (response) {
                     alert('error occured')
-                  
+
                 }
             });
 
@@ -1086,33 +1073,59 @@
         //End**
 
     </script>
-
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('.nav-tabs > li > a').click(function (event) {
-                event.preventDefault();//stop browser to take action for clicked anchor
+    function activaTab(){
+   
+            var active_tab_selector = "#tab1";
 
-                //get displaying tab content jQuery selector
-                var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+            //find actived navigation and remove 'active' css
+           //  var actived_nav = "#tab1";
+            // actived_nav.removeClass('active');
 
-                //find actived navigation and remove 'active' css
-                var actived_nav = $('.nav-tabs > li.active');
-                actived_nav.removeClass('active');
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
 
-                //add 'active' css into clicked navigation
-                $(this).parents('li').addClass('active');
-
-                //hide displaying tab content
-                $(active_tab_selector).removeClass('active');
-                $(active_tab_selector).addClass('hide');
-
-                //show target tab content
-                var target_tab_selector = $(this).attr('href');
-                $(target_tab_selector).removeClass('hide');
-                $(target_tab_selector).addClass('active');
-            });
-        });
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+            alert(active_tab_selector);
+            //show target tab content
+            var target_tab_selector = "#tab2";
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+            alert(target_tab_selector);
+        };  
+    
     </script>
+
+   
+        <script type="text/javascript">
+                $(document).ready(function () {
+                    $('.nav-tabs > li > a').click(function (event) {
+                        event.preventDefault();//stop browser to take action for clicked anchor
+                      
+                        //get displaying tab content jQuery selector
+                        var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+                        
+                        //find actived navigation and remove 'active' css
+                        var actived_nav = $('.nav-tabs > li.active');
+                        actived_nav.removeClass('active');
+                      
+                        //add 'active' css into clicked navigation
+                        $(this).parents('li').addClass('active');
+
+                        //hide displaying tab content
+                        $(active_tab_selector).removeClass('active');
+                        $(active_tab_selector).addClass('hide');
+
+                        //show target tab content
+                        var target_tab_selector = $(this).attr('href');
+                        $(target_tab_selector).removeClass('hide');
+                        $(target_tab_selector).addClass('active');
+                       
+                    });
+                });
+            </script>
     <style>
         /** Start: to style navigation tab **/
         .nav {

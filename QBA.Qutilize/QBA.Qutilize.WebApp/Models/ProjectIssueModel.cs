@@ -18,6 +18,10 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Issue Description")]
         public string IssueDescription { get; set; }
 
+        [Display(Name = "Issue Name")]
+        public string IssueNameforChangeStatus { get; set; }
+        [Display(Name = "Issue Code")]
+        public string IssueCodeforChangeStatus { get; set; }
 
         public string ProjectName { get; set; }
      
@@ -260,8 +264,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@SeverityID",model.SeverityID),
                     new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
-                    new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate),
-                    new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate),
+                    new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!=null?model.ActualIssueStartDate:null),
+                    new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate!=null?model.ActualIssueEndDate:null),
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@EditedBY",model.EditedBy),

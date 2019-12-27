@@ -605,7 +605,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
                         //strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='Changestatus' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Change Status</a> </td>");
-                        strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforChangeStatus({0},'{1}');""> Change Status </a> </td>", Convert.ToInt32(item["IssueID"]), item["StatusID"].ToString());
+                        strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforChangeStatus({0},'{1}','{2}','{3}');""> Change Status </a> </td>", Convert.ToInt32(item["IssueID"]), item["StatusID"].ToString(), item["IssueCode"].ToString(), item["IssueName"].ToString());
                     }
                     else
                     {
