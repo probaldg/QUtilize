@@ -541,7 +541,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
 
 
-                    if (item["StatusName"].ToString() != "COMPLETED")
+                    if (item["StatusName"].ToString() != "CLOSED")
                     {
                         strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
                     }
