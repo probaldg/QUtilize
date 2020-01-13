@@ -63,6 +63,8 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Project Rate")]
         public double ProjectRate { get; set; }
 
+   
+
         public int ManagerID { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
@@ -112,16 +114,16 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
         //**
-        public List<ProjectModel> Get_ActiveProject(int orgId = 0)
+        public List<ProjectModel> Get_ActiveProject(int OrgId = 0)
         {
             DataTable dt = null;
             List<ProjectModel> lstProjectDetl = new List<ProjectModel>();
             try
             {
-                if (orgId != 0)
+                if (OrgId != 0)
                 {
                     SqlParameter[] param ={
-                                        new SqlParameter("@OrgId",orgId)
+                                        new SqlParameter("@OrgId",OrgId)
                                       };
                     dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_Get]", param);
 
@@ -428,7 +430,29 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return userModelsList;
         }
+        public DataTable GetAllClient(int orgID = 0)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                
+                if (orgID != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgID)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPtblMasterClient_Get]", param);
 
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USPtblMasterClient_Get]");
+            }
+            catch( Exception ex)
+            {
+
+            }
+            return dt;
+            }
         public List<ClientModel> GetClients(int orgID = 0)
         {
             DataTable dt = null;
