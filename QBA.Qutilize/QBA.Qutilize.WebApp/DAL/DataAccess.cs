@@ -279,15 +279,185 @@ namespace QBA.Qutilize.WebApp.DAL
             DataSet ds = null;
             try
             {
-                //SqlParameter[] param ={
-
-                //                        new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
-                //                        new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-
-                //                      };
+                
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
                     ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_CurrentMonth");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
+        public static DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@UserID",userid),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Weekly_TimeSheet_ByDepartment", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
+        public static DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID,int ProjectId, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+                                        new SqlParameter("@ClientId",clientID),
+                                        new SqlParameter("@ProjectID",ProjectId),
+                                        new SqlParameter("@UserID",userid),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Monthly_TimeSheet_ByClient", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
+        public static DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@UserID",userid),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Monthly_TimeSheet_ByDepartment", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        //
+        public static DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskId)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@ProjectID",projectid),
+                                        new SqlParameter("@UserID",userid),
+                                        new SqlParameter("@TaskId",TaskId),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Weekly_TimeSheet_ByTask", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public static DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid,int TaskId)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@ProjectID",projectid),
+                                        new SqlParameter("@UserID",userid),
+                                        new SqlParameter("@TaskId",TaskId),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Monthly_TimeSheet_ByTask", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public static DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@ProjectID",projectid),
+                                        new SqlParameter("@UserID",userid),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Monthly_TimeSheet_ByProject", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
+        public static DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+
+                                        new SqlParameter("@preiod",period),
+
+                                        new SqlParameter("@deptId",deptid),
+                                        new SqlParameter("@ProjectID",projectid),
+                                        new SqlParameter("@UserID",userid),
+
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Weekly_TimeSheet_ByProject", param);
                 }
             }
             catch (Exception ex)

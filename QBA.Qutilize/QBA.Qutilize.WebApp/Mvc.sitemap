@@ -26,6 +26,6 @@
     <mvcSiteMapNode title="Skill Matrix"  controller="Dailytask" action="SkillManagement"/>
     <mvcSiteMapNode title="My Account"  controller="Account" action="MyAccount"/>
     <mvcSiteMapNode title="Report"  controller="Report" action="index"/>
-
+    <mvcSiteMapNode title="Summary Report"  controller="Report" action="Index1"/>
   </mvcSiteMapNode>
 </mvcSiteMap>

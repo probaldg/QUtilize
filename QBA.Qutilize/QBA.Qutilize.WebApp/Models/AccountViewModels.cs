@@ -180,6 +180,109 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+
+        public DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskID)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, TaskID);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+
+        public DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int TaskID)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,TaskID);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        //
+        public DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        //
+
+        public DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID, int ProjectId, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientID, ProjectId, userid);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period,deptid,userid);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
         public DataSet TimeSheet_ByResource_PreviousMonth()
         {
             DataSet ds = null;

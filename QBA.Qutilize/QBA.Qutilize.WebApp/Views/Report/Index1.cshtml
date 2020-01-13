@@ -1,0 +1,269 @@
+﻿@model QBA.Qutilize.WebApp.Models.ReportModel
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12" id="dashBoardDateRange">
+
+    </div>
+</div>
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px" id="divForm">
+    <div class="form-group">
+        @Html.Label("Select Report Type", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-6">
+            @{
+                var listItems = new List<SelectListItem>();
+                listItems.Add(new SelectListItem { Text = "Select", Value = "0" });
+                listItems.Add(new SelectListItem { Text = "Utilization Monthly Report", Value = "1" });
+                listItems.Add(new SelectListItem { Text = "Utilization Monthly Summary by Department", Value = "2" });
+                listItems.Add(new SelectListItem { Text = "Utilization Monthly Summary by Project", Value = "3" });
+                listItems.Add(new SelectListItem { Text = "Utilization Monthly Summary by Task", Value = "4" });
+                listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Department", Value = "5" });
+                listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Project", Value = "6" });
+                listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Task", Value = "7" });
+                listItems.Add(new SelectListItem { Text = "Helpdesk ticket report", Value = "8" });
+                listItems.Add(new SelectListItem { Text = "Helpdesk ticket report volume", Value = "9" });
+
+            }
+
+            @Html.DropDownListFor(model => model.ReportType, listItems, new { @class = "form-control" })
+
+        </div>
+    </div>
+
+</div>
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; margin-top:10px; padding:15px" id="divForm">
+    <div class="row">
+        <div class="col-md-12" id="ShowReportBlock">
+            
+        </div>
+    </div>
+ </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-responsive" id="reportSection">
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#ReportType').change(function () {
+      
+        var ReportID=   $('#ReportType').val();
+        $.ajax({
+                url: '@Url.Action("ShowReportBlockByReportType", "Report")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    ReportId: ReportID
+                }),
+                success: function (response) {
+                   
+                    if (response != "") {
+
+                        $('#ShowReportBlock').html('');
+                        $('#ShowReportBlock').html(response);
+                      
+
+                     
+                    }
+                }
+            });
+
+    })
+    //**
+
+    
+    function RefreshData() {
+        try {
+            var ReportType = $('#ReportType').val();
+
+            var data;
+            var Ckeckperiod = $('#ddlPeriod').val();
+            if (ReportType == 1) {
+                var period = $('#ddlPeriod').val();
+                var clientid = $('#ddlclient').val();
+                var projectid = $('#ddlProjects').val();
+                var userid = $('#ddlUsers').val();
+                var deptid = "0";
+                var taskid = "0";
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "userid": userid,
+                    "deptid": deptid,
+                    "taskid": taskid
+                };
+            }
+            else if (ReportType == 2) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = "0";
+                var taskid = "0";
+
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            else if (ReportType == 3) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = $('#ddlProjects').val();
+                var taskid = "0";
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            else if (ReportType == 4) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = $('#ddlProjects').val();
+                var taskid = $('#ddlTask').val();;
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            else if (ReportType == 5) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = "0"
+                var taskid = "0"
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            else if (ReportType == 6) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = $('#ddlProjects').val();
+                var taskid = "0";
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            else if (ReportType == 7) {
+                var period = $('#ddlPeriod').val();
+                var deptid = $('#ddldepartment').val();
+                var userid = $('#ddlUsers').val();
+                var clientid = "0";
+                var projectid = $('#ddlProjects').val();
+                var taskid = $('#ddlTask').val();;
+                data = {
+                    "ReportType": ReportType,
+                    "period": period,
+                    "deptid": deptid,
+                    "userid": userid,
+                    "clientid": clientid,
+                    "projectid": projectid,
+                    "taskid": taskid
+                };
+
+            }
+            if (Ckeckperiod != 0) {
+                $.ajax({
+                    url: '@Url.Action("GetSummaryReportData", "Report")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+
+                        if (response != "") {
+
+                            $('#reportSection').html('');
+                            $('#reportSection').html(response);
+
+                            $('#tableReportData').dataTable({
+                                // ... skipped ...
+                                "aaSorting": [],
+                                dom: 'Bfrtip',
+                                buttons: [
+                                    {
+                                        text: 'Download Report',
+                                        extend: 'csvHtml5',
+                                        title: 'Day wise details',
+                                        exportOptions: {
+                                            columns: 'th:not(.noExport)'
+                                        }
+                                    },
+                                    {
+                                        extend: 'pdfHtml5',
+                                        title: 'Data export'
+                                    }
+                                ],
+
+                                "columnDefs": [{
+                                    "targets": 'no-sort',
+                                    "orderable": false,
+                                }]
+                            });
+
+                        }
+                    }
+                });
+        
+       
+            }
+            else {
+                alert("Please Select Period");
+                return false;
+            }
+        }
+       
+    catch (e) {
+    alert(e);
+    }
+    }
+</script>
+
+
