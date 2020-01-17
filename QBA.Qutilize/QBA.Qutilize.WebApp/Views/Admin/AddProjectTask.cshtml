@@ -481,7 +481,7 @@
             changeYear: true
 
         });
-
+        //Load Project wise data
         function GetAssigneUserDetlByProject() {
 
             var ProjectId = $('#ActiveProjectList').val();
@@ -507,7 +507,7 @@
                             }
                         }
                         $("#ddlTaskStatus").html('')
-                        //$("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
+                        $("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
                         if (obj.StatusList.length > 0) {
                             var statusList = obj.StatusList;
                             for (var i = 0; i < statusList.length; i++) {
@@ -523,33 +523,26 @@
                         }
 
                         $("#ddlParentTask").html('')
-
-
-
-                       /* if ($.fn.DataTable.isDataTable('#tblTasklist')) {
-                            $('#tblTasklist').DataTable().destroy();
-                        }*/
-
-                      //  $('#tblTasklist tbody').html('');
-
                         $("#ddlParentTask").append($("<option></option>").val(0).html('Select Task'));
 
                         if (obj.TaskList.length > 0) {
+                            
                             $('#ddlParentTask').attr("disabled", false);
-                            //var taskList = obj.TaskList;
+                            var taskList = obj.TaskList;
 
-                           /* for (var i = 0; i < taskList.length; i++) {
-                                var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
-                                var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
-                                var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
+                            for (var i = 0; i < taskList.length; i++) {
+                              
+                                //var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
+                                //var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
+                                //var activeStatus = (taskList[i].IsActive == true) ? 'Active' : 'In Active';
 
-                                var isMilestone;
-                                if (taskList[i].IsMilestone != null) {
-                                    isMilestone = (taskList[i].IsMilestone == true) ? 'Yes' : 'No';
-                                }
-                                else {
-                                    isMilestone = "";
-                                }
+                                //var isMilestone;
+                                //if (taskList[i].IsMilestone != null) {
+                                //    isMilestone = (taskList[i].IsMilestone == true) ? 'Yes' : 'No';
+                                //}
+                                //else {
+                                //    isMilestone = "";
+                                //}
 
                                 //var userListHTML = "<tr><td class='text-center'>" + taskList[i].TaskId + "</td> <td class='text-center'>" + taskList[i].TaskName + "</td> <td class='text-center'>" + taskList[i].TaskCode + "</td> <td class='text-center'>" + taskList[i].ParentTaskName + "</td> <td class='text-center'>" + taskList[i].ProjectName + "</td> <td class='text-center'>" +
                                 //    formatDateInMM_DD_YYYY(new Date(taskList[i].TaskStartDate))
@@ -560,14 +553,14 @@
                                 //$('#tblTasklist tbody').append(userListHTML);
 
                                 $("#ddlParentTask").append($("<option></option>").val(taskList[i].TaskId).html(taskList[i].TaskName));
-                            }*/
+                            }
                         }
                         else {
                            // $('#tblTasklist tbody').html('');
                             $('#ddlParentTask').attr("disabled", "disabled");
 
                         }
-                        ///Malabika start
+                        ///Change Parent Task 
                         $("#ddlParentTask").change(function () {
                             var SelectTaskId = $('#ddlParentTask').val();
                             var taskList1 = obj.TaskList;
@@ -633,7 +626,8 @@
                             }
 
                         });
-                        //Malabika End
+                        //Change Parent task End
+                        //Add USer
                         $("#ddlUsersAssigned").html('')
 
                         if (obj.UserList.length > 0) {
@@ -749,12 +743,10 @@
                 success: function (response) {
                     if (response == "Success") {
 
-                       // $('#divTaskSaveSuccess').css('display', 'block');
                         response = null;
                         clearAllTaskControls();
                         window.location.reload();
-                        //var projectName = $('#SelectedProjectName').val();
-                       // ShowTaskPopup(projectID, projectName);
+            
                     } else {
 
                         ProjectTask_ShowTaskErrorMessage('Error occured.')
@@ -825,10 +817,6 @@
                      }
 
 
-
-                 //    $('#ddlPercentage').val(taskObj.CompletePercent);
-
-
                      if (taskObj.ActualTaskStartDate != null) {
                          $('#ProjectTask_ActualTaskStartDateDisplay').val(formatDateInMM_DD_YYYY(taskObj.ActualTaskStartDate));
                      }
@@ -841,27 +829,10 @@
                      else {
                          $('#ProjectTask_ActualTaskEndDateDisplay').val('');
                      }
-                   //  $('#ddlTaskStatus').val(taskObj.TaskStatusID);
+
                      $('#ProjectTask_IsActive').prop('checked', taskObj.IsActive);
                      $('#ProjectTask_IsValueAdded').prop('checked', taskObj.IsValueAdded);
-                    // $('#ProjectTask_UserIdsTaskAssigned').val(taskObj.UserIdsTaskAssigned);
 
-
-                  //   $('#ddlUsersAssigned').multiselect('deselectAll', false);
-                   //  $('#ddlUsersAssigned').multiselect('updateButtonText');
-
-
-
-                     //var userIds = taskObj.UserIdsTaskAssigned;
-                     //var selectedOptions = taskObj.UserIdsTaskAssigned.split(',');
-                     //for (i = 0; i < selectedOptions.length; i++) {
-
-                     //    $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
-                     //}
-
-                     //$('#UserIdsInString').val(userIds);
-
-                     //$('#ddlTaskStatus').val(taskObj.TaskStatusID);
 
 
                 },
