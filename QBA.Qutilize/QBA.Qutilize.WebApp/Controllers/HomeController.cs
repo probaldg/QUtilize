@@ -179,6 +179,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     Session.Add("Designation", ds.Tables[0].Rows[0]["Designation"]);
                     Session.Add("ManagerName", ds.Tables[0].Rows[0]["ManagerName"]);
                     Session.Add("ManagerEmpCode", ds.Tables[0].Rows[0]["ManagerEmpCode"]);
+                    Session.Add("UserGender", ds.Tables[0].Rows[0]["Gender"]);
                     if (ds != null && ds.Tables.Count > 0 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
                     {
                         foreach (DataRow dr in ds.Tables[1].Rows)

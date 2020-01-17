@@ -29,47 +29,70 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(strMenu.ToString());
         }
-            public string GetSideMenuContent(DataTable orgDT, string parentID)
+        public string GetSideMenuContent(DataTable orgDT, string parentID)
+        {
+            StringBuilder strMenu = new StringBuilder();
+            if (parentID.Trim() == "")
             {
-                StringBuilder strMenu = new StringBuilder();
-                if (parentID.Trim() == "")
+                DataRow[] drParentAll = orgDT.Select("lvl = 0");
+                if (drParentAll.Length > 0)
                 {
-                    DataRow[] drParentAll = orgDT.Select("lvl = 0");
-                    if (drParentAll.Length > 0)
-                    {
-                        foreach (DataRow dr in drParentAll)
-                        {
-                            strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
-                        }
-                    }
-                }
-                else
-                {
-                    DataRow[] drParent = orgDT.Select("ID = " + parentID);
-                    if (drParent.Length > 0)
-                    {
-                        strMenu.Append("<div class='row lien'>");
-                        if (Convert.ToInt32(drParent[0]["lvl"]) == 0)
-                            strMenu.Append("<div class='col-md-12'>");
-                        else
-                        {
-                            int lvl = Convert.ToInt32(drParent[0]["lvl"]);
-                            strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
-                        }
-                        strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "' style='color: white;'></a> &nbsp;");
-                        strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' style='color: white;'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
-                        strMenu.Append("<hr>");
-                        strMenu.Append("</div>");
-                        strMenu.Append("</div>");
-                    }
-                    DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
-                    foreach (DataRow dr in dtChild)
+                    foreach (DataRow dr in drParentAll)
                     {
                         strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
                     }
                 }
-                return strMenu.ToString();
             }
+            else
+            {
+                DataRow[] drParent = orgDT.Select("ID = " + parentID);
+                DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
+                if (drParent.Length > 0)
+                {
+                    if (dtChild.Length > 0)
+                    {
+                        strMenu.Append("<li class='nav-item has-treeview'>");
+                        strMenu.Append("<a href = '#' class='nav-link'> ");
+                        strMenu.Append("<i class='nav-icon fas " + drParent[0]["DisplayCSS"].ToString() + "'></i>");
+                        strMenu.Append("<p>" + drParent[0]["DisplayName"].ToString() + "<i class='right fas fa-angle-left'></i></p>");
+                        strMenu.Append(" </a> ");
+                        strMenu.Append("<ul class='nav nav-treeview'>");
+                        foreach (DataRow dr in dtChild)
+                        {
+                            strMenu.Append(GetSideMenuContent(orgDT, Convert.ToString(dr["ID"])));
+                        }
+                        strMenu.Append("</ul>");
+                        strMenu.Append("</li>");
+                    }
+                    else
+                    {
+                        strMenu.Append("<li class='nav-item'>");
+                        strMenu.Append("<a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' class='nav-link'> ");
+                        strMenu.Append("<i class='nav-icon fas " + drParent[0]["DisplayCSS"].ToString() + "'></i>");
+                        strMenu.Append("<p>" + drParent[0]["DisplayName"].ToString() + "</p>");
+                        strMenu.Append("</a>");
+                        strMenu.Append("</li>");
+                    }
+                    
+                    //strMenu.Append("<div class='row lien'>");
+                    //if (Convert.ToInt32(drParent[0]["lvl"]) == 0)
+                    //    strMenu.Append("<div class='col-md-12'>");
+                    //else
+                    //{
+                    //    int lvl = Convert.ToInt32(drParent[0]["lvl"]);
+                    //    strMenu.Append("<div class='col-md-12' style='padding-left: " + (lvl * 35) + "px;'>");
+                    //}
+                    //strMenu.Append("<a href='" + drParent[0]["URL"] + "' class='fa " + drParent[0]["DisplayCSS"].ToString() + "' style='color: white;'></a> &nbsp;");
+                    //strMenu.Append(" <a href = '" + ConfigurationSettings.AppSettings["SiteAddress"] + drParent[0]["URL"] + "' style='color: white;'> " + drParent[0]["DisplayName"].ToString() + " </a> ");
+                    //strMenu.Append("<hr>");
+                    //strMenu.Append("</div>");
+                    //strMenu.Append("</li>");
+                }
+                //DataRow[] dtChild = orgDT.Select("ParentID = " + parentID);
+                
+            }
+            return strMenu.ToString();
+        }
 
         public ActionResult MyAccount()
         {
@@ -90,7 +113,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 user.UserName = dsSess.Tables[0].Rows[0]["UserName"]?.ToString();
                                 user.Name = dsSess.Tables[0].Rows[0]["Name"]?.ToString();
                                 int intMGRID = 0;
-                                int.TryParse(dsSess.Tables[0].Rows[0]["managerID"]?.ToString(),out intMGRID);
+                                int.TryParse(dsSess.Tables[0].Rows[0]["managerID"]?.ToString(), out intMGRID);
                                 user.ManagerId = intMGRID;
                                 user.ManagerName = dsSess.Tables[0].Rows[0]["ManagerName"]?.ToString();
                                 user.ManagerEmpCode = dsSess.Tables[0].Rows[0]["ManagerEmpCode"]?.ToString();
@@ -111,7 +134,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 foreach (DataRow drR in dsSess.Tables[1].Rows)
                                 {
-                                    user.RoleName += "<li>"+Convert.ToString(drR["RoleName"])+"</li>";
+                                    user.RoleName += "<li>" + Convert.ToString(drR["RoleName"]) + "</li>";
                                 }
                             }
                             else
@@ -134,7 +157,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 }
                             }
                             else
-                            { user.ProjectName = string.Empty;  }
+                            { user.ProjectName = string.Empty; }
                         }
                     }
                     //DataTable dt = user.GetMyAccountData(int.Parse(System.Web.HttpContext.Current.Session["sessUser"].ToString()));
@@ -187,7 +210,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             try
             {
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.getSessionHistory(Convert.ToInt32(Session["sessUser"]),10);
+                DataSet ds = lvm.getSessionHistory(Convert.ToInt32(Session["sessUser"]), 10);
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='table-responsive'>");
