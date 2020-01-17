@@ -1181,10 +1181,10 @@
             var TaskID = $('#ProjectTask_TaskIdforstatus').val();
             var actualStartDate = $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val();
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val();
-            var TaskStatusId = $('#ddTaskStatusChange').val();
+            var TaskStatusId = $('#ddlTaskStatusChange').val();
             var Comment = $('#ProjectTask_Comment').val();
-          //  var Timespent = $('#ProjectIssue_Timespent').val();
-
+            //  var Timespent = $('#ProjectIssue_Timespent').val();
+            
             if (TaskStatusId <= 0) {
                 document.getElementById("ErrorMsgTaskpopup").innerHTML = "Please select Status ";
                 document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
@@ -1216,7 +1216,7 @@
                 "TaskIdforstatus":TaskID,
                 "ActualTaskStartDateDisplayforstatus": actualStartDate,
                 "ActualTaskEndDateDisplayforstatus": actualEndDate,
-                 "StatusID": TaskStatusId,
+                 "TaskStatusID": TaskStatusId,
                  "Comment": Comment
                
 
