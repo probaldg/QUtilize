@@ -97,6 +97,24 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
+        public DataTable GetAllProjectsTask(int userId = 0)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@Id",userId)
+                                      };
+
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_Get_ProjectTaskByUSer]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
         public DataTable GetAllProjectsIssue(int userId = 0)
         {
             DataTable dt = null;
@@ -138,6 +156,24 @@ namespace QBA.Qutilize.WebApp.Models
 
             }
             return dt;
+        }
+
+        public DataTable Get_ProjectTaskAssignedToUser(int UserId = 0)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserId",UserId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USP_UserWiseProjectTaskAssigned_Get", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+
         }
 
         public DataTable Get_ProjectIssueAssignedToUser(int UserId=0)

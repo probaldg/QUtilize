@@ -502,6 +502,75 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         #region Project managment region"
 
+        public ActionResult LoadProjectTaskData()
+        {
+            ProjectIssueModel obj = new ProjectIssueModel();
+            StringBuilder strUserData = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.GetAllProjectsTask();
+                }
+                else
+                {
+                    dt = obj.GetAllProjectsTask(loggedInUser);
+                }
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+
+                    var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
+                    string Milestone;
+                    if (item["isMilestone"] != null)
+                    {
+                        Milestone = (Convert.ToBoolean(item["isMilestone"]) == true) ? "Yes" : "No";
+                    }
+                    else
+                    {
+                        Milestone = "";
+                    }
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ParentTaskName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+                    strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
+                    strUserData.Append("<td class='text-center'>" + Milestone + "</td>");
+
+
+
+                    if (item["StatusName"].ToString() != "CLOSED")
+                    {
+                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + item["TaskID"].ToString() + ")'>Edit</a> </td>");
+                    }
+                    else
+                    {
+                         strUserData.Append("<td class='text-center'></td>");
+
+                    }
+
+                    strUserData.Append("</tr>");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ////throw;
+            }
+            return Content(strUserData.ToString());
+        }
         public ActionResult LoadProjectIssueData()
         {
             ProjectIssueModel obj = new ProjectIssueModel();
@@ -530,8 +599,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
-                    strUserData.Append(" <td class='text-center'>" + item["IssueName"].ToString() + "</td>");
-                    strUserData.Append(" <td class='text-center'>" + item["IssueDescription"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" +item["IssueName"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" +item["IssueDescription"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
@@ -544,6 +613,76 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
                         strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
+                    }
+                    else
+                    {
+                        strUserData.Append("<td class='text-center'></td>");
+                    }
+
+                    strUserData.Append("</tr>");
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                ////throw;
+            }
+            return Content(strUserData.ToString());
+        }
+        public ActionResult LoadProjectTaskAssignedtoUser()
+        {
+            ProjectIssueModel obj = new ProjectIssueModel();
+            StringBuilder strUserData = new StringBuilder();
+            try
+            {
+                var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dt = new DataTable();
+
+                if (userInfo.IsRoleSysAdmin)
+                {
+                    dt = obj.Get_ProjectTaskAssignedToUser();
+                }
+                else
+                {
+                    dt = obj.Get_ProjectTaskAssignedToUser(loggedInUser);
+                }
+                foreach (DataRow item in dt.Rows)
+                {
+                    string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
+                    
+                    var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
+                    string Milestone;
+                    if (item["isMilestone"] != null)
+                    {
+                        Milestone = (Convert.ToBoolean(item["isMilestone"]) == true) ? "Yes" : "No";
+                    }
+                    else
+                    {
+                        Milestone = "";
+                    }
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ParentTaskName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");      
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + status + "</td>");
+                    strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
+                    strUserData.Append("<td class='text-center'>" + Milestone + "</td>");
+
+
+
+
+                    if (item["StatusName"].ToString() != "CLOSED")
+                    {
+                          strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforChangeStatus({0},'{1}','{2}','{3}');""> Change Status </a> </td>", Convert.ToInt32(item["TaskID"]), item["StatusID"].ToString(), item["TaskCode"].ToString(), item["TaskName"].ToString());
                     }
                     else
                     {
@@ -703,6 +842,34 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         //****
         
+        public ActionResult AddProjectTask(int ID = 0)
+        {
+            ProjectModel obj = new ProjectModel();
+            ProjectModel pm = new ProjectModel();
+            ProjectTypeModel PTM = new ProjectTypeModel();
+
+            List<ProjectModel> objRole = new List<ProjectModel>();
+
+
+            var loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
+            UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+
+            if (userInfo.IsRoleSysAdmin)
+            {
+                UserModel sysAdmin = obj.UserList.Single(x => x.ID == 13 || x.Name.ToLower() == "sysAdmin".ToLower());
+                obj.UserList.Remove(sysAdmin);
+                obj.ProjectTypeList = PTM.GetProjectType().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
+                obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
+            }
+            else
+            {
+                obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
+            }
+
+
+            return View(obj);
+        }
         public ActionResult ManageProjectIssue(int ID = 0)
         {
 
@@ -1136,12 +1303,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (dtTaskData.Rows.Count > 0)
                 {
 
-                    task.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
+                    task.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]); 
                     task.TaskCode = dtTaskData.Rows[0]["TaskCode"].ToString() ?? "";
                     task.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
                     task.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
                     task.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
                     task.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
+                    task.ProjectID = Convert.ToInt32(dtTaskData.Rows[0]["ProjectID"]);
                     task.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]);
                     task.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]);
                     task.IsMilestone = (dtTaskData.Rows[0]["isMilestone"] != System.DBNull.Value) ? Convert.ToBoolean(dtTaskData.Rows[0]["isMilestone"]) : (bool?)null;
@@ -1277,13 +1445,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (updateStatus)
                     {
                         model.ISErr = false;
+
                         model.ErrString = "Data Saved Successfully.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Success";
                     }
                     else
                     {
                         model.ISErr = true;
                         model.ErrString = "Error Occured.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Error";
                     }
 
@@ -1326,6 +1499,62 @@ namespace QBA.Qutilize.WebApp.Controllers
                         result = "Error";
                     }
                 }
+            }
+            catch (Exception)
+            {
+                result = "Error";
+                return Json(result);
+
+            }
+            return Json(result);
+        }
+        public ActionResult UpdateStatusTask(ProjectTaskModel model)
+        {
+            ProjectTaskModel pm = new ProjectTaskModel();
+            string result = "";
+            try
+            {
+
+                if (model.TaskIdforstatus > 0)
+                {
+
+                    model.EditedBy = loggedInUser;
+                    model.EditedTS = DateTime.Now;
+
+                    if (model.ActualTaskStartDateDisplayforstatus != null)
+                    {
+                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskStartDateDisplayforstatus);
+                    }
+                    if (model.ActualTaskEndDateDisplayforstatus != null)
+                    {
+                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplayforstatus);
+
+                    }
+
+
+
+                    var updateStatus = model.UpdateTaskstatus(model);
+
+                    if (updateStatus)
+                    {
+                        model.ISErr = false;
+                        model.ErrString = "Data Saved Successfully.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Success";
+                    }
+                    else
+                    {
+                        model.ISErr = true;
+                        model.ErrString = "Error Occured.";
+                        TempData["ErrStatus"] = model.ISErr;
+                        TempData["ErrMsg"] = model.ErrString.ToString();
+                        result = "Error";
+                    }
+
+                }
+
+
             }
             catch (Exception)
             {

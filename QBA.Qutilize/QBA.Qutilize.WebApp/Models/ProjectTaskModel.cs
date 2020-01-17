@@ -17,6 +17,19 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Task Name")]
         public string TaskName { get; set; }
 
+        public int TaskIdforstatus { get; set; }
+        [Display(Name = "Task Name")]
+        public string TaskNameforChangeStatus { get; set; }
+        [Display(Name = "Task Code")]
+        public string TaskCodeforChangeStatus { get; set; }
+
+        [Display(Name = "Actual Start Date")]
+        public string ActualTaskStartDateDisplayforstatus { get; set; }
+        [Display(Name = "Actual End Date")]
+        public string ActualTaskEndDateDisplayforstatus { get; set; }
+
+        [Display(Name = "Comment")]
+        public String Comment { get; set; }
 
         public int ParentTaskId { get; set; }
 
@@ -277,6 +290,38 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@UserIds",model.UserIdsTaskAssigned)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTask_Update", param);
+
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+            return result;
+
+        }
+
+        public Boolean UpdateTaskstatus(ProjectTaskModel model)
+        {
+            string str = string.Empty;
+            bool result = false;
+            DataTable dt = null;
+
+            try
+            {
+
+                SqlParameter[] param ={
+                    new SqlParameter("@TaskID",model.TaskIdforstatus),
+                    new SqlParameter("@StatusID",model.TaskStatusID),
+                    new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate!=null?model.ActualTaskStartDate:null),
+                    new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate!=null?model.ActualTaskEndDate:null),
+                    new SqlParameter("@Comment", model.Comment!= null?model.Comment:""),
+                    new SqlParameter("@EditedBY",model.EditedBy),
+                    new SqlParameter("@EditedTS",model.EditedTS)
+
+                };
+                dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTask_UpdateStatus", param);
 
 
                 result = true;
