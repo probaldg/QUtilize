@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.Mvc;
+
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -42,12 +44,19 @@ namespace QBA.Qutilize.WebApp.Models
         public int UserOrgName { get; set; }
 
         public int ManagerId { get; set; }
+        public int ManagerId_II { get; set; }
+        public int ManagerId_III { get; set; }
         public List<int> DepartmentIds { get; set; }
         public string DepartmentIdsInString { get; set; }
         public string ManagerName { get; set; }
 
         [Display(Name = "Manager")]
         public List<UserModel> UsersList { get; set; }
+        [Display(Name = "Manager II")]
+        public List<UserModel> UsersList_II { get; set; }
+        [Display(Name = "Manager III")]
+        public List<UserModel> UsersList_III { get; set; }
+
 
         [Display(Name = "Organisation")]
         public List<OrganisationModel> OrganisationList { get; set; }
@@ -85,6 +94,27 @@ namespace QBA.Qutilize.WebApp.Models
 
         public string OrgName_UserNameForCombo { get; set; }
 
+        [Display(Name = "Functional Role")]
+        public List<MasterFunctionalRoleModel> FunctionalRoleList { get; set; }
+        public int FunctionalRoleId { get; set; }
+        [Display(Name = "Marital Status")]
+        public List<MasterMaritalStatusModel> MaritalStatusList { get; set; }
+        public int MaritalStatusID { get; set; }
+        [Display(Name = "Date Of Joining")]
+        public string JoiningDateDisplay { get; set; }
+        public DateTime ? DOJ { get; set; }
+
+        [Display(Name = "Exit Date")]
+        public string ExitDateDisplay { get; set; }
+        public DateTime ? ExitDate { get; set; }
+
+        [Display(Name = "Anniversary Date")]
+        public string AnniversaryDateDisplay { get; set; }
+        public DateTime ? AnniversaryDate { get; set; }
+        [Display(Name = "User Monthly Cost")]
+        public double UserCost { get; set; }
+
+
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
@@ -93,6 +123,8 @@ namespace QBA.Qutilize.WebApp.Models
         public UserModel()
         {
             UsersList = new List<UserModel>();
+            UsersList_II = new List<UserModel>();
+            UsersList_III = new List<UserModel>();
             OrganisationList = new List<OrganisationModel>();
             DepartmentList = new List<DepartmentModel>();
             DepartmentIds = new List<int>();
@@ -242,6 +274,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Password",model.Password),
                     new SqlParameter("@Designation",model.Designation??""),
                     new SqlParameter("@ManagerId",model.ManagerId),
+                    new SqlParameter("@ManagerId_II",model.ManagerId_II),
+                    new SqlParameter("@ManagerId_III",model.ManagerId_III),
                     new SqlParameter("@DepartmentIds",model.DepartmentIdsInString),
                     new SqlParameter("@PhoneNo",model.ContactNo??""),
                     new SqlParameter("@AlternetPhoneNo",model.AlterNetContactNo??""),
@@ -250,6 +284,13 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@IsActive",model.IsActive),
                     new SqlParameter("@CreatedBy",model.CreatedBy),
                     new SqlParameter("@CreatedDate",model.CreateDate),
+                    new SqlParameter("@MaritalStatus",model.MaritalStatusID),
+                    new SqlParameter("@AnniversaryDate", model.AnniversaryDate!= null?model.AnniversaryDate:null),
+                    new SqlParameter("@UserCostMonthly",model.UserCost),
+                    new SqlParameter("@ExitDate",  model.ExitDate!= null?model.ExitDate:null),
+                    new SqlParameter("@JoiningDate", model.DOJ!= null?model.DOJ:null),
+                    new SqlParameter("@FunctionalRole",model.FunctionalRoleId),
+                              
 
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_Insert]", param);
@@ -306,6 +347,8 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@EmailId", model.EmailId),
                     new SqlParameter("@Designation", model.Designation??""),
                     new SqlParameter("@ManagerID", model.ManagerId),
+                    new SqlParameter("@ManagerId_II",model.ManagerId_II),
+                    new SqlParameter("@ManagerId_III",model.ManagerId_III),
                     new SqlParameter("@DepartmentIds",model.DepartmentIdsInString),
                     new SqlParameter("@PhoneNo",model.ContactNo??""),
                     new SqlParameter("@AlternetPhoneNo",model.AlterNetContactNo??""),
@@ -313,7 +356,14 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Gender",model.Gender??null),
                     new SqlParameter("@EditedBy",model.EditedBy),
                     new SqlParameter("@EditedDate",model.EditedDate),
-                    new SqlParameter("@isActive",model.IsActive)
+                    new SqlParameter("@isActive",model.IsActive),
+                    new SqlParameter("@MaritalStatus",model.MaritalStatusID),
+                    new SqlParameter("@AnniversaryDate", model.AnniversaryDate!= null?model.AnniversaryDate:null),
+                    new SqlParameter("@UserCostMonthly",model.UserCost),
+                    new SqlParameter("@ExitDate",  model.ExitDate!= null?model.ExitDate:null),
+                    new SqlParameter("@JoiningDate", model.DOJ!= null?model.DOJ:null),
+                    new SqlParameter("@FunctionalRole",model.FunctionalRoleId),
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("[dbo].[USPUser_Update]", param);
                 model.ISErr = false;
@@ -391,5 +441,138 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
+       
+
+    }
+
+    public class MasterFunctionalRoleModel
+    {
+        [Key]
+        public int ID { get; set; }
+
+
+        public string Name { get; set; }
+        public int Rank { get; set; }
+
+        public int OrganisationID { get; set; }
+        [Display(Name = "Organisation Name")]
+        public string OrganisationName { get; set; }
+
+        public bool IsActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedTS { get; set; }
+        public DateTime EditedTS { get; set; }
+        public int EditedBy { get; set; }
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
+        public string DisplayTextForCumboWithOrgName { get; set; }
+
+        SqlHelper objSQLHelper = new SqlHelper();
+
+        //***
+        public List<MasterFunctionalRoleModel> Get_FunctinalRoleDetl(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<MasterFunctionalRoleModel> lstFunctinalRole = new List<MasterFunctionalRoleModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterFunctionalRole_GET]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterFunctionalRole_GET]");
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        MasterFunctionalRoleModel masterFunctinalRole = new MasterFunctionalRoleModel();
+                        masterFunctinalRole.ID = Convert.ToInt32(item["ID"]);
+                        masterFunctinalRole.OrganisationName = item["OrganisationName"].ToString();
+                        masterFunctinalRole.Name = item["Name"].ToString();
+                        masterFunctinalRole.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        masterFunctinalRole.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["Name"].ToString();
+                        lstFunctinalRole.Add(masterFunctinalRole);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstFunctinalRole;
+        }
+        //**
+    }
+    public class MasterMaritalStatusModel
+    {
+        [Key]
+        public int ID { get; set; }
+
+
+        public string Name { get; set; }
+        public int Rank { get; set; }
+
+        public int OrganisationID { get; set; }
+        [Display(Name = "Organisation Name")]
+        public string OrganisationName { get; set; }
+
+        public bool IsActive { get; set; }
+        public int CreatedBy { get; set; }
+        public DateTime CreatedTS { get; set; }
+        public DateTime EditedTS { get; set; }
+        public int EditedBy { get; set; }
+        public bool ISErr { get; set; }
+        public string ErrString { get; set; }
+        public string DisplayTextForCumboWithOrgName { get; set; }
+
+        SqlHelper objSQLHelper = new SqlHelper();
+
+        //***
+        public List<MasterMaritalStatusModel> Get_MaritalStatus(int orgId = 0)
+        {
+            DataTable dt = null;
+            List<MasterMaritalStatusModel> lstMaritalStatus = new List<MasterMaritalStatusModel>();
+            try
+            {
+                if (orgId != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",orgId)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterMaritalStatus_GET]", param);
+
+                }
+                else
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_MasterMaritalStatus_GET]");
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        MasterMaritalStatusModel masterMaritalStatus = new MasterMaritalStatusModel();
+                        masterMaritalStatus.ID = Convert.ToInt32(item["ID"]);
+                        masterMaritalStatus.OrganisationName = item["OrganisationName"].ToString();
+                        masterMaritalStatus.Name = item["Name"].ToString();
+                        masterMaritalStatus.IsActive = Convert.ToBoolean(item["IsActive"]);
+                        //department.DisplayTextForCumboWithOrgName = item["NAME"].ToString() + "-" + item["OrganisationName"].ToString();
+                        masterMaritalStatus.DisplayTextForCumboWithOrgName = item["OrganisationName"].ToString() + "-" + item["Name"].ToString();
+                        lstMaritalStatus.Add(masterMaritalStatus);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstMaritalStatus;
+        }
+        //**
     }
 }

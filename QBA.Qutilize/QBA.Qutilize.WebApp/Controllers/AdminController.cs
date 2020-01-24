@@ -34,7 +34,9 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ManageUsers(int ID = 0)
         {
             UserModel obj = new UserModel();
-
+            MasterMaritalStatusModel maritalstatusModel = new MasterMaritalStatusModel();
+            MasterFunctionalRoleModel functionalRoleModel = new MasterFunctionalRoleModel();
+            
             UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
 
             ViewBag.IsUserSysAdmin = userInfo.IsRoleSysAdmin;
@@ -55,8 +57,16 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                 obj.UsersList.Clear();
                 obj.UsersList = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.UsersList_II.Clear();
+                obj.UsersList_II = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.UsersList_III.Clear();
+                obj.UsersList_III = obj.GetAllUsersInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+
                 obj.DepartmentList.Clear();
                 obj.DepartmentList = obj.GetAllDepartmentInList(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+
+                obj.MaritalStatusList = maritalstatusModel.Get_MaritalStatus(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
+                obj.FunctionalRoleList= functionalRoleModel.Get_FunctinalRoleDetl(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
             }
 
 
@@ -81,7 +91,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         obj.ManagerId = Convert.ToInt32(dt.Rows[0]["ManagerId"]);
                     }
-
+                    if (dt.Rows[0]["ManagerId_II"] != DBNull.Value)
+                    {
+                        obj.ManagerId_II = Convert.ToInt32(dt.Rows[0]["ManagerId_II"]);
+                    }
+                    if (dt.Rows[0]["ManagerId_III"] != DBNull.Value)
+                    {
+                        obj.ManagerId_III = Convert.ToInt32(dt.Rows[0]["ManagerId_III"]);
+                    }
                     obj.ContactNo = dt.Rows[0]["PhoneNo"]?.ToString();
                     if (dt.Rows[0]["AlternateConatctNo"] != DBNull.Value)
                     {
@@ -100,7 +117,43 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         obj.birthDayToDisplay = "";
                     }
+                    if (dt.Rows[0]["FunctionalRole"] != DBNull.Value)
+                    {
+                        obj.FunctionalRoleId = Convert.ToInt32(dt.Rows[0]["FunctionalRole"]);
+                    }
+                    if (dt.Rows[0]["MaritalStatus"] != DBNull.Value)
+                    {
+                        obj.MaritalStatusID = Convert.ToInt32(dt.Rows[0]["MaritalStatus"]);
+                    }
+                    if (dt.Rows[0]["AnniversaryDate"] != DBNull.Value)
+                    {
+                        var convertedString = dt.Rows[0]["AnniversaryDate"].ToString();
+                        obj.AnniversaryDateDisplay = Convert.ToDateTime(dt.Rows[0]["AnniversaryDate"]).ToShortDateString().Replace('-', '/');
+                    }
+                    else
+                    {
+                        obj.AnniversaryDateDisplay = "";
+                    }
+                    if (dt.Rows[0]["ExitDate"] != DBNull.Value)
+                    {
+                        var convertedString = dt.Rows[0]["ExitDate"].ToString();
+                        obj.ExitDateDisplay = Convert.ToDateTime(dt.Rows[0]["ExitDate"]).ToShortDateString().Replace('-', '/');
+                    }
+                    else
+                    {
+                        obj.ExitDateDisplay = "";
+                    }
 
+                    if (dt.Rows[0]["JoiningDate"] != DBNull.Value)
+                    {
+                        var convertedString = dt.Rows[0]["JoiningDate"].ToString();
+                        obj.JoiningDateDisplay = Convert.ToDateTime(dt.Rows[0]["JoiningDate"]).ToShortDateString().Replace('-', '/');
+                    }
+                    else
+                    {
+                        obj.JoiningDateDisplay = "";
+                    }
+                    obj.UserCost = Convert.ToDouble(dt.Rows[0]["UserCostMonthly"]);
                     obj.Gender = dt.Rows[0]["Gender"]?.ToString();
                     obj.IsActive = Convert.ToBoolean(dt.Rows[0]["IsActive"].ToString());
 
@@ -167,6 +220,61 @@ namespace QBA.Qutilize.WebApp.Controllers
 
 
                         }
+                        if (model.AnniversaryDateDisplay != null)
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.AnniversaryDateDisplay, out dateTimeConverted))
+                            {
+                                model.AnniversaryDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                model.AnniversaryDateDisplay.Replace('-', '/');
+                                var stringDateArray = model.AnniversaryDateDisplay.Split('/');
+
+                                var newAnniversaryDateString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newAnniversaryDateString);
+                                model.AnniversaryDate = newDate;
+                            }
+
+                        }
+                       
+                        if (model.JoiningDateDisplay != null)
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.JoiningDateDisplay, out dateTimeConverted))
+                            {
+                                model.DOJ = dateTimeConverted;
+                            }
+                            else
+                            {
+                                model.JoiningDateDisplay.Replace('-', '/');
+                                var stringDateArray = model.JoiningDateDisplay.Split('/');
+
+                                var newJoiningDtString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newJoiningDtString);
+                                model.DOJ = newDate;
+                            }
+
+                        }
+                        if (model.ExitDateDisplay != null)
+                        {
+                            DateTime dateTimeConverted;
+                            if (DateTime.TryParse(model.ExitDateDisplay, out dateTimeConverted))
+                            {
+                                model.ExitDate = dateTimeConverted;
+                            }
+                            else
+                            {
+                                model.ExitDateDisplay.Replace('-', '/');
+                                var stringDateArray = model.ExitDateDisplay.Split('/');
+
+                                var newExitdtDtString = stringDateArray[1] + "/" + stringDateArray[0] + "/" + stringDateArray[2];
+                                DateTime newDate = Convert.ToDateTime(newExitdtDtString);
+                                model.ExitDate = newDate;
+                            }
+
+                        }
 
 
                         model.EditedBy = System.Web.HttpContext.Current.Session["sessUser"].ToString();
@@ -201,6 +309,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                             var stringDateArray = model.birthDayToDisplay.Split('/');
                             DateTime dob = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
                             model.BirthDate = dob;
+                        }
+                        if (model.AnniversaryDateDisplay != null)
+                        {
+                            var stringDateArray = model.AnniversaryDateDisplay.Split('/');
+                            DateTime AnniversaryDate = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
+                            model.AnniversaryDate = AnniversaryDate;
+                        }
+                        if (model.JoiningDateDisplay != null)
+                        {
+                            var stringDateArray = model.JoiningDateDisplay.Split('/');
+                            DateTime JoinningDate = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
+                            model.DOJ = JoinningDate;
+                        }
+                        if (model.ExitDateDisplay != null)
+                        {
+                            var stringDateArray = model.JoiningDateDisplay.Split('/');
+                            DateTime ExitDt = new DateTime(Convert.ToInt32(stringDateArray[2]), Convert.ToInt16(stringDateArray[0]), Convert.ToInt16(stringDateArray[1]));
+                            model.ExitDate = ExitDt;
                         }
 
                         model.CreateDate = DateTime.Now;

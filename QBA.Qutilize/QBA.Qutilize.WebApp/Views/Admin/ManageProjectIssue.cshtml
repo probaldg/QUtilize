@@ -117,7 +117,7 @@
         <div>
 
             <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
-                <table class="table table-striped table-bordered myTable" id="tblGridListViewPost">
+                <table class="table table-striped table-bordered myTable" id="tblGridListViewPost1">
                     <thead id="tblHeadListViewPost">
                         <tr>
                             <th class="text-center tblHeaderColor sorting">ID</th>
@@ -215,7 +215,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-
 
                                 @Html.LabelFor(model => model.ProjectIssue.Timespent, htmlAttributes: new { @class = "control-label col-md-2 " })
                                 <div class="col-md-10">
@@ -499,6 +498,7 @@
 
             var SeverityId = $('#SeverityList').val();
 
+
             var userIds = $('#UserIdsInString').val();
 
 
@@ -547,6 +547,7 @@
         $("#ProjectIssue_Timespent").timepicker({ timeFormat: 'HH:mm' });
 
         $("#tblGridListViewPost").dataTable();
+        $("#tblGridListViewPost1").dataTable();
         $('#ProjectIssue_ActualIssueStartDateDisplay').datepicker({
             changeMonth: true,
             changeYear: true
@@ -880,8 +881,8 @@
 
 
         //Project Issue Edit Start**
-        function AjaxCallGetUserByProject(project_id, statusid, CompletePercent, UserIdAssigned) {
-             $.ajax({
+                   function AjaxCallGetUserByProject(project_id, statusid, CompletePercent, UserIdAssigned) {
+                           $.ajax({
                               url: '@Url.Action("ManageProjectTask", "Admin")',
                               type: "POST",
                               dataType: "json",
@@ -998,10 +999,9 @@
             return (month + "/" + day + "/" + year);
 
         }
+
         function EditProjectIssue(IssueID) {
-
             var issueId = IssueID;
-
              $.ajax({
                 url: '@Url.Action("GetProjectIssueByID", "Admin")',
                 type: "POST",
@@ -1047,10 +1047,8 @@
                      $('#ProjectIssue_IsValueAdded').prop('checked', IssueObj.IsValueAdded);
                      $('#ProjectIssue_UserIdAssigned').val(IssueObj.UserIdAssigned);
 
-
-
                 },
-                error: function (response) {
+                 error: function (response) {
                     alert('error occured')
 
                 }
@@ -1099,7 +1097,7 @@
     </script>
 
    
-        <script type="text/javascript">
+    <script type="text/javascript">
                 $(document).ready(function () {
                     $('.nav-tabs > li > a').click(function (event) {
                         event.preventDefault();//stop browser to take action for clicked anchor
