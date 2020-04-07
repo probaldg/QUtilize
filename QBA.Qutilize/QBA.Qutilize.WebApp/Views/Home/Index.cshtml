@@ -1,71 +1,74 @@
 ﻿@model QBA.Qutilize.WebApp.Models.LoginViewModel
 
 @{
-    ViewBag.Title = "Qutilize | Log in";
+    ViewBag.Title = "Login";
     //Layout = "~/Views/Shared/_CMSPublic.cshtml";
 }
 
 <div class="container">
-    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-    {
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="input-group mb-3">
-        @*<input type="email" class="form-control" placeholder="Email">*@
-        @Html.TextBoxFor(m => m.UserID, new { @class = "form-control", @placeholder = "Email" })
-        @Html.ValidationMessageFor(m => m.UserID, "", new { @class = "text-danger" })
-        <div class="input-group-append">
-            <div class="input-group-text">
-                <span class="fas fa-user"></span>
-            </div>
-        </div>
-    </div>
-    <div class="input-group mb-3">
-        @*<input type="password" class="form-control" placeholder="Password">*@
-        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
-        <div class="input-group-append">
-            <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-            </div>
-        </div>
-    </div>
+
     <div class="row">
-        <div class="col-8">
-            <div class="icheck-primary">
-                @*<input type="checkbox" id="remember">
-                <label for="remember">
-                    Remember Me
-                </label>*@
+        <div class="col-md-12">
+            <div class="col-md-3"></div>
+            <div class="col-md-6" style="border: 1px solid #f1f1f1;">
+                <section id="loginForm">
+                    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        @*@Html.AntiForgeryToken()*@
+                        <h4>Log in</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserID, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.UserID, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Password, new { @class = "col-md-3 control-label" })
+                            <div class="col-md-9">
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-3 col-md-10">
+
+                                <input type="submit" value="Log in" class="btn btn-default" />
+                                @*<a href="/Account/ForgotPassword" class="btn btn-default">Forgot Password</a>*@
+                                @*<a href="/Account/Registration" class="btn btn-default">New User Registration</a>*@
+                            </div>
+                        </div>
+                    }
+                </section>
+                @{
+                    string strMSG = string.Empty;
+                    string strStyle = string.Empty;
+                    strMSG = ViewBag.ErrStatus;
+                    if (strMSG != null)
+                    {
+                        strStyle = "display:inline";
+                    }
+                    else
+                    {
+                        strStyle = "display:none";
+                    }
+                }
+                <div style="@strStyle">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        @Html.ValidationMessage("CustomError")
+                    </div>
+                </div>
+
             </div>
-        </div>
-        <!-- /.col -->
-        <div class="col-4">
-            @*<button type="submit" class="btn btn-primary btn-block">Sign In</button>*@
-            <input type="submit" value="Sign in" class="btn btn-primary btn-block" />
-        </div>
-        <!-- /.col -->
-        @{
-            string strMSG = string.Empty;
-            string strStyle = string.Empty;
-            strMSG = ViewBag.ErrStatus;
-            if (strMSG != null)
-            {
-                strStyle = "display:inline";
-            }
-            else
-            {
-                strStyle = "display:none";
-            }
-        }
-        <div style="@strStyle">
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                @Html.ValidationMessage("CustomError")
-            </div>
+            <div class="col-md-3"></div>
         </div>
     </div>
-    }
+
 </div>
 
 @section Scripts {

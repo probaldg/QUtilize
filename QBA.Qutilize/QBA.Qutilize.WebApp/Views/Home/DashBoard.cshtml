@@ -28,13 +28,12 @@
         {
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box box-primary">
-                        @*panel panel-primary*@
-                        <div class="box-header">
-                            <h3 class="box-title">Admin Data details</h3>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Admin Data details</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
-                        <div class="box-body">
+                        <div class="panel-body">
                             <div class="row" id="DashBoardAdminSummary">
                                 <!-- load header summary -->
                                 @Html.Action("LoadDashBoardAdminSummary", "Home")
