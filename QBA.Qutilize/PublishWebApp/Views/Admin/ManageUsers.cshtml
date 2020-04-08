@@ -115,170 +115,231 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
-            <h4>User Details</h4>
-            <hr />
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <h4>User Details</h4>
+        <hr />
 
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.ID)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
 
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.OrganisationList, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.UserOrgId)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.DepartmentIdsInString)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UsersList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.UsersList, new SelectList(Model.UsersList, "Id", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.ManagerId)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UsersList_II, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.UsersList_II, new SelectList(Model.UsersList_II, "Id", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.ManagerId_II)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UsersList_III, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.UsersList_III, new SelectList(Model.UsersList_III, "Id", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.ManagerId_III)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @if (Model.ID > 0)
+        {
+            <div class="form-group">
+                @Html.Label("", new { @class = "control-label col-md-2" })
+                <div class="col-md-10 pull-right">
+                    @*@Html.ActionLink("Change Password", "#", new { id = Model.ID }, new { @class = "editCourseModal", @data_target = "updatePasswordModal" })*@
+                    <a href="" data-toggle="modal" data-target="#updatePasswordModal">Change Password</a>
+
+                </div>
+            </div>
+        }
+        else
+        {
 
             <div class="form-group">
-                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                 </div>
             </div>
 
+
             <div class="form-group">
-                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.UserCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.UserCode, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.UserCode, "", new { @class = "text-danger" })
-                </div>
+        }
+        <div class="form-group">
+            @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
             </div>
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.OrganisationList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.OrganisationList, new SelectList(Model.OrganisationList, "id", "orgname"), "Please select", new { @class = "form-control" })
-                    @Html.HiddenFor(model => model.UserOrgId)
-                </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", type = "number" } })
+                @Html.ValidationMessageFor(model => model.ContactNo, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.DepartmentList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.DepartmentList, new SelectList(Model.DepartmentList, "DepartmentID", "Name"), "Please select", new { @class = "form-control" })
-                    @Html.HiddenFor(model => model.DepartmentIdsInString)
-                </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AlterNetContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlterNetContactNo, new { htmlAttributes = new { @class = "form-control", @maxlength = "10", @type = "number" } })
+                @Html.ValidationMessageFor(model => model.AlterNetContactNo, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.UsersList, htmlAttributes: new { @class = "control-label col-md-2" })
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.UsersList, new SelectList(Model.UsersList, "Id", "Name"), "Please select", new { @class = "form-control" })
-                    @Html.HiddenFor(model => model.ManagerId)
+                    @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" ,Value = Model.BirthDate != null ?
+        Model.BirthDate.Value.Date.ToString("yyyy/MM/dd") : null
+               } })
+                    @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
                 </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.birthDayToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.birthDayToDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.birthDayToDisplay, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.EmailId, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <select class="form-control" id="ddlUserGender" name="ddlUserGender">
+                    <option>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                @Html.HiddenFor(model => model.Gender)
+                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
             </div>
-
-
-            @if (Model.ID > 0)
-            {
-                <div class="form-group">
-                    @Html.Label("", new { @class = "control-label col-md-2" })
-                    <div class="col-md-10 pull-right">
-                        @*@Html.ActionLink("Change Password", "#", new { id = Model.ID }, new { @class = "editCourseModal", @data_target = "updatePasswordModal" })*@
-                        <a href="" data-toggle="modal" data-target="#updatePasswordModal">Change Password</a>
-
-                    </div>
-                </div>
-            }
-            else
-            {
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            }
-            <div class="form-group">
-                @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FunctionalRoleList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FunctionalRoleList, new SelectList(Model.FunctionalRoleList, "ID", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.FunctionalRoleId)
             </div>
-
-
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ContactNo, new { htmlAttributes = new { @class = "form-control",  @maxlength = "10" ,type = "number"} })
-                    @Html.ValidationMessageFor(model => model.ContactNo, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserCost, htmlAttributes: new { @class = "control-label col-md-2 " })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserCost, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserCost, "", new { @class = "text-danger" })
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.AlterNetContactNo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.AlterNetContactNo, new { htmlAttributes = new { @class = "form-control", @maxlength = "10",  @type = "number"  } })
-                    @Html.ValidationMessageFor(model => model.AlterNetContactNo, "", new { @class = "text-danger" })
-                </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaritalStatusList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.MaritalStatusList, new SelectList(Model.MaritalStatusList, "ID", "Name"), "Please select", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.MaritalStatusID)
             </div>
+        </div>
 
-            @*<div class="form-group">
-                        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" ,Value = Model.BirthDate != null ?
-                Model.BirthDate.Value.Date.ToString("yyyy/MM/dd") : null
-                       } })
-                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
-                        </div>
-                    </div>*@
+        <div id="div_anniversary"  class="form-group">
+            @Html.LabelFor(model => model.AnniversaryDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AnniversaryDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AnniversaryDateDisplay, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.birthDayToDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.birthDayToDisplay, new { htmlAttributes = new { @class = "form-control" }  })
-                    @Html.ValidationMessageFor(model => model.birthDayToDisplay, "", new { @class = "text-danger" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.JoiningDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.JoiningDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.JoiningDateDisplay, "", new { @class = "text-danger" })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select class="form-control" id="ddlUserGender" name="ddlUserGender">
-                        <option>Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                    @Html.HiddenFor(model => model.Gender)
-                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.IsActive)
-                        @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
+        </div>
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExitDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ExitDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ExitDateDisplay, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
     }
 
     <div id="updatePasswordModal" class="modal fade" role="dialog">
@@ -341,7 +402,28 @@
         //        enableFiltering: true
         //    });
         //});
+        document.getElementById("div_anniversary").style.display = "none";
         $('#birthDayToDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-90:+00",
+            maxDate: new Date()
+        });
+
+        $('#JoiningDateDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-90:+00",
+            maxDate: new Date()
+        });
+
+        $('#ExitDateDisplay').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-90:+00",
+            maxDate: new Date()
+        });
+        $('#AnniversaryDateDisplay').datepicker({
             changeMonth: true,
             changeYear: true,
             yearRange: "-90:+00",
@@ -367,6 +449,56 @@
         }
         $('#UsersList').change(function () {
             $('#ManagerId').val(this.value)
+        })
+
+        var managerId_II = $('#ManagerId_II').val();
+        if (managerId_II != 0) {
+            $('#UsersList_II').val(managerId_II);
+        }
+        $('#UsersList_II').change(function () {
+            $('#ManagerId_II').val(this.value)
+        })
+
+        var managerId_III = $('#ManagerId_III').val();
+        if (managerId_III != 0) {
+            $('#UsersList_III').val(managerId_III);
+        }
+        $('#UsersList_III').change(function () {
+            $('#ManagerId_III').val(this.value)
+        })
+        var MaritalStatusID = $('#MaritalStatusID').val();
+        if (MaritalStatusID != 0) {
+            $('#MaritalStatusList').val(MaritalStatusID);
+            if (MaritalStatusID == 2) {
+                document.getElementById("div_anniversary").style.display = "block";
+            }
+            else {
+                document.getElementById("div_anniversary").style.display = "none";
+                $('#AnniversaryDateDisplay').val('');
+
+            }
+        }
+        $('#MaritalStatusList').change(function () {
+            $('#MaritalStatusID').val(this.value);
+            var statusid = $('#MaritalStatusList').val();
+           
+            if (statusid == 2) {
+                document.getElementById("div_anniversary").style.display = "block";
+
+            }
+            else {
+                document.getElementById("div_anniversary").style.display = "none";
+                $('#AnniversaryDateDisplay').val('');
+            }
+        })
+
+
+        var FunctionalRoleId = $('#FunctionalRoleId').val();
+        if (FunctionalRoleId != 0) {
+            $('#FunctionalRoleList').val(FunctionalRoleId);
+        }
+        $('#FunctionalRoleList').change(function () {
+            $('#FunctionalRoleId').val(this.value)
         })
 
         $('#ddlUserGender').change(function () {
@@ -553,42 +685,48 @@
             var contactNo = $('#ContactNo').val();
             var birthDate = $('#birthDayToDisplay').val();
             var gender = $('#ddlUserGender').val();
+            var usercost = $('#UserCost').val();
+            var functionalrole = $('#FunctionalRoleList').val();
+            var doj = $('#JoiningDateDisplay').val();
+            var maritalstatus = $('#MaritalStatusList').val();
 
             if (userName == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's User Name";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#UserName').focus();
                 return false;
             }
 
             if (name == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's name";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#Name').focus();
 
                 return false;
             }
             if (userCode == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's code.";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#UserCode').focus();
                 return false;
             }
 
             if (orgId == 0) {
                 document.getElementById("errormsg").innerHTML = "Please select organisation";
                 document.getElementById("ErrorMsg").style.display = 'block';
+          
                 return false;
             }
             if (departmentId == 0) {
                 document.getElementById("errormsg").innerHTML = "Please select department.";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#DepartmentList').focus();
                 return false;
             }
             if (Email == "") {
                 document.getElementById("errormsg").innerHTML = "Please Provide User's email";
                 document.getElementById("ErrorMsg").style.display = 'block';
-
+                $('#EmailId').focus();
                 return false;
             }
             if (Email != "") {
@@ -618,12 +756,6 @@
                     return false;
                 }
             }
-
-
-
-
-
-
 
             if (id > 0) {
                 //var oldpassword = document.getElementById("oldpassword").value;
@@ -660,16 +792,14 @@
                 if (password == "") {
                     document.getElementById("errormsg").innerHTML = "Please provide your Password";
                     document.getElementById("ErrorMsg").style.display = 'block';
-                    //document.getElementById("Password").focus();
-                    //document.getElementById("Password").style.borderColor = "Red";
+                 //   $('#NewPassword').focus();
                     return false;
                 }
                 if (password != "") {
                     if (confirmpassword == "") {
                         document.getElementById("errormsg").innerHTML = "Please confirm your Password";
                         document.getElementById("ErrorMsg").style.display = 'block';
-                        //document.getElementById("ConfirmPassword").focus();
-                        //document.getElementById("ConfirmPassword").style.borderColor = "Red";
+                      //  $('#ConfirmNewPassword').focus();
                         return false;
                     }
                     if (password != confirmpassword) {
@@ -689,11 +819,13 @@
             if (designation == "") {
                 document.getElementById("errormsg").innerHTML = "Please provide designation.";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#Designation').focus();
                 return false;
             }
             if (contactNo == "") {
                 document.getElementById("errormsg").innerHTML = "Please provide contact no.";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ContactNo').focus();
                 return false;
             }
 
@@ -709,26 +841,51 @@
             if (birthDate == "") {
                 document.getElementById("errormsg").innerHTML = "Please provide date of birth.";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#birthDayToDisplay').focus();
                 return false;
             }
 
             if (gender == "Select Gender") {
                 document.getElementById("errormsg").innerHTML = "Please select gender.";
                 document.getElementById("ErrorMsg").style.display = 'block';
+                $('#ddlUserGender').focus();
+                return false;
+            }
+
+          
+            if (functionalrole == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide functinal role";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#FunctionalRoleList').focus();
+                return false;
+            }
+            if (usercost == "0") {
+                document.getElementById("errormsg").innerHTML = "Please provide User Cost";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#UserCost').focus();
+                return false;
+            }
+            if (maritalstatus == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide Marital status";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#MaritalStatusList').focus();
+                return false;
+            }
+            if (doj == "") {
+                document.getElementById("errormsg").innerHTML = "Please provide date of joining.";
+                document.getElementById("ErrorMsg").style.display = 'block';
+                $('#JoiningDateDisplay').focus();
                 return false;
             }
 
             if (managerId == "") {
 
                 var result = confirm("You have not selected manager from the list. do you want to continue?");
-                if (result ==false) {
+                if (result == false) {
 
                     return false;
                 }
             }
-
-
-
             return true;
         }
 

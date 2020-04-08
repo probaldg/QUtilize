@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font Awesome -->
+    @*<link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">*@
+    <link href="~/Content/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- icheck bootstrap -->
+    @*<link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css">*@
+    <link href="~/Content/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    @*<link rel="stylesheet" href="../../dist/css/adminlte.min.css">*@
+    <link href="~/Content/dist/css/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link rel="icon" href="~/images/favicon.ico">
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            @*<a href="../../index2.html"><b>Admin</b>LTE</a>*@
+            @*<div style="padding-top:50px;">*@
+            @*<div class="col-md-4"></div>*@
+            @*<div class="col-md-4">*@
+                <img src="~/images/Qutilize.png" alt=":Logo"  style="width:80%"/>@*class="img-responsive  center-block" style="width:80%"*@
+            @*</div>*@
+            @*<div class="col-md-4"></div>*@
+            @*</div>*@
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Sign in to start</p>
+                @RenderSection("scripts", required: false)
+                @RenderBody()
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+        <div class="lockscreen-footer text-center">
+            Copyright &copy; 2019-2020 <b><img src="~/images/smalllogo.png" alt=":Logo" /></b><br>
+            All rights reserved
+        </div>
+    </div>
+
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    @*<script src="../../plugins/jquery/jquery.min.js"></script>*@
+    <script src="~/Scripts/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    @*<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>*@
+    <script src="~/Scripts/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    @*<script src="../../dist/js/adminlte.min.js"></script>*@
+    <script src="~/Scripts/js/adminlte.min.js"></script>
+</body>
+</html>

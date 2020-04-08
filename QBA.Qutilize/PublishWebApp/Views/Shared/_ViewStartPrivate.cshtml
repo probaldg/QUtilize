@@ -93,16 +93,16 @@
     <script src="~/Scripts/Chart.js"></script>
     <script src="~/Scripts/Common.js"></script>
     <link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" type="text/css">
-        <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect.js"></script>
 
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js.map"></script>*@
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js.map"></script>*@
 
 </head>
 
 <body>
-    
+
     @if (HttpContext.Current.Session["sessUserAllData"] == null)
     {
         Response.Redirect("~/Home/Index");
@@ -126,7 +126,7 @@
                     </div>
                     <div class="col-md-6">
                         @if (HttpContext.Current.Request.Browser.IsMobileDevice)
-                        { <img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block" style="width:20%" />}
+                        {<img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block" style="width:20%" />}
                         else
                         {<img src="~/images/Qutilize.png" alt="QBA:Logo" class="img-responsive img-logo  center-block" style="width:500%" />}
                         @if (HttpContext.Current.Session["OrganisationLogo"] != null && HttpContext.Current.Session["OrganisationLogo"].ToString().Trim() != "")
@@ -201,6 +201,110 @@
                             </a>
                         </div>
                     </div>
+
+
+                    @*<div class="page-wrapper default-theme sidebar-bg bg1 toggled">
+                        <nav id="sidebar" class="sidebar-wrapper">
+                            <div class="sidebar-content">
+                                <div class=" sidebar-item sidebar-menu">
+                                    <ul>
+                                        <li class="sidebar-dropdown">
+                                            <a href="#">
+                                                <i class="fa fa-tachometer-alt"></i>
+                                                <span class="menu-text">Dashboard</span>
+                                                <span class="badge badge-pill badge-warning">New</span>
+                                            </a>
+                                            <div class="sidebar-submenu">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#">
+                                                            Dashboard 1
+                                                            <span class="badge badge-pill badge-success">Pro</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Dashboard 2</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Dashboard 3</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="sidebar-dropdown">
+                                            <a href="#">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span class="menu-text">E-commerce</span>
+                                                <span class="badge badge-pill badge-danger">3</span>
+                                            </a>
+                                            <div class="sidebar-submenu">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#">
+                                                            Products
+
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Orders</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Credit cart</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="sidebar-dropdown">
+                                            <a href="#">
+                                                <i class="far fa-gem"></i>
+                                                <span class="menu-text">Components</span>
+                                            </a>
+                                            <div class="sidebar-submenu">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#">General</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Panels</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Tables</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Icons</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#">Forms</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-book"></i>
+                                                <span class="menu-text">Documentation</span>
+                                                <span class="badge badge-pill badge-primary">Beta</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-calendar"></i>
+                                                <span class="menu-text">Calendar</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-folder"></i>
+                                                <span class="menu-text">Examples</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>*@
+
+
                     <div class="row lien">
                         <div class="col-md-12">
                             <a href='@Url.Action("Dashboard", "Home")' class='fa fa-dashboard' style='color: white;'></a>&nbsp;
@@ -223,47 +327,47 @@
                     </div>
 
                     @*<div id="jquery-accordion-menu" class="jquery-accordion-menu">
-                        <div class="jquery-accordion-menu-header">Side Menu</div>
-                        <ul>
-                            <li class="active"><a href="#"><i class="fa fa-home"></i>Home </a></li>
-                            <li><a href="#"><i class="fa fa-glass"></i>Events </a></li>
-                            <li><a href="#"><i class="fa fa-file-image-o"></i>Gallery </a><span class="jquery-accordion-menu-label">12 </span></li>
-                            <li>
-                                <a href="#"><i class="fa fa-cog"></i>Services </a>
-                                <ul class="submenu">
-                                    <li>
-                                        <a href="#">
-                                            Web Design
-                                        </a>
-                                    </li>
-                                    <li><a href="#">Hosting </a></li>
-                                    <li>
-                                        <a href="#">Design </a>
-                                        <ul class="submenu">
-                                            <li><a href="#">Graphics </a></li>
-                                            <li><a href="#">Vectors </a></li>
-                                            <li><a href="#">Photoshop </a></li>
-                                            <li><a href="#">Fonts </a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#">Consulting </a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#"><i class="fa fa-newspaper-o"></i>News </a></li>
-                            <li>
-                                <a href="#"><i class="fa fa-suitcase"></i>Portfolio </a>
-                                <ul class="submenu">
-                                    <li><a href="#">Web Design </a></li>
-                                    <li><a href="#">Graphics </a><span class="jquery-accordion-menu-label">10 </span></li>
-                                    <li><a href="#">Photoshop </a></li>
-                                    <li><a href="#">Programming </a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#"><i class="fa fa-user"></i>About </a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i>Contact </a></li>
-                        </ul>
-                        <div class="jquery-accordion-menu-footer">Footer </div>
-                    </div>*@
+                            <div class="jquery-accordion-menu-header">Side Menu</div>
+                            <ul>
+                                <li class="active"><a href="#"><i class="fa fa-home"></i>Home </a></li>
+                                <li><a href="#"><i class="fa fa-glass"></i>Events </a></li>
+                                <li><a href="#"><i class="fa fa-file-image-o"></i>Gallery </a><span class="jquery-accordion-menu-label">12 </span></li>
+                                <li>
+                                    <a href="#"><i class="fa fa-cog"></i>Services </a>
+                                    <ul class="submenu">
+                                        <li>
+                                            <a href="#">
+                                                Web Design
+                                            </a>
+                                        </li>
+                                        <li><a href="#">Hosting </a></li>
+                                        <li>
+                                            <a href="#">Design </a>
+                                            <ul class="submenu">
+                                                <li><a href="#">Graphics </a></li>
+                                                <li><a href="#">Vectors </a></li>
+                                                <li><a href="#">Photoshop </a></li>
+                                                <li><a href="#">Fonts </a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Consulting </a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-newspaper-o"></i>News </a></li>
+                                <li>
+                                    <a href="#"><i class="fa fa-suitcase"></i>Portfolio </a>
+                                    <ul class="submenu">
+                                        <li><a href="#">Web Design </a></li>
+                                        <li><a href="#">Graphics </a><span class="jquery-accordion-menu-label">10 </span></li>
+                                        <li><a href="#">Photoshop </a></li>
+                                        <li><a href="#">Programming </a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-user"></i>About </a></li>
+                                <li><a href="#"><i class="fa fa-envelope"></i>Contact </a></li>
+                            </ul>
+                            <div class="jquery-accordion-menu-footer">Footer </div>
+                        </div>*@
                 </div>
             </div>
         </div>
@@ -350,7 +454,7 @@
         $(document).ready(function () {
             //if (navigator.geolocation) {
             //    navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-            //} 
+            //}
             //alert(lat);
             $.ajax
                 ({

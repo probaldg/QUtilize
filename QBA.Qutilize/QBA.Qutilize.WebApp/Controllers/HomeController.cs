@@ -186,11 +186,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             if (Convert.ToString(dr["roleID"]) == "1")//sysadmin
                             { Session.Add("SysAdmin", Convert.ToString(dr["roleID"])); }
-                            else if (Convert.ToString(dr["roleID"]) == "2")//org user
+                            else if (Convert.ToString(dr["roleID"]) == "2" || Convert.ToString(dr["roleID"]) == "16")//org user
                             { Session.Add("OrgUser", Convert.ToString(dr["roleID"])); }
-                            else if (Convert.ToString(dr["roleID"]) == "3")//org admin
+                            else if (Convert.ToString(dr["roleID"]) == "3" || Convert.ToString(dr["roleID"]) == "14")//org admin
                             { Session.Add("OrgAdmin", Convert.ToString(dr["roleID"])); }
-                            else if (Convert.ToString(dr["roleID"]) == "4")//org PM
+                            else if (Convert.ToString(dr["roleID"]) == "4" || Convert.ToString(dr["roleID"]) == "15")//org PM
                             { Session.Add("OrgPM", Convert.ToString(dr["roleID"])); }
                         }
                     }
