@@ -401,7 +401,7 @@
 
 
         });
-         
+
         @*setInterval(function () {
             var date = new Date();
             var day = date.getDate();       // yields date
@@ -417,8 +417,28 @@
         }, 5000);*@
     });
 
-    var selecteduser = false;
-    var selectedproject = false;
+
+
+    @if(Session["DateRange"] != null)
+    {
+        string[] arrdate = Session["DateRange"].ToString().Split('|');
+        <Text>
+
+            var selecteduser ="@arrdate[5]";
+            var selectedproject = "@arrdate[4]";
+
+    
+        </text>
+    }
+    else
+    {
+        <Text>
+            var selecteduser = "False";
+    var selectedproject = "False";
+    
+        </text>
+    }
+
     $(document).ready(function () {
         //$(".datepicker").datepicker();
         $('#txtStartDate').datepicker();
@@ -435,7 +455,7 @@
     });
 
     function GetUsersProject() {
-        if (selectedproject == false) {
+        if (selectedproject == "False") {
             var Userid = document.getElementById("ddlUsers").value;
          try {
 
@@ -449,7 +469,7 @@
                 }),
                 success: function (response) {
                     if (response != "") {
-                        console.log(JSON.stringify(response));                        
+                        console.log(JSON.stringify(response));
                         $("#ddlProjects").empty();
                         $("#ddlProjects").append('<option value="0">Select</option>');
                         var jsonObj = response;
@@ -457,7 +477,7 @@
                             console.log(jsonObj[obj]["ProjectID"]);
                             $("#ddlProjects").append('<option value="' + jsonObj[obj]["ProjectID"] + '">' + jsonObj[obj]["ProjectName"]+'</option>');
                         }
-                        selecteduser = true;
+                        selecteduser = "True";
 
                     }
                 }
@@ -466,11 +486,11 @@
         catch (e) {
             alert(e);
         }
-        }                       
+        }
     }
 
-    function GetProjectUsers() {        
-        if (selecteduser == false) {
+    function GetProjectUsers() {
+        if (selecteduser == "False") {
             var projectID = document.getElementById("ddlProjects").value;
             try {
 
@@ -492,7 +512,7 @@
                                 console.log(jsonObj[obj]["ID"]);
                                 $("#ddlUsers").append('<option value="' + jsonObj[obj]["ID"] + '">' + jsonObj[obj]["Name"] + '</option>');
                             }
-                            selectedproject = true;
+                            selectedproject = "True";
                         }
                     }
                 });
@@ -768,14 +788,14 @@
         catch (e) {}
     }
     function ResetData() {
-                
+
         $.ajax({
                 url: '@Url.Action("GetResetData", "Home")',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    
+
                 }),
             success: function (response) {
                 if (response != "") {
@@ -784,6 +804,8 @@
                     $("#dashBoardDateRange").html(response);
                     $('#txtStartDate').datepicker();
                     $('#txtEndDate').datepicker();
+                    var url = '@Url.Action("DashBoard", "Home")';
+                        window.location.href = url;
                 }
             }
            });
@@ -796,7 +818,7 @@
             var vStartDate = $('#txtStartDate').val();
             var vEndDate = $('#txtEndDate').val();
             var vUser = $("#ddlUsers").val();
-            var vProject = $("#ddlProjects").val();            
+            var vProject = $("#ddlProjects").val();
             if (typeof vUser === "undefined") {
                 vUser = 0;
             }

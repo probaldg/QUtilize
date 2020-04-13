@@ -212,8 +212,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 DateTime endDate = DateTime.Now;
                 string strUser = "0";
                 string strProject = "0";
-                bool isSelectedUser = false;
-                bool isSelectedProject = false;
+                string isSelectedUser = "False";
+                string isSelectedProject = "False";
                 if (Session["DateRange"] == null)
                 {
                     DayOfWeek day = DateTime.Now.DayOfWeek;
@@ -229,8 +229,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     endDate = Convert.ToDateTime(arrdate[1]);
                     strUser = arrdate[2];
                     strProject = arrdate[3];
-                    isSelectedProject = Convert.ToBoolean(arrdate[4]);
-                    isSelectedUser = Convert.ToBoolean(arrdate[5]);
+                    isSelectedProject = arrdate[4].ToString();
+                    isSelectedUser = arrdate[5].ToString();
                 }
                 LoginViewModel lvm = new LoginViewModel();
                 DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate,strUser,  strProject);
@@ -259,14 +259,31 @@ namespace QBA.Qutilize.WebApp.Controllers
                         var dtActiveUsers = USM.GetAllUsers(UIH.UserOrganisationID).Select("IsActive=1");
                         if (dtActiveUsers.Length > 0)
                         {
-                            dt = dtActiveUsers.CopyToDataTable();
-                            for (int i = 0; i < dtActiveUsers.Length; i++)
+                            if (isSelectedProject != "False")
                             {
-                                if(strUser==Convert.ToString(dt.Rows[i]["Id"]))
-                                    sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "' selected>" + dt.Rows[i]["Name"] + "</option>");
-                                else
-                                    sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "'>" + dt.Rows[i]["Name"] + "</option>");
+                                UserModel um = new UserModel();
+                                um.ActiveMemberList = um.Get_GetProjectMembersByProjectID(Convert.ToInt32(strProject));
+                                foreach(var member in um.ActiveMemberList)
+                                {
+                                    if (strUser == Convert.ToString(member.ID))
+                                        sbOut.Append("<option value='" +member.ID + "' selected>" + member.Name + "</option>");
+                                    else
+                                        sbOut.Append("<option value='" + member.ID + "'>" + member.Name + "</option>");
+                                }
                             }
+                            else
+                            {
+                                dt = dtActiveUsers.CopyToDataTable();
+                                for (int i = 0; i < dtActiveUsers.Length; i++)
+                                {
+                                    if (strUser == Convert.ToString(dt.Rows[i]["Id"]))
+                                        sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "' selected>" + dt.Rows[i]["Name"] + "</option>");
+                                    else
+                                        sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "'>" + dt.Rows[i]["Name"] + "</option>");
+                                }
+                            }
+                            
+                            
                         }
                     }
                     catch (Exception ex) { }
@@ -276,7 +293,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<td class='text-right control-label'>Select Project: </td>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
-                    if (isSelectedUser != false)
+                    if (isSelectedUser != "False")
                     {
                         dtAllProjects = pm.GetAllProjectsByUserID(Convert.ToInt32(strUser.ToString()));
                     }
