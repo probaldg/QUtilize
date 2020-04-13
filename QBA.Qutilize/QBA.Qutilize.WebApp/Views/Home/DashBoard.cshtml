@@ -503,12 +503,6 @@
         }
     }
 
-    function ResetData() {
-        $("#dashBoardDateRange").empty();
-        $("#dashBoardDateRange").html("@Html.Action("GetDateRange", "Home")");
-        selecteduser = false;
-    }
-
     $(document).on('click', '.panel-heading span.clickable', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
@@ -773,12 +767,36 @@
          }
         catch (e) {}
     }
+    function ResetData() {
+                
+        $.ajax({
+                url: '@Url.Action("GetResetData", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    
+                }),
+            success: function (response) {
+                if (response != "") {
+                    //alert(response);
+                    $("#dashBoardDateRange").empty();
+                    $("#dashBoardDateRange").html(response);
+                    $('#txtStartDate').datepicker();
+                    $('#txtEndDate').datepicker();
+                }
+            }
+           });
+        selecteduser = false;
+        selectedproject = false;
+
+    }
     function RefreshData() {
         try {
             var vStartDate = $('#txtStartDate').val();
             var vEndDate = $('#txtEndDate').val();
             var vUser = $("#ddlUsers").val();
-            var vProject = $("#ddlProjects").val();
+            var vProject = $("#ddlProjects").val();            
             if (typeof vUser === "undefined") {
                 vUser = 0;
             }
@@ -791,7 +809,7 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject
+                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject, selectedproject: selectedproject, selecteduser: selecteduser
                 }),
                 success: function (response) {
                     if (response != "") {
@@ -808,6 +826,7 @@
                         $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
                         var url = '@Url.Action("DashBoard", "Home")';
                         window.location.href = url;
+
                     }
                 }
             });

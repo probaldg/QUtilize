@@ -111,6 +111,22 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+        public DataTable GetAllProjectsByUserID(int userID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USPProjects_ActiveAndAssignedtoUser_Get]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
         //**
         public List<ProjectModel> Get_ActiveProject(int orgId = 0)
         {
