@@ -247,7 +247,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     DataTable dt = new DataTable();
                     sbOut.Append("<td class='text-right control-label'>Select User: </td>");
                     sbOut.Append("<td class='text-left'>");
-                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers'>");
+                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers' onchange='GetUsersProject()'>");
                     sbOut.Append("<option value='0'>Select</option>");
                     try
                     {
@@ -273,7 +273,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     DataTable dtAllProjects = new DataTable();
                     dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                     sbOut.Append("<td class='text-left'>");
-                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='GetProjectUsers()'>");
                     sbOut.Append("<option value='0'>Select</option>");
                     try
                     {
@@ -294,6 +294,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 #endregion
                 sbOut.Append("<td class='text-center'><input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' /></td>");
+                sbOut.Append("<td class='text-center'><input type='submit' id='btnReset' value='Reset' name='btnSearch' class='btn btn-primary' onclick='ResetData();' /></td>");
                 sbOut.Append("</tr>");
                 sbOut.Append("</table>");
 
@@ -666,6 +667,25 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exx) { }
             return Content(sbContent.ToString());
+        }
+
+
+
+        public ActionResult getProjectsByUserID(int userid)
+        {
+            
+            ProjectModel obj = new ProjectModel();
+            obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(userid);
+            return Json(obj.ActiveProjectList);
+        }
+
+
+        public ActionResult getUsersbyProjectID(int projectID)
+        {
+
+            UserModel obj = new UserModel();
+            obj.ActiveMemberList = obj.Get_GetProjectMembersByProjectID(projectID);
+            return Json(obj.ActiveMemberList);
         }
 
         #region Admin

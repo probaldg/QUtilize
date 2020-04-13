@@ -84,7 +84,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string ProjectName { get; set; }
 
         public string OrgName_UserNameForCombo { get; set; }
-
+        public List<UserModel> ActiveMemberList { get; set; }
         #region Global Variable Decleartion::
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
@@ -113,7 +113,39 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return dt;
         }
+        public List<UserModel> Get_GetProjectMembersByProjectID(int projectID = 0)
+        {
+            DataTable dt = null;
+            List<UserModel> lstUserDetl = new List<UserModel>();
+            try
+            {
+                if (projectID != 0)
+                {
+                    SqlParameter[] param ={
+                                        new SqlParameter("@projectID",projectID)
+                                      };
+                    dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetProjectMembersByProjectID]", param);
 
+                }
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        UserModel usermodel = new UserModel();
+                        usermodel.ID = Convert.ToInt32(item["Id"]);
+                        usermodel.Name = item["Name"].ToString();
+
+                        lstUserDetl.Add(usermodel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return lstUserDetl;
+        }
 
         public List<OrganisationModel> GetAllOrgInList(int orgId = 0)
         {

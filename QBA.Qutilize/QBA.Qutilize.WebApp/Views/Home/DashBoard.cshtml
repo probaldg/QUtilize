@@ -432,6 +432,74 @@
         gerBarChartDataPM();
         getDayWiseDetailsinMinutesForAdmin();
     });
+
+    function GetUsersProject() {
+        var Userid = document.getElementById("ddlUsers").value;
+         try {
+
+            $.ajax({
+                url: '@Url.Action("getProjectsByUserID", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    userid: Userid
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        console.log(JSON.stringify(response));                        
+                        $("#ddlProjects").empty();
+                        $("#ddlProjects").append('<option value="0">Select</option>');
+                        var jsonObj = response;
+                        for (obj in jsonObj) {
+                            console.log(jsonObj[obj]["ProjectID"]);
+                            $("#ddlProjects").append('<option value="' + jsonObj[obj]["ProjectID"] + '">' + jsonObj[obj]["ProjectName"]+'</option>');
+                        }
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+
+    function GetProjectUsers() {
+        var projectID = document.getElementById("ddlProjects").value;
+         try {
+
+            $.ajax({
+                url: '@Url.Action("getUsersbyProjectID", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    projectID: projectID
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        console.log(JSON.stringify(response));                        
+                        $("#ddlUsers").empty();
+                        $("#ddlUsers").append('<option value="0">Select</option>');
+                        var jsonObj = response;
+                        for (obj in jsonObj) {
+                            console.log(jsonObj[obj]["ID"]);
+                            $("#ddlUsers").append('<option value="' + jsonObj[obj]["ID"] + '">' + jsonObj[obj]["Name"]+'</option>');
+                        }
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+
+    function ResetData() {
+        $("#dashBoardDateRange").empty();
+        $("#dashBoardDateRange").html("@Html.Action("GetDateRange", "Home")")
+    }
+
     $(document).on('click', '.panel-heading span.clickable', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
