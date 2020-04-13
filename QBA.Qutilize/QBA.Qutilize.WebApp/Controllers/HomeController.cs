@@ -212,13 +212,15 @@ namespace QBA.Qutilize.WebApp.Controllers
                 DateTime endDate = DateTime.Now;
                 string strUser = "0";
                 string strProject = "0";
+                bool isSelectedUser = false;
+                bool isSelectedProject = false;
                 if (Session["DateRange"] == null)
                 {
                     DayOfWeek day = DateTime.Now.DayOfWeek;
                     int days = day - DayOfWeek.Monday;
                     startdate = DateTime.Now.AddDays(-days);
                     endDate = startdate.AddDays(6);
-                    Session.Add("DateRange", startdate + "|" + endDate + "|" + strUser + "|" + strProject);
+                    Session.Add("DateRange", startdate + "|" + endDate + "|" + strUser + "|" + strProject + "|" + isSelectedUser + "|"+ isSelectedProject);
                 }
                 else
                 {
@@ -227,6 +229,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     endDate = Convert.ToDateTime(arrdate[1]);
                     strUser = arrdate[2];
                     strProject = arrdate[3];
+                    isSelectedProject = Convert.ToBoolean(arrdate[4]);
+                    isSelectedUser = Convert.ToBoolean(arrdate[5]);
                 }
                 LoginViewModel lvm = new LoginViewModel();
                 DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate,strUser,  strProject);
@@ -248,7 +252,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     DataTable dt = new DataTable();
                     sbOut.Append("<td class='text-right control-label'>Select User: </td>");
                     sbOut.Append("<td class='text-left'>");
-                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers'>");
+                    sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers' onchange='GetUsersProject()'>");
                     sbOut.Append("<option value='0'>Select</option>");
                     try
                     {
@@ -272,9 +276,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("<td class='text-right control-label'>Select Project: </td>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
-                    dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
+                    if (isSelectedUser != false)
+                    {
+                        dtAllProjects = pm.GetAllProjectsByUserID(Convert.ToInt32(strUser.ToString()));
+                    }
+                    else
+                    {
+                        dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
+                    }
+                    
                     sbOut.Append("<td class='text-left'>");
-                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                    sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='GetProjectUsers()'>");
                     sbOut.Append("<option value='0'>Select</option>");
                     try
                     {
@@ -295,6 +307,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 #endregion
                 sbOut.Append("<td class='text-center'><input type='submit' id='btnSearch' value='Show' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' /></td>");
+                sbOut.Append("<td class='text-center'><input type='submit' id='btnReset' value='Reset' name='btnSearch' class='btn btn-primary' onclick='ResetData();' /></td>");
                 sbOut.Append("</tr>");
                 sbOut.Append("</table>");
 
@@ -555,19 +568,36 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return arrRet;
         }
-        public ActionResult GetRefreshedData(string startdate, string endDate, string User, string Project)
+        public ActionResult GetRefreshedData(string startdate, string endDate, string User, string Project,bool selectedproject,bool selecteduser)
         {
             StringBuilder sbContent = new StringBuilder();
             try
             {
                 Session.Remove("DashBoardDetail");
                 if (Session["DateRange"] == null) Session.Remove("DateRange");
-                Session.Add("DateRange", startdate + "|" + endDate + "|" + User + "|" + Project);
+                Session.Add("DateRange", startdate + "|" + endDate + "|" + User + "|" + Project+ "|" + selectedproject + "|" + selecteduser);
                 sbContent.Append("Reload");
             }
             catch (Exception exx) { }
             return Json(sbContent.ToString());
         }
+
+        public ActionResult GetResetData()
+        {
+            StringBuilder sbContent = new StringBuilder();            
+            try
+            {
+                
+                Session.Remove("DashBoardDetail");
+                if (Session["DateRange"] != null) Session.Remove("DateRange");
+                var DateRangeContent= GetDateRange() as ContentResult;                
+                sbContent.Append(DateRangeContent.Content);
+            }
+            catch (Exception exx) { }
+            return Json(sbContent.ToString());
+        }
+
+
         public ActionResult GetProjectsAssociatedWithYou()
         {
             StringBuilder sbContent = new StringBuilder();
@@ -667,6 +697,25 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exx) { }
             return Content(sbContent.ToString());
+        }
+
+
+
+        public ActionResult getProjectsByUserID(int userid)
+        {
+            
+            ProjectModel obj = new ProjectModel();
+            obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(userid);
+            return Json(obj.ActiveProjectList);
+        }
+
+
+        public ActionResult getUsersbyProjectID(int projectID)
+        {
+
+            UserModel obj = new UserModel();
+            obj.ActiveMemberList = obj.Get_GetProjectMembersByProjectID(projectID);
+            return Json(obj.ActiveMemberList);
         }
 
         #region Admin
