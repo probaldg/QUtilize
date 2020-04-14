@@ -2271,29 +2271,32 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
                     DataSet ds = lvm.TimeSheet_ByResource_CurrentMonth(UIH.UserOrganisationID);
+                    sbOut.Append("<h2 align='center'>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
-                  //  sbOut.Append("<thead><tr>");
-                    //sbOut.Append("<th class='text-center ' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </th");
+                   sbOut.Append("<thead>");
+                    //sbOut.Append("<th class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'></th");
                     // sbOut.Append("<th class='text-center '>Resource Name</th>");
                     //sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
                     //sbOut.Append("<th class='text-center tblHeaderColor'>Project %</th>");
                     //sbOut.Append("<th class='text-center tblHeaderColor'>Project Cost</th>");
 
-                   // sbOut.Append("</tr></thead>");
+                   
 
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        //sbOut.Append("<tr>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             if(dc.ColumnName.Trim()!= "EmployeeName")
-                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                                sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        //sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         int intRowNo = 0;
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -2302,7 +2305,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["EmployeeName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count-1) + "'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' style='border:none;'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td>");
                                 sbOut.Append("</tr>");
                             }
                             sbOut.Append("<tr>");
@@ -2356,29 +2359,32 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     sbOut.Append("</tbody>");
                    
-                    sbOut.Append("</ table >");
+                    sbOut.Append("</table >");
                 }
                 else if (ReportType == 9)
                 {
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
                     DataSet ds = lvm.TimeSheet_ByResource_PreviousMonth(UIH.UserOrganisationID);
-                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
                     var now = DateTime.Now;
                     var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
                     var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString() + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    sbOut.Append("<h2 align='center'>TimeSheet By Resource for <b>" + lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString() + "</b></h2>");
+                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
+                    
+                    //sbOut.Append("<tr>");
+                    
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString() + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        sbOut.Append("<thead>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             if (dc.ColumnName.Trim() != "EmployeeName")
-                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                                sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         int intRowNo = 0;
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -2387,7 +2393,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["EmployeeName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' style='border:none;'> <b>" + Convert.ToString(dr["EmployeeName"]) + "</b> </td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td><td style='border:none;'></td>");
                                 sbOut.Append("</tr>");
                             }
                             sbOut.Append("<tr>");

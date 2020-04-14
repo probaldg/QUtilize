@@ -114,6 +114,9 @@
         var vUserID = $('#ddlUsers').val();
         var vProjectID = $('#ddlProjects').val();
         var vReportType = $('#ddlReportType').val();
+        var vReportTypeName = $('#ddlReportType option:selected').text();
+        
+
         if (vReportType == "0") {
             alert("Select Report type");
             $('#ddlReportType').focus();
@@ -173,7 +176,7 @@
                                 {
                                     text: 'Download Report',
                                     extend: 'csvHtml5',
-                                    title: 'Day wise details',
+                                    title: vReportTypeName,
                                     exportOptions: {
                                         columns: 'th:not(.noExport)'
                                     }
