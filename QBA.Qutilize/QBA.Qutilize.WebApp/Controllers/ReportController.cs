@@ -2273,7 +2273,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     DataSet ds = lvm.TimeSheet_ByResource_CurrentMonth(UIH.UserOrganisationID);
                     sbOut.Append("<h2 align='center'>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
-                   sbOut.Append("<thead>");
+                    sbOut.Append("<thead>");
                     //sbOut.Append("<th class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'></th");
                     // sbOut.Append("<th class='text-center '>Resource Name</th>");
                     //sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
@@ -2507,12 +2507,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                         monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
 
-                   
+
+                    sbOut.Append("<h2 align='center'>Utilization Monthly Report for <b>" + monthyr + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Report for <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    sbOut.Append("<thead>");
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Report for <b>" + monthyr + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
@@ -2531,7 +2532,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     sbOut.Append("<th class='text-center tblHeaderColor'>Total Hour</th>");
                 
-                    sbOut.Append("</tr></thead>");
+                    sbOut.Append("</thead>");
 
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     DataTable dt = new DataTable();
@@ -2598,20 +2599,25 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
+                    sbOut.Append("<h2 align='center'>Utilization Monthly Summary by Department for <b>" + monthyr + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Summary by Department for <b>" + monthyr  + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                   
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Summary by Department for <b>" + monthyr  + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
+                    
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        // sbOut.Append("<tr>");
+                        sbOut.Append("<thead>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             if (dc.ColumnName.Trim() != "DepartmentName")
-                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                                sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        // sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         int intRowNo = 0;
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -2620,7 +2626,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["DepartmentName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" +"Department Name: "+ Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left'> <b>" +"Department Name: "+ Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left'> </td> <td class='text-left'> </td> <td class='text-left'> </td> <td class='text-left'> </td> <td class='text-left'> </td><td class='text-left'> </td>");
                                 sbOut.Append("</tr>");
                             }
                             sbOut.Append("<tr>");
@@ -2695,20 +2702,23 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
+                    sbOut.Append("<h2 align='center'>Utilization Monthly Summary by Project for <b>" + monthyr + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count ) + "'><h2>Utilization Monthly Summary by Project for <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    sbOut.Append("<thead>");
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count ) + "'><h2>Utilization Monthly Summary by Project for <b>" + monthyr + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        //sbOut.Append("<tr>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                            // if (dc.ColumnName.Trim() != "DepartmentName")
-                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                                sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        // sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         string strProjectName = string.Empty;
                         String strPrvDeptName = String.Empty;
@@ -2719,8 +2729,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                              {
                                  strName = Convert.ToString(dr["DepartmentName"]);
                                  sbOut.Append("<tr>");
-                                 sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count ) + "'> <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
-                                 sbOut.Append("</tr>");
+                                 sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td>");
+
+                                sbOut.Append("</tr>");
                              }
                             else
                             {
@@ -2731,7 +2743,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 strProjectName = Convert.ToString(dr["ProjectName"]);
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td> " + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count ) + "'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td>");
+
                                 sbOut.Append("</tr>");
                             }
 
@@ -2845,20 +2859,25 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
+                    sbOut.Append("<h2 align='center'>Utilization Monthly Summary by Task for <b>" + monthyr + "</b></h2>");
+                    // sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Summary by Task for <b>" + monthyr + "</b></h2> </td>");
+
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Monthly Summary by Task for <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    sbOut.Append("<thead>");
+                  
+                   // sbOut.Append("<tr>");
+                   // sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        //sbOut.Append("<tr>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             // if (dc.ColumnName.Trim() != "DepartmentName")
-                            sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                            sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        //sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         string strProjectName = string.Empty;
                         string strTaskName = string.Empty;
@@ -2871,7 +2890,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["DepartmentName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count) + "'> <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+
                                 sbOut.Append("</tr>");
                             }
                             else
@@ -2884,7 +2905,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 strProjectName = Convert.ToString(dr["ProjectName"]);
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+
                                 sbOut.Append("</tr>");
                             }
                             else
@@ -2897,7 +2920,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 2) + "'> <b>" + Convert.ToString(dr["TaskName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["TaskName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+
                                 sbOut.Append("</tr>");
                             }
 
@@ -3010,20 +3035,24 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = " (Previous Week)";
                     }
+                    sbOut.Append("<h2 align='center'>Utilization Weekly Summary by Department for <b>" + monthyr + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Weekly Summary by Department for <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                   
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>Utilization Weekly Summary by Department for <b>" + monthyr + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
+                    sbOut.Append("<thead>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        //sbOut.Append("<tr>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             if (dc.ColumnName.Trim() != "DepartmentName")
-                                sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                                sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        //sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         int intRowNo = 0;
                         foreach (DataRow dr in ds.Tables[0].Rows)
@@ -3032,7 +3061,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["DepartmentName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + "Department Name: " + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + "Department Name: " + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td> <td class='text-left' ></td> <td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td>");
                                 sbOut.Append("</tr>");
                             }
                             sbOut.Append("<tr>");
@@ -3090,20 +3120,24 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = " (Previous Week)";
                     }
+                    sbOut.Append("<h2 align='center'>Utilization Weekly Summary by Project <b>" + monthyr + "</b></h2>");
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count) + "'><h2>Utilization Weekly Summary by Project <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                  
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count) + "'><h2>Utilization Weekly Summary by Project <b>" + monthyr + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                        // sbOut.Append("<tr>");
+                        sbOut.Append("<thead>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             // if (dc.ColumnName.Trim() != "DepartmentName")
-                            sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                            sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
                         }
-                        sbOut.Append("</tr>");
+                        // sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         string strProjectName = string.Empty;
                         String strPrvDeptName = String.Empty;
@@ -3114,7 +3148,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 strName = Convert.ToString(dr["DepartmentName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count) + "'> <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td>");
                                 sbOut.Append("</tr>");
                             }
                             else
@@ -3127,7 +3162,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 strProjectName = Convert.ToString(dr["ProjectName"]);
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td> " + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count) + "'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td>");
+
                                 sbOut.Append("</tr>");
                             }
 
@@ -3216,33 +3253,43 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         monthyr = " (Previous Month)";
                     }
-                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
-                    sbOut.Append("<tbody id='tableBodyReportData'>");
-                    sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count) + "'><h2>Utilization Weekly Summary by Task for <b>" + monthyr + "</b></h2> </td>");
-                    sbOut.Append("</tr>");
+                    sbOut.Append("<h2 align='center'>Utilization Weekly Summary by Task for <b>" + monthyr + "</b></h2>");
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                    sbOut.Append("<thead>");
+
+                   
+                    //sbOut.Append("<tr>");
+                    //sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count) + "'><h2>Utilization Weekly Summary by Task for <b>" + monthyr + "</b></h2> </td>");
+                    //sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
-                        sbOut.Append("<tr>");
+                       // sbOut.Append("<tr>");
                         foreach (DataColumn dc in ds.Tables[0].Columns)
                         {
                             // if (dc.ColumnName.Trim() != "DepartmentName")
-                            sbOut.Append("<td class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></td>");
+                            sbOut.Append("<th class='text-center tblHeaderColor'><b>" + dc.ColumnName + "</b></th>");
+
                         }
-                        sbOut.Append("</tr>");
+                       // sbOut.Append("</tr>");
+                        sbOut.Append("</thead>");
+                        sbOut.Append("<tbody id='tableBodyReportData'>");
                         string strName = string.Empty;
                         string strProjectName = string.Empty;
                         string strPrevProjectName = string.Empty;
                         string strPrevDeptName = string.Empty;
                         string strTaskName = string.Empty;
                         int intRowNo = 0;
+                    
                         foreach (DataRow dr in ds.Tables[0].Rows)
                         {
                             if (strName.Trim() != Convert.ToString(dr["DepartmentName"]))
                             {
                                 strName = Convert.ToString(dr["DepartmentName"]);
                                 sbOut.Append("<tr>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count) + "'> <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                //  sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count) + "'> <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["DepartmentName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' ></td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+                               // sbOut.Append("<td class='text-left' >  </td>");
                                 sbOut.Append("</tr>");
                             }
                             else
@@ -3255,7 +3302,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 strProjectName = Convert.ToString(dr["ProjectName"]);
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                // sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left'> <b>" + Convert.ToString(dr["ProjectName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+
                                 sbOut.Append("</tr>");
                             }
                             else
@@ -3268,7 +3318,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 sbOut.Append("<tr>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
                                 sbOut.Append("<td class='text-left '>" + "</td>");
-                                sbOut.Append("<td class='text-left' colspan='" + (ds.Tables[0].Columns.Count - 2) + "'> <b>" + Convert.ToString(dr["TaskName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' > <b>" + Convert.ToString(dr["TaskName"]) + "</b> </td>");
+                                sbOut.Append("<td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td><td class='text-left' >  </td>");
+
                                 sbOut.Append("</tr>");
                             }
 

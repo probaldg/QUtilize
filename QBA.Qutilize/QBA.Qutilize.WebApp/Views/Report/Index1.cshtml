@@ -84,7 +84,8 @@
     function RefreshData() {
         try {
             var ReportType = $('#ReportType').val();
-
+            var vReportTypeName = $('#ReportType option:selected').text();
+            
             var data;
             var Ckeckperiod = $('#ddlPeriod').val();
             if (ReportType == 1) {
@@ -226,7 +227,6 @@
 
                             $('#reportSection').html('');
                             $('#reportSection').html(response);
-
                             $('#tableReportData').dataTable({
                                 // ... skipped ...
                                 "aaSorting": [],
@@ -235,7 +235,7 @@
                                     {
                                         text: 'Download Report',
                                         extend: 'csvHtml5',
-                                        title: 'Day wise details',
+                                        title: vReportTypeName,
                                         exportOptions: {
                                             columns: 'th:not(.noExport)'
                                         }
