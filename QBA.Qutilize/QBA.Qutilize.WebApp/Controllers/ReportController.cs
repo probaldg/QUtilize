@@ -114,7 +114,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbOut.Append("<label class='control-label col-md-1'>Client: </label>");
                         ProjectModel pm1 = new ProjectModel();
                         DataTable dtAllClient = new DataTable();
-                        dtAllClient = pm1.GetAllClient();
+                        dtAllClient = pm1.GetAllClient(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
                         sbOut.Append("<select class='form-control' id='ddlclient' name='ddlclient'>");
                         sbOut.Append("<option value='0'>Select</option>");
@@ -174,7 +174,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbOut.Append("<label class='control-label col-md-1'>Client: </label>");
                         ProjectModel pm1 = new ProjectModel();
                         DataTable dtAllClient = new DataTable();
-                        dtAllClient = pm1.GetAllClient();
+                        dtAllClient = pm1.GetAllClient(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
                         sbOut.Append("<select class='form-control' id='ddlclient' name='ddlclient'>");
                         sbOut.Append("<option value='0'>Select</option>");
@@ -232,7 +232,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbOut.Append("<label class='control-label col-md-1'>Client: </label>");
                         ProjectModel pm1 = new ProjectModel();
                         DataTable dtAllClient = new DataTable();
-                        dtAllClient = pm1.GetAllClient();
+                        dtAllClient = pm1.GetAllClient(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
                         sbOut.Append("<select class='form-control' id='ddlclient' name='ddlclient'>");
                         sbOut.Append("<option value='0'>Select</option>");
@@ -278,6 +278,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     
                     sbOut.Append("<input type='submit' id='btnSearch' value='Search' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
                     sbOut.Append("</div>");
+                 
                 }
 
                 if (ReportId == 2)
@@ -1761,17 +1762,51 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     Session.Add("DashBoardDetail", ds);
                 }
+
+                //**
+             
                 sbOut.Append("<div class='form-group col-md-12'>");
-                sbOut.Append("<label class='control-label col-md-1'>Start Date: </label>");
+                sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
+                sbOut.Append("<div class='col-md-2'>");
+                sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType' onclick='SetReport();' >");
+                sbOut.Append("<option value='0'>Select</option>");
+                if (HttpContext.Session["OrgAdmin"] != null)
+                {
+                    sbOut.Append("<option value='1'>Get detail break up</option>");
+                    sbOut.Append("<option value='2'>Project Wise Summary</option>");
+                    sbOut.Append("<option value='3'>Resource Utilization</option>");
+                    sbOut.Append("<option value='4'>Resource Costing</option>");
+                    sbOut.Append("<option value='5'>Project Wise Resource Costing</option>");
+                    // sbOut.Append("<option value='6'>TimeSheet ByResource CurrentWeek</option>");
+                    // sbOut.Append("<option value='7'>TimeSheet ByResource LastWeek</option>");
+                    sbOut.Append("<option value='8'>TimeSheet ByResource CurrentMonth</option>");
+                    sbOut.Append("<option value='9'>TimeSheet ByResource PreviousMonth</option>");
+                    // sbOut.Append("<option value='10'>TimeSheet ByProject CurrentWeek</option>");
+                    // sbOut.Append("<option value='11'>TimeSheet ByProject LastWeek</option>");
+                    // sbOut.Append("<option value='12'>TimeSheet ByProject CurrentMonth</option>");
+                    // sbOut.Append("<option value='13'>TimeSheet ByProject PreviousMonth</option>");
+                }
+                else
+                {
+                    sbOut.Append("<option value='1'>Get detail break up</option>");
+                }
+                sbOut.Append("</select>");
+                sbOut.Append("</div>");
+                sbOut.Append("</div>");
+             
+                //**
+
+                sbOut.Append("<div class='form-group col-md-12'>");
+                sbOut.Append("<label id=lblStartDate class='control-label col-md-1'>Start Date: </label>");
                 sbOut.Append("<div class='col-md-2'>");
                 sbOut.Append("<input type='text' class='form-control' id='txtStartDate' value='" + startdate.ToShortDateString() + "'  />");
                 sbOut.Append("</div>");
-                sbOut.Append("<label class='control-label col-md-1'>End Date: </label>");
+                sbOut.Append("<label id=lblEndDate class='control-label col-md-1'>End Date: </label>");
                 sbOut.Append("<div class='col-md-2'>");
                 sbOut.Append("<input type='text' class='form-control' onchange='ValidateEndDate();' id='txtEndDate' value='" + endDate.ToShortDateString() + "' />");
                 sbOut.Append("</div>");
 
-                sbOut.Append("<label class='control-label col-md-1'>Select User: </label>");
+                sbOut.Append("<label id=lbluser class='control-label col-md-1'>Select User: </label>");
                 
 
                 UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
@@ -1793,7 +1828,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
-                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
+                    sbOut.Append("<label id=lblproject class='control-label col-md-1'>Select project: </label>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
                     dtAllProjects = pm.GetAllProjects();
@@ -1832,7 +1867,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                     
-                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
+                    sbOut.Append("<label id=lblproject class='control-label col-md-1'>Select project: </label>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
                     dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
@@ -1871,7 +1906,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
 
-                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");
+                    sbOut.Append("<label id=lblproject class='control-label col-md-1'>Select project: </label>");
                     UserProjectMappingModel UPM = new UserProjectMappingModel();
                     DataTable dtAllProjects = new DataTable();
                     dtAllProjects = UPM.GetAllProjectByManagerID(int.Parse(HttpContext.Session["UserID"].ToString()));
@@ -1896,7 +1931,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</div>");
                     
-                    sbOut.Append("<label class='control-label col-md-1'>Select project: </label>");                    
+                    sbOut.Append("<label id=lblproject class='control-label col-md-1'>Select project: </label>");                    
                     UserProjectMappingModel UPM = new UserProjectMappingModel();
                     DataTable dtAllProjects = new DataTable();
                     dtAllProjects = UPM.GetAllProjectByUserID(int.Parse(HttpContext.Session["UserID"].ToString()));
@@ -1914,32 +1949,35 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</div>");
                 }
                 
-                sbOut.Append("<div class='form-group col-md-12'>");
-                sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
+                sbOut.Append("<div class='form-group col-md-12' style='margin-top: 15px;'>");
+                //sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
+                //sbOut.Append("<div class='col-md-2'>");
+                //sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType'>");
+                //sbOut.Append("<option value='0'>Select</option>");
+                //if (HttpContext.Session["OrgAdmin"] != null)
+                //{
+                //    sbOut.Append("<option value='1'>Get detail break up</option>");
+                //    sbOut.Append("<option value='2'>Project Wise Summary</option>");
+                //    sbOut.Append("<option value='3'>Resource Utilization</option>");
+                //    sbOut.Append("<option value='4'>Resource Costing</option>");
+                //    sbOut.Append("<option value='5'>Project Wise Resource Costing</option>");
+                //    // sbOut.Append("<option value='6'>TimeSheet ByResource CurrentWeek</option>");
+                //    // sbOut.Append("<option value='7'>TimeSheet ByResource LastWeek</option>");
+                //    sbOut.Append("<option value='8'>TimeSheet ByResource CurrentMonth</option>");
+                //    sbOut.Append("<option value='9'>TimeSheet ByResource PreviousMonth</option>");
+                //    // sbOut.Append("<option value='10'>TimeSheet ByProject CurrentWeek</option>");
+                //    // sbOut.Append("<option value='11'>TimeSheet ByProject LastWeek</option>");
+                //    // sbOut.Append("<option value='12'>TimeSheet ByProject CurrentMonth</option>");
+                //    // sbOut.Append("<option value='13'>TimeSheet ByProject PreviousMonth</option>");
+                //}
+                //else
+                //{
+                //    sbOut.Append("<option value='1'>Get detail break up</option>");
+                //}
+                //sbOut.Append("</select>");
+                //sbOut.Append("</div>");
+                sbOut.Append("<div class='col-md-1' ></div>");
                 sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType'>");
-                sbOut.Append("<option value='0'>Select</option>");
-                if (HttpContext.Session["OrgAdmin"] != null)
-                {
-                    sbOut.Append("<option value='1'>Get detail break up</option>");
-                    sbOut.Append("<option value='2'>Project Wise Summary</option>");
-                    sbOut.Append("<option value='3'>Resource Utilization</option>");
-                    sbOut.Append("<option value='4'>Resource Costing</option>");
-                    sbOut.Append("<option value='5'>Project Wise Resource Costing</option>");
-                    sbOut.Append("<option value='6'>TimeSheet ByResource CurrentWeek</option>");
-                    sbOut.Append("<option value='7'>TimeSheet ByResource LastWeek</option>");
-                    sbOut.Append("<option value='8'>TimeSheet ByResource CurrentMonth</option>");
-                    sbOut.Append("<option value='9'>TimeSheet ByResource PreviousMonth</option>");
-                    sbOut.Append("<option value='10'>TimeSheet ByProject CurrentWeek</option>");
-                    sbOut.Append("<option value='11'>TimeSheet ByProject LastWeek</option>");
-                    sbOut.Append("<option value='12'>TimeSheet ByProject CurrentMonth</option>");
-                    sbOut.Append("<option value='13'>TimeSheet ByProject PreviousMonth</option>");
-                }
-                else
-                    sbOut.Append("<option value='1'>Get detail break up</option>");
-                sbOut.Append("</select>");
-                sbOut.Append("</div>");
-                sbOut.Append("<div class='col-md-1 pull-right' style='margin: 7px;'>");
                 sbOut.Append("<input type='submit' id='btnSearch' value='Search' name='btnSearch' class='btn btn-primary' onclick='RefreshData();' />");
                 sbOut.Append("</div>");
                 sbOut.Append("</div>");
@@ -1954,6 +1992,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult GetReportData(DateTime startdate, DateTime endDate, int userid, int projectid, int ReportType)
         {
             StringBuilder sbOut = new StringBuilder();
+            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
             try
             {
                 string Role = "";
@@ -2003,7 +2042,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else if (ReportType == 2)
                 {
-                    DataSet ds = lvm.GetReportDataProjectWiseSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    DataSet ds = lvm.GetReportDataProjectWiseSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role, UIH.UserOrganisationID);
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
                     sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
@@ -2034,7 +2073,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else if (ReportType ==3)
                 {
                     projectid = 0;
-                    DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    DataSet ds = lvm.GetReportDataResourceUtilizationSummary(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), UIH.UserOrganisationID);
                     
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
@@ -2106,7 +2145,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 else if (ReportType == 4)
                 {
-                    DataSet ds = lvm.GetReportDataResourceCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    DataSet ds = lvm.GetReportDataResourceCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), UIH.UserOrganisationID);
 
                     sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
@@ -2154,7 +2193,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         Arr = totalCostingPersentage.Split('/');
                                         TotalPercentage = TotalPercentage + Convert.ToDouble(Arr[0]);
                                         Arr[0] = Arr[0] + "%";
-                                        TotalCost = TotalCost + Convert.ToDouble(Arr[1]);
+                                        if (Arr[1] != "")
+                                        {
+                                            TotalCost = TotalCost + Convert.ToDouble(Arr[1]);
+                                        }
+                                        
                                     }
                                     else
                                     {
@@ -2187,7 +2230,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else if (ReportType == 5)
                 {
                     double TotalPercentage = 0, TotalCost = 0, TotalHr = 0;
-                    DataSet ds = lvm.GetReportDataProjectWiseCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), Role);
+                    DataSet ds = lvm.GetReportDataProjectWiseCosting(userid, startdate, endDate, projectid, int.Parse(HttpContext.Session["UserID"].ToString()), UIH.UserOrganisationID);
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<thead><tr>");
                     sbOut.Append("<th class='text-center tblHeaderColor'>Resource Name</th>");
@@ -2227,11 +2270,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                 else if (ReportType == 8)
                 {
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
-                    DataSet ds = lvm.TimeSheet_ByResource_CurrentMonth();
-                    sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
+                    DataSet ds = lvm.TimeSheet_ByResource_CurrentMonth(UIH.UserOrganisationID);
+                    sbOut.Append("<table class='table table-bordered dataTable no-footer' width='100%' id='tableReportData'>");
+                  //  sbOut.Append("<thead><tr>");
+                    //sbOut.Append("<th class='text-center ' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </th");
+                    // sbOut.Append("<th class='text-center '>Resource Name</th>");
+                    //sbOut.Append("<th class='text-center tblHeaderColor'>Cumulative Hour(HH:MM)</th>");
+                    //sbOut.Append("<th class='text-center tblHeaderColor'>Project %</th>");
+                    //sbOut.Append("<th class='text-center tblHeaderColor'>Project Cost</th>");
+
+                   // sbOut.Append("</tr></thead>");
+
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     sbOut.Append("<tr>");
-                    sbOut.Append("<td class='text-center' colspan='"+ (ds.Tables[0].Columns.Count-1)+ "'><h2>TimeSheet By Resource for <b>"+ DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </td>");
+                    sbOut.Append("<td class='text-center' colspan='" + (ds.Tables[0].Columns.Count - 1) + "'><h2>TimeSheet By Resource for <b>" + DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString() + "</b></h2> </td>");
                     sbOut.Append("</tr>");
                     if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)))
                     {
@@ -2303,20 +2355,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                     }
                     sbOut.Append("</tbody>");
-                    //sbOut.Append("<tfoot  > ");
-                    //sbOut.Append("<tr>");
-                    //sbOut.Append("<td class='text-center '> Total </td>");
-                    //sbOut.Append("<td class='text-center '>" + TotalHr + "</td>");
-                    //sbOut.Append("<td class='text-center '>" + TotalPercentage + "</td>");
-                    //sbOut.Append("<td class='text-center '>" + TotalCost + "</td>");
-                    //sbOut.Append("</tr>");
-                    //sbOut.Append("</tfoot>");
+                   
                     sbOut.Append("</ table >");
                 }
                 else if (ReportType == 9)
                 {
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
-                    DataSet ds = lvm.TimeSheet_ByResource_PreviousMonth();
+                    DataSet ds = lvm.TimeSheet_ByResource_PreviousMonth(UIH.UserOrganisationID);
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     sbOut.Append("<tr>");
@@ -2414,6 +2459,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         public ActionResult GetSummaryReportData(int period,int clientid, int projectid,int userid, int ReportType,int deptid,int taskid)
         {
+            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
             StringBuilder sbOut = new StringBuilder();
             try
             {
@@ -2439,9 +2485,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                 LoginViewModel lvm = new LoginViewModel();
                 if (ReportType == 1)
                 {
+                    var now = DateTime.Now;
+                    var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
+                    var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
 
-                   
-                    DataSet ds = lvm.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientid, projectid, userid);
+                    DataSet ds = lvm.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientid, projectid, userid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
@@ -2450,10 +2498,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year;
+                        monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
 
-
+                   
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
                     sbOut.Append("<tr>");
@@ -2529,9 +2577,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 if (ReportType == 2)
                 {
-
+                    var now = DateTime.Now;
+                    var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
+                    var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
-                    DataSet ds = lvm.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period, deptid, userid);
+                    DataSet ds = lvm.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period, deptid, userid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
@@ -2540,7 +2590,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year;
+                        monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
@@ -2623,10 +2673,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 if (ReportType == 3)
                 {
-
+                    var now = DateTime.Now;
+                    var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
+                    var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
                     double dw1 = 0.00, dw2 = 0.00, dw3 = 0.00, dw4 = 0.00, dw5 = 0.00, dw6 = 0.00, dept_total = 0.00;
-                    DataSet ds = lvm.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid);
+                    DataSet ds = lvm.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
@@ -2635,7 +2687,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year;
+                        monthyr = monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
@@ -2771,10 +2823,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 if (ReportType == 4)
                 {
-
+                    var now = DateTime.Now;
+                    var firstDayCurrentMonth = new DateTime(now.Year, now.Month, 1);
+                    var lastDayLastMonth = firstDayCurrentMonth.AddDays(-1);
                     double w1 = 0.00, w2 = 0.00, w3 = 0.00, w4 = 0.00, w5 = 0.00, w6 = 0.00, t = 0.00;
                     double dw1 = 0.00, dw2 = 0.00, dw3 = 0.00, dw4 = 0.00, dw5 = 0.00, dw6 = 0.00, dept_total = 0.00;
-                    DataSet ds = lvm.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid, taskid);
+                    DataSet ds = lvm.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid, taskid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
@@ -2783,7 +2837,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year;
+                        monthyr = monthyr = lastDayLastMonth.ToString("MMM") + ", " + lastDayLastMonth.Year.ToString();
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
@@ -2939,16 +2993,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
 
                     double Mon = 0.00, Tue = 0.00, Wed = 0.00, Thur = 0.00, Fri = 0.00,  t = 0.00;
-                    DataSet ds = lvm.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid);
+                    DataSet ds = lvm.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
-                        monthyr = DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString()+" (This Week)";
+                        monthyr = " (This Week)";
                     }
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year+" (Previous Week)";
+                        monthyr = " (Previous Week)";
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
@@ -3019,16 +3073,16 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     double Mon = 0.00, Tue = 0.00, Wed = 0.00, Thur = 0.00, Fri = 0.00, t = 0.00;
                     double d1 = 0.00, d2 = 0.00, d3 = 0.00, d4 = 0.00, d5 = 0.00, dept_total = 0.00;
-                    DataSet ds = lvm.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid);
+                    DataSet ds = lvm.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
-                        monthyr = DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString()+" (This Week)";
+                        monthyr = " (This Week)";
                     }
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year+" (Previous Week)";
+                        monthyr = " (Previous Week)";
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");
@@ -3145,16 +3199,16 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     double Mon = 0.00, Tue = 0.00, Wed = 0.00, Thur = 0.00, Fri = 0.00, t = 0.00;
                     double d1 = 0.00, d2 = 0.00, d3 = 0.00, d4 = 0.00, d5 = 0.00, dept_total = 0.00;
-                    DataSet ds = lvm.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, taskid);
+                    DataSet ds = lvm.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, taskid, UIH.UserOrganisationID);
                     string monthyr = "";
                     if (period == 1)
                     {
-                        monthyr = DateTime.Now.ToString("MMM") + ", " + DateTime.Now.Year.ToString()+" (This Month)";
+                        monthyr = " (This Month)";
                     }
                     else
                     {
 
-                        monthyr = DateTime.Now.AddMonths(-1).ToString("MMM") + "," + DateTime.Now.AddYears(-1).Year +" (Previous Month)";
+                        monthyr = " (Previous Month)";
                     }
                     sbOut.Append("<table class='table table-bordered dataTable ' width='100%' id='tableReportData'>");
                     sbOut.Append("<tbody id='tableBodyReportData'>");

@@ -24,14 +24,14 @@
 
     $(function () {
         $("#txtStartDate").datepicker({
-            minDate: '-365'
-            // dateFormat: "dd-mm-yy"
+            minDate: '-365',
+             dateFormat: "dd-mm-yy"
         });
     });
     $(function () {
         $("#txtEndDate").datepicker({
-            minDate: '-365'
-            // dateFormat: "dd-mm-yy"
+            minDate: '-365',
+             dateFormat: "dd-mm-yy"
         });
     });
 
@@ -50,7 +50,63 @@
         }
 
     };
-
+    function SetReport() {
+        var vReportType = $('#ddlReportType').val();
+       
+        if (vReportType == 1) {
+            $('#ddlUsers').show();
+            $('#lbluser').show();
+            $('#ddlProjects').show();
+            $('#lblproject').show(); 
+            $('#txtStartDate').show();
+            $('#txtEndDate').show(); 
+            $('#lblStartDate').show();
+            $('#lblEndDate').show();
+            $("select#ddlProjects")[0].selectedIndex = 0;
+            $("select#ddlUsers")[0].selectedIndex = 0;
+           // document.getElementById('reportSection').innerHTML = "";
+        }
+        if (vReportType == 2 || vReportType==5) {
+            $('#ddlUsers').hide();
+            $('#lbluser').hide();
+            $('#ddlProjects').show();
+            $('#lblproject').show();
+            $('#txtStartDate').show();
+            $('#txtEndDate').show();
+            $('#lblStartDate').show();
+            $('#lblEndDate').show();
+            $("select#ddlProjects")[0].selectedIndex = 0;
+           
+           // document.getElementById('reportSection').innerHTML = "";
+        }
+     
+        if (vReportType == 4 || vReportType==3) {
+            $('#ddlUsers').hide();
+            $('#lbluser').hide();
+            $('#lblproject').hide();
+            $('#ddlProjects').hide();
+            $('#txtStartDate').show();
+            $('#txtEndDate').show();
+            $('#lblStartDate').show();
+            $('#lblEndDate').show();
+          // document.getElementById('reportSection').innerHTML = "";
+           
+        }
+        
+        if (vReportType == 8 || vReportType == 9 ) {
+            $('#ddlProjects').hide();
+            $('#lblproject').hide();
+            $('#ddlUsers').hide();
+            $('#lbluser').hide();
+            $('#txtStartDate').hide();
+            $('#txtEndDate').hide();
+            $('#lblStartDate').hide();
+            $('#lblEndDate').hide();
+            //document.getElementById('reportSection').innerHTML = "";
+          
+        }
+       
+    }
     function RefreshData() {
     try {
     var vStartDate = $('#txtStartDate').val();

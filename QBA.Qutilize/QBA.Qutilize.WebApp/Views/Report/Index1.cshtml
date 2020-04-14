@@ -23,8 +23,8 @@
                 listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Department", Value = "5" });
                 listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Project", Value = "6" });
                 listItems.Add(new SelectListItem { Text = "Utilization Weekly Summary by Task", Value = "7" });
-                listItems.Add(new SelectListItem { Text = "Helpdesk ticket report", Value = "8" });
-                listItems.Add(new SelectListItem { Text = "Helpdesk ticket report volume", Value = "9" });
+                //listItems.Add(new SelectListItem { Text = "Helpdesk ticket report", Value = "8" });
+                //listItems.Add(new SelectListItem { Text = "Helpdesk ticket report volume", Value = "9" });
 
             }
 
@@ -41,15 +41,19 @@
         </div>
     </div>
  </div>
-<div class="row">
+<div class="row" >
     <div class="col-md-12">
         <div class="table-responsive" id="reportSection">
-
+            
         </div>
     </div>
 </div>
 <script type="text/javascript">
     $('#ReportType').change(function () {
+
+        document.getElementById('reportSection').innerHTML = "";
+        document.getElementById('ShowReportBlock').innerHTML = "";
+      
       
         var ReportID=   $('#ReportType').val();
         $.ajax({

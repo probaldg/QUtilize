@@ -108,12 +108,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role,int OrgID=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportDataProjectWiseSummary(userID, startDate, endDate, ProjectID, MainUser, Role);
+                ds = DataAccess.GetReportDataProjectWiseSummary(userID, startDate, endDate, ProjectID, MainUser, Role,OrgID);
             }
             catch (Exception ex)
             {
@@ -123,12 +123,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportDataProjectWiseCosting(userID, startDate, endDate, ProjectID, MainUser, Role);
+                ds = DataAccess.GetReportDataProjectWiseCosting(userID, startDate, endDate, ProjectID, MainUser, OrgID);
             }
             catch (Exception ex)
             {
@@ -138,12 +138,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportDataResourceUtilizationSummary(userID, startDate, endDate, ProjectID, MainUser, Role);
+                ds = DataAccess.GetReportDataResourceUtilizationSummary(userID, startDate, endDate, ProjectID, MainUser, OrgID);
             }
             catch (Exception ex)
             {
@@ -152,12 +152,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportDataResourceCosting(userID, startDate, endDate, ProjectID, MainUser, Role);
+                ds = DataAccess.GetReportDataResourceCosting(userID, startDate, endDate, ProjectID, MainUser, OrgId);
             }
             catch (Exception ex)
             {
@@ -166,27 +166,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet TimeSheet_ByResource_CurrentMonth()
+        public DataSet TimeSheet_ByResource_CurrentMonth(int orgid=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.TimeSheet_ByResource_CurrentMonth();
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-
-        public DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskID)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, TaskID);
+                ds = DataAccess.TimeSheet_ByResource_CurrentMonth(orgid);
             }
             catch (Exception ex)
             {
@@ -196,12 +181,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int TaskID)
+        public DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskID,int OrgId=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,TaskID);
+                ds = DataAccess.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, TaskID,OrgId);
             }
             catch (Exception ex)
             {
@@ -210,41 +195,13 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        //
-        public DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid)
+
+        public DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int TaskID,int OrgId=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-        public DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-        public DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid);
+                ds = DataAccess.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,TaskID,OrgId);
             }
             catch (Exception ex)
             {
@@ -254,13 +211,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
         //
-
-        public DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID, int ProjectId, int userid)
+        public DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientID, ProjectId, userid);
+                ds = DataAccess.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid,OrgId);
             }
             catch (Exception ex)
             {
@@ -269,12 +225,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid)
+        public DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid,int OrgID=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period,deptid,userid);
+                ds = DataAccess.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid,OrgID);
             }
             catch (Exception ex)
             {
@@ -283,12 +239,56 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet TimeSheet_ByResource_PreviousMonth()
+        public DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.TimeSheet_ByResource_PreviousMonth();
+                ds = DataAccess.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        //
+
+        public DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID, int ProjectId, int userid,int OrgId=0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientID, ProjectId, userid,OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid,int OrgId=0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period,deptid,userid,OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet TimeSheet_ByResource_PreviousMonth(int orgid= 0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.TimeSheet_ByResource_PreviousMonth(orgid);
             }
             catch (Exception ex)
             {

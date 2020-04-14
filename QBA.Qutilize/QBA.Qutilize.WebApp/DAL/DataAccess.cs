@@ -179,7 +179,7 @@ namespace QBA.Qutilize.WebApp.DAL
 
             return ds;
         }
-        public static DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public static DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role,int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -188,7 +188,8 @@ namespace QBA.Qutilize.WebApp.DAL
                                         //new SqlParameter("@UserID",Convert.ToInt32(userID)),
                                         new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
                                         new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-                                        new SqlParameter("@ProjectID",ProjectID)
+                                        new SqlParameter("@ProjectID",ProjectID),
+                                        new SqlParameter("@OrgID",OrgId)
                                         //new SqlParameter("@MainUser",MainUser),
                                         //new SqlParameter("@Role",Role)
                                       };
@@ -204,7 +205,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public static DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -213,8 +214,10 @@ namespace QBA.Qutilize.WebApp.DAL
                                      
                                         new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
                                         new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-                                        new SqlParameter("@ProjectID",ProjectID)
-                                        
+                                        new SqlParameter("@ProjectID",ProjectID),
+                                           new SqlParameter("@OrgID",OrgId)
+                                          
+
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
@@ -227,7 +230,7 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
-        public static DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public static DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -236,7 +239,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         //new SqlParameter("@UserID",Convert.ToInt32(userID)),
                                         new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
                                         new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-                                        //new SqlParameter("@ProjectID",ProjectID)
+                                        new SqlParameter("@OrgID",OrgId)
                                         //new SqlParameter("@MainUser",MainUser),
                                         //new SqlParameter("@Role",Role)
                                       };
@@ -252,7 +255,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
+        public static DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -261,7 +264,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                        
                                         new SqlParameter("@StartDate",Convert.ToDateTime(startDate)),
                                         new SqlParameter("@EndDate",Convert.ToDateTime(endDate)),
-                                        
+                                        new SqlParameter("@OrgID",OrgId),
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
@@ -274,15 +277,18 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
-        public static DataSet TimeSheet_ByResource_CurrentMonth()
+        public static DataSet TimeSheet_ByResource_CurrentMonth(int orgId = 0)
         {
             DataSet ds = null;
             try
             {
-                
+              
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
-                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_CurrentMonth");
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgId)
+                                      };
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_CurrentMonth",param);
                 }
             }
             catch (Exception ex)
@@ -292,7 +298,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid)
+        public static DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -302,7 +308,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@preiod",period),
                                         new SqlParameter("@deptId",deptid),
                                         new SqlParameter("@UserID",userid),
-
+                                          new SqlParameter("@OrgID",OrgId),
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
@@ -316,7 +322,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID,int ProjectId, int userid)
+        public static DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID,int ProjectId, int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -327,6 +333,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@ClientId",clientID),
                                         new SqlParameter("@ProjectID",ProjectId),
                                         new SqlParameter("@UserID",userid),
+                                        new SqlParameter("@OrgID",OrgId),
 
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
@@ -341,7 +348,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid)
+        public static DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -351,7 +358,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@preiod",period),
                                         new SqlParameter("@deptId",deptid),
                                         new SqlParameter("@UserID",userid),
-
+                                        new SqlParameter("@OrgID",OrgId),
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
                 {
@@ -365,7 +372,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
         //
-        public static DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskId)
+        public static DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskId,int OrgID=0)
         {
             DataSet ds = null;
             try
@@ -377,6 +384,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@ProjectID",projectid),
                                         new SqlParameter("@UserID",userid),
                                         new SqlParameter("@TaskId",TaskId),
+                                         new SqlParameter("@OrgID",OrgID),
 
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
@@ -390,7 +398,7 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
-        public static DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid,int TaskId)
+        public static DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid,int TaskId,int OrgID=0)
         {
             DataSet ds = null;
             try
@@ -402,6 +410,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@ProjectID",projectid),
                                         new SqlParameter("@UserID",userid),
                                         new SqlParameter("@TaskId",TaskId),
+                                        new SqlParameter("@OrgID",OrgID),
 
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
@@ -415,7 +424,7 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
-        public static DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid)
+        public static DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid,int OrgId=0)
         {
             DataSet ds = null;
             try
@@ -423,10 +432,10 @@ namespace QBA.Qutilize.WebApp.DAL
                 SqlParameter[] param ={
 
                                         new SqlParameter("@preiod",period),
-
                                         new SqlParameter("@deptId",deptid),
                                         new SqlParameter("@ProjectID",projectid),
                                         new SqlParameter("@UserID",userid),
+                                        new SqlParameter("@OrgId",OrgId),
 
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
@@ -441,7 +450,7 @@ namespace QBA.Qutilize.WebApp.DAL
             return ds;
         }
 
-        public static DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid)
+        public static DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid,int OrgID=0)
         {
             DataSet ds = null;
             try
@@ -453,6 +462,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@deptId",deptid),
                                         new SqlParameter("@ProjectID",projectid),
                                         new SqlParameter("@UserID",userid),
+                                        new SqlParameter("@OrgID",OrgID),
 
                                       };
                 using (SqlHelper objSQLHelper = new SqlHelper())
@@ -466,7 +476,7 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return ds;
         }
-        public static DataSet TimeSheet_ByResource_PreviousMonth()
+        public static DataSet TimeSheet_ByResource_PreviousMonth (int orgid= 0)
         {
             DataSet ds = null;
             try
@@ -478,8 +488,12 @@ namespace QBA.Qutilize.WebApp.DAL
 
                 //                      };
                 using (SqlHelper objSQLHelper = new SqlHelper())
+                   
                 {
-                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_PreviousMonth");
+                    SqlParameter[] param ={
+                                        new SqlParameter("@OrgID",orgid)
+                                      };
+                    ds = objSQLHelper.ExecuteDataset("usp_rpt_Custom_TimeSheet_ByResource_PreviousMonth",param);
                 }
             }
             catch (Exception ex)
