@@ -80,7 +80,29 @@
     })
     //**
 
-    
+    function bindProjectTaskByProject() {
+        var ReportType = $('#ReportType').val();
+         var projectid = $('#ddlProjects').val();
+        data = {
+            "projectid": projectid
+        };
+        if (ReportType == 4 || ReportType == 7) {
+             $.ajax({
+                    url: '@Url.Action("bindProjectTask", "Report")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                 success: function (result) {
+                     $("#ddlTask").html("");
+                     $("#ddlTask").append(result);
+
+                    
+                    }
+                });
+        }
+    }
+
     function RefreshData() {
         try {
             var ReportType = $('#ReportType').val();

@@ -32,6 +32,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult ShowReportBlockByReportType(int ReportId)
         {
             StringBuilder sbOut = new StringBuilder();
+            
             try
             {
                 if (ReportId == 1)
@@ -709,6 +710,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 if (ReportId == 4)
                 {
+                    UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
                     sbOut.Append("<div class='form-group col-md-12'>");
 
                     sbOut.Append("<label class='control-label col-md-1'>Period:</label>");
@@ -721,7 +723,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</div>");
 
 
-                    UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                    
                     if (HttpContext.Session["SysAdmin"] != null)
                     {
                         UserProjectMappingModel USM = new UserProjectMappingModel();
@@ -749,7 +751,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -791,6 +793,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     }
                     else if (HttpContext.Session["OrgAdmin"] != null)
                     {
+
                         UserProjectMappingModel USM = new UserProjectMappingModel();
                         DataTable dt = new DataTable();
 
@@ -799,7 +802,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllDepartment = new DataTable();
                         dtAllDepartment = dm.GetAllDepartments(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddldepartment' name='ddldepartment'>");
+                        sbOut.Append("<select class='form-control' id='ddldepartment' name='ddldepartment' >");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllDepartment.Rows.Count > 0)
                         {
@@ -816,7 +819,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -829,21 +832,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbOut.Append("</div>");
                         //**
 
+
+
+
                         //**
                         sbOut.Append("<label class='control-label col-md-1'>Task: </label>");
-                       // ProjectTaskModel taskModel = new ProjectTaskModel();
-                       
-                      //  DataSet dsTaskData = taskModel.GetTasksData("DailyTask", ProjID, UIH.UserOrganisationID), userInfo.UserId);
-                       // dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
+                        // ProjectTaskModel taskModel = new ProjectTaskModel();
+
+                        //  DataSet dsTaskData = taskModel.GetTasksData("DailyTask", ProjID, UIH.UserOrganisationID, UIH.UserId);
+                        //dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
                         sbOut.Append("<select class='form-control' id='ddlTask' name='ddlTask'>");
                         sbOut.Append("<option value='0'>Select</option>");
-                        //if (dtAllProjects.Rows.Count > 0)
+                        // if (dtAllProjects.Rows.Count > 0)
                         //{
-                        //    for (int i = 0; i < dtAllProjects.Rows.Count; i++)
-                        //    {
-                        //        sbOut.Append("<option value='" + dtAllProjects.Rows[i]["Id"] + "'>" + dtAllProjects.Rows[i]["Name"] + "</option>");
-                        //    }
+                        //for (int i = 0; i < dtAllProjects.Rows.Count; i++)
+                        //{
+                        //    sbOut.Append("<option value='" + dtAllProjects.Rows[i]["Id"] + "'>" + dtAllProjects.Rows[i]["Name"] + "</option>");
+                        //}
                         //}
                         sbOut.Append("</select>");
                         sbOut.Append("</div>");
@@ -896,7 +902,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -966,7 +972,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -1472,7 +1478,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -1539,7 +1545,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -1619,7 +1625,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -1689,7 +1695,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataTable dtAllProjects = new DataTable();
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                         sbOut.Append("<div class='col-md-2'>");
-                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects'>");
+                        sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='bindProjectTaskByProject();'>");
                         sbOut.Append("<option value='0'>Select</option>");
                         if (dtAllProjects.Rows.Count > 0)
                         {
@@ -1768,7 +1774,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbOut.Append("<div class='form-group col-md-12'>");
                 sbOut.Append("<label class='control-label col-md-1'>Select Report Type: </label>");
                 sbOut.Append("<div class='col-md-2'>");
-                sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType' onclick='SetReport();' >");
+                sbOut.Append("<select class='form-control' id='ddlReportType' name='ddlReportType' onchange='SetReport();' >");
                 sbOut.Append("<option value='0'>Select</option>");
                 if (HttpContext.Session["OrgAdmin"] != null)
                 {
@@ -3402,6 +3408,26 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
 
             }
+            return Json(sbOut.ToString());
+        }
+
+        public ActionResult bindProjectTask(int projectid)
+        {
+            StringBuilder sbOut = new StringBuilder();
+           
+            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
+            ProjectTaskModel taskModel = new ProjectTaskModel();
+            DataSet dsTaskData = taskModel.GetTasksData("DailyTask", projectid, UIH.UserOrganisationID, UIH.UserId);
+            sbOut.Append("<option value='0'>Select</option>");
+            if (dsTaskData!=null && dsTaskData.Tables[0].Rows.Count > 0)
+            {
+                for (int i = 0; i < dsTaskData.Tables[0].Rows.Count; i++)
+                {
+                    sbOut.Append("<option value='" + dsTaskData.Tables[0].Rows[i]["TaskId"] + "'>" + dsTaskData.Tables[0].Rows[i]["TaskName"] + "</option>");
+                }
+            }
+
+            sbOut.Append("</select>");
             return Json(sbOut.ToString());
         }
     }
