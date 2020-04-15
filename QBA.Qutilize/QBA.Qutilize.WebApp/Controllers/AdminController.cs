@@ -722,11 +722,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
                     strUserData.Append("<tr>");
-                    strUserData.Append("<td class='text-center'>" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" +item["IssueName"].ToString() + "</td>");
-                    strUserData.Append(" <td class='text-center'>" +item["IssueDescription"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" +item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
@@ -744,6 +744,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         strUserData.Append("<td class='text-center'></td>");
                     }
+                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' onclick='PreviewTheIssueDetails("+ item["IssueID"].ToString() +")'>View</a></td>");
 
                     strUserData.Append("</tr>");
 
@@ -853,11 +854,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
                     strUserData.Append("<tr>");
-                    strUserData.Append("<td class='text-center'>" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" + item["IssueName"].ToString() + "</td>");
-                    strUserData.Append(" <td class='text-center'>" + item["IssueDescription"].ToString() + "</td>");
+                    strUserData.Append(" <td class='text-center'>" + item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
@@ -876,7 +877,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         strUserData.Append("<td class='text-center'></td>");
                     }
-
+                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' onclick='PreviewTheIssueDetails(" + item["IssueID"].ToString() + ")'>View</a></td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -1476,6 +1477,89 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+        public ActionResult previewIssue(int IssueId)
+        {
+            ProjectIssueModel projectIssue = new ProjectIssueModel();
+
+            try
+            {
+
+                DataTable dtIssueData = projectIssue.GetProjectIssueByIssueId(IssueId);
+                if (dtIssueData.Rows.Count > 0)
+                {
+                    ViewBag.status = Convert.ToBoolean(dtIssueData.Rows[0]["isACTIVE"]) == true ? "Active" : "In Active";
+                    ViewBag.ID= Convert.ToInt32(dtIssueData.Rows[0]["IssueID"]);
+                    ViewBag.TicketNo = "TI"+Convert.ToInt32(dtIssueData.Rows[0]["IssueID"]);
+                    ViewBag.IssueCode = dtIssueData.Rows[0]["IssueCode"].ToString() ?? "";
+                    ViewBag.IssueName = dtIssueData.Rows[0]["IssueName"].ToString();
+                    ViewBag.IssueDescription = dtIssueData.Rows[0]["IssueDescription"].ToString() ?? "";
+                    ViewBag.ProjectName = dtIssueData.Rows[0]["ProjectName"].ToString();
+                    ViewBag.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
+                    ViewBag.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
+                    ViewBag.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
+                    ViewBag.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
+                    ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
+                    ViewBag.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
+                    ViewBag.StatusName = dtIssueData.Rows[0]["StatusName"].ToString() ?? "";
+                    ViewBag.StatusID = Convert.ToInt32(dtIssueData.Rows[0]["StatusID"]);
+                    ViewBag.SeverityID = Convert.ToInt32(dtIssueData.Rows[0]["SeverityID"]);
+                    ViewBag.SeverityName = dtIssueData.Rows[0]["SeverityName"].ToString();
+                    //ViewBag.IsActive = Convert.ToBoolean(dtIssueData.Rows[0]["isACTIVE"]);
+                    ViewBag.IsValueAdded = Convert.ToBoolean(dtIssueData.Rows[0]["isValueAdded"]) == true ? "Yes" : "No";
+                    ViewBag.CompletePercent = Convert.ToInt32(dtIssueData.Rows[0]["CompletePercent"]);
+                    string usernameassigned = string.Empty;
+                    foreach (DataRow item in dtIssueData.Rows)
+                    {
+                        UserModel userModel = new UserModel
+                        {
+                            ID = Convert.ToInt32(item["UserID"]),
+                            Name = item["UserName"].ToString(),
+                            IsActive = Convert.ToBoolean(item["IsUserActive"])
+
+                        };
+
+                        ViewBag.UserIdAssigned += (item["UserID"]).ToString() + ",";
+                        usernameassigned += (item["UserName"]).ToString() + ",";
+                        //projectIssue.UserList.Add(userModel);
+                    }
+                    ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 1, 1);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //throw;
+            }
+
+            return PartialView("_PreviewProjectIssue");
+        }
+        public ActionResult LoadCommentsForIssues(int id)
+        {
+            string strCommentDiv = string.Empty;
+            ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
+            DataTable dt = acm.GetIssueCommentByIssueID(id);
+            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Comments</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
+            if (dt.Rows.Count > 0)
+            {
+               
+                strCommentDiv += @"<section class='comments'>";
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p>" + dt.Rows[i]["Comment"].ToString() + "</p></div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                }
+                strCommentDiv += @"</section>";
+
+
+            }
+            else
+            {
+                strCommentDiv += "<div>No Comments Found</div>";
+            }
+            strCommentDiv += @"</div></div></div></div></div></div></div>";
+            return Content(strCommentDiv);
+        }
+
         public ActionResult GetProjectIssueByID(int IssueId)
         {
             ProjectIssueModel projectIssue = new ProjectIssueModel();
@@ -1495,7 +1579,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     projectIssue.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
                     projectIssue.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
                     projectIssue.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
-                   
+                    //projectIssue.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     projectIssue.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
                     projectIssue.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
                     projectIssue.StatusName = dtIssueData.Rows[0]["StatusName"].ToString() ?? "";

@@ -191,10 +191,12 @@
     <Compile Include="Models\ModuleModel.cs" />
     <Compile Include="Models\OrganisationModel.cs" />
     <Compile Include="Models\PortalLogger.cs" />
+    <Compile Include="Models\ProjectIssueCommentModel.cs" />
     <Compile Include="Models\ProjectIssueModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectStatusModel.cs" />
     <Compile Include="Models\ProjectTaskModel.cs" />
+    <Compile Include="Models\ReportModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
     <Compile Include="Models\SkillManagementModel.cs" />
@@ -902,6 +904,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Views\Shared\_ViewStartPrivate.cshtml" />
     <Content Include="Views\Admin\AddProjectTask.cshtml" />
+    <Content Include="Views\Admin\_PreviewProjectIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

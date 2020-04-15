@@ -75,16 +75,16 @@
 
     <div>
         <ul class="nav nav-tabs">
-            <li class="active" >
+            <li class="active">
                 <a href="#tab1" style="font-weight:bold; font-size:medium">Issue created</a>
             </li>
-            <li >
+            <li>
                 <a href="#tab2" style="font-weight:bold; font-size:medium">Issue assigned to me</a>
             </li>
 
         </ul>
     </div>
-    <section id="tab1"  class="tab-content active">
+    <section id="tab1" class="tab-content active">
         <div>
 
             <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
@@ -95,7 +95,7 @@
                             <th class="text-center tblHeaderColor sorting">Project Name</th>
                             <th class="text-center tblHeaderColor sorting">Issue Code</th>
                             <th class="text-center tblHeaderColor sorting">Issue Name</th>
-                            <th class="text-center tblHeaderColor sorting">Issue Description</th>
+                            <th class="text-center tblHeaderColor sorting">Ticket Type</th>
                             <th class="text-center tblHeaderColor sorting">Expected Start Date</th>
                             <th class="text-center tblHeaderColor sorting">Expected End Date</th>
                             <th class="text-center tblHeaderColor sorting">Severity</th>
@@ -104,6 +104,7 @@
 
                             <th class="text-center tblHeaderColor sorting">Status</th>
                             <th class="text-center tblHeaderColor sorting">Edit</th>
+                            <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,6 +113,158 @@
                 </table>
             </div>
         </div>
+        <div>
+
+        </div>
+        @using (Html.BeginForm("ManageProjectIssue", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <h4>Project Issue Details</h4>
+
+            <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.ProjectIssue.IssueId)
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
+                        @Html.HiddenFor(model => model.ActiveProjectID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
+                        @Html.HiddenFor(model => model.ProjectTypeID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IssueCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.IssueCode, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCode, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IssueName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.IssueName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.IssueName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IssueDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.IssueDescription, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.IssueDescription, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.IssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.IssueStartDateDisplay, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.IssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateEndDate()" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.IssueEndDateDisplay, "", new { @class = "text-danger", })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select id="ddlIssueStatus" class="form-control"><option value="0">Select</option></select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SeverityList, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.SeverityList, new SelectList(Model.SeverityList, "ID", "Name"), "Select", new { @class = "form-control" })
+                        @Html.HiddenFor(model => model.SeverityID)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select id="ddlPercentage" class="form-control"><option value="">Select</option></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" id="divUserDDL">
+                        @Html.HiddenFor(model => model.ProjectIssue.UserIdAssigned)
+                        <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
+                        <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDate()" } })
+                        @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.ProjectIssue.IsActive)
+                            @Html.ValidationMessageFor(model => model.ProjectIssue.IsActive, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectIssue.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.ProjectIssue.IsValueAdded)
+                            @Html.ValidationMessageFor(model => model.ProjectIssue.IsValueAdded, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" id="btnProjectIssueSave" class="btn btn-default" value="Submit">
+                    </div>
+                </div>
+            </div>
+
+        }
+
     </section>
     <section id="tab2" class="tab-content  hide">
         <div>
@@ -124,7 +277,7 @@
                             <th class="text-center tblHeaderColor sorting">Project Name</th>
                             <th class="text-center tblHeaderColor sorting">Issue Code</th>
                             <th class="text-center tblHeaderColor sorting">Issue Name</th>
-                            <th class="text-center tblHeaderColor sorting">Issue Description</th>
+                            <th class="text-center tblHeaderColor sorting">Ticket Type</th>
                             <th class="text-center tblHeaderColor sorting">Expected Start Date</th>
                             <th class="text-center tblHeaderColor sorting">Expected End Date</th>
                             <th class="text-center tblHeaderColor sorting">Severity</th>
@@ -132,6 +285,7 @@
                             <th class="text-center tblHeaderColor sorting">Issue Status</th>
                             <th class="text-center tblHeaderColor sorting">Status</th>
                             <th class="text-center tblHeaderColor sorting">Change Issue Status</th>
+                            <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -249,6 +403,24 @@
         </div>
 
     </div>
+
+    <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog-big" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel2"></h4>
+                </div>
+
+                <div class="modal-body" id="previewSection">
+
+
+                </div>
+
+            </div><!-- modal-content -->
+        </div><!-- modal-dialog -->
+    </div><!-- modal -->
+
     <div class="form-horizontal col-md-12">
         <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -259,159 +431,35 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("ManageProjectIssue", "Admin", FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-
-        <h4>Project Issue Details</h4>
-
-        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.ProjectIssue.IssueId)
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
-                    @Html.HiddenFor(model => model.ActiveProjectID)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
-                    @Html.HiddenFor(model => model.ProjectTypeID)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IssueCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.IssueCode, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCode, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IssueName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.IssueName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IssueDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.IssueDescription, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueDescription, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.IssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueStartDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.IssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateEndDate()" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueEndDateDisplay, "", new { @class = "text-danger", })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select id="ddlIssueStatus" class="form-control"><option value="0">Select</option></select>
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.SeverityList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.SeverityList, new SelectList(Model.SeverityList, "ID", "Name"), "Select", new { @class = "form-control" })
-                    @Html.HiddenFor(model => model.SeverityID)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select id="ddlPercentage" class="form-control"><option value="">Select</option></select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10" id="divUserDDL">
-                    @Html.HiddenFor(model => model.ProjectIssue.UserIdAssigned)
-                    <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
-                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
-                </div>
-
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDate()" } })
-                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.ProjectIssue.IsActive)
-                        @Html.ValidationMessageFor(model => model.ProjectIssue.IsActive, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectIssue.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.ProjectIssue.IsValueAdded)
-                        @Html.ValidationMessageFor(model => model.ProjectIssue.IsValueAdded, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="button" id="btnProjectIssueSave" class="btn btn-default" value="Submit">
-                </div>
-            </div>
-        </div>
-
-    }
+   
 
     <script type="text/javascript">
+
+        function PreviewTheIssueDetails(IssueId)
+        {
+            $.ajax({
+                url: '@Url.Action("previewIssue", "Admin")',
+                type: "POST",
+                dataType: "html",
+                contentType: "application/json; charset=utf-8",
+                //data: { s_People_ID: People_ID },
+                data: JSON.stringify({
+                    "IssueId": IssueId
+                }),
+                success: function (response) {
+                    $('#publishedModal').modal('show');
+                    $('#previewSection').html(response);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+
+
         function ShowPopupforChangeStatus(issueid, StatusID,Issuecode,Issuename) {
             $('#ProjectIssue_IssueIdforstatus').val(issueid);
-          
+
             document.getElementById("ErrorMsgTask").innerHTML = "";
             document.getElementById("ErrorMsgTask").style.display = 'none';
             $.ajax({
@@ -1072,12 +1120,12 @@
 
     </script>
     <script type="text/javascript">
-    function activaTab(){
-   
+        function activaTab() {
+
             var active_tab_selector = "#tab1";
 
             //find actived navigation and remove 'active' css
-           //  var actived_nav = "#tab1";
+            //  var actived_nav = "#tab1";
             // actived_nav.removeClass('active');
 
             //add 'active' css into clicked navigation
@@ -1092,38 +1140,38 @@
             $(target_tab_selector).removeClass('hide');
             $(target_tab_selector).addClass('active');
             alert(target_tab_selector);
-        };  
-    
+        };
+
     </script>
 
-   
+
     <script type="text/javascript">
-                $(document).ready(function () {
-                    $('.nav-tabs > li > a').click(function (event) {
-                        event.preventDefault();//stop browser to take action for clicked anchor
-                      
-                        //get displaying tab content jQuery selector
-                        var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
-                        
-                        //find actived navigation and remove 'active' css
-                        var actived_nav = $('.nav-tabs > li.active');
-                        actived_nav.removeClass('active');
-                      
-                        //add 'active' css into clicked navigation
-                        $(this).parents('li').addClass('active');
+        $(document).ready(function () {
+            $('.nav-tabs > li > a').click(function (event) {
+                event.preventDefault();//stop browser to take action for clicked anchor
 
-                        //hide displaying tab content
-                        $(active_tab_selector).removeClass('active');
-                        $(active_tab_selector).addClass('hide');
+                //get displaying tab content jQuery selector
+                var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
 
-                        //show target tab content
-                        var target_tab_selector = $(this).attr('href');
-                        $(target_tab_selector).removeClass('hide');
-                        $(target_tab_selector).addClass('active');
-                       
-                    });
-                });
-            </script>
+                //find actived navigation and remove 'active' css
+                var actived_nav = $('.nav-tabs > li.active');
+                actived_nav.removeClass('active');
+
+                //add 'active' css into clicked navigation
+                $(this).parents('li').addClass('active');
+
+                //hide displaying tab content
+                $(active_tab_selector).removeClass('active');
+                $(active_tab_selector).addClass('hide');
+
+                //show target tab content
+                var target_tab_selector = $(this).attr('href');
+                $(target_tab_selector).removeClass('hide');
+                $(target_tab_selector).addClass('active');
+
+            });
+        });
+    </script>
     <style>
         /** Start: to style navigation tab **/
         .nav {

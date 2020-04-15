@@ -1,0 +1,72 @@
+﻿<div >
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px" ">
+        <table class="table table-striped table-bordered myTable" id="tblGridListViewPost1">
+            <tr>
+                <td><b>Issue ID</b></td>
+                <td><b>@ViewBag.TicketNo</b></td>
+                <td><b>Issue Code</b></td>
+                <td><b>@ViewBag.IssueName</b></td>
+
+            </tr>
+            <tr>
+                <td><b>Issue Name</b></td>
+                <td><b>@ViewBag.IssueName</b></td>
+                <td><b>Project Name</b></td>
+                <td><b>@ViewBag.ProjectName</b></td>
+            </tr>
+            <tr>
+                <td><b>Ticket Type</b></td>
+                <td colspan="3"><b>@ViewBag.TicketTypeName</b></td>
+            </tr>
+            <tr>
+                <td><b>Issue Description</b></td>
+                <td colspan="3"><b>@ViewBag.IssueDescription</b></td>
+            </tr>
+            <tr>
+                <td><b>Issue Start Date</b></td>
+                <td><b>@ViewBag.IssuestartDate</b></td>
+                <td><b>Issue End Date</b></td>
+                <td><b>@ViewBag.IssueEndDate</b></td>
+            </tr>
+
+            <tr>
+                <td><b>Acutal Issue Start Date</b></td>
+                <td><b>@ViewBag.ActualIssueStartDate</b></td>
+                <td><b>Actual Issue End Date</b></td>
+                <td><b>@ViewBag.ActualIssueEndDate</b></td>
+            </tr>
+
+            <tr>
+                <td><b>Severity</b></td>
+                <td><b>@ViewBag.SeverityName</b></td>
+                <td><b>Percentage complete</b></td>
+                <td><b>@ViewBag.CompletePercent</b></td>
+            </tr>
+
+            <tr>
+                <td><b>Issue Status</b></td>
+                <td><b>@ViewBag.StatusName</b></td>
+                <td><b>Status</b></td>
+                <td><b>@ViewBag.status</b></td>
+            </tr>
+            <tr>
+                <td><b>User Assigned</b></td>
+                <td colspan="3"><b>@ViewBag.UserNameAssigned</b></td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Is Value Added?</b>
+                </td>
+                <td>
+                    <b>@ViewBag.IsValueAdded</b>
+                </td>
+            </tr>
+
+        </table>
+
+
+        <div>
+            @Html.Action("LoadCommentsForIssues", "Admin", new { id = ViewBag.ID })
+        </div>
+    </div>
+</div>
