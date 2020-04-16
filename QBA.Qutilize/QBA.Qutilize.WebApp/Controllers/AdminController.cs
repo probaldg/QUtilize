@@ -1546,7 +1546,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p>" + dt.Rows[i]["Comment"].ToString() + "</p></div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + dt.Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ dt.Rows[i]["Comment"].ToString() + "</p></div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
