@@ -1004,7 +1004,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             ProjectModel pm = new ProjectModel();
             ProjectTypeModel PTM = new ProjectTypeModel();
             MasterSeverityModel MSM = new MasterSeverityModel();
-         
+            TicketTypeModel TTM = new TicketTypeModel();
             List<ProjectModel> objRole = new List<ProjectModel>();
            
 
@@ -1018,12 +1018,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                 obj.ProjectTypeList = PTM.GetProjectType().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.SeverityList = MSM.Get_SeverityDetails().Where(x => x.IsActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
                 obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
+                obj.TicketTypeList= TTM.Get_GetAllTicketTypes().Where(x => x.isActive == true).ToList().OrderBy(x => x.OrganisationName).ThenBy(x => x.Name).ToList();
             }
             else
             {
                 obj.ProjectTypeList = PTM.GetProjectType(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.SeverityList=MSM.Get_SeverityDetails(userInfo.UserOrganisationID).Where(x => x.IsActive == true).ToList();
                 obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(loggedInUser);
+                obj.TicketTypeList = TTM.Get_GetAllTicketTypes(userInfo.UserOrganisationID).Where(x => x.isActive == true).ToList();
             }
            
 
@@ -1832,6 +1834,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
         public ActionResult SaveProjectIssue(ProjectIssueModel model)
         {
+            
             ProjectIssueModel pm = new ProjectIssueModel();
             string result = "";
             try

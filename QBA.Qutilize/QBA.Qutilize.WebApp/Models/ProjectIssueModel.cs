@@ -38,9 +38,11 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Status")]
         public string StatusName { get; set; }
 
+
         public List<ProjectStatusModel> StatusList { get; set; }
         public List<UserModel> UserList { get; set; }
-       
+        
+
         public string UserIdAssigned { get; set; }
         public string UserNameAssigned { get; set; }
 
@@ -52,6 +54,10 @@ namespace QBA.Qutilize.WebApp.Models
         public int SeverityID { get; set; }
         [Display(Name = "Severity")]
         public string SeverityName { get; set; }
+
+        public int TicketTypeID { get; set; }
+        [Display(Name = "Ticket Type")]
+        public string TicketTypeName { get; set; }
 
         public DateTime? ActualIssueStartDate { get; set; }
 
@@ -90,7 +96,7 @@ namespace QBA.Qutilize.WebApp.Models
            
             StatusList = new List<ProjectStatusModel>();
             UserList = new List<UserModel>();
-            PercentageComplete = new List<int>();
+            PercentageComplete = new List<int>();            
 
         }
         #region Global Variable Decleartion::
@@ -230,6 +236,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
                     new SqlParameter("@SeverityID",model.SeverityID),
+                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
                     new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!= null?model.ActualIssueStartDate:null),
@@ -298,6 +305,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
                     new SqlParameter("@SeverityID",model.SeverityID),
+                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
                     new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!=null?model.ActualIssueStartDate:null),

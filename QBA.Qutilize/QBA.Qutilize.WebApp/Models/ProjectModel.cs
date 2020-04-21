@@ -78,6 +78,12 @@ namespace QBA.Qutilize.WebApp.Models
         public List<MasterSeverityModel> SeverityList { get; set; }
         public int SeverityID { get; set; }
 
+
+        public int TicketType { get; set; }
+        [Display(Name = "Ticket Type")]
+        public List<TicketTypeModel> TicketTypeList { get; set; }
+        public string TicketTypeID { get; set; }
+
         [Display(Name = "Project Name")]
         public List<ProjectModel> ActiveProjectList { get; set; }
         public int ActiveProjectID { get; set; }

@@ -201,6 +201,7 @@
     <Compile Include="Models\RoleMouduleMappingModel.cs" />
     <Compile Include="Models\SkillManagementModel.cs" />
     <Compile Include="Models\TaskStatusModel.cs" />
+    <Compile Include="Models\TicketTypeModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserProjectMappingModel.cs" />
     <Compile Include="Models\UserRoleMappingModel.cs" />
