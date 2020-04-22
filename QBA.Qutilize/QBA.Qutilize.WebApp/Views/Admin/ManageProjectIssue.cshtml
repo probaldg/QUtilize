@@ -1033,6 +1033,7 @@
             $('#UserIdsInString').val('');
             $('#ddlIssueStatus').val(0);
             $('#SeverityList').val(0);
+            $('#TicketTypeID').val(0);
             $('#ddlPercentage').val(0);
             $('#ProjectIssue_IsActive').val(false);
             $('#ProjectIssue_IsActive').prop("checked", false);
@@ -1074,14 +1075,14 @@
                      var project_id = IssueObj.ProjectID;
                      AjaxCallGetUserByProject(project_id, IssueObj.StatusID, IssueObj.CompletePercent, IssueObj.UserIdAssigned);
                      //**Get user by project
-                     //**
+                     //**                    
                      $('#ProjectIssue_IssueId').val(IssueObj.IssueId)
                      $('#ProjectIssue_IssueName').val(IssueObj.IssueName);
                      $('#ProjectIssue_IssueCode').val(IssueObj.IssueCode);
                      $('#ProjectIssue_IssueDescription').val(IssueObj.IssueDescription);
                      $('#ActiveProjectList').val(IssueObj.ProjectID);
                      $('#SeverityList').val(IssueObj.SeverityID);
-
+                     $('#TicketTypeList').val(IssueObj.TicketTypeID);
                   //   $('#ddlIssueStatus').val(IssueObj.StatusID);
 
                     // $('#ddlPercentage').val(IssueObj.CompletePercent);

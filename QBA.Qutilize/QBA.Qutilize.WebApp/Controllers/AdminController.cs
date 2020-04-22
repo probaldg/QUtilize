@@ -1586,6 +1586,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     projectIssue.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
                     projectIssue.StatusName = dtIssueData.Rows[0]["StatusName"].ToString() ?? "";
                     projectIssue.StatusID = Convert.ToInt32(dtIssueData.Rows[0]["StatusID"]);
+                    projectIssue.TicketTypeID = Convert.ToInt32(dtIssueData.Rows[0]["TicketTypeID"]);
                     projectIssue.SeverityID = Convert.ToInt32(dtIssueData.Rows[0]["SeverityID"]);
                     projectIssue.SeverityName = dtIssueData.Rows[0]["SeverityName"].ToString();
                     projectIssue.IsActive = Convert.ToBoolean(dtIssueData.Rows[0]["isACTIVE"]);
