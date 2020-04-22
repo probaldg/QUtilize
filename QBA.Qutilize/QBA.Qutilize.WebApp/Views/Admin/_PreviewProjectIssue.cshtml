@@ -1,72 +1,74 @@
-﻿<div >
-    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px" ">
-        <table class="table table-striped table-bordered myTable" id="tblGridListViewPost1">
-            <tr>
-                <td><b>Issue ID</b></td>
-                <td><b>@ViewBag.TicketNo</b></td>
-                <td><b>Issue Code</b></td>
-                <td><b>@ViewBag.IssueName</b></td>
+﻿
+    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+        <div class='panel panel-default'>
+            <div class='panel-heading'><h4> Ticket Details</h4></div>
+            <table class="table table-bordered myTable" id="tblGridListViewPost1">
+                <tr>
+                    <td><b>Ticket ID</b></td>
+                    <td>@ViewBag.TicketNo</td>
+                    <td><b>Ticket Code</b></td>
+                    <td>@ViewBag.IssueName</td>
 
-            </tr>
-            <tr>
-                <td><b>Issue Name</b></td>
-                <td><b>@ViewBag.IssueName</b></td>
-                <td><b>Project Name</b></td>
-                <td><b>@ViewBag.ProjectName</b></td>
-            </tr>
-            <tr>
-                <td><b>Ticket Type</b></td>
-                <td colspan="3"><b>@ViewBag.TicketTypeName</b></td>
-            </tr>
-            <tr>
-                <td><b>Issue Description</b></td>
-                <td colspan="3"><b>@ViewBag.IssueDescription</b></td>
-            </tr>
-            <tr>
-                <td><b>Issue Start Date</b></td>
-                <td><b>@ViewBag.IssuestartDate</b></td>
-                <td><b>Issue End Date</b></td>
-                <td><b>@ViewBag.IssueEndDate</b></td>
-            </tr>
+                </tr>
+                <tr>
+                    <td><b>Ticket Name</b></td>
+                    <td>@ViewBag.IssueName</td>
+                    <td><b>Project Name</b></td>
+                    <td>@ViewBag.ProjectName</td>
+                </tr>
+                <tr>
+                    <td><b>Ticket Type</b></td>
+                    <td colspan="3">@ViewBag.TicketTypeName</td>
+                </tr>
+                <tr>
+                    <td><b>Ticket Description</b></td>
+                    <td colspan="3">@ViewBag.IssueDescription</td>
+                </tr>
+                <tr>
+                    <td><b>Ticket Start Date</b></td>
+                    <td>@ViewBag.IssuestartDate</td>
+                    <td><b>Ticket End Date</b></td>
+                    <td>@ViewBag.IssueEndDate</td>
+                </tr>
 
-            <tr>
-                <td><b>Acutal Issue Start Date</b></td>
-                <td><b>@ViewBag.ActualIssueStartDate</b></td>
-                <td><b>Actual Issue End Date</b></td>
-                <td><b>@ViewBag.ActualIssueEndDate</b></td>
-            </tr>
+                <tr>
+                    <td><b>Acutal Issue Start Date</b></td>
+                    <td>@ViewBag.ActualIssueStartDate</td>
+                    <td><b>Actual Issue End Date</b></td>
+                    <td>@ViewBag.ActualIssueEndDate</td>
+                </tr>
 
-            <tr>
-                <td><b>Severity</b></td>
-                <td><b>@ViewBag.SeverityName</b></td>
-                <td><b>Percentage complete</b></td>
-                <td><b>@ViewBag.CompletePercent</b></td>
-            </tr>
+                <tr>
+                    <td><b>Severity</b></td>
+                    <td>@ViewBag.SeverityName</td>
+                    <td><b>Percentage complete</b></td>
+                    <td>@ViewBag.CompletePercent</td>
+                </tr>
 
-            <tr>
-                <td><b>Issue Status</b></td>
-                <td><b>@ViewBag.StatusName</b></td>
-                <td><b>Status</b></td>
-                <td><b>@ViewBag.status</b></td>
-            </tr>
-            <tr>
-                <td><b>User Assigned</b></td>
-                <td colspan="3"><b>@ViewBag.UserNameAssigned</b></td>
-            </tr>
-            <tr>
-                <td>
-                    <b>Is Value Added?</b>
-                </td>
-                <td>
-                    <b>@ViewBag.IsValueAdded</b>
-                </td>
-            </tr>
+                <tr>
+                    <td><b>Issue Status</b></td>
+                    <td>@ViewBag.StatusName</td>
+                    <td><b>Status</b></td>
+                    <td>@ViewBag.status</td>
+                </tr>
+                <tr>
+                    <td><b>User Assigned</b></td>
+                    <td colspan="3">@ViewBag.UserNameAssigned</td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Is Value Added?</b>
+                    </td>
+                    <td colspan="3">
+                        @ViewBag.IsValueAdded
+                    </td>
+                </tr>
 
-        </table>
+            </table>
+            </div>
 
-
-        <div>
-            @Html.Action("LoadCommentsForIssues", "Admin", new { id = ViewBag.ID })
+            <div>
+                @Html.Action("LoadCommentsForIssues", "Admin", new { id = ViewBag.ID })
+            </div>
         </div>
-    </div>
-</div>
+    

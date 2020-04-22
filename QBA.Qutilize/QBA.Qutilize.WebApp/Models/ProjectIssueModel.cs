@@ -11,16 +11,16 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int IssueId { get; set; }
         public int ProjectID { get; set; }
-        [Display(Name = "Issue Code")]
+        [Display(Name = "Ticket Code")]
         public string IssueCode { get; set; }
-        [Display(Name = "Issue Name")]
+        [Display(Name = "Ticket Name")]
         public string IssueName { get; set; }
-        [Display(Name = "Issue Description")]
+        [Display(Name = "Ticket Description")]
         public string IssueDescription { get; set; }
 
-        [Display(Name = "Issue Name")]
+        [Display(Name = "Ticket Name")]
         public string IssueNameforChangeStatus { get; set; }
-        [Display(Name = "Issue Code")]
+        [Display(Name = "Ticket Code")]
         public string IssueCodeforChangeStatus { get; set; }
 
         public string ProjectName { get; set; }

@@ -1497,11 +1497,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.IssueDescription = dtIssueData.Rows[0]["IssueDescription"].ToString() ?? "";
                     ViewBag.ProjectName = dtIssueData.Rows[0]["ProjectName"].ToString();
                     ViewBag.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
-                    ViewBag.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
-                    ViewBag.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
+                    ViewBag.IssuestartDate = dtIssueData.Rows[0]["IssueStartDate"].ToString();
+                    ViewBag.IssueEndDate = dtIssueData.Rows[0]["IssueEndDate"].ToString();
                     ViewBag.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
-                    ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
-                    ViewBag.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
+                    ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueStartDateActual"] : (DateTime?)null;
+                    ViewBag.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueEndDateActual"] : (DateTime?)null;
                     ViewBag.StatusName = dtIssueData.Rows[0]["StatusName"].ToString() ?? "";
                     ViewBag.StatusID = Convert.ToInt32(dtIssueData.Rows[0]["StatusID"]);
                     ViewBag.SeverityID = Convert.ToInt32(dtIssueData.Rows[0]["SeverityID"]);
@@ -1521,10 +1521,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                         };
 
                         ViewBag.UserIdAssigned += (item["UserID"]).ToString() + ",";
-                        usernameassigned += (item["UserName"]).ToString() + ",";
+                        usernameassigned += (item["UserName"]).ToString() + ", ";
                         //projectIssue.UserList.Add(userModel);
                     }
-                    ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 1, 1);
+                    ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 2, 2);
                 }
             }
             catch (Exception ex)
@@ -1540,7 +1540,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             string strCommentDiv = string.Empty;
             ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
             DataTable dt = acm.GetIssueCommentByIssueID(id);
-            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Comments</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
+            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
             if (dt.Rows.Count > 0)
             {
                
