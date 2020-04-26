@@ -240,9 +240,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 sbOut.Append("<table class='table myTable' id='tblFilter'>");
                 sbOut.Append("<tr>");
-                sbOut.Append("<td class='text-right control-label'>Start Date: </td>");
+                sbOut.Append("<td class='text-right control-label'><nobr>Start Date: </nobr></td>");
                 sbOut.Append("<td class='text-left'><input type='text' class='form-control' id='txtStartDate' value='" + startdate.ToShortDateString() + "' /></td>");
-                sbOut.Append("<td class='text-right control-label'>End Date: </td>");
+                sbOut.Append("<td class='text-right control-label'><nobr>End Date: </nobr></td>");
                 sbOut.Append("<td class='text-left'><input type='text' class='form-control' id='txtEndDate' value='" + endDate.ToShortDateString() + "' /></td>");
                 #region organization admin option
                 if (HttpContext.Session["OrgAdmin"] != null)
@@ -250,7 +250,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
                     UserProjectMappingModel USM = new UserProjectMappingModel();
                     DataTable dt = new DataTable();
-                    sbOut.Append("<td class='text-right control-label'>Select User: </td>");
+                    sbOut.Append("<td class='text-right control-label'><nobr>Select User: </nobr></td>");
                     sbOut.Append("<td class='text-left'>");
                     sbOut.Append("<select class='form-control' id='ddlUsers' name='ddlUsers' onchange='GetUsersProject()'>");
                     sbOut.Append("<option value='0'>Select</option>");
@@ -290,7 +290,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbOut.Append("</select>");
                     sbOut.Append("</td>");
 
-                    sbOut.Append("<td class='text-right control-label'>Select Project: </td>");
+                    sbOut.Append("<td class='text-right control-label'><nobr>Select Project:</nobr></td>");
                     ProjectModel pm = new ProjectModel();
                     DataTable dtAllProjects = new DataTable();
                     if (isSelectedUser != "False")

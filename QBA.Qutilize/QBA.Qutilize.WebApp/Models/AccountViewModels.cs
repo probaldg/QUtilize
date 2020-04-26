@@ -27,7 +27,7 @@ namespace QBA.Qutilize.WebApp.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "User ID")]
+        [Display(Name = "Username")]
         public string UserID { get; set; }
 
         [Required]

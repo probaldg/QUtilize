@@ -19,8 +19,8 @@ hr {
 }
 
 #header {
-    /*color: #009688;*/
-    /*background-color: rgb(255, 216, 0);*/
+    /*color: gainsboro;*/
+    background-color: gainsboro;
     height: 60px;
     width: 100%;
     top: 0;

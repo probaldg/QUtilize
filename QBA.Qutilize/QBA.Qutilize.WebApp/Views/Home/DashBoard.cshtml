@@ -4,7 +4,7 @@
 }
 <div class="row">
 
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="row">
             <div class="col-md-12" id="dashBoardDateRange">
                 @Html.Action("GetDateRange", "Home")
@@ -16,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Sys Admin Data details</h3>
+                            <h3 class="panel-title">Sys Admin Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">Panel content</div>
@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Admin Data details</h3>
+                            <h3 class="panel-title">Admin Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -84,7 +84,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Manager data details</h3>
+                            <h3 class="panel-title">Manager data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -144,7 +144,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Self Data details</h3>
+                            <h3 class="panel-title">Self Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -182,12 +182,10 @@
             </div>
         }
     </div>
-    <div class="col-md-3">
-        @*<div class="box box-info box-solid" style="overflow:scroll;height:205px">
-            <div style="padding: 5px 5px;">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/22d5788d36/kolkata/" data-label_1="KOLKATA" data-label_2="WEATHER" data-theme="original">KOLKATA WEATHER</a>
-            </div>
-        </div>*@
+
+    <!----->
+    @*<div class="col-md-3">
+
         <div class="info-box bg-yellow">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
             <div style="padding: 5px 10px;">
@@ -198,7 +196,7 @@
         <div class="info-box bg-green">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
             <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
+
                 @Html.Action("GetAnniversaryDayDetail", "Home")
             </div>
             <!-- /.info-box-content -->
@@ -213,17 +211,21 @@
         <div class="info-box bg-red">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
             <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
+
                 @Html.Action("GetHoliDayDetail", "Home")
             </div>
             <!-- /.info-box-content -->
-        </div>
-        <div class="box box-info box-solid">
-            <div class="box-body" id="divActiveUserData" style="text-align: left;">
-                @*@Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })*@
-            </div>
-        </div>
-    </div>
+        </div>*@
+    @*<div class="box box-info box-solid">
+                    <div class="box-body" id="divActiveUserData" style="text-align: left;">
+                        @Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })
+                    </div>
+                </div>
+        </div>*@
+
+
+
+
 </div>
 <Text>
 
