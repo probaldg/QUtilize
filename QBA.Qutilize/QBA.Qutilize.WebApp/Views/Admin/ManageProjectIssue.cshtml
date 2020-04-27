@@ -72,8 +72,13 @@
     </div>
     <h4>Manage Tickets</h4>
     <br />
-    <div>
-        <input type="button" value="Add New Ticket" style="float: right;" onclick="AddNewTicket()">
+    <div align="right">
+
+    </div>
+    <div align="right">        
+        <button class="btn btn-primary"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
+        <button class="btn btn-primary"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>        
+        <input type="button" value="Add New Ticket" style="text-align: right;" class="btn btn-primary" onclick="AddNewTicket()">
     </div>
     <div>
         <ul class="nav nav-tabs">
@@ -157,8 +162,8 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader">Create New Ticket</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>                    
+                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader"></h4>                                      
                 </div>
 
                 <div class="modal-body">
@@ -359,7 +364,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader">Change Status Issue</h4>
+                    <h4 class="modal-title" style="color:#626262;" id="hStatusIssueHeader">Change Status Issue</h4>
                 </div>
 
                 <div class="modal-body">
@@ -483,6 +488,7 @@
     <script type="text/javascript">
         function AddNewTicket() {
             clearAllIssueControls();
+            $('#hProjectNameHeader').html("Create New Ticket");
             $('#mymodalForNewTicket').modal('show');
         }
         
@@ -1127,8 +1133,10 @@
                     "IssueId": issueId
                 }),
                  success: function (response) {
+                     
                      //clearAllIssueControls();
                      var IssueObj = JSON.parse(response);
+                     $('#hProjectNameHeader').html("TI" + IssueObj.IssueId + " details");
                      var project_id = IssueObj.ProjectID;
                      AjaxCallGetUserByProject(project_id, IssueObj.StatusID, IssueObj.CompletePercent, IssueObj.UserIdAssigned);
                      //**Get user by project
