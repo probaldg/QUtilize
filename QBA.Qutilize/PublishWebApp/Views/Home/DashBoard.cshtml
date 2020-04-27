@@ -4,7 +4,7 @@
 }
 <div class="row">
 
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="row">
             <div class="col-md-12" id="dashBoardDateRange">
                 @Html.Action("GetDateRange", "Home")
@@ -16,7 +16,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Sys Admin Data details</h3>
+                            <h3 class="panel-title">Sys Admin Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">Panel content</div>
@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Admin Data details</h3>
+                            <h3 class="panel-title">Admin Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -53,7 +53,6 @@
                                 <div class="col-md-12">
                                     @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin", "Home")
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -73,6 +72,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTaskDetailsForAdmin", "Home")
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTicketDetailsForAdmin", "Home")
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +91,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Manager data details</h3>
+                            <h3 class="panel-title">Manager data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -144,7 +151,7 @@
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Self Data details</h3>
+                            <h3 class="panel-title">Self Data</h3>
                             <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
                         </div>
                         <div class="panel-body">
@@ -176,18 +183,24 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTaskDetailsForUser", "Home")
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTicketDetailsForUser", "Home")
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
-    <div class="col-md-3">
-        @*<div class="box box-info box-solid" style="overflow:scroll;height:205px">
-            <div style="padding: 5px 5px;">
-                <a class="weatherwidget-io" href="https://forecast7.com/en/22d5788d36/kolkata/" data-label_1="KOLKATA" data-label_2="WEATHER" data-theme="original">KOLKATA WEATHER</a>
-            </div>
-        </div>*@
+
+    <!----->
+    @*<div class="col-md-3">
+
         <div class="info-box bg-yellow">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
             <div style="padding: 5px 10px;">
@@ -198,7 +211,7 @@
         <div class="info-box bg-green">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
             <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
+
                 @Html.Action("GetAnniversaryDayDetail", "Home")
             </div>
             <!-- /.info-box-content -->
@@ -213,24 +226,28 @@
         <div class="info-box bg-red">
             <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
             <div style="padding: 5px 10px;">
-                @*class="info-box-content"*@
+
                 @Html.Action("GetHoliDayDetail", "Home")
             </div>
             <!-- /.info-box-content -->
-        </div>
-        <div class="box box-info box-solid">
-            <div class="box-body" id="divActiveUserData" style="text-align: left;">
-                @*@Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })*@
-            </div>
-        </div>
-    </div>
+        </div>*@
+    @*<div class="box box-info box-solid">
+                    <div class="box-body" id="divActiveUserData" style="text-align: left;">
+                        @Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })
+                    </div>
+                </div>
+        </div>*@
+
+
+
+
 </div>
 <Text>
 
 </Text>
 @*<script>
-    !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
-</script>*@
+        !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
+    </script>*@
 <script>
     $(document).ready(function () {
         $('#tblAppraisalRating').DataTable({
@@ -345,6 +362,106 @@
 
 
         });
+        $('#TableForDaywiseTicketDetails').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTaslDetails').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTaslDetailsUser').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTicketDetailsUser').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
         $('#TableuserWiseDetailsInMinutesForPM').DataTable({
             // "pageLength": 10,
             "aaSorting": [],
@@ -401,7 +518,7 @@
 
 
         });
-         
+
         @*setInterval(function () {
             var date = new Date();
             var day = date.getDate();       // yields date
@@ -418,6 +535,27 @@
     });
 
 
+
+    @if(Session["DateRange"] != null)
+    {
+        string[] arrdate = Session["DateRange"].ToString().Split('|');
+        <Text>
+
+            var selecteduser ="@arrdate[5]";
+            var selectedproject = "@arrdate[4]";
+
+
+        </text>
+    }
+    else
+    {
+        <Text>
+            var selecteduser = "False";
+    var selectedproject = "False";
+
+        </text>
+    }
+
     $(document).ready(function () {
         //$(".datepicker").datepicker();
         $('#txtStartDate').datepicker();
@@ -432,6 +570,76 @@
         gerBarChartDataPM();
         getDayWiseDetailsinMinutesForAdmin();
     });
+
+    function GetUsersProject() {
+        if (selectedproject == "False") {
+            var Userid = document.getElementById("ddlUsers").value;
+         try {
+
+            $.ajax({
+                url: '@Url.Action("getProjectsByUserID", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    userid: Userid
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        console.log(JSON.stringify(response));
+                        $("#ddlProjects").empty();
+                        $("#ddlProjects").append('<option value="0">Select</option>');
+                        var jsonObj = response;
+                        for (obj in jsonObj) {
+                            console.log(jsonObj[obj]["ProjectID"]);
+                            $("#ddlProjects").append('<option value="' + jsonObj[obj]["ProjectID"] + '">' + jsonObj[obj]["ProjectName"]+'</option>');
+                        }
+                        selecteduser = "True";
+
+                    }
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+        }
+    }
+
+    function GetProjectUsers() {
+        if (selecteduser == "False") {
+            var projectID = document.getElementById("ddlProjects").value;
+            try {
+
+                $.ajax({
+                    url: '@Url.Action("getUsersbyProjectID", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        projectID: projectID
+                    }),
+                    success: function (response) {
+                        if (response != "") {
+                            console.log(JSON.stringify(response));
+                            $("#ddlUsers").empty();
+                            $("#ddlUsers").append('<option value="0">Select</option>');
+                            var jsonObj = response;
+                            for (obj in jsonObj) {
+                                console.log(jsonObj[obj]["ID"]);
+                                $("#ddlUsers").append('<option value="' + jsonObj[obj]["ID"] + '">' + jsonObj[obj]["Name"] + '</option>');
+                            }
+                            selectedproject = "True";
+                        }
+                    }
+                });
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+    }
+
     $(document).on('click', '.panel-heading span.clickable', function (e) {
         var $this = $(this);
         if (!$this.hasClass('panel-collapsed')) {
@@ -696,6 +904,32 @@
          }
         catch (e) {}
     }
+    function ResetData() {
+
+        $.ajax({
+                url: '@Url.Action("GetResetData", "Home")',
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+
+                }),
+            success: function (response) {
+                if (response != "") {
+                    //alert(response);
+                    $("#dashBoardDateRange").empty();
+                    $("#dashBoardDateRange").html(response);
+                    $('#txtStartDate').datepicker();
+                    $('#txtEndDate').datepicker();
+                    var url = '@Url.Action("DashBoard", "Home")';
+                        window.location.href = url;
+                }
+            }
+           });
+        selecteduser = false;
+        selectedproject = false;
+
+    }
     function RefreshData() {
         try {
             var vStartDate = $('#txtStartDate').val();
@@ -714,7 +948,7 @@
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({
-                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject
+                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject, selectedproject: selectedproject, selecteduser: selecteduser
                 }),
                 success: function (response) {
                     if (response != "") {
@@ -731,6 +965,7 @@
                         $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
                         var url = '@Url.Action("DashBoard", "Home")';
                         window.location.href = url;
+
                     }
                 }
             });

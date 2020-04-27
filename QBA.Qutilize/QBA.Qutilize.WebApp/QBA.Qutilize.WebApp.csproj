@@ -327,6 +327,7 @@
     <Content Include="Images\Qutilize.png" />
     <Content Include="Images\Qutilize_Old.png" />
     <Content Include="Images\Qutilize_SM.jpg" />
+    <Content Include="Images\Qutilize_SM.png" />
     <Content Include="Images\smalllogo.png" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

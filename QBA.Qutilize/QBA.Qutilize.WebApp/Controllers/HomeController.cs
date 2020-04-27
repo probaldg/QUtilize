@@ -379,7 +379,80 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Content(sbContent.ToString());
         }
+        public ActionResult GetTableForTicketDetailsForAdmin()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[4] != null && ds.Tables[4].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>Project wise Ticket status :</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableForDaywiseTicketDetails' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr>" +
+                    "<th class='text-center tblHeaderColor'>Project</th>" +
+                    "<th class='text-center tblHeaderColor'>OPEN</th>" +
+                    "<th class='text-center tblHeaderColor'>INPROGRESS</th>" +
+                    "<th class='text-center tblHeaderColor'>CLOSED</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
 
+                for (int i = 0; i < ds.Tables[4].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[4].Rows[i]["projectName"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[4].Rows[i]["OPEN"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[4].Rows[i]["INPROGRESS"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[4].Rows[i]["CLOSED"] + "</span></td>");
+                    sbContent.Append("</tr>");
+                }
+
+
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetTableForTaskDetailsForAdmin()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[5] != null && ds.Tables[5].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>Project wise Task status :</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableForDaywiseTaslDetails' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr>" +
+                    "<th class='text-center tblHeaderColor'>Project</th>" +
+                    "<th class='text-center tblHeaderColor'>OPEN</th>" +
+                    "<th class='text-center tblHeaderColor'>INPROGRESS</th>" +
+                    "<th class='text-center tblHeaderColor'>COMPLETED</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
+
+                for (int i = 0; i < ds.Tables[5].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[5].Rows[i]["projectName"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[5].Rows[i]["OPEN"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[5].Rows[i]["INPROGRESS"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[5].Rows[i]["CLOSED"] + "</span></td>");
+                    sbContent.Append("</tr>");
+                }
+
+
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
+            return Content(sbContent.ToString());
+        }
         public ActionResult GetTableForDaywisedetailsinMinuteForPM()
         {
             StringBuilder sbContent = new StringBuilder();
@@ -523,6 +596,80 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
             }
             catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetTableForTicketDetailsForUser()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[6] != null && ds.Tables[6].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>Project wise Ticket status :</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableForDaywiseTicketDetailsUser' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr>" +
+                    "<th class='text-center tblHeaderColor'>Project</th>" +
+                    "<th class='text-center tblHeaderColor'>OPEN</th>" +
+                    "<th class='text-center tblHeaderColor'>INPROGRESS</th>" +
+                    "<th class='text-center tblHeaderColor'>CLOSED</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
+
+                for (int i = 0; i < ds.Tables[6].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[6].Rows[i]["projectName"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[6].Rows[i]["OPEN"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[6].Rows[i]["INPROGRESS"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[6].Rows[i]["CLOSED"] + "</span></td>");
+                    sbContent.Append("</tr>");
+                }
+
+
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetTableForTaskDetailsForUser()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            DataSet ds = (DataSet)Session["DashBoardDetail"];
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[7] != null && ds.Tables[7].Rows.Count > 0)
+            {
+                sbContent.Append("<div class='panel panel-info'>");
+                sbContent.Append("<div class='panel-heading'><label>Project wise Task status :</label></div>");
+                sbContent.Append("<div class='panel-body'>");
+                sbContent.Append("<div class='table-responsive'>");
+                sbContent.Append("<table id='TableForDaywiseTaslDetailsUser' class='table table-bordered dataTable no-footer' width='100%'>");
+                sbContent.Append("<thead><tr>" +
+                    "<th class='text-center tblHeaderColor'>Project</th>" +
+                    "<th class='text-center tblHeaderColor'>OPEN</th>" +
+                    "<th class='text-center tblHeaderColor'>INPROGRESS</th>" +
+                    "<th class='text-center tblHeaderColor'>COMPLETED</th></tr></thead>");
+                sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
+
+                for (int i = 0; i < ds.Tables[7].Rows.Count; i++)
+                {
+                    sbContent.Append("<tr>");
+                    sbContent.Append("<td><span class='control-text'>" + ds.Tables[7].Rows[i]["projectName"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[7].Rows[i]["OPEN"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[7].Rows[i]["INPROGRESS"] + "</span></td>" +
+                        "<td><span class='control-text'>" + ds.Tables[7].Rows[i]["CLOSED"] + "</span></td>");
+                    sbContent.Append("</tr>");
+                }
+
+
+                sbContent.Append("</tbody>");
+                sbContent.Append("</table>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+                sbContent.Append("</div>");
+            }
             return Content(sbContent.ToString());
         }
         public JsonResult GetDonutChartData()

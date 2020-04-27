@@ -53,7 +53,6 @@
                                 <div class="col-md-12">
                                     @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin", "Home")
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -71,6 +70,14 @@
                                             <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTaskDetailsForAdmin", "Home")
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTicketDetailsForAdmin", "Home")
                                 </div>
                             </div>
                         </div>
@@ -176,6 +183,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTaskDetailsForUser", "Home")
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.Action("GetTableForTicketDetailsForUser", "Home")
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,8 +246,8 @@
 
 </Text>
 @*<script>
-    !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
-</script>*@
+        !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
+    </script>*@
 <script>
     $(document).ready(function () {
         $('#tblAppraisalRating').DataTable({
@@ -347,6 +362,106 @@
 
 
         });
+        $('#TableForDaywiseTicketDetails').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTaslDetails').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTaslDetailsUser').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
+        $('#TableForDaywiseTicketDetailsUser').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'User wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+
+
+        });
         $('#TableuserWiseDetailsInMinutesForPM').DataTable({
             // "pageLength": 10,
             "aaSorting": [],
@@ -429,7 +544,7 @@
             var selecteduser ="@arrdate[5]";
             var selectedproject = "@arrdate[4]";
 
-    
+
         </text>
     }
     else
@@ -437,7 +552,7 @@
         <Text>
             var selecteduser = "False";
     var selectedproject = "False";
-    
+
         </text>
     }
 
