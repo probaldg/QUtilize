@@ -29,7 +29,7 @@ namespace QBA.Qutilize.WebApp.Models
 
         [Display(Name = "Start Date")]
         public string IssueStartDateDisplay { get; set; }
-        public DateTime IssueEndDate { get; set; }
+        public DateTime  IssueEndDate { get; set; }
 
         [Display(Name = "End Date")]
         public string IssueEndDateDisplay { get; set; }
@@ -76,6 +76,12 @@ namespace QBA.Qutilize.WebApp.Models
         public string Timespent { get; set; }
         public double Duration { get; set; }
 
+        [Display(Name = "Expected Time")]
+        public string ExpectedTime { get; set; }
+        public double ExpectedDuration { get; set; }
+
+        public DateTime TodayDate { get; set; }
+        public DateTime OneDayBeforeDate { get; set; }
 
         public DateTime? ActualIssueEndDate { get; set; }
 
@@ -90,7 +96,7 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime EditedTS { get; set; }
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
-
+        public DateTime ss { get; set;}
         public ProjectIssueModel()
         {
            
@@ -245,8 +251,9 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
-                    new SqlParameter("@UserIds",model.UserIdAssigned)
-
+                    new SqlParameter("@UserIds",model.UserIdAssigned),
+                 
+                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0)
 
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Insert", param);
@@ -314,7 +321,11 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@EditedBY",model.EditedBy),
                     new SqlParameter("@EditedTS",model.EditedTS),
-                    new SqlParameter("@UserIds",model.UserIdAssigned)
+                    new SqlParameter("@UserIds",model.UserIdAssigned),
+                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0)
+
+                
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Update", param);
 
