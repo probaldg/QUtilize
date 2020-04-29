@@ -452,14 +452,21 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
-        public ActionResult LoadStatus()
+        public ActionResult LoadStatus(int IssueId)
         {
+            ProjectIssueModel issueModel = new ProjectIssueModel();
             try
             {
-                    ProjectIssueModel issueModel = new ProjectIssueModel();
+                   
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                  
-                    DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
+                    DataTable dtIssueData = issueModel.GetProjectIssueByIssueId(IssueId);
+
+                issueModel.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
+                issueModel.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
+
+                //return Json(JsonConvert.SerializeObject(issueModel));
+
+                DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
                     strStatusData += "<option value = 0>Please select</option>";
                     if (dt.Rows.Count > 0)
                     {
@@ -476,7 +483,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 //throw;
              }
 
-            return Json(strStatusData);
+            return Json(strStatusData+'|'+ JsonConvert.SerializeObject(issueModel));
         }
         public ActionResult GetTask(int ProjID)
         {
@@ -716,12 +723,33 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
+                    string ExpecterdHours = item["ExpectedTime"].ToString();
+                    string bgcolor = "#FFF";
+                    if (ExpecterdHours != "")
+                    {
+                        string[] Arr = new string[2];
+                        Arr = ExpecterdHours.Split('.');  
+                        ExpecterdHours = Arr[0] + ':' + Arr[1];
+                       
+                    }
+                    obj.TodayDate = System.DateTime.Now;
+                    obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
+                    obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
+                    if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF0000";
+                    }
+                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date== obj.TodayDate.Date) ) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF8C00";
+                    }
+
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                    
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
-                    strUserData.Append("<tr>");
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + "'>");
                     strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
@@ -729,6 +757,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append(" <td class='text-center'>" +item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
+
+                    strUserData.Append("<td class='text-center'>" + ExpecterdHours + "</td>");
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -848,12 +878,32 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
+                    string bgcolor = "#FFF";
+                    string ExpecterdHours = item["ExpectedTime"].ToString();
+                    if (ExpecterdHours != "")
+                    {
+                        string[] Arr = new string[2];
+                        Arr = ExpecterdHours.Split('.');
+                        ExpecterdHours = Arr[0] + ':' + Arr[1];
+                    }
+                    obj.TodayDate = System.DateTime.Now;
+                    obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
+                    obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
+                    if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF0000";
+                    }
+                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF8C00";
+                    }
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
 
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
-                    strUserData.Append("<tr>");
+
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + "'>");
                     strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
@@ -861,6 +911,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append(" <td class='text-center'>" + item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + ExpecterdHours + "</td>");
+
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -1499,6 +1551,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
                     ViewBag.IssuestartDate = dtIssueData.Rows[0]["IssueStartDate"].ToString();
                     ViewBag.IssueEndDate = dtIssueData.Rows[0]["IssueEndDate"].ToString();
+
+                    string ExpecterdHours = dtIssueData.Rows[0]["ExpectedTime"].ToString();
+                    if (ExpecterdHours != "")
+                    {
+                        string[] Arr = new string[2];
+                        Arr = ExpecterdHours.Split('.');
+                        ViewBag.ExpectedTime = Arr[0] + ':' + Arr[1];
+                    }
+
+                    
+
                     ViewBag.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueStartDateActual"] : (DateTime?)null;
                     ViewBag.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueEndDateActual"] : (DateTime?)null;
@@ -1579,8 +1642,22 @@ namespace QBA.Qutilize.WebApp.Controllers
                     projectIssue.IssueDescription = dtIssueData.Rows[0]["IssueDescription"].ToString() ?? "";
                     projectIssue.ProjectName =dtIssueData.Rows[0]["ProjectName"].ToString();
                     projectIssue.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
+
                     projectIssue.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
                     projectIssue.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
+
+                    string ExpecterdHours  = dtIssueData.Rows[0]["ExpectedTime"].ToString();
+                  
+                    if (ExpecterdHours != "")
+                    {
+                        string[] Arr = new string[2];
+                       
+                        Arr = ExpecterdHours.Split('.');   // your input string
+                       
+
+                        projectIssue.ExpectedTime = Arr[0] + ':' + Arr[1];
+                    }
+
                     //projectIssue.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     projectIssue.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
                     projectIssue.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
