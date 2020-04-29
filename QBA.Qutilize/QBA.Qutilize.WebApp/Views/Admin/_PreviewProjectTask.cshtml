@@ -1,0 +1,74 @@
+﻿
+<div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:15px">
+    <div class='panel panel-default'>
+        <div class='panel-heading'><h4> Task Details</h4></div>
+        <table class="table table-bordered myTable" id="tblGridListViewPost1">
+            <tr>
+                <td><b>Task ID</b></td>
+                <td>@ViewBag.TaskId</td>
+                <td><b>Task Code</b></td>
+                <td>@ViewBag.TaskCode</td>
+
+            </tr>
+            <tr>
+                <td><b>Task Name</b></td>
+                <td>@ViewBag.TaskName</td>
+                <td><b>Parent Task</b></td>
+                <td>@ViewBag.ParentTaskName</td>
+            </tr>
+            <tr>
+                <td><b>Project Name</b></td>
+                <td colspan="3">@ViewBag.ProjectName</td>
+            </tr>
+            @*<tr>
+                <td><b>Ticket Description</b></td>
+                <td colspan="3">@ViewBag.IssueDescription</td>
+            </tr>*@
+            <tr>
+                <td><b>Task Start Date</b></td>
+                <td>@ViewBag.TaskStartDate</td>
+                <td><b>Task End Date</b></td>
+                <td>@ViewBag.TaskEndDate</td>
+            </tr>
+
+            <tr>
+                <td><b>Acutal Task Start Date</b></td>
+                <td>@ViewBag.ActualTaskStartDate</td>
+                <td><b>Actual Task End Date</b></td>
+                <td>@ViewBag.ActualTaskEndDate</td>
+            </tr>
+
+            <tr>
+                <td><b>Is Milestone</b></td>
+                <td>@ViewBag.IsMilestone</td>
+                <td><b>Percentage complete</b></td>
+                <td>@ViewBag.CompletePercent</td>
+            </tr>
+
+            <tr>
+                <td><b>Task Status</b></td>
+                <td>@ViewBag.TaskStatusName</td>
+                <td><b>Active</b></td>
+                <td>@ViewBag.IsActive</td>
+            </tr>
+            <tr>
+                <td><b>User Assigned</b></td>
+                <td colspan="3">@ViewBag.UserNameAssigned</td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Is Value Added?</b>
+                </td>
+                <td colspan="3">
+                    @ViewBag.IsValueAdded
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+    @*<div>
+        @Html.Action("LoadCommentsForIssues", "Admin", new { id = ViewBag.ID })
+    </div>*@
+</div>
+

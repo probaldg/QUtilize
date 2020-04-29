@@ -77,6 +77,7 @@ namespace QBA.Qutilize.WebApp.Models
         public bool IsActive { get; set; }
         public bool IsValueAdded { get; set; }
         public bool? IsMilestone { get; set; }
+        public string DirectoryName { get; set; }
 
         public string UserIdsTaskAssigned { get; set; }
         public string UserNameTaskAssigned { get; set; }
@@ -218,6 +219,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
+                    new SqlParameter("@DirectoryName",model.DirectoryName),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
                     new SqlParameter("@UserIds",model.UserIdsTaskAssigned)

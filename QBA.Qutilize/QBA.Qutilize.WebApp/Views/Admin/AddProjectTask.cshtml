@@ -70,12 +70,21 @@
             @strMsgforErr
         </div>
     </div>
+
+
+
     <h4>Add Project Task</h4>
     <br />
+    <div align="right">
+        <button class="btn btn-primary"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
+        <button class="btn btn-primary"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>
+        <input type="button" value="Add New Project Task" style="text-align: right;" class="btn btn-primary" onclick="AddNewProjectTask()">
+    </div>
+
     <div>
         <ul class="nav nav-tabs">
             <li class="active">
-                <a href="#tab1" style="font-weight:bold; font-size:medium">Task created</a>
+                <a href="#tab1" style="font-weight:bold; font-size:medium">Task created by  @HttpContext.Current.Session["Name"].ToString()</a>
             </li>
             <li>
                 <a href="#tab2" style="font-weight:bold; font-size:medium">Task assigned to me</a>
@@ -106,6 +115,7 @@
                             <th class="text-center tblHeaderColor sorting">Percentage Complete</th>
                             <th class="text-center tblHeaderColor sorting">IsMilestone</th>
                             <th class="text-center tblHeaderColor sorting">Edit</th>
+                            <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
                     <tbody id="tBosyTaskList">
@@ -137,6 +147,7 @@
                             <th class="text-center tblHeaderColor sorting">Percentage Complete</th>
                             <th class="text-center tblHeaderColor sorting">IsMilestone</th>
                             <th class="text-center tblHeaderColor sorting">Change Task Status</th>
+                            <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
                     <tbody id="tBosyTaskList">
@@ -147,6 +158,207 @@
         </div>
     </section>
     <div class="col-md-12"><br /></div>
+    <div id="mymodalForNewTask" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader"></h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="col-md-12"><br /></div>
+                    <div class="form-horizontal col-md-12">
+                        <div class="alert alert-success alert-dismissible" role="alert" id="divSaveSuccess" style="display:none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            Data Saved Successfully.
+                        </div>
+                    </div>
+                    <div class="form-horizontal col-md-12">
+                        <div class="alert alert-danger alert-dismissable fade in" id="ErrorMsg" name="ErrorMsg" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
+                            <span id="errormsg"></span>
+                        </div>
+                    </div>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        
+
+                    <div class="form-horizontal col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProjectTask.TaskId)
+                        <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
+                                @Html.HiddenFor(model => model.ActiveProjectID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
+                                @Html.HiddenFor(model => model.ProjectTypeID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskCode, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsMilestone, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="ProjectTask_IsMilestone" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10" id="divUserDDL">
+                                @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
+                                <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
+                                <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.ProjectTask.IsActive)
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.ProjectTask.IsValueAdded)
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.IsValueAdded, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Attchments</label>
+                            <div class="col-md-10">
+                                <div class='col-md-12' id='my-dropzoneUp'>
+                                    <div class='col-md-12'>
+                                        <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        }
+
+                    </div>
+
+                <div class="modal-footer">
+                    <input type="button" id="btnProjectTaskSave" class="btn btn-default" value="Submit">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+
     <div id="mymodal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <input type="hidden" id="SelectedProjectId" />
@@ -219,7 +431,7 @@
                                     @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                         
+
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
@@ -264,155 +476,57 @@
         </div>
     </div>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <h4>Project Task Details</h4>
-
-        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.ProjectTask.TaskId)
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
-                    @Html.HiddenFor(model => model.ActiveProjectID)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
-                    @Html.HiddenFor(model => model.ProjectTypeID)
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.TaskName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.TaskName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.TaskCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.TaskCode, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.TaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.TaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.TaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.IsMilestone, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        <input type="checkbox" id="ProjectTask_IsMilestone" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10" id="divUserDDL">
-                    @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
-                    <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
-                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
+    <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog-big" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel2"></h4>
                 </div>
 
-            </div>
+                <div class="modal-body" id="previewSection">
 
 
-            <div class="form-group">
-                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
                 </div>
-            </div>
+
+            </div><!-- modal-content -->
+        </div><!-- modal-dialog -->
+    </div><!-- modal -->
 
 
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplay, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.ProjectTask.IsActive)
-                        @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ProjectTask.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="checkbox">
-                        @Html.EditorFor(model => model.ProjectTask.IsValueAdded)
-                        @Html.ValidationMessageFor(model => model.ProjectTask.IsValueAdded, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-
-    }
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="button" id="btnProjectTaskSave" class="btn btn-default" value="Submit">
-        </div>
-    </div>
 
     <script type="text/javascript">
+        function AddNewProjectTask() {
+            clearAllTaskControls();
+            $('#hProjectNameHeader').html("Create New Project Task");
+            $('#mymodalForNewTask').modal('show');
+        }
+
+
+        function ShowPopupforPreview(TaskID)
+        {
+            $.ajax({
+                url: '@Url.Action("previewProjectTask", "Admin")',
+                type: "POST",
+                dataType: "html",
+                contentType: "application/json; charset=utf-8",
+                //data: { s_People_ID: People_ID },
+                data: JSON.stringify({
+                    "TaskID": TaskID
+                }),
+                success: function (response) {
+                    $('#publishedModal').modal('show');
+                    $('#previewSection').html(response);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+
          function ShowPopupforChangeStatus(Taskid, StatusID,Taskcode,Taskname) {
              $('#ProjectTask_TaskIdforstatus').val(Taskid);
-            
+
             document.getElementById("ErrorMsgTaskpopup").innerHTML = "";
             document.getElementById("ErrorMsgTaskpopup").style.display = 'none';
             $.ajax({
@@ -429,7 +543,7 @@
                      $('#ddlTaskStatusChange').val(StatusID);
                      $('#ProjectTask_TaskCodeforChangeStatus').val(Taskcode);
                      $('#ProjectTask_TaskNameforChangeStatus').val(Taskname);
-                    
+
                      $('#mymodal').modal('show');
 
                  },
@@ -707,8 +821,8 @@
 
             var IsMilestone = $('#ProjectTask_IsMilestone').is(':checked');
             var userIds = $('#UserIdsInString').val();
-           
 
+            var DirectoryName = $("#FileDirectory").val();
             var validationStatus = ProjectTask_validateTaskSave()
 
             if (validationStatus != true)
@@ -737,7 +851,8 @@
                 "IsMilestone": IsMilestone,
                 "TaskStatusID": taskStatusId,
                 "UserIdsTaskAssigned": userIds,
-                "IsValueAdded": IsValueAdded
+                "IsValueAdded": IsValueAdded,
+                "DirectoryName": DirectoryName
             };
 
             $.ajax({
@@ -804,7 +919,7 @@
 
                      var taskObj = JSON.parse(response);
                      var project_id = taskObj.ProjectID;
-
+                     $('#hProjectNameHeader').html("Task " + taskObj.TaskId + " details");
                      AjaxCallGetUserByProject(project_id, taskObj.TaskStatusID, taskObj.CompletePercent, taskObj.UserIdsTaskAssigned);
                      //**Get user by project
                      $('#ProjectTask_TaskId').val(taskObj.TaskId)
@@ -862,7 +977,11 @@
                      //$('#UserIdsInString').val(userIds);
 
                      //$('#ddlTaskStatus').val(taskObj.TaskStatusID);
-
+                     setTimeout(function () {
+                         $('#ddlUsersAssigned').multiselect('deselectAll', false);
+                        // $('#ddlUsersAssigned').multiselect('updateButtonText');
+                         $('#mymodalForNewTask').modal('show');
+                     }, 5000);
 
                 },
                 error: function (response) {
@@ -875,6 +994,8 @@
         }
 
         function clearAllTaskControls() {
+            $('#ActiveProjectList').prop('selectedIndex', 0);
+            $('#ProjectTypeList').prop('selectedIndex', 0);
             $('#ProjectTask_TaskId').val('');
             $('#ProjectTask_TaskName').val('');
             $('#ProjectTask_TaskCode').val('');
@@ -909,7 +1030,7 @@
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplay').val();
             var taskStatus = $('#ddlTaskStatus').val();
             //
-           
+
             if (projectID == "") {
                 ProjectTask_ShowTaskErrorMessage('Project is required..')
                 $('#ActiveProjectList').focus();
@@ -1184,7 +1305,7 @@
             var TaskStatusId = $('#ddlTaskStatusChange').val();
             var Comment = $('#ProjectTask_Comment').val();
             //  var Timespent = $('#ProjectIssue_Timespent').val();
-            
+
             if (TaskStatusId <= 0) {
                 document.getElementById("ErrorMsgTaskpopup").innerHTML = "Please select Status ";
                 document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
@@ -1204,7 +1325,7 @@
                 return false;
 
             }
-           
+
 
 
 
@@ -1218,7 +1339,7 @@
                 "ActualTaskEndDateDisplayforstatus": actualEndDate,
                  "TaskStatusID": TaskStatusId,
                  "Comment": Comment
-               
+
 
             };
 
@@ -1242,6 +1363,89 @@
                     }
             });
         });
+
+        var DirectoryName = "";
+        if (document.getElementById("FileDirectory").value != "") {
+            DirectoryName = document.getElementById("FileDirectory").value;
+        } else {
+            DirectoryName = "";
+        }
+
+        Dropzone.options.myDropzone = {
+            url: "/Admin/ProjectTaskAttachments",
+            autoProcessQueue: true,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            acceptedFiles: "image/*,.pdf,.doc,.docx,.xlsx,.xls",
+            async: true,
+
+            init: function () {
+
+
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("DirectoryName", $("#FileDirectory").val());
+
+
+                });
+
+                //var submitButton = document.querySelector("input[name ='Command']");
+                var wrapperThis = this;
+                wrapperThis.processQueue();
+                $("#dropzoneJsForm").submit();
+                //submitButton.addEventListener("click", function (event) {
+                //    $(".overlay").show();
+                //    event.preventDefault(event);
+                //    wrapperThis.processQueue();
+
+                //    setTimeout(function () {
+                //        $("#dropzoneJsForm").submit();
+                //    }, 6000);
+
+
+                //    return false;
+                //});
+
+
+                this.on("addedfile", function (file) {
+                    document.getElementById("btnProjectTaskSave").disabled = true;
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
+
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function (e) {
+                        // Make sure the button click doesn't submit the form:
+                        //e.defaultPrevented();
+                        //e.stopPropagation();
+
+                        // Remove the file preview.
+                        wrapperThis.removeFile(file);
+                        // If you want to the delete the file on the server as well,
+                        // you can do the AJAX request here.
+                    });
+
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                });
+
+                //this.on('sendingmultiple', function (data, xhr, formData) {
+                //    formData.append("TravelRequestID", $("#TravelRequestID").val());
+                //});
+                this.on("success", function (file, response) {
+                    //alert(file);
+                    // or however you would point to your assigned file ID here;
+                    //alert(JSON.stringify(response));
+                    document.getElementById("FileDirectory").value = JSON.stringify(response);
+                    document.getElementById("btnProjectTaskSave").disabled = false;
+                    // console should show the ID you pointed to
+                    // do stuff with file.id ...
+                });
+            }
+
+        };
+
+
+
     </script>
 
     <script type="text/javascript">

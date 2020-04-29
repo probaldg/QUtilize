@@ -195,6 +195,8 @@
     <Compile Include="Models\ProjectIssueModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectStatusModel.cs" />
+    <Compile Include="Models\ProjectTaskAttachmentModel.cs" />
+    <Compile Include="Models\ProjectTaskCommentModel.cs" />
     <Compile Include="Models\ProjectTaskModel.cs" />
     <Compile Include="Models\ReportModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
@@ -907,6 +909,7 @@
     <Content Include="Views\Shared\_ViewStartPrivate.cshtml" />
     <Content Include="Views\Admin\AddProjectTask.cshtml" />
     <Content Include="Views\Admin\_PreviewProjectIssue.cshtml" />
+    <Content Include="Views\Admin\_PreviewProjectTask.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

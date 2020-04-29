@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 namespace QBA.Qutilize.WebApp.Controllers
@@ -685,7 +686,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                          strUserData.Append("<td class='text-center'></td>");
 
                     }
-
+                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='ShowPopupforPreview(" + item["TaskID"].ToString() + ")'>View</a> </td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -815,7 +816,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         strUserData.Append("<td class='text-center'></td>");
                     }
-
+                    strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforPreview({0});"">View</td>", Convert.ToInt32(item["TaskID"]));
                     strUserData.Append("</tr>");
 
                 }
@@ -1479,6 +1480,101 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+        public ActionResult previewProjectTask(int taskId)
+        {            
+            ProjectTaskModel task = new ProjectTaskModel();
+
+            try
+            {
+
+                DataTable dtTaskData = task.GetProjectTasksByTaskId(taskId);
+                if (dtTaskData.Rows.Count > 0)
+                {
+
+                    ViewBag.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
+                    ViewBag.TaskCode = dtTaskData.Rows[0]["TaskCode"].ToString() ?? "";
+                    ViewBag.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
+                    ViewBag.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
+                    ViewBag.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
+                    ViewBag.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
+                    ViewBag.ProjectID = Convert.ToInt32(dtTaskData.Rows[0]["ProjectID"]);
+                    ViewBag.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]).ToString("dd/MM/yyyy");
+                    ViewBag.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]).ToString("dd/MM/yyyy"); ;
+                    ViewBag.IsMilestone = (dtTaskData.Rows[0]["isMilestone"] != System.DBNull.Value) ? Convert.ToBoolean(dtTaskData.Rows[0]["isMilestone"]) : (bool?)null;
+                    ViewBag.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
+                    ViewBag.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
+                    ViewBag.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
+                    ViewBag.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
+                    ViewBag.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
+                    ViewBag.IsValueAdded = Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
+                    ViewBag.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
+                    string usernameassigned = string.Empty;
+                    foreach (DataRow item in dtTaskData.Rows)
+                    {
+                        UserModel userModel = new UserModel
+                        {
+                            ID = Convert.ToInt32(item["UserID"]),
+                            Name = item["UserName"].ToString(),
+                            IsActive = Convert.ToBoolean(item["IsUserActive"])
+
+                        };
+
+                        task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
+                        usernameassigned += (item["UserName"]).ToString() + ", ";
+                        task.UserList.Add(userModel);
+                    }
+                    usernameassigned = usernameassigned.TrimEnd(',');
+                    ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 2, 2);
+                    // task.TaskList.Add(task);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
+            return PartialView("_PreviewProjectTask");
+        }
+
+        [HttpPost]
+        public JsonResult ProjectTaskAttachments()
+        {
+            string fName = "";
+            string Directory = "";
+            string FolderName = Request.Form["DirectoryName"].ToString();
+            if (FolderName != "")
+            {
+                Directory = FolderName.Replace("\"", string.Empty).Trim();
+            }
+            else
+            {
+                Directory = DateTime.Now.Ticks.ToString();
+            }
+
+            foreach (string imageFile in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[imageFile];
+                fName = file.FileName;
+                int id = 0;
+                int pressID = 0;
+                if (file != null && file.ContentLength > 0)
+                {
+                    var originalDirectory = new DirectoryInfo(string.Format("{0}ProjectTaskAttachments", Server.MapPath(@"\")));
+                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
+                    var fileName = file.FileName;
+                    bool isExists = System.IO.Directory.Exists(pathString);
+                    if (!isExists)
+                        System.IO.Directory.CreateDirectory(pathString);
+                    var path = string.Format("{0}\\{1}", pathString, fileName);
+                    file.SaveAs(path);
+                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                }
+            }
+            return Json(Directory);
+        }
+
         public ActionResult previewIssue(int IssueId)
         {
             ProjectIssueModel projectIssue = new ProjectIssueModel();
@@ -1694,8 +1790,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplay);
 
-                    }
-
+                    }                    
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
@@ -1704,6 +1799,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         if (id > 0)
                         {
+
+
+
                             result = "Success";
                         }
                     }
