@@ -399,111 +399,127 @@
                     @using (Html.BeginForm())
                     {
 
-                        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
+                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
+                        <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
 
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.IssueCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.IssueCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCodeforChangeStatus, "", new { @class = "text-danger" })
-                                </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.IssueCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.IssueCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCodeforChangeStatus, "", new { @class = "text-danger" })
                             </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.IssueNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.IssueNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueNameforChangeStatus, "", new { @class = "text-danger" })
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.IssueNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.IssueNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueNameforChangeStatus, "", new { @class = "text-danger" })
                             </div>
-                            <div class="form-group">
-                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <select id="ddlIssueStatusChange" class="form-control"><option value="0">Select</option></select>
-                                </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlIssueStatusChange" class="form-control"><option value="0">Select</option></select>
                             </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                @Html.LabelFor(model => model.ProjectIssue.Timespent, htmlAttributes: new { @class = "control-label col-md-2 " })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.Timespent, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.Timespent, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectIssue.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.Comment, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.Comment, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-
                         </div>
 
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            @Html.LabelFor(model => model.ProjectIssue.Timespent, htmlAttributes: new { @class = "control-label col-md-2 " })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.Timespent, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.Timespent, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.Comment, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectIssue.url, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectIssue.url, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectIssue.url, "", new { @class = "text-danger" })
+                            </div>s
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Attachments", htmlAttributes: new { @class = "control-label col-md-2" })
+
+
+                            <div class="col-md-10" id="my-dropzoneUp">
+                                <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
+                                    <div class='fallback'>
+                                        <input name='file' type='file' multiple />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     }
+                                    <div class="modal-footer">
+                                        <input type="button" id="btnStatusUpdate" class="btn btn-default" value="Submit">
 
-                </div>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
 
-                <div class="modal-footer">
-                    <input type="button" id="btnStatusUpdate" class="btn btn-default" value="Submit">
+                                </div>
 
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+                            </div>
 
-            </div>
-
+                        </div>
         </div>
 
-    </div>
+                        <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog-big" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel2"></h4>
+                                    </div>
 
-    <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog-big" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel2"></h4>
-                </div>
-
-                <div class="modal-body" id="previewSection">
+                                    <div class="modal-body" id="previewSection">
 
 
-                </div>
+                                    </div>
 
-            </div><!-- modal-content -->
-        </div><!-- modal-dialog -->
-    </div><!-- modal -->
-
-    
+                                </div><!-- modal-content -->
+                            </div><!-- modal-dialog -->
+                        </div><!-- modal -->
 
 
 
-    <script type="text/javascript">
+
+
+                        <script type="text/javascript">
         function AddNewTicket() {
-           
+
             clearAllIssueControls();
             $('#hProjectNameHeader').html("Create New Ticket");
-          
+
             $('#mymodalForNewTicket').modal('show');
         }
-        
+
         function PreviewTheIssueDetails(IssueId)
         {
             $.ajax({
@@ -550,10 +566,13 @@
                      $('#ddlIssueStatusChange').val(StatusID);
                      $('#ProjectIssue_IssueCodeforChangeStatus').val(Issuecode);
                      $('#ProjectIssue_IssueNameforChangeStatus').val(Issuename);
+                        $("#ProjectIssue_url").val('');
+                        $("#FileDirectory").val('');
+
                      $("#ProjectIssue_ActualIssueStartDateDisplayforstatus").val('');
                      $("#ProjectIssue_ActualIssueEndDateDisplayforstatus").val('');
                      $("#ProjectIssue_ActualIssueEndDateDisplayforstatus").removeAttr('disabled');
-                        $("#ProjectIssue_ActualIssueStartDateDisplayforstatus").attr("disabled", "disabled"); 
+                        $("#ProjectIssue_ActualIssueStartDateDisplayforstatus").attr("disabled", "disabled");
                         if (IssueObj.ActualIssueStartDate != null) {
                             $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueStartDate));
                         }
@@ -561,7 +580,7 @@
                             $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueEndDate));
                         }
                         $('#mymodal').modal('show');
-                      
+
                         var IssueStatus = $("#ddlIssueStatusChange option:selected").text();
                         $('#ddlIssueStatusChange').change(function () {
                          var ChangedStatus = $("#ddlIssueStatusChange option:selected").text();
@@ -572,10 +591,10 @@
                          systemDATE = mm + '/' + dd + '/' + yyyy;
 
                          if (IssueStatus == "OPEN") {
-    
+
                              $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val(systemDATE)
-                             
-                           
+
+
                          }
                          if (ChangedStatus == "CLOSED") {
 
@@ -592,9 +611,6 @@
                 });
 
         }
-
-       
-      
 
         function ValidateActualEndDateForStatus() {
             var startDate = $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val();
@@ -649,7 +665,7 @@
 
             var startDate = $('#ProjectIssue_IssueStartDateDisplay').val();
             var endDate = $('#ProjectIssue_IssueEndDateDisplay').val();
-          
+
 
             var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplay').val();
             var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplay').val();
@@ -697,8 +713,8 @@
                 return false;
             }
 
-          
-           
+
+
             if (SeverityId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select Severity ";
                 document.getElementById("ErrorMsg").style.display = 'block';
@@ -754,7 +770,7 @@
 
 
 
-        
+
 
 
          //Issue Status Update
@@ -765,6 +781,9 @@
             var IssueStatusId = $('#ddlIssueStatusChange').val();
             var Comment = $('#ProjectIssue_Comment').val();
             var Timespent = $('#ProjectIssue_Timespent').val();
+            var url = $('#ProjectIssue_url').val();
+            var vDirectoryName = $("#FileDirectory").val();
+           
 
             if (IssueStatusId <= 0) {
                 document.getElementById("ErrorMsgTask").innerHTML = "Please select Status ";
@@ -805,10 +824,12 @@
                 "ActualIssueEndDateDisplayforstatus": actualEndDate,
                  "StatusID": IssueStatusId,
                  "Comment": Comment,
-                 "Duration": Timespent
+                 "Duration": Timespent,
+                 "URL": url,
+                 "DirectoryName": vDirectoryName
 
             };
-
+            alert(vDirectoryName);
             $.ajax({
                 url: '@Url.Action("UpdateStatusIssue", "Admin")',
                 type: "POST",
@@ -903,8 +924,8 @@
                 $('#ProjectIssue_ExpectedTime').focus();
                 return false;
             }
-            
-          
+
+
 
             if (SeverityId <= 0) {
                 document.getElementById("errormsg").innerHTML = "Please select Severity ";
@@ -932,7 +953,7 @@
 
                 return false;
             }
-          
+
             var hms = ExpectedTime;   // your input string
             var a = hms.split(':'); // split it at the colons
 
@@ -1139,7 +1160,7 @@
                                             }
 
 
-                                  var userIds = UserIdAssigned;      
+                                  var userIds = UserIdAssigned;
                                   //alert(userIds)
                                   var selectedOptions = UserIdAssigned.split(',');
                                   for (i = 0; i < selectedOptions.length; i++) {
@@ -1169,7 +1190,7 @@
             $('#ProjectIssue_ActualIssueStartDateDisplay').val('');
             $('#ProjectIssue_ActualIssueEndDateDisplay').val('');
             $('#ProjectIssue_ExpectedTime').val('');
-          
+
             $('#UserIdsInString').val('');
             $('#ddlIssueStatus').val(0);
             $('#SeverityList').val(0);
@@ -1212,7 +1233,7 @@
                     "IssueId": issueId
                 }),
                  success: function (response) {
-                     
+
                      //clearAllIssueControls();
                      var IssueObj = JSON.parse(response);
                      $('#hProjectNameHeader').html("TI" + IssueObj.IssueId + " details");
@@ -1283,147 +1304,231 @@
         }
         //End**
 
-    </script>
-    <script type="text/javascript">
-        function activaTab() {
+                        </script>
+                        <script type="text/javascript">
+                            function activaTab() {
 
-            var active_tab_selector = "#tab1";
+                                var active_tab_selector = "#tab1";
 
-            //find actived navigation and remove 'active' css
-            //  var actived_nav = "#tab1";
-            // actived_nav.removeClass('active');
+                                //find actived navigation and remove 'active' css
+                                //  var actived_nav = "#tab1";
+                                // actived_nav.removeClass('active');
 
-            //add 'active' css into clicked navigation
-            $(this).parents('li').addClass('active');
+                                //add 'active' css into clicked navigation
+                                $(this).parents('li').addClass('active');
 
-            //hide displaying tab content
-            $(active_tab_selector).removeClass('active');
-            $(active_tab_selector).addClass('hide');
-            alert(active_tab_selector);
-            //show target tab content
-            var target_tab_selector = "#tab2";
-            $(target_tab_selector).removeClass('hide');
-            $(target_tab_selector).addClass('active');
-            alert(target_tab_selector);
-        };
+                                //hide displaying tab content
+                                $(active_tab_selector).removeClass('active');
+                                $(active_tab_selector).addClass('hide');
+                                alert(active_tab_selector);
+                                //show target tab content
+                                var target_tab_selector = "#tab2";
+                                $(target_tab_selector).removeClass('hide');
+                                $(target_tab_selector).addClass('active');
+                                alert(target_tab_selector);
+                            };
 
-    </script>
+                        </script>
 
+                        <script type="text/javascript">
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.nav-tabs > li > a').click(function (event) {
-                event.preventDefault();//stop browser to take action for clicked anchor
+                            var DirectoryName = "";
+                            if (document.getElementById("FileDirectory").value != "") {
+                                DirectoryName = document.getElementById("FileDirectory").value;
+                            } else {
+                                DirectoryName = "";
+                            }
 
-                //get displaying tab content jQuery selector
-                var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+                            Dropzone.options.myDropzone = {
+                                url: "/Admin/IssueAttachments",
+                                autoProcessQueue: true,
+                                uploadMultiple: true,
+                                parallelUploads: 100,
+                                maxFiles: 100,
+                                acceptedFiles: "image/*,.pdf,.doc,.docx,.xlsx,.xls",
+                                async: true,
 
-                //find actived navigation and remove 'active' css
-                var actived_nav = $('.nav-tabs > li.active');
-                actived_nav.removeClass('active');
-
-                //add 'active' css into clicked navigation
-                $(this).parents('li').addClass('active');
-
-                //hide displaying tab content
-                $(active_tab_selector).removeClass('active');
-                $(active_tab_selector).addClass('hide');
-
-                //show target tab content
-                var target_tab_selector = $(this).attr('href');
-                $(target_tab_selector).removeClass('hide');
-                $(target_tab_selector).addClass('active');
-
-            });
-        });
-    </script>
-    <style>
-        /** Start: to style navigation tab **/
-        .nav {
-            margin-bottom: 18px;
-            margin-left: 0;
-            list-style: none;
-        }
-
-            .nav > li > a {
-                display: block;
-            }
-
-        .nav-tabs {
-            *zoom: 1;
-        }
-
-            .nav-tabs:before,
-            .nav-tabs:after {
-                display: table;
-                content: "";
-            }
-
-            .nav-tabs:after {
-                clear: both;
-            }
-
-            .nav-tabs > li {
-                float: left;
-            }
-
-                .nav-tabs > li > a {
-                    padding-right: 12px;
-                    padding-left: 12px;
-                    margin-right: 2px;
-                    line-height: 14px;
-                }
-
-        .nav-tabs {
-            border-bottom: 1px solid #ddd;
-        }
-
-            .nav-tabs > li {
-                margin-bottom: -1px;
-            }
-
-                .nav-tabs > li > a {
-                    padding-top: 8px;
-                    padding-bottom: 8px;
-                    line-height: 18px;
-                    border: 1px solid transparent;
-                    -webkit-border-radius: 4px 4px 0 0;
-                    -moz-border-radius: 4px 4px 0 0;
-                    border-radius: 4px 4px 0 0;
-                }
-
-                    .nav-tabs > li > a:hover {
-                        border-color: #eeeeee #eeeeee #dddddd;
-                    }
-
-            .nav-tabs > .active > a,
-            .nav-tabs > .active > a:hover {
-                color: #555555;
-                cursor: default;
-                background-color: #ffffff;
-                border: 1px solid #ddd;
-                border-bottom-color: transparent;
-            }
-
-        li {
-            line-height: 18px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .tab-content.hide {
-            display: none;
-        }
+                                init: function () {
 
 
-        /** End: to style navigation tab **/
+                                    this.on("sending", function (file, xhr, formData) {
+                                        formData.append("DirectoryName", $("#FileDirectory").val());
 
-        .ui-timepicker-container {
-            z-index: 3500 !important;
-        }
-    </style>
+
+                                    });
+
+                                    //var submitButton = document.querySelector("input[name ='Command']");
+                                    var wrapperThis = this;
+                                    wrapperThis.processQueue();
+                                    $("#dropzoneJsForm").submit();
+
+                                    //submitButton.addEventListener("click", function (event) {
+                                    //    $(".overlay").show();
+                                    //    event.preventDefault(event);
+                                    //    wrapperThis.processQueue();
+
+                                    //    setTimeout(function () {
+                                    //        $("#dropzoneJsForm").submit();
+                                    //    }, 6000);
+
+
+                                    //    return false;
+                                    //});
+
+
+                                    this.on("addedfile", function (file) {
+                                        alert(file);
+                                        document.getElementById("btnStatusUpdate").disabled = true;
+                                        // Create the remove button
+                                        var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
+
+                                        // Listen to the click event
+                                        removeButton.addEventListener("click", function (e) {
+                                            // Make sure the button click doesn't submit the form:
+                                            //e.defaultPrevented();
+                                            //e.stopPropagation();
+                                           
+                                            // Remove the file preview.
+                                            wrapperThis.removeFile(file);
+                                            // If you want to the delete the file on the server as well,
+                                            // you can do the AJAX request here.
+                                        });
+
+                                        // Add the button to the file preview element.
+                                        file.previewElement.appendChild(removeButton);
+                                    });
+
+                                    //this.on('sendingmultiple', function (data, xhr, formData) {
+                                    //    formData.append("TravelRequestID", $("#TravelRequestID").val());
+                                    //});
+                                    this.on("success", function (file, response) {
+                                        alert(file);
+                                        // or however you would point to your assigned file ID here;
+                                        //alert(JSON.stringify(response));
+                                        document.getElementById("FileDirectory").value = JSON.stringify(response);
+                                        document.getElementById("btnStatusUpdate").disabled = false;
+                                        // console should show the ID you pointed to
+                                        // do stuff with file.id ...
+                                    });
+                                }
+
+                            };
+                     
+                         </script>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                $('.nav-tabs > li > a').click(function (event) {
+                                    event.preventDefault();//stop browser to take action for clicked anchor
+
+                                    //get displaying tab content jQuery selector
+                                    var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+
+                                    //find actived navigation and remove 'active' css
+                                    var actived_nav = $('.nav-tabs > li.active');
+                                    actived_nav.removeClass('active');
+
+                                    //add 'active' css into clicked navigation
+                                    $(this).parents('li').addClass('active');
+
+                                    //hide displaying tab content
+                                    $(active_tab_selector).removeClass('active');
+                                    $(active_tab_selector).addClass('hide');
+
+                                    //show target tab content
+                                    var target_tab_selector = $(this).attr('href');
+                                    $(target_tab_selector).removeClass('hide');
+                                    $(target_tab_selector).addClass('active');
+
+                                });
+                            });
+                        </script>
+                        <style>
+                            /** Start: to style navigation tab **/
+                            .nav {
+                                margin-bottom: 18px;
+                                margin-left: 0;
+                                list-style: none;
+                            }
+
+                                .nav > li > a {
+                                    display: block;
+                                }
+
+                            .nav-tabs {
+                                *zoom: 1;
+                            }
+
+                                .nav-tabs:before,
+                                .nav-tabs:after {
+                                    display: table;
+                                    content: "";
+                                }
+
+                                .nav-tabs:after {
+                                    clear: both;
+                                }
+
+                                .nav-tabs > li {
+                                    float: left;
+                                }
+
+                                    .nav-tabs > li > a {
+                                        padding-right: 12px;
+                                        padding-left: 12px;
+                                        margin-right: 2px;
+                                        line-height: 14px;
+                                    }
+
+                            .nav-tabs {
+                                border-bottom: 1px solid #ddd;
+                            }
+
+                                .nav-tabs > li {
+                                    margin-bottom: -1px;
+                                }
+
+                                    .nav-tabs > li > a {
+                                        padding-top: 8px;
+                                        padding-bottom: 8px;
+                                        line-height: 18px;
+                                        border: 1px solid transparent;
+                                        -webkit-border-radius: 4px 4px 0 0;
+                                        -moz-border-radius: 4px 4px 0 0;
+                                        border-radius: 4px 4px 0 0;
+                                    }
+
+                                        .nav-tabs > li > a:hover {
+                                            border-color: #eeeeee #eeeeee #dddddd;
+                                        }
+
+                                .nav-tabs > .active > a,
+                                .nav-tabs > .active > a:hover {
+                                    color: #555555;
+                                    cursor: default;
+                                    background-color: #ffffff;
+                                    border: 1px solid #ddd;
+                                    border-bottom-color: transparent;
+                                }
+
+                            li {
+                                line-height: 18px;
+                            }
+
+                            .tab-content.active {
+                                display: block;
+                            }
+
+                            .tab-content.hide {
+                                display: none;
+                            }
+
+
+                            /** End: to style navigation tab **/
+
+                            .ui-timepicker-container {
+                                z-index: 3500 !important;
+                            }
+                        </style>
 
 </body>
 </html>
