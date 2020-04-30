@@ -1535,11 +1535,13 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult previewProjectTask(int taskId)
         {            
             ProjectTaskModel task = new ProjectTaskModel();
-
+            ProjectTaskAttachmentModel attachment = new ProjectTaskAttachmentModel();
             try
             {
 
                 DataTable dtTaskData = task.GetProjectTasksByTaskId(taskId);
+                DataTable dtTaskAttachment = attachment.GetProjectTasksAttachments(taskId);
+
                 if (dtTaskData.Rows.Count > 0)
                 {
 
@@ -1561,23 +1563,89 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.IsValueAdded = Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
                     ViewBag.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
                     string usernameassigned = string.Empty;
+                    
+
+                    
+                    
+                    int i = 0;
                     foreach (DataRow item in dtTaskData.Rows)
                     {
-                        UserModel userModel = new UserModel
-                        {
-                            ID = Convert.ToInt32(item["UserID"]),
-                            Name = item["UserName"].ToString(),
-                            IsActive = Convert.ToBoolean(item["IsUserActive"])
+                        
+                                UserModel userModel = new UserModel
+                                {
 
-                        };
+                                    ID = Convert.ToInt32(item["UserID"]),
+                                    Name = item["UserName"].ToString(),
+                                    IsActive = Convert.ToBoolean(item["IsUserActive"])
 
-                        task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
-                        usernameassigned += (item["UserName"]).ToString() + ", ";
-                        task.UserList.Add(userModel);
-                    }
+
+
+                                };
+
+
+                                task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
+                                usernameassigned += (item["UserName"]).ToString() + ", ";
+                                task.UserList.Add(userModel);
+                            }
+                        //}
+                        //else
+                        //{
+                        //    UserModel userModel = new UserModel
+                        //    {
+
+                        //        ID = Convert.ToInt32(item["UserID"]),
+                        //        Name = item["UserName"].ToString(),
+                        //        IsActive = Convert.ToBoolean(item["IsUserActive"])
+                        //    };
+
+
+                        //    task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
+                        //    usernameassigned += (item["UserName"]).ToString() + ", ";
+                        //    task.UserList.Add(userModel);
+                        //}
+                       
+                        
+                        
+
+                        
+                    
                     usernameassigned = usernameassigned.TrimEnd(',');
                     ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 2, 2);
-                    // task.TaskList.Add(task);
+                    
+                    if (dtTaskAttachment.Rows.Count > 0)
+                    {
+                        string AttachmentName = string.Empty;
+                        string path = string.Empty;
+                        string URL = string.Empty;
+                        string URLs = dtTaskAttachment.Rows[0]["URL"].ToString();
+                        string[] URLlist = URLs.Split(',');
+
+                        foreach(string url in URLlist)
+                        {
+                            URL+= "<a class='img' target='_blank'   href = '" + url +"' > " + URL + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+
+                        ViewBag.URL = URL;
+
+                        if (dtTaskAttachment.Rows[0]["DirectoryName"] != null)
+                        {
+                            path = Server.MapPath("~/ProjectTaskAttachments/" + dtTaskAttachment.Rows[0]["DirectoryName"].ToString());
+                        }
+
+                        if (Directory.Exists(path))
+                        {
+                            foreach(DataRow item in dtTaskAttachment.Rows)
+                            {
+                                AttachmentName += "<a class='img' target='_blank'  data-fancybox href = '/ProjectTaskAttachments/" + dtTaskAttachment.Rows[0]["DirectoryName"].ToString() + "/" + item["AttachmentName"].ToString() + "' > " + item["AttachmentName"].ToString() + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                            }
+                            
+                        }
+                        ViewBag.AttachmentName = AttachmentName;
+                    }
+
+
+                   // foreach()
+                   // task.TaskList.Add(task);
                 }
 
             }
@@ -1593,6 +1661,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         [HttpPost]
         public JsonResult ProjectTaskAttachments()
         {
+            ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
             string fName = "";
             string Directory = "";
             string FolderName = Request.Form["DirectoryName"].ToString();
@@ -1609,7 +1678,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             {
                 HttpPostedFileBase file = Request.Files[imageFile];
                 fName = file.FileName;
-                int id = 0;
+                int id = 0;                
                 int pressID = 0;
                 if (file != null && file.ContentLength > 0)
                 {
@@ -1621,7 +1690,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                         System.IO.Directory.CreateDirectory(pathString);
                     var path = string.Format("{0}\\{1}", pathString, fileName);
                     file.SaveAs(path);
+                    tpam.ProjectTaskID = 0;
+                    tpam.DirectoryName = Directory;
+                    tpam.AttachmentName = fileName;
+                    tpam.AddedTS = DateTime.Now;
+                    tpam.AddedBy = loggedInUser;
+
                     //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                    tpam.InsertAttachmentdata(tpam, out id);
                 }
             }
             return Json(Directory);
@@ -1895,9 +1971,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         if (id > 0)
                         {
+                            if (model.DirectoryName != null)
+                            {
+                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
 
-
-
+                                ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
+                                ptam.ProjectTaskID = id;
+                                ptam.URL = model.URL;
+                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+                            }
+                            
+                            
                             result = "Success";
                         }
                     }

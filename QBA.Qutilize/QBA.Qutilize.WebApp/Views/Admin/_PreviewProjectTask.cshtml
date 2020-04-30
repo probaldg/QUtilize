@@ -63,7 +63,20 @@
                     @ViewBag.IsValueAdded
                 </td>
             </tr>
-
+            <tr>
+                <td><b>Attachments<b></td>
+                <td colspan="3">
+                    @Html.Raw(ViewBag.AttachmentName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>URL</b>
+                </td>
+                <td colspan="3">
+                    @Html.Raw(ViewBag.URL)
+                </td>
+            </tr>
         </table>
     </div>
 
