@@ -331,10 +331,18 @@
                                         <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.URL, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.URL, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
                     </div>
                         }
 
@@ -823,6 +831,9 @@
             var userIds = $('#UserIdsInString').val();
 
             var DirectoryName = $("#FileDirectory").val();
+            alert(DirectoryName);
+            var URL = $("#ProjectTask_URL").val();
+            
             var validationStatus = ProjectTask_validateTaskSave()
 
             if (validationStatus != true)
@@ -852,7 +863,8 @@
                 "TaskStatusID": taskStatusId,
                 "UserIdsTaskAssigned": userIds,
                 "IsValueAdded": IsValueAdded,
-                "DirectoryName": DirectoryName
+                "DirectoryName": DirectoryName,
+                "URL":URL
             };
 
             $.ajax({

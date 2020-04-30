@@ -87,6 +87,8 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime AddedTS { get; set; }
         public DateTime EditedTS { get; set; }
 
+        public string URL { get; set; }
+
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
 
@@ -218,8 +220,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@StatusID",model.TaskStatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@isACTIVE",model.IsActive),
-                    new SqlParameter("@isValueAdded",model.IsValueAdded),
-                    new SqlParameter("@DirectoryName",model.DirectoryName),
+                    new SqlParameter("@isValueAdded",model.IsValueAdded),                    
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
                     new SqlParameter("@UserIds",model.UserIdsTaskAssigned)
