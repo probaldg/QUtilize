@@ -1707,7 +1707,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + dt.Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ dt.Rows[i]["Comment"].ToString() + "</p></div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + dt.Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ dt.Rows[i]["Comment"].ToString() + "</p>";
+
+                    if (dt.Rows[i]["DirectoryName"].ToString().Trim() != "")
+                    {
+                        string path = Server.MapPath("~/IssueAttachments/" + dt.Rows[i]["DirectoryName"].ToString());
+                        if (Directory.Exists(path))
+                        {
+                            DirectoryInfo di = new DirectoryInfo(path);
+                            strCommentDiv+= "<p><b>Attachments:</b>" ;
+                            foreach (FileInfo fi in di.GetFiles())
+                            {
+                                
+                                strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + dt.Rows[i]["DirectoryName"].ToString() + "/" + fi.Name.ToString() + "' >" + fi.Name.ToString() + " </ a > </p> ";
+                            }
+                            
+
+                        }
+
+                    }
+                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
@@ -1974,8 +1993,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                         model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplayforstatus);
 
                     }
-                    
-
 
                     var updateStatus = model.UpdateIssuestatus(model);
 
@@ -1986,6 +2003,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                         TempData["ErrStatus"] = model.ISErr;
                         TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Success";
+
+
+
+
+
                     }
                     else
                     {
@@ -4164,5 +4186,48 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(sbOut.ToString());
             //return Json(JsonConvert.SerializeObject(MgrList));
         }
+
+        public JsonResult IssueAttachments()
+        {
+            string fName = "";
+            string Directory = "";
+            string FolderName = Request.Form["DirectoryName"].ToString();
+            if (FolderName != "")
+            {
+                Directory = FolderName.Replace("\"", string.Empty).Trim();
+            }
+            else
+            {
+                Directory = DateTime.Now.Ticks.ToString();
+            }
+
+            foreach (string imageFile in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[imageFile];
+                fName = file.FileName;
+                int id = 0;
+                int pressID = 0;
+                if (file != null && file.ContentLength > 0)
+                {
+
+
+                    var originalDirectory = new DirectoryInfo(string.Format("{0}IssueAttachments", Server.MapPath(@"\")));
+                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
+                    var fileName = file.FileName;
+                    bool isExists = System.IO.Directory.Exists(pathString);
+                    if (!isExists)
+                        System.IO.Directory.CreateDirectory(pathString);
+                    var path = string.Format("{0}\\{1}", pathString, fileName);
+
+                    // Stream strm = Request.Files[imageFile].InputStream;
+                    // generateThumbnail.GenerateThumbnails(0.5, strm, path);
+
+                    file.SaveAs(path);
+                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                }
+            }
+            return Json(Directory);
+        }
+
     }
 }

@@ -71,6 +71,10 @@ namespace QBA.Qutilize.WebApp.Models
         public int IssueIdforstatus { get; set; }
         [Display(Name = "Comment")]
         public String Comment { get; set; }
+        [Display(Name = "URL")]
+        public string url { get; set; }
+        
+        public string DirectoryName { get; set; }
 
         [Display(Name = "Time Spent")]
         public string Timespent { get; set; }
@@ -346,6 +350,11 @@ namespace QBA.Qutilize.WebApp.Models
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
+            string FileDirectoryName = "";
+            if (model.DirectoryName != "")
+            { 
+                FileDirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
+             }
 
             try
             {
@@ -358,8 +367,10 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Comment", model.Comment!= null?model.Comment:""),
                     new SqlParameter("@Timespent",model.Duration!=0?model.Duration:0),
                     new SqlParameter("@EditedBY",model.EditedBy),
-                    new SqlParameter("@EditedTS",model.EditedTS)
-                   
+                    new SqlParameter("@EditedTS",model.EditedTS),
+                     new SqlParameter("@url",model.url!=null?model.url:""),
+                    new SqlParameter("@DirectoryName",FileDirectoryName!=null?FileDirectoryName:"")
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_UpdateStatus", param);
 
