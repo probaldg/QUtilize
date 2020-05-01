@@ -910,6 +910,7 @@
     <Content Include="Views\Admin\AddProjectTask.cshtml" />
     <Content Include="Views\Admin\_PreviewProjectIssue.cshtml" />
     <Content Include="Views\Admin\_PreviewProjectTask.cshtml" />
+    <Content Include="Views\Home\DashBoardOld.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

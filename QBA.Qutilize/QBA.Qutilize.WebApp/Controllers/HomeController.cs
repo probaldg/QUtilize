@@ -56,7 +56,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         UserSessionLog mUSL = new UserSessionLog();
                         mUSL.LoggerId = Guid.NewGuid();
-                        mUSL.LogedUserId = (Session["sessUser"]!=null)?Convert.ToInt32(Session["sessUser"]):0;
+                        mUSL.LogedUserId = (Session["sessUser"] != null) ? Convert.ToInt32(Session["sessUser"]) : 0;
                         mUSL.IPAddress = Request.UserHostAddress;
                         mUSL.Application = "Web";
                         mUSL.StartTime = DateTime.Now;
@@ -142,7 +142,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         DataSet dsSess = (DataSet)Session["sessUserAllData"];
                         string strUser = EncryptionHelper.Decryptdata(Request.QueryString["U"]);
                         string strPass = EncryptionHelper.Decryptdata(Request.QueryString["P"]);
-                        if (strUser.Trim()!=string.Empty &&  Convert.ToString(dsSess.Tables[0].Rows[0]["UserName"]).Trim() != strUser)
+                        if (strUser.Trim() != string.Empty && Convert.ToString(dsSess.Tables[0].Rows[0]["UserName"]).Trim() != strUser)
                         {
                             //LoginViewModel lvm = new LoginViewModel();
                             //strPass = EncryptionHelper.ConvertStringToMD5(strPass);
@@ -180,6 +180,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     Session.Add("ManagerName", ds.Tables[0].Rows[0]["ManagerName"]);
                     Session.Add("ManagerEmpCode", ds.Tables[0].Rows[0]["ManagerEmpCode"]);
                     Session.Add("UserGender", ds.Tables[0].Rows[0]["Gender"]);
+                    Session.Add("ORGID", ds.Tables[0].Rows[0]["ORGID"]);
                     if (ds != null && ds.Tables.Count > 0 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
                     {
                         foreach (DataRow dr in ds.Tables[1].Rows)
@@ -203,6 +204,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             { }
             return View();
         }
+        #region Old Dashboard
         public ActionResult GetDateRange()
         {
             StringBuilder sbOut = new StringBuilder();
@@ -220,12 +222,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     int days = day - DayOfWeek.Monday;
                     startdate = DateTime.Now.AddDays(-days);
                     endDate = startdate.AddDays(6);
-                    Session.Add("DateRange", startdate + "|" + endDate + "|" + strUser + "|" + strProject + "|" + isSelectedUser + "|"+ isSelectedProject);
+                    Session.Add("DateRange", startdate + "|" + endDate + "|" + strUser + "|" + strProject + "|" + isSelectedUser + "|" + isSelectedProject);
                 }
                 else
                 {
                     string[] arrdate = Session["DateRange"].ToString().Split('|');
-                    startdate =Convert.ToDateTime(arrdate[0]);
+                    startdate = Convert.ToDateTime(arrdate[0]);
                     endDate = Convert.ToDateTime(arrdate[1]);
                     strUser = arrdate[2];
                     strProject = arrdate[3];
@@ -233,7 +235,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     isSelectedUser = arrdate[5].ToString();
                 }
                 LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate,strUser,  strProject);
+                DataSet ds = lvm.GetDashBoardData(Convert.ToInt32(Session["sessUser"]), startdate, endDate, strUser, strProject);
                 if (ds != null && ds.Tables.Count > 0 && ((ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) || (ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0) || (ds.Tables[2] != null && ds.Tables[2].Rows.Count > 0) || (ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)))
                 {
                     Session.Add("DashBoardDetail", ds);
@@ -263,10 +265,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                             {
                                 UserModel um = new UserModel();
                                 um.ActiveMemberList = um.Get_GetProjectMembersByProjectID(Convert.ToInt32(strProject));
-                                foreach(var member in um.ActiveMemberList)
+                                foreach (var member in um.ActiveMemberList)
                                 {
                                     if (strUser == Convert.ToString(member.ID))
-                                        sbOut.Append("<option value='" +member.ID + "' selected>" + member.Name + "</option>");
+                                        sbOut.Append("<option value='" + member.ID + "' selected>" + member.Name + "</option>");
                                     else
                                         sbOut.Append("<option value='" + member.ID + "'>" + member.Name + "</option>");
                                 }
@@ -282,8 +284,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         sbOut.Append("<option value='" + dt.Rows[i]["Id"] + "'>" + dt.Rows[i]["Name"] + "</option>");
                                 }
                             }
-                            
-                            
+
+
                         }
                     }
                     catch (Exception ex) { }
@@ -301,7 +303,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         dtAllProjects = pm.GetAllProjects(UIH.UserOrganisationID);
                     }
-                    
+
                     sbOut.Append("<td class='text-left'>");
                     sbOut.Append("<select class='form-control' id='ddlProjects' name='ddlProjects' onchange='GetProjectUsers()'>");
                     sbOut.Append("<option value='0'>Select</option>");
@@ -348,7 +350,6 @@ namespace QBA.Qutilize.WebApp.Controllers
             { }
             return Content(sbOut.ToString());
         }
-
         public ActionResult GetTableForDaywisedetailsinMinuteForAdmin()
         {
             StringBuilder sbContent = new StringBuilder();
@@ -362,15 +363,15 @@ namespace QBA.Qutilize.WebApp.Controllers
                 sbContent.Append("<table id='TableuserWiseDetailsInMinutes' class='table table-bordered dataTable no-footer' width='100%'>");
                 sbContent.Append("<thead><tr><th class='text-center tblHeaderColor'>Date</th><th class='text-center tblHeaderColor'>Employee</th><th class='text-center tblHeaderColor'>Project</th><th class='text-center tblHeaderColor'>Total Hours(HH:MM:SS)</th><th style='display: none;'>Total Sec</th></tr></thead>");
                 sbContent.Append("<tbody id='tbodyuserWiseDetailsInMinutes'>");
-                
-                for(int i = 0; i < ds.Tables[3].Rows.Count; i++)
+
+                for (int i = 0; i < ds.Tables[3].Rows.Count; i++)
                 {
                     sbContent.Append("<tr>");
                     sbContent.Append("<td><span class='control-text'>" + ds.Tables[3].Rows[i]["Date"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["UserName"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["projectName"] + "</span></td><td><span class='control-text'>" + ds.Tables[3].Rows[i]["hms"] + "</span></td><td style='display: none;'>" + ds.Tables[3].Rows[i]["totalSec"] + "</td>");
                     sbContent.Append("</tr>");
                 }
-                
-                
+
+
                 sbContent.Append("</tbody>");
                 sbContent.Append("</table>");
                 sbContent.Append("</div>");
@@ -534,7 +535,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                         dss.data = arrData;
                         //"#" + ((1 << 24) * Math.random() | 0).toString(16)
-                        dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length> arrrayProj.Length)? arrrayDate.Length: arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
+                        dss.backgroundColor = GetBackColor(arrbg, intColor, ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length));// new string[] { arrbg[intColor] };// new string[] { "#" + ((1 << 24) * new Random().Next() | 0).ToString("16") };
                         dss.borderColor = new string[] { "#020219", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.backgroundColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
                         //dss.borderColor = new string[] { "#FF0000", "#800000", "#808000", "#008080", "#800080", "#0000FF", "#000080", "#999999", "#E9967A", "#CD5C5C", "#1A5276", "#27AE60" };
@@ -726,20 +727,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                 for (int i = 0; i < DataLen; i++)
                 {
                     //if (counter == DataLen) counter = 0;
-                     arrRet[i] = arrOrg[counter];
+                    arrRet[i] = arrOrg[counter];
                     //counter++;
                 }
             }
             return arrRet;
         }
-        public ActionResult GetRefreshedData(string startdate, string endDate, string User, string Project,bool selectedproject,bool selecteduser)
+        public ActionResult GetRefreshedData(string startdate, string endDate, string User, string Project, bool selectedproject, bool selecteduser)
         {
             StringBuilder sbContent = new StringBuilder();
             try
             {
                 Session.Remove("DashBoardDetail");
                 if (Session["DateRange"] == null) Session.Remove("DateRange");
-                Session.Add("DateRange", startdate + "|" + endDate + "|" + User + "|" + Project+ "|" + selectedproject + "|" + selecteduser);
+                Session.Add("DateRange", startdate + "|" + endDate + "|" + User + "|" + Project + "|" + selectedproject + "|" + selecteduser);
                 sbContent.Append("Reload");
             }
             catch (Exception exx) { }
@@ -748,20 +749,18 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         public ActionResult GetResetData()
         {
-            StringBuilder sbContent = new StringBuilder();            
+            StringBuilder sbContent = new StringBuilder();
             try
             {
-                
+
                 Session.Remove("DashBoardDetail");
                 if (Session["DateRange"] != null) Session.Remove("DateRange");
-                var DateRangeContent= GetDateRange() as ContentResult;                
+                var DateRangeContent = GetDateRange() as ContentResult;
                 sbContent.Append(DateRangeContent.Content);
             }
             catch (Exception exx) { }
             return Json(sbContent.ToString());
         }
-
-
         public ActionResult GetProjectsAssociatedWithYou()
         {
             StringBuilder sbContent = new StringBuilder();
@@ -863,17 +862,13 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(sbContent.ToString());
         }
 
-
-
         public ActionResult getProjectsByUserID(int userid)
         {
-            
+
             ProjectModel obj = new ProjectModel();
             obj.ActiveProjectList = obj.Get_ActiveProjectMappedwithUser(userid);
             return Json(obj.ActiveProjectList);
         }
-
-
         public ActionResult getUsersbyProjectID(int projectID)
         {
 
@@ -891,7 +886,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (Session["DashBoardDetail"] != null)
                 {
                     DataSet ds = (DataSet)Session["DashBoardDetail"];
-                    if (ds!=null && ds.Tables.Count>0 && ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[3] != null && ds.Tables[3].Rows.Count > 0)
                     {
                         #region No of Projects
                         DataView view = new DataView(ds.Tables[3]);
@@ -927,9 +922,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sumObject = ds.Tables[3].Compute("Sum(totalSec)", string.Empty);
                         TimeSpan t = TimeSpan.FromSeconds(Convert.ToDouble(sumObject));
                         string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
-                                        (t.Days*24)+t.Hours,
+                                        (t.Days * 24) + t.Hours,
                                         t.Minutes//,
-                                        //t.Seconds
+                                                 //t.Seconds
                                         );//t.Milliseconds
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-yellow'>");
@@ -945,11 +940,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                         #endregion
                         #region Utilize %
                         distinctValues = view.ToTable(true, "Date");
-                        
+
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble((t.Days * 24) + t.Hours) / Convert.ToDouble(distinctValues.Rows.Count * 8)) * 100)/(view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble((t.Days * 24) + t.Hours) / Convert.ToDouble(distinctValues.Rows.Count * 8)) * 100) / (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
@@ -1032,7 +1027,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             try
                             {
-                                DataTable dtFilter = ds.Tables[3].Select("projectName = '" + arrrayProj[i]+"'").CopyToDataTable();
+                                DataTable dtFilter = ds.Tables[3].Select("projectName = '" + arrrayProj[i] + "'").CopyToDataTable();
                                 object sumObject;
                                 sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                 int totalSec = Convert.ToInt32(sumObject);
@@ -1083,7 +1078,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         _chart.labels = arrrayDate;
                         _chart.datasets = new List<Datasets>();
                         List<Datasets> _dataSet = new List<Datasets>();
-                        List<string> arrbg1 =new List<string>();
+                        List<string> arrbg1 = new List<string>();
                         var random = new Random();
                         for (int iColor = 0; iColor < ((arrrayDate.Length > arrrayProj.Length) ? arrrayDate.Length : arrrayProj.Length); iColor++)
                         {
@@ -1108,7 +1103,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     object sumObject;
                                     sumObject = dtFilter.Compute("Sum(totalSec)", string.Empty);
                                     int totalSec = Convert.ToInt32(sumObject);
-                                    arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600)/60).ToString();
+                                    arrData[i] = (totalSec / 3600).ToString() + "." + ((totalSec % 3600) / 60).ToString();
                                     //arrData[i] = (totalSec / 60).ToString() + "." + (totalSec % 60).ToString();
                                     //if (result.Length > 0)
                                     //{
@@ -1187,7 +1182,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         string answer = string.Format("{0:D2}h:{1:D2}m",//:{2:D2}s:{3:D3}ms
                                         (t.Days * 24) + t.Hours,
                                         t.Minutes//,
-                                        //t.Seconds
+                                                 //t.Seconds
                                         );//t.Milliseconds
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-yellow'>");
@@ -1206,7 +1201,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<div class='col-lg-3 col-xs-6'>");
                         sbContent.Append("<div class='small-box bg-red'>");
                         sbContent.Append("<div class='inner'>");
-                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 8 * 60 * 60)) * 100)/ (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
+                        sbContent.Append("<h3>" + (Convert.ToDouble((Convert.ToDouble(sumObject) / Convert.ToDouble(distinctValues.Rows.Count * 8 * 60 * 60)) * 100) / (view.ToTable(true, "userID").Rows.Count)).ToString("0.##") + " % " + "</h3>");
                         sbContent.Append("<p>Total Utilization</p>");
                         sbContent.Append("</div>");
                         sbContent.Append("<div class='icon'>");
@@ -1463,7 +1458,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<marquee direction='up' onmouseover='this.stop();' onmouseout='this.start();' scrolldelay='150'><ul>");
                         foreach (DataRow dr in ds.Tables[7].Rows)
                         {
-                            try {
+                            try
+                            {
                                 sbContent.Append("<li><b>" + dr["Heading"] + "</b><br>" + dr["Description"] + "</li><br>");
                             }
                             catch (Exception exx) { }
@@ -1485,7 +1481,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 if (Session["sessUser"] != null)
                 {
                     LoginViewModel objLoginViewModel = new LoginViewModel();
-                    DateTime dtCurr = Convert.ToDateTime(CurrDate.Replace("_"," "));// DateTime.ParseExact(CurrDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    DateTime dtCurr = Convert.ToDateTime(CurrDate.Replace("_", " "));// DateTime.ParseExact(CurrDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                     DataSet ds = objLoginViewModel.GetOnlineUser(Convert.ToInt32(Session["sessUser"]), dtCurr);
                     if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                     {
@@ -1509,7 +1505,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     }
                                     sbContent.Append("<span class='btn btn-info user-image' style='font-size:15px;border-radius: 50%; color:white;'>" + strShortName + "</span>");
                                     string strTimeElapsed = "";
-                                    int intElapsedHr = Convert.ToInt32(dr["TimeLeft"])/60;
+                                    int intElapsedHr = Convert.ToInt32(dr["TimeLeft"]) / 60;
                                     if (Convert.ToInt32(dr["TimeLeft"]) < (8 * 60))
                                     {
                                         sbContent.Append("<div class='green_icon'></div>");
@@ -1530,7 +1526,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                     }
                                     sbContent.Append("</div>");
                                     sbContent.Append("<div class='col-md-9'>");
-                                    sbContent.Append("" + Convert.ToString(dr["UserName"]) + "<br><b>Working on:</b>" + Convert.ToString(dr["ProjectName"]) + "<br>"+ strTimeElapsed + "<br>");//
+                                    sbContent.Append("" + Convert.ToString(dr["UserName"]) + "<br><b>Working on:</b>" + Convert.ToString(dr["ProjectName"]) + "<br>" + strTimeElapsed + "<br>");//
                                     sbContent.Append("</div>");
                                     sbContent.Append("</div>");
                                 }
@@ -1546,5 +1542,184 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(sbContent.ToString());
         }
         #endregion
+        #endregion
+
+        public ActionResult GetSelfTask()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardSelfTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Assigned | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Task In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardSelfTaskData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardSelfTaskData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetSelfTicket()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardSelfTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Assigned | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Task In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardSelfTicketData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Type</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Severity</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardSelfTicketData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetSelfTimeSheet()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardSelfTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    sbContent.Append("<span class='control-text'><b> Timesheet for current week</b> </span>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardSelfTisheetData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    foreach (DataColumn dc in ds.Tables[0].Columns)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + Convert.ToString(dc.ColumnName) + "</th>");
+                    }
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardSelfTisheetData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++) {
+                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
     }
 }
