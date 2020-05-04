@@ -1623,7 +1623,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                         foreach(string url in URLlist)
                         {
-                            URL+= "<a class='img' target='_blank'   href = '" + url +"' > " + URL + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                            URL+= "<a class='img' target='_blank'   href = '" + url +"' > " + url + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
                         }
 
                         ViewBag.URL = URL;

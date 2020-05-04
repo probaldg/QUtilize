@@ -5,6 +5,7 @@ using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using QBA.Qutilize.WebApp.DAL;
+using System.Data.SqlClient;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -71,7 +72,7 @@ namespace QBA.Qutilize.WebApp.Models
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetDashBoardData(userID,  startDate,  endDate, strUser, strProject);
+                ds = DataAccess.GetDashBoardData(userID, startDate, endDate, strUser, strProject);
             }
             catch (Exception ex)
             {
@@ -80,6 +81,70 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
+        #region DashBoard Data
+        #region DashBoard Data - Self
+        public DataSet GetDashBoardSelfTaskData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_SelfTask_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardSelfTicketData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_SelfTicket_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardSelfTisheetData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_SelfTimesheet_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        #endregion
+        #endregion
         public DataSet GetOnlineUser(int UserID, DateTime CurrDate)
         {
             DataSet dt = null;
@@ -94,12 +159,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return dt;
         }
-        public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate,int ProjectID,int MainUser,string Role)
+        public DataSet GetReportData(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportData(userID, startDate, endDate,ProjectID,MainUser,Role);
+                ds = DataAccess.GetReportData(userID, startDate, endDate, ProjectID, MainUser, Role);
             }
             catch (Exception ex)
             {
@@ -108,12 +173,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role,int OrgID=0)
+        public DataSet GetReportDataProjectWiseSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, string Role, int OrgID = 0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.GetReportDataProjectWiseSummary(userID, startDate, endDate, ProjectID, MainUser, Role,OrgID);
+                ds = DataAccess.GetReportDataProjectWiseSummary(userID, startDate, endDate, ProjectID, MainUser, Role, OrgID);
             }
             catch (Exception ex)
             {
@@ -123,7 +188,7 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID=0)
+        public DataSet GetReportDataProjectWiseCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID = 0)
         {
             DataSet ds = null;
             try
@@ -138,7 +203,7 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID=0)
+        public DataSet GetReportDataResourceUtilizationSummary(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgID = 0)
         {
             DataSet ds = null;
             try
@@ -152,7 +217,7 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId=0)
+        public DataSet GetReportDataResourceCosting(int userID, DateTime startDate, DateTime endDate, int ProjectID, int MainUser, int OrgId = 0)
         {
             DataSet ds = null;
             try
@@ -166,7 +231,7 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet TimeSheet_ByResource_CurrentMonth(int orgid=0)
+        public DataSet TimeSheet_ByResource_CurrentMonth(int orgid = 0)
         {
             DataSet ds = null;
             try
@@ -181,12 +246,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskID,int OrgId=0)
+        public DataSet Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int TaskID, int OrgId = 0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, TaskID,OrgId);
+                ds = DataAccess.Weekly_TimeSheet_ByTask_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, TaskID, OrgId);
             }
             catch (Exception ex)
             {
@@ -196,55 +261,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
 
-        public DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int TaskID,int OrgId=0)
+        public DataSet Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int TaskID, int OrgId = 0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,TaskID,OrgId);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-        //
-        public DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid,int OrgId=0)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid,OrgId);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-        public DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid,int OrgID=0)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid,OrgID);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return ds;
-        }
-        public DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period,int deptid,int projectid,int userid,int OrgId=0)
-        {
-            DataSet ds = null;
-            try
-            {
-                ds = DataAccess.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid,OrgId);
+                ds = DataAccess.Monthly_TimeSheet_ByTask_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid, TaskID, OrgId);
             }
             catch (Exception ex)
             {
@@ -254,13 +276,12 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
         //
-
-        public DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID, int ProjectId, int userid,int OrgId=0)
+        public DataSet Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(int period, int deptid, int userid, int OrgId = 0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientID, ProjectId, userid,OrgId);
+                ds = DataAccess.Weekly_TimeSheet_ByDepartment_CurrentWeekOrPreviousWeek(period, deptid, userid, OrgId);
             }
             catch (Exception ex)
             {
@@ -269,12 +290,12 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid,int OrgId=0)
+        public DataSet Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(int period, int deptid, int projectid, int userid, int OrgID = 0)
         {
             DataSet ds = null;
             try
             {
-                ds = DataAccess.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period,deptid,userid,OrgId);
+                ds = DataAccess.Weekly_TimeSheet_ByProject_CurrentWeekOrPreviousWeek(period, deptid, projectid, userid, OrgID);
             }
             catch (Exception ex)
             {
@@ -283,7 +304,51 @@ namespace QBA.Qutilize.WebApp.Models
 
             return ds;
         }
-        public DataSet TimeSheet_ByResource_PreviousMonth(int orgid= 0)
+        public DataSet Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(int period, int deptid, int projectid, int userid, int OrgId = 0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByProject_CurrentMonthOrPreviousMonth(period, deptid, projectid, userid, OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        //
+
+        public DataSet Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(int period, int clientID, int ProjectId, int userid, int OrgId = 0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByClient_CurrentMonthOrPreviousMonth(period, clientID, ProjectId, userid, OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(int period, int deptid, int userid, int OrgId = 0)
+        {
+            DataSet ds = null;
+            try
+            {
+                ds = DataAccess.Monthly_TimeSheet_ByDepartment_CurrentMonthOrPreviousMonth(period, deptid, userid, OrgId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return ds;
+        }
+        public DataSet TimeSheet_ByResource_PreviousMonth(int orgid = 0)
         {
             DataSet ds = null;
             try
@@ -327,5 +392,5 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
     }
-    
+
 }
