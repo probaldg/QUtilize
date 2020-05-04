@@ -82,6 +82,50 @@ namespace QBA.Qutilize.WebApp.Models
             return ds;
         }
         #region DashBoard Data
+        #region DashBoard Data - Admin
+        public DataSet GetDashBoardAdminProjectData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_AdminProject_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        #endregion
+        #region DashBoard Data - Admin
+        public DataSet GetDashBoardPMProjectData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_PMProject_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        #endregion
         #region DashBoard Data - Self
         public DataSet GetDashBoardSelfTaskData(int userID, int orgID)
         {

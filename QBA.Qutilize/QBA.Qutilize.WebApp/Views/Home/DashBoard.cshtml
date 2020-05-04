@@ -31,15 +31,15 @@
                     @if (HttpContext.Current.Session["OrgAdmin"] != null)
                     {
                         <option value="0">Admin Dashboard</option>
-                        <option value="1">Manager Dashboard</option>
-                        <option value="2">Self Dashboard</option>
+                        @*<option value="1">Manager Dashboard</option>
+                        <option value="2">Self Dashboard</option>*@
                     }
-                    else if (HttpContext.Current.Session["OrgPM"] != null)
+                    @if (HttpContext.Current.Session["OrgPM"] != null)
                     {
                         <option value="1">Manager Dashboard</option>
-                        <option value="2">Self Dashboard</option>
+                        @*<option value="2">Self Dashboard</option>*@
                     }
-                    else if (HttpContext.Current.Session["OrgUser"] != null)
+                    @if (HttpContext.Current.Session["OrgUser"] != null)
                     {
                         <option value="2">Self Dashboard</option>
                     }
@@ -57,16 +57,44 @@
                                         <a href="#tab1Admin" style="font-weight:bold; font-size:medium">Project </a>
                                     </li>
                                     <li>
-                                        <a href="#tab2Admin" style="font-weight:bold; font-size:medium">Helpdesk</a>
+                                        <a href="#tab2Admin" style="font-weight:bold; font-size:medium">Project Tasks </a>
                                     </li>
                                     <li>
-                                        <a href="#tab3Admin" style="font-weight:bold; font-size:medium">Resource Utilization</a>
+                                        <a href="#tab3Admin" style="font-weight:bold; font-size:medium">Helpdesk Tickets</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab4Admin" style="font-weight:bold; font-size:medium">Resource Utilization</a>
                                     </li>
                                 </ul>
                             </div>
-                            <section id="tab1Admin" class="tab-content active"></section>
-                            <section id="tab2Admin" class="tab-content hide"></section>
-                            <section id="tab3Admin" class="tab-content hide"></section>
+                            <section id="tab1Admin" class="tab-content active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetAdminProject", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab2Admin" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*@Html.Action("GetAdminTask", "Home")*@
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab3Admin" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*@Html.Action("GetAdminTicket", "Home")*@
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab4Admin" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*@Html.Action("GetAdminUtilization", "Home")*@
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -82,16 +110,26 @@
                                         <a href="#tab1Manager" style="font-weight:bold; font-size:medium">Project</a>
                                     </li>
                                     <li>
-                                        <a href="#tab2Manager" style="font-weight:bold; font-size:medium">Helpdesk</a>
+                                        <a href="#tab2Manager" style="font-weight:bold; font-size:medium">Project Tasks </a>
                                     </li>
                                     <li>
-                                        <a href="#tab3Manager" style="font-weight:bold; font-size:medium">Resource Utilization</a>
+                                        <a href="#tab3Manager" style="font-weight:bold; font-size:medium">Helpdesk Tickets</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab4Manager" style="font-weight:bold; font-size:medium">Resource Utilization</a>
                                     </li>
                                 </ul>
                             </div>
-                            <section id="tab1Manager" class="tab-content active"></section>
+                            <section id="tab1Manager" class="tab-content active">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMProject", "Home")
+                                    </div>
+                                </div>
+                            </section>
                             <section id="tab2Manager" class="tab-content hide"></section>
                             <section id="tab3Manager" class="tab-content hide"></section>
+                            <section id="tab4Manager" class="tab-content hide"></section>
                         </div>
                     </div>
                 </div>
@@ -233,6 +271,54 @@
             }]
         });
         $('#tblDashBoardSelfTisheetData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+
+        $('#tblDashBoardAdminProjectData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+
+        $('#tblDashBoardPMProjectData').DataTable({
             // "pageLength": 10,
             "aaSorting": [],
             dom: 'Bfrtip',
