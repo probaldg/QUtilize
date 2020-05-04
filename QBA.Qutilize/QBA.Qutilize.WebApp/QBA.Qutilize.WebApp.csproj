@@ -180,6 +180,7 @@
     <Compile Include="Helper\ErrorHandle.cs" />
     <Compile Include="Helper\ImageCompress.cs" />
     <Compile Include="Helper\ModuleMappingHelper.cs" />
+    <Compile Include="Helper\SendMailClass.cs" />
     <Compile Include="Helper\UserInfoHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Chart.cs" />
@@ -914,6 +915,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="IssueAttachments\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

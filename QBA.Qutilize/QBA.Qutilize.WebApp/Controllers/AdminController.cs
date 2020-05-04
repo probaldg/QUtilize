@@ -4,6 +4,7 @@ using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -2088,9 +2089,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Success";
 
-
-
-
+                       
 
                     }
                     else
