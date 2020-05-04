@@ -1605,7 +1605,184 @@ namespace QBA.Qutilize.WebApp.Controllers
             catch (Exception exx) { }
             return Content(sbContent.ToString());
         }
+        public ActionResult GetAdminTask()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardAdminTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
 
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Task | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Task In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardAdminTaskData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardSelfTaskData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetAdminTicket()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardAdminTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Ticket | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Ticket  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Ticket  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Ticket In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardAdminTicketData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Type</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Severity</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardAdminTicketData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetAdminUtilization()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardAdminTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    sbContent.Append("<span class='control-text'><b>Resource Utilization for " + String.Format("{0:MMMM}", DateTime.Now) + ", " + DateTime.Now.Year + "</b> </span>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardAdminTisheetData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    foreach (DataColumn dc in ds.Tables[0].Columns)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + Convert.ToString(dc.ColumnName) + "</th>");
+                    }
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardAdminTisheetData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
+                        {
+                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                        }
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
 
         public ActionResult GetPMProject()
         {
@@ -1658,6 +1835,184 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("</tr>");
                     }
 
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetPMTask()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardPMTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Task | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Task  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Task In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardPMTaskData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardPMTaskData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetPMTicket()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardPMTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    if (ds != null && ds.Tables.Count > 1 && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        sbContent.Append("<div align='right'>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["Total"]) + "</b> Total Ticket | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["OPEN"]) + "</b> Open Ticket  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["CLOSED"]) + "</b> Closed Ticket  | </span>");
+                        sbContent.Append("<span class='control-text'><b>" + Convert.ToString(ds.Tables[1].Rows[0]["INPROGRESS"]) + "</b> Ticket In-Progress </span>");
+                        sbContent.Append("</div>");
+                    }
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardPMTicketData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Project Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket No</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Name</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Type</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Severity</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Ticket End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual Start Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Actual End Date</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Current Status</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardPMTicketData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
+                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("</tr>");
+                    }
+                    sbContent.Append("</tbody>");
+                    sbContent.Append("</table>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("</div>");
+                }
+            }
+            catch (Exception exx) { }
+            return Content(sbContent.ToString());
+        }
+        public ActionResult GetPMUtilization()
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = lvm.GetDashBoardPMTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<div class='panel panel-info'>");
+                    sbContent.Append("<div class='panel-heading'>");
+                    sbContent.Append("<span class='control-text'><b>Resource Utilization for "+ String.Format("{0:MMMM}", DateTime.Now) +", "+DateTime.Now.Year+ "</b> </span>");
+                    sbContent.Append("</div>");
+                    sbContent.Append("<div class='panel-body'>");
+                    sbContent.Append("<div class='table-responsive'>");
+                    sbContent.Append("<table id='tblDashBoardPMTisheetData' class='table table-bordered dataTable no-footer' width='100%'>");
+                    sbContent.Append("<thead><tr>");
+                    foreach (DataColumn dc in ds.Tables[0].Columns)
+                    {
+                        sbContent.Append("<th class='text-center tblHeaderColor'>" + Convert.ToString(dc.ColumnName) + "</th>");
+                    }
+                    //sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
+                    sbContent.Append("</tr></thead>");
+                    sbContent.Append("<tbody id='tbodyDashBoardPMTisheetData'>");
+
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        sbContent.Append("<tr>");
+                        for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
+                        {
+                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                        }
+                        sbContent.Append("</tr>");
+                    }
                     sbContent.Append("</tbody>");
                     sbContent.Append("</table>");
                     sbContent.Append("</div>");

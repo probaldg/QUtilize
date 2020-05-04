@@ -32,7 +32,7 @@
                     {
                         <option value="0">Admin Dashboard</option>
                         @*<option value="1">Manager Dashboard</option>
-                        <option value="2">Self Dashboard</option>*@
+                            <option value="2">Self Dashboard</option>*@
                     }
                     @if (HttpContext.Current.Session["OrgPM"] != null)
                     {
@@ -77,21 +77,21 @@
                             <section id="tab2Admin" class="tab-content hide">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @*@Html.Action("GetAdminTask", "Home")*@
+                                        @Html.Action("GetAdminTask", "Home")
                                     </div>
                                 </div>
                             </section>
                             <section id="tab3Admin" class="tab-content hide">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @*@Html.Action("GetAdminTicket", "Home")*@
+                                        @Html.Action("GetAdminTicket", "Home")
                                     </div>
                                 </div>
                             </section>
                             <section id="tab4Admin" class="tab-content hide">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        @*@Html.Action("GetAdminUtilization", "Home")*@
+                                        @Html.Action("GetAdminUtilization", "Home")
                                     </div>
                                 </div>
                             </section>
@@ -127,9 +127,27 @@
                                     </div>
                                 </div>
                             </section>
-                            <section id="tab2Manager" class="tab-content hide"></section>
-                            <section id="tab3Manager" class="tab-content hide"></section>
-                            <section id="tab4Manager" class="tab-content hide"></section>
+                            <section id="tab2Manager" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMTask", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab3Manager" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMTicket", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab4Manager" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMUtilization", "Home")
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -317,8 +335,146 @@
                 "orderable": false,
             }]
         });
+        $('#tblDashBoardAdminTaskData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+        $('#tblDashBoardAdminTicketData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+        $('#tblDashBoardAdminTisheetData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
 
         $('#tblDashBoardPMProjectData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+        $('#tblDashBoardPMTaskData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+        $('#tblDashBoardPMTicketData').DataTable({
+            // "pageLength": 10,
+            "aaSorting": [],
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Download Report',
+                    extend: 'csvHtml5',
+                    title: 'Day wise details',
+                    exportOptions: {
+                        columns: 'th:not(.noExport)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Data export'
+                }
+            ],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
+        });
+        $('#tblDashBoardPMTisheetData').DataTable({
             // "pageLength": 10,
             "aaSorting": [],
             dom: 'Bfrtip',

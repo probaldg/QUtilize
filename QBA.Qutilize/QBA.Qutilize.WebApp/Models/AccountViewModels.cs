@@ -103,6 +103,63 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return ds;
         }
+        public DataSet GetDashBoardAdminTaskData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_AdminTask_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardAdminTicketData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_AdminTicket_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardAdminTisheetData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_AdminTimesheet_Get", param);
+                }
+            }
+            catch (Exception ex) { }
+            return ds;
+        }
         #endregion
         #region DashBoard Data - Admin
         public DataSet GetDashBoardPMProjectData(int userID, int orgID)
@@ -123,6 +180,63 @@ namespace QBA.Qutilize.WebApp.Models
             {
 
             }
+            return ds;
+        }
+        public DataSet GetDashBoardPMTaskData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_PMTask_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardPMTicketData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_PMTicket_Get", param);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+        public DataSet GetDashBoardPMTisheetData(int userID, int orgID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@UserID",userID),
+                                        new SqlParameter("@orgID",orgID)
+                                      };
+                using (SqlHelper objSQLHelper = new SqlHelper())
+                {
+                    ds = objSQLHelper.ExecuteDataset("USP_Dashboard_PMTimesheet_Get", param);
+                }
+            }
+            catch (Exception ex) { }
             return ds;
         }
         #endregion
@@ -181,10 +295,7 @@ namespace QBA.Qutilize.WebApp.Models
                     ds = objSQLHelper.ExecuteDataset("USP_Dashboard_SelfTimesheet_Get", param);
                 }
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch (Exception ex){}
             return ds;
         }
         #endregion
