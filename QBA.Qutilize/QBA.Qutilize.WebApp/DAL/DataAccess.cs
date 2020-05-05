@@ -649,6 +649,7 @@ namespace QBA.Qutilize.WebApp.DAL
                                         new SqlParameter("@logo",model.logo),
                                         new SqlParameter("@wikiurl",model.wikiurl),
                                         new SqlParameter("@contact_email_id",model.contact_email_id),
+                                        new SqlParameter("@NoOfUserLicense",model.NoOfUserLicense),
                                         new SqlParameter("@createdTS",model.createdTS),
                                         new SqlParameter("@createdBy",model.createdBy),
                                         new SqlParameter("@isActive",model.isActive)
@@ -679,8 +680,6 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return bln;
         }
-
-
         public static DataTable GetOrganisationDataByID(int id)
         {
             bool bln = false;
@@ -708,7 +707,6 @@ namespace QBA.Qutilize.WebApp.DAL
             }
             return dt;
         }
-
         public static Boolean updateOrganisation(OrganisationModel model)
         {
             string str = string.Empty;
@@ -725,6 +723,7 @@ namespace QBA.Qutilize.WebApp.DAL
                    new SqlParameter("@logo",model.logo),
                    new SqlParameter("@wikiurl",model.wikiurl),
                    new SqlParameter("@contact_email_id",model.contact_email_id),
+                   new SqlParameter("@NoOfUserLicense",model.NoOfUserLicense),
                    new SqlParameter("@editedTS",model.editedTS),
                    new SqlParameter("@editedBY",model.editedBy),
                    new SqlParameter("@isActive",model.isActive)

@@ -3010,6 +3010,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     org.url = dt.Rows[0]["url"].ToString();
                     org.address = dt.Rows[0]["address"].ToString();
                     org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
+                    org.NoOfUserLicense =Convert.ToInt32(dt.Rows[0]["NoOfUserLicense"]);
                     org.logo = dt.Rows[0]["logo"].ToString();
                     org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
                     org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
@@ -3019,6 +3020,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     org.orgname = "";
                     org.wikiurl = "";
+                    org.NoOfUserLicense = 0;
                     org.url = "";
                     org.logo = "";
                     org.isActive = false;
@@ -3044,8 +3046,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                 List<OrganisationModel> viewModelList = new List<OrganisationModel>();
                 foreach (DataRow dr in dt.Rows)
                 {
-                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["orgname"] + "</td>" + "<td class='text-center'>" + dr["address"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["contact_email_id"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                    strOrganisation += "<tr>" +
+                        "<td class='text-center'>" + dr["id"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["orgname"] + "</td>" +
+                        "<td class='text-center'>" + dr["address"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["contact_email_id"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["NoOfUserLicense"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
                        "<td  class='text-center'><a href = 'ManageOrganisation?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
                     i++;
                 }
