@@ -75,9 +75,9 @@
     <div align="right">
 
     </div>
-    <div align="right">        
+    <div align="right">
         <button class="btn btn-primary"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
-        <button class="btn btn-primary"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>        
+        <button class="btn btn-primary"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>
         <input type="button" value="Add New Ticket" style="text-align: right;" class="btn btn-primary" onclick="AddNewTicket()">
     </div>
     <div>
@@ -124,7 +124,7 @@
         <div>
 
         </div>
-       
+
 
     </section>
     <section id="tab2" class="tab-content  hide">
@@ -159,13 +159,13 @@
     </section>
     <div class="col-md-12"><br /></div>
     <div id="mymodalForNewTicket" class="modal fade" role="dialog">
-        <div class="modal-dialog">            
+        <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>                    
-                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader"></h4>                                      
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="color:#626262;" id="hProjectNameHeader"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -190,163 +190,163 @@
                     </div>
                     @using (Html.BeginForm("ManageProjectIssue", "Admin", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken()                        
-                    <div class="form-horizontal col-md-12" style="">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        @Html.HiddenFor(model => model.ProjectIssue.IssueId)
+                        @Html.AntiForgeryToken()
+                        <div class="form-horizontal col-md-12" style="">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.ProjectIssue.IssueId)
 
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
-                                @Html.HiddenFor(model => model.ActiveProjectID)
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
-                                @Html.HiddenFor(model => model.ProjectTypeID)
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueCode, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCode, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.TicketTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.DropDownListFor(model => model.TicketTypeList, new SelectList(Model.TicketTypeList, "ID", "Name"), "Select", new { @class = "form-control" })
-                                @Html.HiddenFor(model => model.TicketTypeID)
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueName, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueName, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueName, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueDescription, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueDescription, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueStartDateDisplay, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateEndDate()" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueEndDateDisplay, "", new { @class = "text-danger", })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2 " })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.ExpectedTime, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.ExpectedTime, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                <select id="ddlIssueStatus" class="form-control"><option value="0">Select</option></select>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.SeverityList, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.DropDownListFor(model => model.SeverityList, new SelectList(Model.SeverityList, "ID", "Name"), "Select", new { @class = "form-control" })
-                                @Html.HiddenFor(model => model.SeverityID)
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                <select id="ddlPercentage" class="form-control"><option value="">Select</option></select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10" id="divUserDDL">
-                                @Html.HiddenFor(model => model.ProjectIssue.UserIdAssigned)
-                                <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
-                                <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDate()" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                <div class="checkbox">
-                                    @Html.EditorFor(model => model.ProjectIssue.IsActive)
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IsActive, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
+                                    @Html.HiddenFor(model => model.ActiveProjectID)
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                <div class="checkbox">
-                                    @Html.EditorFor(model => model.ProjectIssue.IsValueAdded)
-                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IsValueAdded, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
+                                    @Html.HiddenFor(model => model.ProjectTypeID)
                                 </div>
                             </div>
-                        </div>
 
-                        @*<div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" id="btnProjectIssueSave" class="btn btn-default" value="Submit">
-            </div>
-        </div>*@
-                    </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueCode, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.TicketTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.TicketTypeList, new SelectList(Model.TicketTypeList, "ID", "Name"), "Select", new { @class = "form-control" })
+                                    @Html.HiddenFor(model => model.TicketTypeID)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueDescription, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueStartDateDisplay, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateEndDate()" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueEndDateDisplay, "", new { @class = "text-danger", })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.ExpectedTime, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ExpectedTime, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlIssueStatus" class="form-control"><option value="0">Select</option></select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SeverityList, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.SeverityList, new SelectList(Model.SeverityList, "ID", "Name"), "Select", new { @class = "form-control" })
+                                    @Html.HiddenFor(model => model.SeverityID)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlPercentage" class="form-control"><option value="">Select</option></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10" id="divUserDDL">
+                                    @Html.HiddenFor(model => model.ProjectIssue.UserIdAssigned)
+                                    <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
+                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplay, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDate()" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplay, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.ProjectIssue.IsActive)
+                                        @Html.ValidationMessageFor(model => model.ProjectIssue.IsActive, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <div class="checkbox">
+                                        @Html.EditorFor(model => model.ProjectIssue.IsValueAdded)
+                                        @Html.ValidationMessageFor(model => model.ProjectIssue.IsValueAdded, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*<div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="button" id="btnProjectIssueSave" class="btn btn-default" value="Submit">
+                                    </div>
+                                </div>*@
+                        </div>
 
                     }
 
@@ -455,11 +455,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            @Html.Label("", htmlAttributes: new { @class = "control-label col-md-2" })
+
+                            <div class="col-md-10">
+                                @Html.Label("*When you upload the multiple Url at a time you need to separate all url using by ';' ", htmlAttributes: new { @class = "control-label col-md-10" })
+                            </div>
+                        </div>
+                        <div class="form-group">
                             @Html.LabelFor(model => model.ProjectIssue.url, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
                                 @Html.EditorFor(model => model.ProjectIssue.url, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.ProjectIssue.url, "", new { @class = "text-danger" })
-                            </div>s
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -477,41 +484,41 @@
                     </div>
 
                     }
-                                    <div class="modal-footer">
-                                        <input type="button" id="btnStatusUpdate" class="btn btn-default" value="Submit">
+                    <div class="modal-footer">
+                        <input type="button" id="btnStatusUpdate" class="btn btn-default" value="Submit">
 
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
 
-                                </div>
+                </div>
 
-                            </div>
+            </div>
 
-                        </div>
         </div>
+    </div>
 
-                        <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                            <div class="modal-dialog-big" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="myModalLabel2"></h4>
-                                    </div>
+    <div class="modal fade" @*id="myModal2"*@ id="publishedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog-big" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel2"></h4>
+                </div>
 
-                                    <div class="modal-body" id="previewSection">
-
-
-                                    </div>
-
-                                </div><!-- modal-content -->
-                            </div><!-- modal-dialog -->
-                        </div><!-- modal -->
+                <div class="modal-body" id="previewSection">
 
 
+                </div>
+
+            </div><!-- modal-content -->
+        </div><!-- modal-dialog -->
+    </div><!-- modal -->
 
 
 
-                        <script type="text/javascript">
+
+
+    <script type="text/javascript">
         function AddNewTicket() {
 
             clearAllIssueControls();
@@ -770,766 +777,766 @@
 
 
 
+       
+
+    //Issue Status Update
+    $('#btnStatusUpdate').click(function () {
+    var IssueID = $('#ProjectIssue_IssueIdforstatus').val();
+    var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val();
+    var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val();
+    var IssueStatusId = $('#ddlIssueStatusChange').val();
+    var Comment = $('#ProjectIssue_Comment').val();
+    var Timespent = $('#ProjectIssue_Timespent').val();
+    var url = $('#ProjectIssue_url').val();
+    var vDirectoryName = $("#FileDirectory").val();
+
+
+    if (IssueStatusId <= 0) {
+    document.getElementById("ErrorMsgTask").innerHTML = "Please select Status ";
+    document.getElementById("ErrorMsgTask").style.display = 'block';
+    $('#ddlIssueStatusChange').focus();
+    return false;
+    }
+    if (actualStartDate == "" && IssueStatusId == 11) {
+    document.getElementById("ErrorMsgTask").innerHTML = "Actual start date required..";
+    document.getElementById("ErrorMsgTask").style.display = 'block';
+    $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').focus();
+    return false;
+    }
+    if (actualEndDate == "" && IssueStatusId == 11) {
+    document.getElementById("ErrorMsgTask").innerHTML = "Actual end date required..";
+    document.getElementById("ErrorMsgTask").style.display = 'block';
+    $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').focus();
+    return false;
+
+    }
+    if (Timespent == "" && IssueStatusId==11) {
+    document.getElementById("ErrorMsgTask").innerHTML = "Time Spent required..";
+    document.getElementById("ErrorMsgTask").style.display = 'block';
+    $('#ProjectIssue_Timespent').focus();
+    return false;
+
+    }
 
 
 
-         //Issue Status Update
-        $('#btnStatusUpdate').click(function () {
-            var IssueID = $('#ProjectIssue_IssueIdforstatus').val();
-            var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').val();
-            var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val();
-            var IssueStatusId = $('#ddlIssueStatusChange').val();
-            var Comment = $('#ProjectIssue_Comment').val();
-            var Timespent = $('#ProjectIssue_Timespent').val();
-            var url = $('#ProjectIssue_url').val();
-            var vDirectoryName = $("#FileDirectory").val();
-           
+    var hms = Timespent;   // your input string
+    var a = hms.split(':'); // split it at the colons
 
-            if (IssueStatusId <= 0) {
-                document.getElementById("ErrorMsgTask").innerHTML = "Please select Status ";
-                document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ddlIssueStatusChange').focus();
-                return false;
+    Timespent = a[0] + '.' + a[1];
+    var data = {
+    "IssueIdforstatus": IssueID,
+    "ActualIssueStartDateDisplayforstatus": actualStartDate,
+    "ActualIssueEndDateDisplayforstatus": actualEndDate,
+    "StatusID": IssueStatusId,
+    "Comment": Comment,
+    "Duration": Timespent,
+    "URL": url,
+    "DirectoryName": vDirectoryName
+
+    };
+
+    $.ajax({
+    url: '@Url.Action("UpdateStatusIssue", "Admin")',
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify(data),
+    success: function (response) {
+    if (response == "Success") {
+    response = null;
+    window.location.reload();
+    //activaTab();
+    }
+
+    },
+    error: function (response) {
+
+
+    }
+    });
+    });
+
+    //Project Issue Save
+    $('#btnProjectIssueSave').click(function () {
+
+    var IssueID = $('#ProjectIssue_IssueId').val();
+    var projectID = $('#ActiveProjectList').val();
+    var IssueName = $('#ProjectIssue_IssueName').val();
+    var IssueCode = $('#ProjectIssue_IssueCode').val();
+    var IssueDescription = $('#ProjectIssue_IssueDescription').val();
+
+    var startDate = $('#ProjectIssue_IssueStartDateDisplay').val();
+    var endDate = $('#ProjectIssue_IssueEndDateDisplay').val();
+    var ExpectedTime = $('#ProjectIssue_ExpectedTime').val();
+
+    var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplay').val();
+    var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplay').val();
+
+    var completePercent = $('#ddlPercentage').val();
+
+    var IssueStatusId = $('#ddlIssueStatus').val();
+    var IsActive = $('#ProjectIssue_IsActive').is(':checked');
+    var IsValueAdded = $('#ProjectIssue_IsValueAdded').is(':checked');
+
+    var SeverityId = $('#SeverityList').val();
+    var TicketTypeID = $('#TicketTypeList').val();
+    var userIds = $('#UserIdsInString').val();
+
+    //validateIssueSave();
+    if (projectID <= 0) {
+    document.getElementById("errormsg").innerHTML = "Please select Project ";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ActiveProjectList').focus();
+    return false;
+    }
+    if (IssueCode == "") {
+    document.getElementById("errormsg").innerHTML = "Ticket code is required..";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ProjectIssue_IssueCode').focus();
+    return false;
+    }
+    if (TicketTypeID <= 0) {
+    document.getElementById("errormsg").innerHTML = "Please select Ticket Type ";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#TicketTypeList').focus();
+    return false;
+    }
+
+    if (IssueName == "") {
+    document.getElementById("errormsg").innerHTML = "Ticket name is required..";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ProjectIssue_IssueName').focus();
+    return false;
+    }
+
+
+    if (startDate == "") {
+    document.getElementById("errormsg").innerHTML = "Start date is required..";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ProjectIssue_IssueStartDateDisplay').focus();
+    return false;
+    }
+    if (endDate == "") {
+    document.getElementById("errormsg").innerHTML = "End date is required..";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ProjectIssue_IssueEndDateDisplay').focus();
+    return false;
+    }
+
+    if (ExpectedTime == "") {
+    document.getElementById("errormsg").innerHTML = "Expecte Time required..";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#ProjectIssue_ExpectedTime').focus();
+    return false;
+    }
+
+
+
+    if (SeverityId <= 0) {
+    document.getElementById("errormsg").innerHTML = "Please select Severity ";
+    document.getElementById("ErrorMsg").style.display = 'block';
+    $('#SeverityList').focus();
+    return false;
+    }
+    if (Date.parse(startDate) > Date.parse(endDate)) {
+    alert("End date can not be less than  start date..");
+    $('#ProjectIssue_IssueStartDateDisplay').focus();
+    return false;
+    }
+    if (actualStartDate != "" && actualEndDate != "") {
+    if (Date.parse(actualStartDate) > Date.parse(actualEndDate)) {
+    alert("Actual end date can not be less than actual start date..");
+    $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
+    return false;
+    }
+    }
+
+    if (userIds == "") {
+
+    alert("Please select a user to assign task");
+    $('#ddlUsersAssigned').focus();
+
+    return false;
+    }
+
+    var hms = ExpectedTime;   // your input string
+    var a = hms.split(':'); // split it at the colons
+
+    ExpectedTime = a[0] + '.' + a[1];
+
+    var data = {
+    "IssueID": IssueID,
+    "ProjectID": projectID,
+    "IssueName": IssueName,
+    "IssueCode": IssueCode,
+    "IssueDescription": IssueDescription,
+    "TicketTypeID": TicketTypeID,
+    "IssueStartDateDisplay": startDate,
+    "IssueEndDateDisplay": endDate,
+    "ExpectedDuration": ExpectedTime,
+
+    "ActualIssueStartDateDisplay": actualStartDate,
+    "ActualIssueEndDateDisplay": actualEndDate,
+    "CompletePercent": completePercent,
+    "IsActive": IsActive,
+    "SeverityID": SeverityId,
+    "StatusID": IssueStatusId,
+    "UserIdAssigned": userIds,
+    "IsValueAdded": IsValueAdded
+
+    };
+
+    $.ajax({
+    url: '@Url.Action("SaveProjectIssue", "Admin")',
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify(data),
+    success: function (response) {
+    if (response == "Success") {
+    response = null;
+    clearAllIssueControls();
+    location.reload();
+
+
+    } else {
+    }
+
+    },
+    error: function (response) {
+
+
+
+    }
+    });
+
+    })
+    //End
+    $('#ddlUsersAssigned').change(function () {
+
+
+    var userIds = $("#ddlUsersAssigned option:selected").map(function () { return this.value }).get().join(",");
+
+    $('#UserIdsInString').val(userIds);
+
+
+
+    })
+
+    function GetAssigneUserDetlByProject() {
+
+    var ProjectId = $('#ActiveProjectList').val();
+
+    $("#ddlUsersAssigned").multiselect('destroy');
+
+    $.ajax({
+    url: '@Url.Action("ManageProjectTask", "Admin")',
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify({ "ProjectId": ProjectId }),
+    success: function (response) {
+    var obj = JSON.parse(response);
+
+    if (obj.PercentageComplete.length > 0) {
+    var percentageArray = obj.PercentageComplete;
+    $("#ddlPercentage").html('');
+    for (var i = 0; i < percentageArray.length; i++) {
+    $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
+    }
+    }
+    $("#ddlIssueStatus").html('')
+    //$("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
+    if (obj.StatusList.length > 0) {
+    var statusList = obj.StatusList;
+    for (var i = 0; i < statusList.length; i++) {
+
+    $("#ddlIssueStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
+    }
+    }
+
+    if (obj.TaskList.length > 0) {
+    var tasklist = obj.TaskList;
+    $('#ProjectTypeList').val(tasklist[0].ProjectTypeID);
+
+    }
+
+    $("#ddlUsersAssigned").html('')
+
+    if (obj.UserList.length > 0) {
+
+    var UserList = obj.UserList;
+
+    for (var i = 0; i < UserList.length; i++) {
+
+    $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
+    }
+
+
+    //$("#ddlUsersAssigned").multiselect('refresh');
+    $("#ddlUsersAssigned").multiselect({
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: 550,
+    enableFiltering: true
+    });
+
+    }
+    else {
+    // $('#divUserDDL').removeClass('col-md-10');
+    // $('#divUserDDL').addClass('col-md-7');
+    // $('#divAddUserToAssignProject').css('display', 'block');
+
+    //$("#ddlUsersAssigned").multiselect('refresh');
+    $("#ddlUsersAssigned").multiselect({
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: 550,
+    enableFiltering: true
+    });
+
+    }
+    }
+
+
+    });
+
+    };
+
+
+    //Project Issue Edit Start**
+    function AjaxCallGetUserByProject(project_id, statusid, CompletePercent, UserIdAssigned) {
+    $.ajax({
+    url: '@Url.Action("ManageProjectTask", "Admin")',
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify({ "ProjectId": project_id }),
+    success: function (response) {
+
+    var obj1 = JSON.parse(response);
+
+    if (obj1.PercentageComplete.length > 0) {
+    var percentageArray = obj1.PercentageComplete;
+    $("#ddlPercentage").html('');
+    for (var i = 0; i < percentageArray.length; i++) {
+
+    $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
+    }
+    }
+    $('#ddlPercentage').val(CompletePercent);
+    $("#ddlIssueStatus").html('')
+    if (obj1.StatusList.length > 0) {
+    var statusList = obj1.StatusList;
+    for (var i = 0; i < statusList.length; i++) {
+
+    $("#ddlIssueStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
+    }
+    }
+
+    $('#ddlIssueStatus').val(statusid);
+    if (obj1.TaskList.length > 0) {
+    var tasklist = obj1.TaskList;
+    $('#ProjectTypeList').val(tasklist[0].ProjectTypeID);
+    }
+    $("#ddlUsersAssigned").html('')
+
+    if (obj1.UserList.length > 0) {
+    var UserList = obj1.UserList;
+    for (var i = 0; i < UserList.length; i++) {
+    ///alert(UserList[i].ID)
+    $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
+
+    }
+
+    $("#ddlUsersAssigned").multiselect({
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: 550,
+    enableFiltering: true
+    });
+
+    }
+    else {
+
+    $("#ddlUsersAssigned").multiselect({
+    enableCaseInsensitiveFiltering: true,
+    buttonWidth: 550,
+    enableFiltering: true
+    });
+
+    }
+
+
+    var userIds = UserIdAssigned;
+    //alert(userIds)
+    var selectedOptions = UserIdAssigned.split(',');
+    for (i = 0; i < selectedOptions.length; i++) {
+
+    $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
+    }
+
+    $('#UserIdsInString').val(userIds);
+
+
+    },
+    error: function (response) {
+    alert('error occured')
+    // console.log(response);
+    }
+    });
+    }
+    function clearAllIssueControls() {
+    $('#ActiveProjectList').prop('selectedIndex', 0);
+    $('#ProjectTypeList').prop('selectedIndex', 0);
+    $('#ProjectIssue_IssueId').val('');
+    $('#ProjectIssue_IssueName').val('');
+    $('#ProjectIssue_IssueCode').val('');
+    $('#ProjectIssue_IssueDescription').val('');
+    $('#ProjectIssue_IssueStartDateDisplay').val('');
+    $('#ProjectIssue_IssueEndDateDisplay').val('');
+    $('#ProjectIssue_ActualIssueStartDateDisplay').val('');
+    $('#ProjectIssue_ActualIssueEndDateDisplay').val('');
+    $('#ProjectIssue_ExpectedTime').val('');
+
+    $('#UserIdsInString').val('');
+    $('#ddlIssueStatus').val(0);
+    $('#SeverityList').val(0);
+    $('#TicketTypeList').val(0);
+    $('#TicketTypeID').val(0);
+    $('#ddlPercentage').val(0);
+    $('#ProjectIssue_IsActive').val(false);
+    $('#ProjectIssue_IsActive').prop("checked", false);
+    $('#ddlUsersAssigned').multiselect('deselectAll', false);
+    $('#ddlUsersAssigned').multiselect('updateButtonText');
+    $('#ProjectIssue_IsValueAdded').val(false);
+    $('#ProjectIssue_IsValueAdded').prop("checked", false);
+
+    }
+    function formatDateInMM_DD_YYYY(yourUnformattedDate) {
+    var formattedDate = new Date(yourUnformattedDate);
+    var day = formattedDate.getDate();
+    var month = formattedDate.getMonth();
+    month += 1;  // JavaScript months are 0-11
+    var year = formattedDate.getFullYear();
+    if (day < 10) {
+    day = "0" + day;
+    }
+    if (month < 10) {
+    month = "0" + month;
+    }
+    // return (day + "/" + month + "/" + year);
+    return (month + "/" + day + "/" + year);
+
+    }
+
+    function EditProjectIssue(IssueID) {
+    var issueId = IssueID;
+    $.ajax({
+    url: '@Url.Action("GetProjectIssueByID", "Admin")',
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify({
+    "IssueId": issueId
+    }),
+    success: function (response) {
+
+    //clearAllIssueControls();
+    var IssueObj = JSON.parse(response);
+    $('#hProjectNameHeader').html("TI" + IssueObj.IssueId + " details");
+    var project_id = IssueObj.ProjectID;
+    AjaxCallGetUserByProject(project_id, IssueObj.StatusID, IssueObj.CompletePercent, IssueObj.UserIdAssigned);
+    //**Get user by project
+    //**
+    $('#ProjectIssue_IssueId').val(IssueObj.IssueId)
+    $('#ProjectIssue_IssueName').val(IssueObj.IssueName);
+    $('#ProjectIssue_IssueCode').val(IssueObj.IssueCode);
+    $('#ProjectIssue_IssueDescription').val(IssueObj.IssueDescription);
+    $('#ActiveProjectList').val(IssueObj.ProjectID);
+    $('#SeverityList').val(IssueObj.SeverityID);
+    $('#TicketTypeList').val(IssueObj.TicketTypeID);
+    //   $('#ddlIssueStatus').val(IssueObj.StatusID);
+
+    // $('#ddlPercentage').val(IssueObj.CompletePercent);
+    $('#ProjectIssue_IssueStartDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.IssuestartDate));
+    $('#ProjectIssue_IssueEndDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.IssueEndDate));
+
+
+
+    $('#ProjectIssue_ExpectedTime').val(IssueObj.ExpectedTime);
+
+
+    if (IssueObj.ActualIssueStartDate != null) {
+    $('#ProjectIssue_ActualIssueStartDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueStartDate));
+    }
+    else {
+    $('#ProjectIssue_ActualIssueStartDateDisplay').val('');
+    }
+    if (IssueObj.ActualIssueEndDate != null) {
+    $('#ProjectIssue_ActualIssueEndDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueEndDate));
+    }
+    else {
+    $('#ProjectIssue_ActualIssueEndDateDisplay').val('');
+    }
+
+    $('#ProjectIssue_IsActive').prop('checked', IssueObj.IsActive);
+    $('#ProjectIssue_IsValueAdded').prop('checked', IssueObj.IsValueAdded);
+    $('#ProjectIssue_UserIdAssigned').val(IssueObj.UserIdAssigned);
+    setTimeout(function () {
+    $('#ddlUsersAssigned').multiselect('deselectAll', false);
+    //$('#ddlUsersAssigned').multiselect('updateButtonText');
+    $('#mymodalForNewTicket').modal('show');
+    }, 5000);
+
+    },
+    error: function (response) {
+    alert('error occured')
+
+    }
+    });
+
+
+    }
+    if ($('#ProjectIssue_UserIdAssigned').val() != "") {
+
+    var AllselectedOptions = $('#UserIdAssigned').val();
+    alert(AllselectedOptions);
+    var selectedOptions = AllselectedOptions.split(',');
+
+    for (var i in selectedOptions) {
+    var optionVal = selectedOptions[i];
+    $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
+    }
+    $("#ddlUsersAssigned").multiselect('reload');
+    }
+    //End**
+
+    </script>
+    <script type="text/javascript">
+        function activaTab() {
+
+            var active_tab_selector = "#tab1";
+
+            //find actived navigation and remove 'active' css
+            //  var actived_nav = "#tab1";
+            // actived_nav.removeClass('active');
+
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+            alert(active_tab_selector);
+            //show target tab content
+            var target_tab_selector = "#tab2";
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+            alert(target_tab_selector);
+        };
+
+    </script>
+
+    <script type="text/javascript">
+
+        var DirectoryName = "";
+        if (document.getElementById("FileDirectory").value != "") {
+            DirectoryName = document.getElementById("FileDirectory").value;
+        } else {
+            DirectoryName = "";
+        }
+
+        Dropzone.options.myDropzone = {
+            url: "/Admin/IssueAttachments",
+            autoProcessQueue: true,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            acceptedFiles: "image/*,.pdf,.doc,.docx,.xlsx,.xls",
+            async: true,
+
+            init: function () {
+
+
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("DirectoryName", $("#FileDirectory").val());
+
+
+                });
+
+                //var submitButton = document.querySelector("input[name ='Command']");
+                var wrapperThis = this;
+                wrapperThis.processQueue();
+                $("#dropzoneJsForm").submit();
+
+                //submitButton.addEventListener("click", function (event) {
+                //    $(".overlay").show();
+                //    event.preventDefault(event);
+                //    wrapperThis.processQueue();
+
+                //    setTimeout(function () {
+                //        $("#dropzoneJsForm").submit();
+                //    }, 6000);
+
+
+                //    return false;
+                //});
+
+
+                this.on("addedfile", function (file) {
+                  
+                    document.getElementById("btnStatusUpdate").disabled = true;
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
+
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function (e) {
+                        // Make sure the button click doesn't submit the form:
+                        //e.defaultPrevented();
+                        //e.stopPropagation();
+
+                        // Remove the file preview.
+                        wrapperThis.removeFile(file);
+                        // If you want to the delete the file on the server as well,
+                        // you can do the AJAX request here.
+                    });
+
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                });
+
+                //this.on('sendingmultiple', function (data, xhr, formData) {
+                //    formData.append("TravelRequestID", $("#TravelRequestID").val());
+                //});
+                this.on("success", function (file, response) {
+                   
+                    // or however you would point to your assigned file ID here;
+                    //alert(JSON.stringify(response));
+                    document.getElementById("FileDirectory").value = JSON.stringify(response);
+                    document.getElementById("btnStatusUpdate").disabled = false;
+                    // console should show the ID you pointed to
+                    // do stuff with file.id ...
+                });
             }
-            if (actualStartDate == "" && IssueStatusId == 11) {
-                document.getElementById("ErrorMsgTask").innerHTML = "Actual start date required..";
-                document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_ActualIssueStartDateDisplayforstatus').focus();
-                return false;
-            }
-            if (actualEndDate == "" && IssueStatusId == 11) {
-                document.getElementById("ErrorMsgTask").innerHTML = "Actual end date required..";
-                document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').focus();
-                return false;
-
-            }
-            if (Timespent == "" && IssueStatusId==11) {
-                document.getElementById("ErrorMsgTask").innerHTML = "Time Spent required..";
-                document.getElementById("ErrorMsgTask").style.display = 'block';
-                $('#ProjectIssue_Timespent').focus();
-                return false;
-
-            }
-
-
-
-            var hms = Timespent;   // your input string
-            var a = hms.split(':'); // split it at the colons
-
-            Timespent = a[0] + '.' + a[1];
-             var data = {
-                "IssueIdforstatus": IssueID,
-                "ActualIssueStartDateDisplayforstatus": actualStartDate,
-                "ActualIssueEndDateDisplayforstatus": actualEndDate,
-                 "StatusID": IssueStatusId,
-                 "Comment": Comment,
-                 "Duration": Timespent,
-                 "URL": url,
-                 "DirectoryName": vDirectoryName
-
-            };
-            alert(vDirectoryName);
-            $.ajax({
-                url: '@Url.Action("UpdateStatusIssue", "Admin")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data),
-                success: function (response) {
-                    if (response == "Success") {
-                        response = null;
-                        window.location.reload();
-                        //activaTab();
-                    }
-
-                    },
-                error: function (response) {
-
-
-                    }
-            });
-        });
-
-        //Project Issue Save
-        $('#btnProjectIssueSave').click(function () {
-
-            var IssueID = $('#ProjectIssue_IssueId').val();
-            var projectID = $('#ActiveProjectList').val();
-            var IssueName = $('#ProjectIssue_IssueName').val();
-            var IssueCode = $('#ProjectIssue_IssueCode').val();
-            var IssueDescription = $('#ProjectIssue_IssueDescription').val();
-
-            var startDate = $('#ProjectIssue_IssueStartDateDisplay').val();
-            var endDate = $('#ProjectIssue_IssueEndDateDisplay').val();
-            var ExpectedTime = $('#ProjectIssue_ExpectedTime').val();
-
-            var actualStartDate = $('#ProjectIssue_ActualIssueStartDateDisplay').val();
-            var actualEndDate = $('#ProjectIssue_ActualIssueEndDateDisplay').val();
-
-            var completePercent = $('#ddlPercentage').val();
-
-            var IssueStatusId = $('#ddlIssueStatus').val();
-            var IsActive = $('#ProjectIssue_IsActive').is(':checked');
-            var IsValueAdded = $('#ProjectIssue_IsValueAdded').is(':checked');
-
-            var SeverityId = $('#SeverityList').val();
-            var TicketTypeID = $('#TicketTypeList').val();
-            var userIds = $('#UserIdsInString').val();
-
-            //validateIssueSave();
-            if (projectID <= 0) {
-                document.getElementById("errormsg").innerHTML = "Please select Project ";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ActiveProjectList').focus();
-                return false;
-            }
-            if (IssueCode == "") {
-                document.getElementById("errormsg").innerHTML = "Ticket code is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueCode').focus();
-                return false;
-            }
-            if (TicketTypeID <= 0) {
-                document.getElementById("errormsg").innerHTML = "Please select Ticket Type ";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#TicketTypeList').focus();
-                return false;
-            }
-
-            if (IssueName == "") {
-                document.getElementById("errormsg").innerHTML = "Ticket name is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueName').focus();
-                return false;
-            }
-
-
-            if (startDate == "") {
-                document.getElementById("errormsg").innerHTML = "Start date is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueStartDateDisplay').focus();
-                return false;
-            }
-            if (endDate == "") {
-                document.getElementById("errormsg").innerHTML = "End date is required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_IssueEndDateDisplay').focus();
-                return false;
-            }
-
-            if (ExpectedTime == "") {
-                document.getElementById("errormsg").innerHTML = "Expecte Time required..";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#ProjectIssue_ExpectedTime').focus();
-                return false;
-            }
-
-
-
-            if (SeverityId <= 0) {
-                document.getElementById("errormsg").innerHTML = "Please select Severity ";
-                document.getElementById("ErrorMsg").style.display = 'block';
-                $('#SeverityList').focus();
-                return false;
-            }
-            if (Date.parse(startDate) > Date.parse(endDate)) {
-                alert("End date can not be less than  start date..");
-                $('#ProjectIssue_IssueStartDateDisplay').focus();
-                return false;
-            }
-            if (actualStartDate != "" && actualEndDate != "") {
-                if (Date.parse(actualStartDate) > Date.parse(actualEndDate)) {
-                    alert("Actual end date can not be less than actual start date..");
-                    $('#ProjectIssue_ActualIssueStartDateDisplay').focus();
-                    return false;
-                }
-            }
-
-            if (userIds == "") {
-
-                alert("Please select a user to assign task");
-                $('#ddlUsersAssigned').focus();
-
-                return false;
-            }
-
-            var hms = ExpectedTime;   // your input string
-            var a = hms.split(':'); // split it at the colons
-
-            ExpectedTime = a[0] + '.' + a[1];
-
-            var data = {
-                "IssueID": IssueID,
-                "ProjectID": projectID,
-                "IssueName": IssueName,
-                "IssueCode": IssueCode,
-                "IssueDescription": IssueDescription,
-                "TicketTypeID": TicketTypeID,
-                "IssueStartDateDisplay": startDate,
-                "IssueEndDateDisplay": endDate,
-               "ExpectedDuration": ExpectedTime,
-
-                "ActualIssueStartDateDisplay": actualStartDate,
-                "ActualIssueEndDateDisplay": actualEndDate,
-                "CompletePercent": completePercent,
-                "IsActive": IsActive,
-                "SeverityID": SeverityId,
-                "StatusID": IssueStatusId,
-                "UserIdAssigned": userIds,
-                "IsValueAdded": IsValueAdded
-
-            };
-
-            $.ajax({
-                url: '@Url.Action("SaveProjectIssue", "Admin")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(data),
-                success: function (response) {
-                    if (response == "Success") {
-                        response = null;
-                        clearAllIssueControls();
-                        location.reload();
-
-
-                    } else {
-                    }
-
-                    },
-                error: function (response) {
-
-
-
-                    }
-            });
-
-        })
-        //End
-        $('#ddlUsersAssigned').change(function () {
-
-
-            var userIds = $("#ddlUsersAssigned option:selected").map(function () { return this.value }).get().join(",");
-
-            $('#UserIdsInString').val(userIds);
-
-
-
-        })
-
-        function GetAssigneUserDetlByProject() {
-
-            var ProjectId = $('#ActiveProjectList').val();
-
-            $("#ddlUsersAssigned").multiselect('destroy');
-
-            $.ajax({
-                url: '@Url.Action("ManageProjectTask", "Admin")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ "ProjectId": ProjectId }),
-                success: function (response) {
-                    var obj = JSON.parse(response);
-
-                    if (obj.PercentageComplete.length > 0) {
-                        var percentageArray = obj.PercentageComplete;
-                        $("#ddlPercentage").html('');
-                        for (var i = 0; i < percentageArray.length; i++) {
-                            $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
-                        }
-                    }
-                    $("#ddlIssueStatus").html('')
-                    //$("#ddlTaskStatus").append($("<option></option>").val(0).html('Select status'));
-                    if (obj.StatusList.length > 0) {
-                        var statusList = obj.StatusList;
-                        for (var i = 0; i < statusList.length; i++) {
-
-                            $("#ddlIssueStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
-                        }
-                    }
-
-                    if (obj.TaskList.length > 0) {
-                        var tasklist = obj.TaskList;
-                        $('#ProjectTypeList').val(tasklist[0].ProjectTypeID);
-
-                    }
-
-                    $("#ddlUsersAssigned").html('')
-
-                    if (obj.UserList.length > 0) {
-
-                        var UserList = obj.UserList;
-
-                        for (var i = 0; i < UserList.length; i++) {
-
-                            $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
-                        }
-
-
-                        //$("#ddlUsersAssigned").multiselect('refresh');
-                        $("#ddlUsersAssigned").multiselect({
-                            enableCaseInsensitiveFiltering: true,
-                            buttonWidth: 550,
-                            enableFiltering: true
-                        });
-
-                    }
-                    else {
-                        // $('#divUserDDL').removeClass('col-md-10');
-                        // $('#divUserDDL').addClass('col-md-7');
-                        // $('#divAddUserToAssignProject').css('display', 'block');
-
-                        //$("#ddlUsersAssigned").multiselect('refresh');
-                        $("#ddlUsersAssigned").multiselect({
-                            enableCaseInsensitiveFiltering: true,
-                            buttonWidth: 550,
-                            enableFiltering: true
-                        });
-
-                    }
-                }
-
-
-            });
 
         };
 
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.nav-tabs > li > a').click(function (event) {
+                event.preventDefault();//stop browser to take action for clicked anchor
 
-        //Project Issue Edit Start**
-                   function AjaxCallGetUserByProject(project_id, statusid, CompletePercent, UserIdAssigned) {
-                           $.ajax({
-                              url: '@Url.Action("ManageProjectTask", "Admin")',
-                              type: "POST",
-                              dataType: "json",
-                              contentType: "application/json; charset=utf-8",
-                              data: JSON.stringify({ "ProjectId": project_id }),
-                              success: function (response) {
+                //get displaying tab content jQuery selector
+                var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
 
-                                            var obj1 = JSON.parse(response);
+                //find actived navigation and remove 'active' css
+                var actived_nav = $('.nav-tabs > li.active');
+                actived_nav.removeClass('active');
 
-                                            if (obj1.PercentageComplete.length > 0) {
-                                                var percentageArray = obj1.PercentageComplete;
-                                                $("#ddlPercentage").html('');
-                                                for (var i = 0; i < percentageArray.length; i++) {
+                //add 'active' css into clicked navigation
+                $(this).parents('li').addClass('active');
 
-                                                    $("#ddlPercentage").append($("<option></option>").val(percentageArray[i]).html(percentageArray[i]));
-                                                }
-                                          }
-                                           $('#ddlPercentage').val(CompletePercent);
-                                            $("#ddlIssueStatus").html('')
-                                            if (obj1.StatusList.length > 0) {
-                                                var statusList = obj1.StatusList;
-                                                for (var i = 0; i < statusList.length; i++) {
+                //hide displaying tab content
+                $(active_tab_selector).removeClass('active');
+                $(active_tab_selector).addClass('hide');
 
-                                                    $("#ddlIssueStatus").append($("<option></option>").val(statusList[i].StatusID).html(statusList[i].StatusName));
-                                                }
-                                             }
+                //show target tab content
+                var target_tab_selector = $(this).attr('href');
+                $(target_tab_selector).removeClass('hide');
+                $(target_tab_selector).addClass('active');
 
-                                            $('#ddlIssueStatus').val(statusid);
-                                            if (obj1.TaskList.length > 0) {
-                                                var tasklist = obj1.TaskList;
-                                                $('#ProjectTypeList').val(tasklist[0].ProjectTypeID);
-                                            }
-                                            $("#ddlUsersAssigned").html('')
-
-                                            if (obj1.UserList.length > 0) {
-                                                var UserList = obj1.UserList;
-                                                for (var i = 0; i < UserList.length; i++) {
-                                                    ///alert(UserList[i].ID)
-                                                    $("#ddlUsersAssigned").append($("<option></option>").val(UserList[i].ID).html(UserList[i].Name));
-
-                                                }
-
-                                                $("#ddlUsersAssigned").multiselect({
-                                                    enableCaseInsensitiveFiltering: true,
-                                                    buttonWidth: 550,
-                                                    enableFiltering: true
-                                                });
-
-                                            }
-                                            else {
-
-                                                $("#ddlUsersAssigned").multiselect({
-                                                    enableCaseInsensitiveFiltering: true,
-                                                    buttonWidth: 550,
-                                                    enableFiltering: true
-                                                });
-
-                                            }
-
-
-                                  var userIds = UserIdAssigned;
-                                  //alert(userIds)
-                                  var selectedOptions = UserIdAssigned.split(',');
-                                  for (i = 0; i < selectedOptions.length; i++) {
-
-                                      $('#ddlUsersAssigned').multiselect('select', [selectedOptions[i]]);
-                                   }
-
-                                  $('#UserIdsInString').val(userIds);
-
-
-                                        },
-                                        error: function (response) {
-                                            alert('error occured')
-                                            // console.log(response);
-                                        }
-                                    });
-        }
-        function clearAllIssueControls() {
-            $('#ActiveProjectList').prop('selectedIndex', 0);
-            $('#ProjectTypeList').prop('selectedIndex', 0);
-            $('#ProjectIssue_IssueId').val('');
-            $('#ProjectIssue_IssueName').val('');
-            $('#ProjectIssue_IssueCode').val('');
-            $('#ProjectIssue_IssueDescription').val('');
-            $('#ProjectIssue_IssueStartDateDisplay').val('');
-            $('#ProjectIssue_IssueEndDateDisplay').val('');
-            $('#ProjectIssue_ActualIssueStartDateDisplay').val('');
-            $('#ProjectIssue_ActualIssueEndDateDisplay').val('');
-            $('#ProjectIssue_ExpectedTime').val('');
-
-            $('#UserIdsInString').val('');
-            $('#ddlIssueStatus').val(0);
-            $('#SeverityList').val(0);
-            $('#TicketTypeList').val(0);
-            $('#TicketTypeID').val(0);
-            $('#ddlPercentage').val(0);
-            $('#ProjectIssue_IsActive').val(false);
-            $('#ProjectIssue_IsActive').prop("checked", false);
-            $('#ddlUsersAssigned').multiselect('deselectAll', false);
-            $('#ddlUsersAssigned').multiselect('updateButtonText');
-            $('#ProjectIssue_IsValueAdded').val(false);
-            $('#ProjectIssue_IsValueAdded').prop("checked", false);
-
-        }
-        function formatDateInMM_DD_YYYY(yourUnformattedDate) {
-            var formattedDate = new Date(yourUnformattedDate);
-            var day = formattedDate.getDate();
-            var month = formattedDate.getMonth();
-            month += 1;  // JavaScript months are 0-11
-            var year = formattedDate.getFullYear();
-            if (day < 10) {
-                day = "0" + day;
-            }
-            if (month < 10) {
-                month = "0" + month;
-            }
-            // return (day + "/" + month + "/" + year);
-            return (month + "/" + day + "/" + year);
-
-        }
-
-        function EditProjectIssue(IssueID) {
-            var issueId = IssueID;
-             $.ajax({
-                url: '@Url.Action("GetProjectIssueByID", "Admin")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    "IssueId": issueId
-                }),
-                 success: function (response) {
-
-                     //clearAllIssueControls();
-                     var IssueObj = JSON.parse(response);
-                     $('#hProjectNameHeader').html("TI" + IssueObj.IssueId + " details");
-                     var project_id = IssueObj.ProjectID;
-                     AjaxCallGetUserByProject(project_id, IssueObj.StatusID, IssueObj.CompletePercent, IssueObj.UserIdAssigned);
-                     //**Get user by project
-                     //**
-                     $('#ProjectIssue_IssueId').val(IssueObj.IssueId)
-                     $('#ProjectIssue_IssueName').val(IssueObj.IssueName);
-                     $('#ProjectIssue_IssueCode').val(IssueObj.IssueCode);
-                     $('#ProjectIssue_IssueDescription').val(IssueObj.IssueDescription);
-                     $('#ActiveProjectList').val(IssueObj.ProjectID);
-                     $('#SeverityList').val(IssueObj.SeverityID);
-                     $('#TicketTypeList').val(IssueObj.TicketTypeID);
-                  //   $('#ddlIssueStatus').val(IssueObj.StatusID);
-
-                    // $('#ddlPercentage').val(IssueObj.CompletePercent);
-                     $('#ProjectIssue_IssueStartDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.IssuestartDate));
-                     $('#ProjectIssue_IssueEndDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.IssueEndDate));
-
-
-
-                     $('#ProjectIssue_ExpectedTime').val(IssueObj.ExpectedTime);
-
-
-                     if (IssueObj.ActualIssueStartDate != null) {
-                         $('#ProjectIssue_ActualIssueStartDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueStartDate));
-                     }
-                     else {
-                         $('#ProjectIssue_ActualIssueStartDateDisplay').val('');
-                     }
-                     if (IssueObj.ActualIssueEndDate != null) {
-                         $('#ProjectIssue_ActualIssueEndDateDisplay').val(formatDateInMM_DD_YYYY(IssueObj.ActualIssueEndDate));
-                     }
-                     else {
-                         $('#ProjectIssue_ActualIssueEndDateDisplay').val('');
-                     }
-
-                     $('#ProjectIssue_IsActive').prop('checked', IssueObj.IsActive);
-                     $('#ProjectIssue_IsValueAdded').prop('checked', IssueObj.IsValueAdded);
-                     $('#ProjectIssue_UserIdAssigned').val(IssueObj.UserIdAssigned);
-                     setTimeout(function () {
-                           $('#ddlUsersAssigned').multiselect('deselectAll', false);
-            //$('#ddlUsersAssigned').multiselect('updateButtonText');
-                         $('#mymodalForNewTicket').modal('show');
-                     }, 5000);
-
-                },
-                 error: function (response) {
-                    alert('error occured')
-
-                }
             });
-
-
+        });
+    </script>
+    <style>
+        /** Start: to style navigation tab **/
+        .nav {
+            margin-bottom: 18px;
+            margin-left: 0;
+            list-style: none;
         }
-        if ($('#ProjectIssue_UserIdAssigned').val() != "") {
 
-            var AllselectedOptions = $('#UserIdAssigned').val();
-            alert(AllselectedOptions);
-            var selectedOptions = AllselectedOptions.split(',');
-
-            for (var i in selectedOptions) {
-                var optionVal = selectedOptions[i];
-                $("#ddlUsersAssigned").find("option[value=" + optionVal + "]").prop("selected", "selected");
+            .nav > li > a {
+                display: block;
             }
-            $("#ddlUsersAssigned").multiselect('reload');
+
+        .nav-tabs {
+            *zoom: 1;
         }
-        //End**
 
-                        </script>
-                        <script type="text/javascript">
-                            function activaTab() {
+            .nav-tabs:before,
+            .nav-tabs:after {
+                display: table;
+                content: "";
+            }
 
-                                var active_tab_selector = "#tab1";
+            .nav-tabs:after {
+                clear: both;
+            }
 
-                                //find actived navigation and remove 'active' css
-                                //  var actived_nav = "#tab1";
-                                // actived_nav.removeClass('active');
+            .nav-tabs > li {
+                float: left;
+            }
 
-                                //add 'active' css into clicked navigation
-                                $(this).parents('li').addClass('active');
+                .nav-tabs > li > a {
+                    padding-right: 12px;
+                    padding-left: 12px;
+                    margin-right: 2px;
+                    line-height: 14px;
+                }
 
-                                //hide displaying tab content
-                                $(active_tab_selector).removeClass('active');
-                                $(active_tab_selector).addClass('hide');
-                                alert(active_tab_selector);
-                                //show target tab content
-                                var target_tab_selector = "#tab2";
-                                $(target_tab_selector).removeClass('hide');
-                                $(target_tab_selector).addClass('active');
-                                alert(target_tab_selector);
-                            };
+        .nav-tabs {
+            border-bottom: 1px solid #ddd;
+        }
 
-                        </script>
+            .nav-tabs > li {
+                margin-bottom: -1px;
+            }
 
-                        <script type="text/javascript">
+                .nav-tabs > li > a {
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    line-height: 18px;
+                    border: 1px solid transparent;
+                    -webkit-border-radius: 4px 4px 0 0;
+                    -moz-border-radius: 4px 4px 0 0;
+                    border-radius: 4px 4px 0 0;
+                }
 
-                            var DirectoryName = "";
-                            if (document.getElementById("FileDirectory").value != "") {
-                                DirectoryName = document.getElementById("FileDirectory").value;
-                            } else {
-                                DirectoryName = "";
-                            }
+                    .nav-tabs > li > a:hover {
+                        border-color: #eeeeee #eeeeee #dddddd;
+                    }
 
-                            Dropzone.options.myDropzone = {
-                                url: "/Admin/IssueAttachments",
-                                autoProcessQueue: true,
-                                uploadMultiple: true,
-                                parallelUploads: 100,
-                                maxFiles: 100,
-                                acceptedFiles: "image/*,.pdf,.doc,.docx,.xlsx,.xls",
-                                async: true,
+            .nav-tabs > .active > a,
+            .nav-tabs > .active > a:hover {
+                color: #555555;
+                cursor: default;
+                background-color: #ffffff;
+                border: 1px solid #ddd;
+                border-bottom-color: transparent;
+            }
 
-                                init: function () {
+        li {
+            line-height: 18px;
+        }
 
+        .tab-content.active {
+            display: block;
+        }
 
-                                    this.on("sending", function (file, xhr, formData) {
-                                        formData.append("DirectoryName", $("#FileDirectory").val());
-
-
-                                    });
-
-                                    //var submitButton = document.querySelector("input[name ='Command']");
-                                    var wrapperThis = this;
-                                    wrapperThis.processQueue();
-                                    $("#dropzoneJsForm").submit();
-
-                                    //submitButton.addEventListener("click", function (event) {
-                                    //    $(".overlay").show();
-                                    //    event.preventDefault(event);
-                                    //    wrapperThis.processQueue();
-
-                                    //    setTimeout(function () {
-                                    //        $("#dropzoneJsForm").submit();
-                                    //    }, 6000);
+        .tab-content.hide {
+            display: none;
+        }
 
 
-                                    //    return false;
-                                    //});
+        /** End: to style navigation tab **/
 
-
-                                    this.on("addedfile", function (file) {
-                                        alert(file);
-                                        document.getElementById("btnStatusUpdate").disabled = true;
-                                        // Create the remove button
-                                        var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
-
-                                        // Listen to the click event
-                                        removeButton.addEventListener("click", function (e) {
-                                            // Make sure the button click doesn't submit the form:
-                                            //e.defaultPrevented();
-                                            //e.stopPropagation();
-                                           
-                                            // Remove the file preview.
-                                            wrapperThis.removeFile(file);
-                                            // If you want to the delete the file on the server as well,
-                                            // you can do the AJAX request here.
-                                        });
-
-                                        // Add the button to the file preview element.
-                                        file.previewElement.appendChild(removeButton);
-                                    });
-
-                                    //this.on('sendingmultiple', function (data, xhr, formData) {
-                                    //    formData.append("TravelRequestID", $("#TravelRequestID").val());
-                                    //});
-                                    this.on("success", function (file, response) {
-                                        alert(file);
-                                        // or however you would point to your assigned file ID here;
-                                        //alert(JSON.stringify(response));
-                                        document.getElementById("FileDirectory").value = JSON.stringify(response);
-                                        document.getElementById("btnStatusUpdate").disabled = false;
-                                        // console should show the ID you pointed to
-                                        // do stuff with file.id ...
-                                    });
-                                }
-
-                            };
-                     
-                         </script>
-                        <script type="text/javascript">
-                            $(document).ready(function () {
-                                $('.nav-tabs > li > a').click(function (event) {
-                                    event.preventDefault();//stop browser to take action for clicked anchor
-
-                                    //get displaying tab content jQuery selector
-                                    var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
-
-                                    //find actived navigation and remove 'active' css
-                                    var actived_nav = $('.nav-tabs > li.active');
-                                    actived_nav.removeClass('active');
-
-                                    //add 'active' css into clicked navigation
-                                    $(this).parents('li').addClass('active');
-
-                                    //hide displaying tab content
-                                    $(active_tab_selector).removeClass('active');
-                                    $(active_tab_selector).addClass('hide');
-
-                                    //show target tab content
-                                    var target_tab_selector = $(this).attr('href');
-                                    $(target_tab_selector).removeClass('hide');
-                                    $(target_tab_selector).addClass('active');
-
-                                });
-                            });
-                        </script>
-                        <style>
-                            /** Start: to style navigation tab **/
-                            .nav {
-                                margin-bottom: 18px;
-                                margin-left: 0;
-                                list-style: none;
-                            }
-
-                                .nav > li > a {
-                                    display: block;
-                                }
-
-                            .nav-tabs {
-                                *zoom: 1;
-                            }
-
-                                .nav-tabs:before,
-                                .nav-tabs:after {
-                                    display: table;
-                                    content: "";
-                                }
-
-                                .nav-tabs:after {
-                                    clear: both;
-                                }
-
-                                .nav-tabs > li {
-                                    float: left;
-                                }
-
-                                    .nav-tabs > li > a {
-                                        padding-right: 12px;
-                                        padding-left: 12px;
-                                        margin-right: 2px;
-                                        line-height: 14px;
-                                    }
-
-                            .nav-tabs {
-                                border-bottom: 1px solid #ddd;
-                            }
-
-                                .nav-tabs > li {
-                                    margin-bottom: -1px;
-                                }
-
-                                    .nav-tabs > li > a {
-                                        padding-top: 8px;
-                                        padding-bottom: 8px;
-                                        line-height: 18px;
-                                        border: 1px solid transparent;
-                                        -webkit-border-radius: 4px 4px 0 0;
-                                        -moz-border-radius: 4px 4px 0 0;
-                                        border-radius: 4px 4px 0 0;
-                                    }
-
-                                        .nav-tabs > li > a:hover {
-                                            border-color: #eeeeee #eeeeee #dddddd;
-                                        }
-
-                                .nav-tabs > .active > a,
-                                .nav-tabs > .active > a:hover {
-                                    color: #555555;
-                                    cursor: default;
-                                    background-color: #ffffff;
-                                    border: 1px solid #ddd;
-                                    border-bottom-color: transparent;
-                                }
-
-                            li {
-                                line-height: 18px;
-                            }
-
-                            .tab-content.active {
-                                display: block;
-                            }
-
-                            .tab-content.hide {
-                                display: none;
-                            }
-
-
-                            /** End: to style navigation tab **/
-
-                            .ui-timepicker-container {
-                                z-index: 3500 !important;
-                            }
-                        </style>
-
+        .ui-timepicker-container {
+            z-index: 3500 !important;
+        }
+    </style>
+    
+ 
 </body>
 </html>
 
