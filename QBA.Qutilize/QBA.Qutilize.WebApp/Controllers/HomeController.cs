@@ -1556,7 +1556,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     sbContent.Append("<div class='panel panel-info'>");
                     sbContent.Append("<div class='panel-heading'>");
-                    
+
                     sbContent.Append("</div>");
                     sbContent.Append("<div class='panel-body'>");
                     sbContent.Append("<div class='table-responsive'>");
@@ -1570,6 +1570,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<th class='text-center tblHeaderColor'>Client</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Project Manager</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Team Size</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Start Date</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>End Date</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
@@ -1579,7 +1580,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        sbContent.Append("<tr>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0)
+                            sbContent.Append("<tr class='text-red'>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5)
+                            sbContent.Append("<tr class='text-yellow'>");
+                        else
+                            sbContent.Append("<tr>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NAME"]) + "</span></td>");
                         //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectCode"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</span></td>");
@@ -1587,11 +1593,25 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["PM"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
+                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["AssignedUser"]).Replace(";","<br>") + "'>" +
+                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></span></td>");
+                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
+                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfTask"]) + "</span></td>");
+                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["TaslList"]).Replace(";", "<br>").Replace("|", "\t\t") + "'>" +
+                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        if (Convert.ToDecimal(dr["MaxProjectTimeInHours"]) < Convert.ToDecimal(dr["EplapsedTime"]))
+                            sbContent.Append("<td><span class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        else if ((Convert.ToDecimal(dr["MaxProjectTimeInHours"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16)
+                            sbContent.Append("<td><span class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        else
+                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1810,6 +1830,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<th class='text-center tblHeaderColor'>Client</th>");
                     //sbContent.Append("<th class='text-center tblHeaderColor'>Project Manager</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Team Size</th>");
+                    sbContent.Append("<th class='text-center tblHeaderColor'>Task</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Start Date</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>End Date</th>");
                     sbContent.Append("<th class='text-center tblHeaderColor'>Estimated Time</th>");
@@ -1819,7 +1840,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        sbContent.Append("<tr>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0)
+                            sbContent.Append("<tr class='text-red'>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5)
+                            sbContent.Append("<tr class='text-yellow'>");
+                        else
+                            sbContent.Append("<tr>");
                         //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NAME"]) + "</span></td>");
                         //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectCode"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</span></td>");
@@ -1827,11 +1853,25 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</span></td>");
                         //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["PM"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
+                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["AssignedUser"]).Replace(";", "<br>") + "'>" +
+                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></span></td>");
+                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
+                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfTask"]) + "</span></td>");
+                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["TaslList"]).Replace(";", "<br>").Replace("|", "  ") + "'>" +
+                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</span></td>");
                         sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        if (Convert.ToDecimal(dr["MaxProjectTimeInHours"]) < Convert.ToDecimal(dr["EplapsedTime"]))
+                            sbContent.Append("<td><span class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        else if ((Convert.ToDecimal(dr["MaxProjectTimeInHours"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16)
+                            sbContent.Append("<td><span class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        else
+                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1990,7 +2030,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     sbContent.Append("<div class='panel panel-info'>");
                     sbContent.Append("<div class='panel-heading'>");
-                    sbContent.Append("<span class='control-text'><b>Resource Utilization for "+ String.Format("{0:MMMM}", DateTime.Now) +", "+DateTime.Now.Year+ "</b> </span>");
+                    sbContent.Append("<span class='control-text'><b>Resource Utilization for " + String.Format("{0:MMMM}", DateTime.Now) + ", " + DateTime.Now.Year + "</b> </span>");
                     sbContent.Append("</div>");
                     sbContent.Append("<div class='panel-body'>");
                     sbContent.Append("<div class='table-responsive'>");
@@ -2186,7 +2226,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++) {
+                        for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
+                        {
                             sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
                         }
                         sbContent.Append("</tr>");
@@ -2200,6 +2241,66 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             catch (Exception exx) { }
             return Content(sbContent.ToString());
+        }
+
+
+        public ActionResult GetAllUserOfProjectByProjectID(string TextToDisplay)
+        {
+            StringBuilder sbOut = new StringBuilder();
+            if (TextToDisplay.Trim() != string.Empty)
+            {
+                string[] arrNoofRecord = TextToDisplay.Split(';');
+                if (arrNoofRecord.Length > 0) {
+                    foreach (string strRowVal in arrNoofRecord)
+                    {
+                        sbOut.Append("<tr>");
+                        string[] arrNoofColData = strRowVal.Split('|');
+                        if (arrNoofColData.Length > 0)
+                        {
+                            for (int i = 0; i < arrNoofColData.Length; i++)
+                            {
+                                sbOut.Append("<td class='text-center'>"+ arrNoofColData[i] + "</td>");
+                            }
+                        }
+                        sbOut.Append("</tr>");
+                    }
+                }
+                else
+                    sbOut.Append("<tr><td class='text-center'></td></tr>");
+            }
+            else
+            { sbOut.Append("<tr><td class='text-center'></td></tr>"); }
+            return Json(sbOut.ToString());
+        }
+
+        public ActionResult GetAllTasksOfProjectByProjectID(string TextToDisplay)
+        {
+            StringBuilder sbOut = new StringBuilder();
+            if (TextToDisplay.Trim() != string.Empty)
+            {
+                string[] arrNoofRecord = TextToDisplay.Split(';');
+                if (arrNoofRecord.Length > 0)
+                {
+                    foreach (string strRowVal in arrNoofRecord)
+                    {
+                        sbOut.Append("<tr>");
+                        string[] arrNoofColData = strRowVal.Split('|');
+                        if (arrNoofColData.Length > 0)
+                        {
+                            for (int i = 0; i < arrNoofColData.Length; i++)
+                            {
+                                sbOut.Append("<td class='text-center'>" + arrNoofColData[i] + "</td>");
+                            }
+                        }
+                        sbOut.Append("</tr>");
+                    }
+                }
+                else
+                    sbOut.Append("<tr><td class='text-center'></td></tr>");
+            }
+            else
+            { sbOut.Append("<tr><td class='text-center'></td></tr>"); }
+            return Json(sbOut.ToString());
         }
     }
 }

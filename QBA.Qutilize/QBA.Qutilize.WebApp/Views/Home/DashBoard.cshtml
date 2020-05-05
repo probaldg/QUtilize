@@ -198,6 +198,61 @@
         }
     </div>
 </div>
+<div id="TeamMemberListModel" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="MemberListModel">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTeamMemeber" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupTeamMemberBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
+                    <table class="table-bordered table table-striped  w-auto" id="tblTeamMemberList">
+                        <thead id="tblHeadListViewPost">
+                            <tr>
+                                <th class="text-center tblHeaderColor sorting">Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBosyTaskList"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="TaskNameListModel" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="TaskListModel">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTaskNameList" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupTaskNameListBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
+                    <table class="table-bordered table table-striped  w-auto" id="tblTaskNameList">
+                        <thead id="tblTaskHeadListViewPost">
+                            <tr>
+                                <th class="text-center tblHeaderColor sorting">Task Name</th>
+                                <th class="text-center tblHeaderColor sorting">Status</th>
+                                <th class="text-center tblHeaderColor sorting">Task Start Date</th>
+                                <th class="text-center tblHeaderColor sorting">Task End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBodyTaskNameList"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <Text>
 
 </Text>
@@ -219,14 +274,60 @@
                 }
             });
         }).change();
-        $('.nav-tabs > li > a').click(function (event) {
+        $('#divAdminDB .nav-tabs > li > a').click(function (event) {
             event.preventDefault();//stop browser to take action for clicked anchor
 
             //get displaying tab content jQuery selector
-            var active_tab_selector = $('.nav-tabs > li.active > a').attr('href');
+            var active_tab_selector = $('#divAdminDB .nav-tabs > li.active > a').attr('href');
 
             //find actived navigation and remove 'active' css
-            var actived_nav = $('.nav-tabs > li.active');
+            var actived_nav = $('#divAdminDB .nav-tabs > li.active');
+            actived_nav.removeClass('active');
+
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+
+            //show target tab content
+            var target_tab_selector = $(this).attr('href');
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+
+        });
+        $('#divManagerDB .nav-tabs > li > a').click(function (event) {
+            event.preventDefault();//stop browser to take action for clicked anchor
+
+            //get displaying tab content jQuery selector
+            var active_tab_selector = $('#divManagerDB .nav-tabs > li.active > a').attr('href');
+
+            //find actived navigation and remove 'active' css
+            var actived_nav = $('#divManagerDB .nav-tabs > li.active');
+            actived_nav.removeClass('active');
+
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+
+            //show target tab content
+            var target_tab_selector = $(this).attr('href');
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+
+        });
+        $('#divSelfDB .nav-tabs > li > a').click(function (event) {
+            event.preventDefault();//stop browser to take action for clicked anchor
+
+            //get displaying tab content jQuery selector
+            var active_tab_selector = $('#divSelfDB .nav-tabs > li.active > a').attr('href');
+
+            //find actived navigation and remove 'active' css
+            var actived_nav = $('#divSelfDB .nav-tabs > li.active');
             actived_nav.removeClass('active');
 
             //add 'active' css into clicked navigation
@@ -498,6 +599,86 @@
             }]
         });
     });
+    //$('[data-toggle="popover"]').popover({
+    //    html: true,
+    //    content: function () {
+    //        return $('#popover-content').html();
+    //    }
+    //});
+    function ShowTeamMemberList(vValue, vProjName) {
+            //alert(projectID);
+        $('#headerForTeamMemeber').html('Team members for ' + vProjName);
+            $('#tblTeamMemberList tbody').html('');
+            //$('#popupUserBody').html('');
+            $.ajax({
+            url: '@Url.Action("GetAllUserOfProjectByProjectID", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TextToDisplay": vValue
+            }),
+                success: function (response) {
+                    //var UserObj = JSON.parse(response);
+                    //if (UserObj.length > 0) {
+                    //    for (var i = 0; i < UserObj.length; i++) {
+                    //        //alert(UserObj[i]);
+                    //        var userListHTML = "<tr><td class='text-center'>" + UserObj[i] + "</td> </td>";
+                    //        $('#tblTeamMemberList tbody').append(userListHTML);
+
+                    //    }
+                    //}
+                    //else {
+                    //    var userListHTML = "<tr><td class='text-center'>Users not available.</td> </td>";
+                    $('#tblTeamMemberList tbody').append(response);
+                    //}
+                    $('#TeamMemberListModel').modal('show');
+
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+
+        }
+        function ShowTaskNameListPopup(vValue, vProjName) {
+            $('#headerForTaskNameList').html('');
+            $('#headerForTaskNameList').html('Task for ' + vProjName);
+            $('#tblTaskNameList tbody').html('');
+            $.ajax({
+            url: '@Url.Action("GetAllTasksOfProjectByProjectID", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TextToDisplay": vValue
+            }),
+                success: function (response) {
+                    //var TaskObj = JSON.parse(response);
+                    //if (TaskObj.length > 0) {
+                    //    for (var i = 0; i < TaskObj.length; i++) {
+
+                    //        var taskListHTML = "<tr><td class='text-center'>" + TaskObj[i] + "</td> </td>";
+                    //        $('#tblTaskNameList tbody').append(taskListHTML);
+                    //    }
+                    //}
+                    //else {
+                    //    var taskListHTML = "<tr><td class='text-center'>Task not available.</td> </td>";
+                    $('#tblTaskNameList tbody').append(response);
+                    //}
+                    $('#TaskNameListModel').modal('show');
+
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+            //$('#TaskNameListModel').modal('show');
+        };
 </script>
 <style>
     /** Start: to style navigation tab **/
