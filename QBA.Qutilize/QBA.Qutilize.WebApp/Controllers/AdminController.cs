@@ -3071,8 +3071,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var filelogo = Request.Files["logo"];
                     if (filelogo != null && filelogo.ContentLength > 0)
                     {
-
-
                         var logo = Path.GetFileName(filelogo.FileName);
                         logo = orgModel.orgname + "_logo_" + logo;
                         var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
@@ -3092,8 +3090,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var filelogo = Request.Files["logo"];
                     if (filelogo != null && filelogo.ContentLength > 0)
                     {
-
-
                         var logo = Path.GetFileName(filelogo.FileName);
                         logo = orgModel.orgname + "_logo_" + logo;
                         var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
