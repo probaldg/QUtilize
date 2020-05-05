@@ -728,6 +728,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     string ExpecterdHours = item["ExpectedTime"].ToString();
                     string bgcolor = "#FFF";
+                    string forecolor = "#333";
                     if (ExpecterdHours != "")
                     {
                         string[] Arr = new string[2];
@@ -741,10 +742,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
                     {
                         bgcolor = "#FF0000";
+                        forecolor = "#FFF";
                     }
                     if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date== obj.TodayDate.Date) ) && (item["StatusName"].ToString() != "CLOSED"))
                     {
                         bgcolor = "#FF8C00";
+                        forecolor = "#FFF";
                     }
 
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
@@ -752,8 +755,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + "'>");
-                    strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:"+ forecolor+" '>");
+                    strUserData.Append("<td class='text-center' > TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" +item["IssueName"].ToString() + "</td>");
@@ -882,6 +885,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 foreach (DataRow item in dt.Rows)
                 {
                     string bgcolor = "#FFF";
+                    string forecolor = "#333";
                     string ExpecterdHours = item["ExpectedTime"].ToString();
                     if (ExpecterdHours != "")
                     {
@@ -895,10 +899,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
                     {
                         bgcolor = "#FF0000";
+                        forecolor = "#FFF";
                     }
                     if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
                     {
                         bgcolor = "#FF8C00";
+                        forecolor = "#FFF";
                     }
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
 
@@ -906,7 +912,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
 
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + "'>");
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
                     strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
