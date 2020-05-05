@@ -18,6 +18,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 {
     public class AdminController : Controller
     {
+      
         readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
@@ -1771,39 +1772,100 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return PartialView("_PreviewProjectIssue");
         }
+        public string MailCommentsForIssues(int id)
+        {
+            StringBuilder sbContent = new StringBuilder();
+            try
+            {
+                ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
+                DataSet ds = acm.GetIssueCommentByIssueID(id);
+                sbContent.Append("<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>");
+                if (ds!=null && ds.Tables[0]!=null && ds.Tables[0].Rows.Count > 0)
+                {
+                    sbContent.Append("<section class='comments'>");
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
+                        sbContent.Append("<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>");
+                        //Load URL
+                        if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
+                        {
+                            string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
+                            sbContent.Append( "<p><b>URL:</b>");
+                            for (int j = 0; j < arrURL.Length; j++)
+                            {
+                                sbContent.Append( "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </a></b> ");
+
+                            }
+                            sbContent.Append("</p>");
+                        }
+                        sbContent.Append( "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>");
+                    }
+                    sbContent.Append("</section>");
+
+
+                }
+                else
+                {
+                    sbContent.Append("<div>No Comments Found</div>");
+                }
+                sbContent.Append("</div></div></div></div></div></div></div>");
+            }
+            catch( Exception ex)
+            {
+
+            }
+            return sbContent.ToString();
+
+        }
         public ActionResult LoadCommentsForIssues(int id)
         {
             string strCommentDiv = string.Empty;
             ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
-            DataTable dt = acm.GetIssueCommentByIssueID(id);
+            DataSet ds = acm.GetIssueCommentByIssueID(id);
             strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
-            if (dt.Rows.Count > 0)
+            if (ds!=null && ds.Tables[0]!=null && ds.Tables[0].Rows.Count > 0)
             {
-               
                 strCommentDiv += @"<section class='comments'>";
-                for (int i = 0; i < dt.Rows.Count; i++)
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-                    //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + dt.Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ dt.Rows[i]["Comment"].ToString() + "</p>";
-
-                    if (dt.Rows[i]["DirectoryName"].ToString().Trim() != "")
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
+                 
+                    //Load Attachment
+                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0 )
                     {
-                        string path = Server.MapPath("~/IssueAttachments/" + dt.Rows[i]["DirectoryName"].ToString());
-                        if (Directory.Exists(path))
+                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
                         {
-                            DirectoryInfo di = new DirectoryInfo(path);
-                            strCommentDiv+= "<p><b>Attachments:</b>" ;
-                            foreach (FileInfo fi in di.GetFiles())
+                            if (ds.Tables[0].Rows[i]["ID"].ToString() == ds.Tables[1].Rows[j]["IssueCommentId"].ToString())
                             {
-                                
-                                strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + dt.Rows[i]["DirectoryName"].ToString() + "/" + fi.Name.ToString() + "' >" + fi.Name.ToString() + " </ a > </p> ";
+                                string path = Server.MapPath("~/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
+                                if (Directory.Exists(path))
+                                {
+                                    DirectoryInfo di = new DirectoryInfo(path);
+                                    strCommentDiv += "<p><b>Attachments:</b>";
+
+                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a></p>";
+
+                                }
                             }
-                            
+                        }
+                        
+                    }
+
+                    //Load URL
+                    if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
+                    {
+
+                        string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
+                        strCommentDiv += "<p><b>URL:</b>";
+                        for (int j = 0; j < arrURL.Length; j++)
+                        {
+                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
 
                         }
-
+                        strCommentDiv += "</p>";
                     }
-                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
@@ -2060,6 +2122,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             ProjectIssueModel pm = new ProjectIssueModel();
             string result = "";
+            string strMailToName = string.Empty;
+            string strMailTo = string.Empty;
             try
             {
 
@@ -2079,18 +2143,48 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     }
 
-                    var updateStatus = model.UpdateIssuestatus(model);
+                    var updateStatus = model.UpdateIssuestatus(model, out strMailToName, out strMailTo);
 
                     if (updateStatus)
                     {
+                            #region Mail Sending
+                            ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
+                            DataSet dtIssueComment = acm.GetIssueCommentByIssueID(model.IssueIdforstatus);
+
+                             string []MailToName_arr = strMailToName.Split(';');
+                             string[] MailTo_arr = strMailTo.Split(';');
+                            if (dtIssueComment !=null && dtIssueComment.Tables[0] != null && dtIssueComment.Tables[0].Rows.Count > 0)
+                            {
+                            #region :  
+                            string strBody = "";
+                            string strSubject = "";
+                            for (int i = 0; i < MailToName_arr.Length; i++)
+                            {
+                                 strSubject = @"Project Issue Status and discussion history";
+                                 strBody = string.Format(@"Dear {0},
+                                                        <br><br>
+                                                        {1}
+                                                        <br><br>
+                                                        Please login to Helpdesk System in Qutilize to view the Issue Details and provide remarks on the same.
+                                                        <br><br>
+                                                        Thanks & Regards,<br>
+                                                        QBA Administrator
+                                                        <br><br><br><br>
+                                                        *This is a system generated email. Please do not respond.
+                                                        ", MailToName_arr[i], MailCommentsForIssues(model.IssueIdforstatus));
+
+                                 using (SendMailClass sm = new SendMailClass())
+                                 { sm.SendMail(MailTo_arr[i], strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
+                              
+                            }
+                                #endregion
+                            }
                         model.ISErr = false;
                         model.ErrString = "Data Saved Successfully.";
                         TempData["ErrStatus"] = model.ISErr;
                         TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Success";
-
-                       
-
+                        #endregion
                     }
                     else
                     {
@@ -4302,11 +4396,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                         System.IO.Directory.CreateDirectory(pathString);
                     var path = string.Format("{0}\\{1}", pathString, fileName);
 
-                    // Stream strm = Request.Files[imageFile].InputStream;
-                    // generateThumbnail.GenerateThumbnails(0.5, strm, path);
 
                     file.SaveAs(path);
-                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                 
                 }
             }
             return Json(Directory);

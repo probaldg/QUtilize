@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -345,16 +346,21 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        public Boolean UpdateIssuestatus(ProjectIssueModel model)
+        public Boolean UpdateIssuestatus(ProjectIssueModel model, out string strMailToName, out string strMailTo)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
+            DataTable dtAttachment = null;
+            strMailToName = string.Empty;
+            strMailTo = string.Empty;
             string FileDirectoryName = "";
-            if (model.DirectoryName != "")
-            { 
+            int IssueCommentId;
+            if (model.DirectoryName != null && model.DirectoryName != "")
+            {
                 FileDirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-             }
+            }
+              
 
             try
             {
@@ -374,6 +380,33 @@ namespace QBA.Qutilize.WebApp.Models
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_UpdateStatus", param);
 
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    // int.TryParse(dt.Rows[0][0].ToString(), out ID);
+                    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
+                    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
+                    IssueCommentId = Convert.ToInt32(dt.Rows[0]["IssueCommentId"]);
+                    if (model.DirectoryName != null && model.DirectoryName != "")
+                    {
+                        FileDirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}IssueAttachments", System.Web.HttpContext.Current.Server.MapPath(@"\")));
+                        string pathString = Path.Combine(originalDirectory.ToString(), FileDirectoryName);
+                        string[] files = Directory.GetFiles(pathString);
+                        foreach (string file in files)
+                        {
+                            string Attachments = Path.GetFileName(file);
+                            SqlParameter[] param1 ={
+                        new SqlParameter("@IssueID",model.IssueIdforstatus),
+                        new SqlParameter("@DirectoryName",FileDirectoryName),
+                        new SqlParameter("@AttachmentName",Attachments),
+                        new SqlParameter("@AddedTS",model.EditedTS),
+                        new SqlParameter("@AddedBy",model.EditedBy),
+                        new SqlParameter("@IssueCommentId",IssueCommentId)
+                         };
+                            dtAttachment = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssueAttachments_Insert", param1);
+                        }
+                    }
+                }
 
                 result = true;
             }
@@ -381,6 +414,8 @@ namespace QBA.Qutilize.WebApp.Models
             {
                 result = false;
             }
+
+         
             return result;
 
         }
