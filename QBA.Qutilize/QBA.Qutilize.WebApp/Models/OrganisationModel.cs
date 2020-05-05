@@ -5,6 +5,7 @@ using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using QBA.Qutilize.WebApp.DAL;
+using System.ComponentModel.DataAnnotations;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -17,6 +18,8 @@ namespace QBA.Qutilize.WebApp.Models
         public string contact_email_id { get; set; }
         public string logo { get; set; }
         public string wikiurl { get; set; }
+        [Display(Name = "No Of User License")]
+        public int NoOfUserLicense { get; set; }
         public Boolean isActive { get; set; }
         public DateTime createdTS { get; set; }
         public DateTime editedTS { get; set; }
