@@ -195,6 +195,41 @@ namespace QBA.Qutilize.WebApp.Controllers
                             { Session.Add("OrgPM", Convert.ToString(dr["roleID"])); }
                         }
                     }
+
+                    if (Session["sessAdminProject"] != null) Session.Remove("sessAdminProject");
+                    if (Session["sessAdminTask"] != null) Session.Remove("sessAdminTask");
+                    if (Session["sessAdminTicket"] != null) Session.Remove("sessAdminTicket");
+                    if (Session["sessAdminUtilization"] != null) Session.Remove("sessAdminUtilization");
+
+                    if (Session["sessPMProject"] != null) Session.Remove("sessPMProject");
+                    if (Session["sessPMTask"] != null) Session.Remove("sessPMTask");
+                    if (Session["sessPMTicket"] != null) Session.Remove("sessPMTicket");
+                    if (Session["sessPMUtilization"] != null) Session.Remove("sessPMUtilization");
+
+                    if (Session["sessSelfTask"] != null) Session.Remove("sessSelfTask");
+                    if (Session["sessSelfTicket"] != null) Session.Remove("sessSelfTicket");
+                    if (Session["sessSelfUtilization"] != null) Session.Remove("sessSelfUtilization");
+
+                    if (Session["OrgAdmin"] != null) {
+                        Session.Add("sessAdminProject", lvm.GetDashBoardAdminProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessAdminTask", lvm.GetDashBoardAdminTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessAdminTicket", lvm.GetDashBoardAdminTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessAdminUtilization", lvm.GetDashBoardAdminTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        //ds = (DataSet)Session["sessAdminProject"];
+
+                    }
+                    if (Session["OrgPM"] != null) {
+                        Session.Add("sessPMProject", lvm.GetDashBoardPMProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessPMTask", lvm.GetDashBoardPMTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessPMTicket", lvm.GetDashBoardPMTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessPMUtilization", lvm.GetDashBoardPMTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                    }
+                    if (Session["OrgUser"] != null) {
+                        Session.Add("sessSelfTask", lvm.GetDashBoardSelfTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessSelfTicket", lvm.GetDashBoardSelfTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                        Session.Add("sessSelfUtilization", lvm.GetDashBoardSelfTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
+                    }
+
                 }
                 else
                 { return RedirectToAction("Index", "Home"); }
@@ -1549,15 +1584,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardAdminProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                //LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = (DataSet)Session["sessAdminProject"];// lvm.GetDashBoardAdminProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
 
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
-                    sbContent.Append("<div class='panel-heading'>");
+                    //sbContent.Append("<div class='panel-heading'>");
 
-                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
                     sbContent.Append("<div class='panel-body'>");
                     sbContent.Append("<div class='table-responsive'>");
                     sbContent.Append("<table id='tblDashBoardAdminProjectData' class='table table-bordered dataTable no-footer' width='100%'>");
@@ -1586,32 +1621,32 @@ namespace QBA.Qutilize.WebApp.Controllers
                             sbContent.Append("<tr class='text-yellow'>");
                         else
                             sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NAME"]) + "</span></td>");
-                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectCode"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["PM"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["NAME"]) + "</td>");
+                        //sbContent.Append("<td>" + Convert.ToString(dr["ProjectCode"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["PM"]) + "</td>");
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
-                        //sbContent.Append("<td><span class='control-text'>" +
+                        //sbContent.Append("<td>" +
                         //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["AssignedUser"]).Replace(";","<br>") + "'>" +
-                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></span></td>");
-                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
-                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfTask"]) + "</span></td>");
-                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></td>");
+                        ////sbContent.Append("<td>" + Convert.ToString(dr["NoOfUser"]) + "</td>");
+                        ////sbContent.Append("<td>" + Convert.ToString(dr["NoOfTask"]) + "</td>");
+                        //sbContent.Append("<td>" +
                         //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["TaslList"]).Replace(";", "<br>").Replace("|", "\t\t") + "'>" +
-                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</span></td>");
+                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</td>");
                         if (Convert.ToDecimal(dr["MaxProjectTimeInHours"]) < Convert.ToDecimal(dr["EplapsedTime"]))
-                            sbContent.Append("<td><span class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         else if ((Convert.ToDecimal(dr["MaxProjectTimeInHours"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16)
-                            sbContent.Append("<td><span class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         else
-                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1630,8 +1665,8 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardAdminTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                //LoginViewModel lvm = new LoginViewModel();
+                DataSet ds = (DataSet)Session["sessAdminTask"];// lvm.GetDashBoardAdminTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
 
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
@@ -1667,16 +1702,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1695,9 +1730,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardAdminTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardAdminTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessAdminTicket"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -1734,18 +1769,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -1763,9 +1798,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardAdminTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardAdminTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessAdminUtilization"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -1789,7 +1824,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<tr>");
                         for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
                         {
-                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr[iItem]) + "</td>");
                         }
                         sbContent.Append("</tr>");
                     }
@@ -1809,15 +1844,15 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardPMProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardPMProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessPMProject"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
-                    sbContent.Append("<div class='panel-heading'>");
+                    //sbContent.Append("<div class='panel-heading'>");
 
-                    sbContent.Append("</div>");
+                    //sbContent.Append("</div>");
                     sbContent.Append("<div class='panel-body'>");
                     sbContent.Append("<div class='table-responsive'>");
                     sbContent.Append("<table id='tblDashBoardPMProjectData' class='table table-bordered dataTable no-footer' width='100%'>");
@@ -1846,32 +1881,32 @@ namespace QBA.Qutilize.WebApp.Controllers
                             sbContent.Append("<tr class='text-yellow'>");
                         else
                             sbContent.Append("<tr>");
-                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NAME"]) + "</span></td>");
-                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectCode"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</span></td>");
-                        //sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["PM"]) + "</span></td>");
+                        //sbContent.Append("<td>" + Convert.ToString(dr["NAME"]) + "</td>");
+                        //sbContent.Append("<td>" + Convert.ToString(dr["ProjectCode"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</td>");
+                        //sbContent.Append("<td>" + Convert.ToString(dr["PM"]) + "</td>");
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
-                        //sbContent.Append("<td><span class='control-text'>" +
+                        //sbContent.Append("<td>" +
                         //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["AssignedUser"]).Replace(";", "<br>") + "'>" +
-                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></span></td>");
-                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfUser"]) + "</span></td>");
-                        ////sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["NoOfTask"]) + "</span></td>");
-                        //sbContent.Append("<td><span class='control-text'>" +
+                        //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></td>");
+                        ////sbContent.Append("<td>" + Convert.ToString(dr["NoOfUser"]) + "</td>");
+                        ////sbContent.Append("<td>" + Convert.ToString(dr["NoOfTask"]) + "</td>");
+                        //sbContent.Append("<td>" +
                         //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["TaslList"]).Replace(";", "<br>").Replace("|", "  ") + "'>" +
-                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</span></td>");
+                        //    "" + Convert.ToString(dr["NoOfTask"]) + "</a></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["MaxProjectTimeInHours"]) + "</td>");
                         if (Convert.ToDecimal(dr["MaxProjectTimeInHours"]) < Convert.ToDecimal(dr["EplapsedTime"]))
-                            sbContent.Append("<td><span class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         else if ((Convert.ToDecimal(dr["MaxProjectTimeInHours"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16)
-                            sbContent.Append("<td><span class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td  class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         else
-                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1890,9 +1925,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardPMTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardPMTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessPMTask"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -1923,20 +1958,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
                     sbContent.Append("</tr></thead>");
                     sbContent.Append("<tbody id='tbodyDashBoardPMTaskData'>");
-
+                    
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskID"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskName"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1955,9 +1990,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardPMTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardPMTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessPMTicket"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -1994,18 +2029,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -2023,9 +2058,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardPMTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardPMTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessPMUtilization"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -2049,7 +2084,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<tr>");
                         for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
                         {
-                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr[iItem]) + "</td>");
                         }
                         sbContent.Append("</tr>");
                     }
@@ -2069,9 +2104,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardSelfTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardSelfTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessSelfTask"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -2106,16 +2141,16 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -2134,9 +2169,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardSelfTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardSelfTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessSelfTicket"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -2173,18 +2208,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Name"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</span></td>");
-                        sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</span></td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Name"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>T" + Convert.ToString(dr["IssueID"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
+                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -2202,9 +2237,9 @@ namespace QBA.Qutilize.WebApp.Controllers
             StringBuilder sbContent = new StringBuilder();
             try
             {
-                LoginViewModel lvm = new LoginViewModel();
-                DataSet ds = lvm.GetDashBoardSelfTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
-
+                //LoginViewModel lvm = new LoginViewModel();
+                //DataSet ds = lvm.GetDashBoardSelfTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"]));
+                DataSet ds = (DataSet)Session["sessSelfUtilization"];
                 if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
                 {
                     sbContent.Append("<div class='panel panel-info'>");
@@ -2228,7 +2263,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<tr>");
                         for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
                         {
-                            sbContent.Append("<td><span class='control-text'>" + Convert.ToString(dr[iItem]) + "</span></td>");
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr[iItem]) + "</td>");
                         }
                         sbContent.Append("</tr>");
                     }
@@ -2244,7 +2279,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
 
 
-        public ActionResult GetAllUserOfProjectByProjectID(string TextToDisplay)
+        public ActionResult DisplayTeamMemberList(string TextToDisplay)
         {
             StringBuilder sbOut = new StringBuilder();
             if (TextToDisplay.Trim() != string.Empty)
@@ -2272,8 +2307,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             { sbOut.Append("<tr><td class='text-center'></td></tr>"); }
             return Json(sbOut.ToString());
         }
-
-        public ActionResult GetAllTasksOfProjectByProjectID(string TextToDisplay)
+        public ActionResult DisplayTaskNameListPopup(string TextToDisplay)
         {
             StringBuilder sbOut = new StringBuilder();
             if (TextToDisplay.Trim() != string.Empty)

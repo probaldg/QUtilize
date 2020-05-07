@@ -50,6 +50,10 @@
     <Reference Include="DeviceDetector.NET, Version=3.9.2.1, Culture=neutral, PublicKeyToken=73b5cbe69dbf55fb, processorArchitecture=MSIL">
       <HintPath>..\packages\DeviceDetector.NET.3.11.4\lib\net45\DeviceDetector.NET.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MvcSiteMapProvider, Version=4.6.26.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.Core.4.6.26\lib\net45\MvcSiteMapProvider.dll</HintPath>
@@ -915,6 +919,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="bin\" />
     <Folder Include="IssueAttachments\" />
   </ItemGroup>
   <ItemGroup>
