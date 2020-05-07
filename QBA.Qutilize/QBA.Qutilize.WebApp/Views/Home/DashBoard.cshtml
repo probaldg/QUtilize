@@ -121,6 +121,7 @@
                                 </ul>
                             </div>
                             <section id="tab1Manager" class="tab-content active">
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         @Html.Action("GetPMProject", "Home")
@@ -128,6 +129,7 @@
                                 </div>
                             </section>
                             <section id="tab2Manager" class="tab-content hide">
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         @Html.Action("GetPMTask", "Home")
@@ -135,6 +137,7 @@
                                 </div>
                             </section>
                             <section id="tab3Manager" class="tab-content hide">
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         @Html.Action("GetPMTicket", "Home")
@@ -171,6 +174,7 @@
                                 </ul>
                             </div>
                             <section id="tab1Self" class="tab-content active">
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         @Html.Action("GetSelfTask", "Home")
@@ -178,6 +182,7 @@
                                 </div>
                             </section>
                             <section id="tab2Self" class="tab-content hide">
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         @Html.Action("GetSelfTicket", "Home")
@@ -343,260 +348,315 @@
             $(target_tab_selector).addClass('active');
 
         });
+
         $('#tblDashBoardSelfTaskData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardSelfTicketData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardSelfTisheetData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
 
         $('#tblDashBoardAdminProjectData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardAdminTaskData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardAdminTicketData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardAdminTisheetData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+           initComplete: function () {
+               this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
 
         $('#tblDashBoardPMProjectData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardPMTaskData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardPMTicketData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
         $('#tblDashBoardPMTisheetData').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
+            initComplete: function () {
+                this.api().columns().every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.header()))
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+            },
             dom: 'Bfrtip',
             buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+            //// "pageLength": 10,
+            //"aaSorting": [],
+            //dom: 'Bfrtip',
+            //buttons: [
+            //    {
+            //        text: 'Download Report',
+            //        extend: 'csvHtml5',
+            //        title: 'Day wise details',
+            //        exportOptions: {
+            //            columns: 'th:not(.noExport)'
+            //        }
+            //    },
+            //    {
+            //        extend: 'pdfHtml5',
+            //        title: 'Data export'
+            //    }
+            //],
+            //"columnDefs": [{
+            //    "targets": 'no-sort',
+            //    "orderable": false,
+            //}]
         });
     });
     //$('[data-toggle="popover"]').popover({
@@ -606,12 +666,10 @@
     //    }
     //});
     function ShowTeamMemberList(vValue, vProjName) {
-            //alert(projectID);
         $('#headerForTeamMemeber').html('Team members for ' + vProjName);
             $('#tblTeamMemberList tbody').html('');
-            //$('#popupUserBody').html('');
             $.ajax({
-            url: '@Url.Action("GetAllUserOfProjectByProjectID", "Home")',
+            url: '@Url.Action("DisplayTeamMemberList", "Home")',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -620,19 +678,7 @@
                 "TextToDisplay": vValue
             }),
                 success: function (response) {
-                    //var UserObj = JSON.parse(response);
-                    //if (UserObj.length > 0) {
-                    //    for (var i = 0; i < UserObj.length; i++) {
-                    //        //alert(UserObj[i]);
-                    //        var userListHTML = "<tr><td class='text-center'>" + UserObj[i] + "</td> </td>";
-                    //        $('#tblTeamMemberList tbody').append(userListHTML);
-
-                    //    }
-                    //}
-                    //else {
-                    //    var userListHTML = "<tr><td class='text-center'>Users not available.</td> </td>";
                     $('#tblTeamMemberList tbody').append(response);
-                    //}
                     $('#TeamMemberListModel').modal('show');
 
             },
@@ -648,7 +694,7 @@
             $('#headerForTaskNameList').html('Task for ' + vProjName);
             $('#tblTaskNameList tbody').html('');
             $.ajax({
-            url: '@Url.Action("GetAllTasksOfProjectByProjectID", "Home")',
+            url: '@Url.Action("DisplayTaskNameListPopup", "Home")',
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -657,27 +703,14 @@
                 "TextToDisplay": vValue
             }),
                 success: function (response) {
-                    //var TaskObj = JSON.parse(response);
-                    //if (TaskObj.length > 0) {
-                    //    for (var i = 0; i < TaskObj.length; i++) {
-
-                    //        var taskListHTML = "<tr><td class='text-center'>" + TaskObj[i] + "</td> </td>";
-                    //        $('#tblTaskNameList tbody').append(taskListHTML);
-                    //    }
-                    //}
-                    //else {
-                    //    var taskListHTML = "<tr><td class='text-center'>Task not available.</td> </td>";
                     $('#tblTaskNameList tbody').append(response);
-                    //}
                     $('#TaskNameListModel').modal('show');
-
             },
                 error: function (response) {
                     alert('Some error occurred.');
                 console.log(response);
             }
         });
-            //$('#TaskNameListModel').modal('show');
         };
 </script>
 <style>
