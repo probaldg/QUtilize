@@ -4515,10 +4515,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                         if (dtHD != null && dtHD.Rows.Count > 0)
                         {
                             UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
-
-
+                        
                             foreach (DataRow dr in dtHD.Rows)
                             {
+                                
                                //checking mandatory field
                                 if (Convert.ToString(dr["ProjectName"]) != ""  && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" && 
                                     Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
@@ -4561,7 +4561,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         }
                                         else
                                         {
-
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        string ss = "Please correct the project name in your excel sheet, Row No:" + excelROW;
+                                        goto outer;
                                         }
                                         //Get UserID
                                         String username = Convert.ToString(dr["Assignedto"]);
@@ -4576,8 +4579,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                                             }
                                             else
                                             {
-
-                                            }
+                                            int index = dtHD.Rows.IndexOf(dr);
+                                            int excelROW = index + 2;
+                                            string ss = "Please correct the User name in your excel sheet and give ';' between two name, Row No:" + excelROW;
+                                            goto outer;
+                                        }
                                         }
 
                                         //Get StatusID,Servity,TicktType 
@@ -4591,8 +4597,11 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         }
                                         else
                                         {
-
-                                        }
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        string ss = "Please correct the status name/Servity/Ticket type in your excel sheet , Row No:" + excelROW;
+                                        goto outer;
+                                    }
 
                                         var insertStatus = model.InsertIssuedata(model, out int id);
                                         if (insertStatus)
@@ -4617,8 +4626,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                                            result = "Error";
                                         }
                                 //****save end
+                                outer:
+                                    continue;
 
-                            }
+                                }
                                 else
                                 { 
                                     int index = dtHD.Rows.IndexOf(dr);
