@@ -461,6 +461,40 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
+        public ActionResult LoadProjectTaskStatus(int Taskid)
+        {
+            ProjectTaskModel task = new ProjectTaskModel();
+            
+            try
+            {
+
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
+
+                task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDate"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]) : (DateTime?)null;
+                task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDate"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]) : (DateTime?)null;
+
+                //return Json(JsonConvert.SerializeObject(issueModel));
+
+                DataTable dt = task.GetProjectTaskStatusList(userInfo.UserOrganisationID);
+                strStatusData += "<option value = 0>Please select</option>";
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        strStatusData += "<option value=" + Convert.ToInt32(item["StatusID"]) + ">" + Convert.ToString(item["StatusName"]) + "</option>";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                //throw;
+            }
+
+            return Json(strStatusData + '|' + JsonConvert.SerializeObject(task));
+        }
         public ActionResult LoadStatus(int IssueId)
         {
             ProjectIssueModel issueModel = new ProjectIssueModel();
@@ -1438,6 +1472,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         task.TaskStatusName = item["StatusName"].ToString() ?? "";
                         task.IsMilestone = (item["isMilestone"] != DBNull.Value) ? Convert.ToBoolean(item["isMilestone"]) : (bool?)null;
                         task.CompletePercent = Convert.ToInt32(item["CompletePercent"]);
+                        task.ExpectedTime = Convert.ToDouble(item["ExpectedTime"].ToString());
                         task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
                         taskModel.TaskList.Add(task);
 
@@ -1515,6 +1550,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     task.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
                     task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
                     task.IsValueAdded= Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
+                    task.ExpectedTime = Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
                     task.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
 
                     foreach (DataRow item in dtTaskData.Rows)
@@ -2055,8 +2091,15 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 ptam.URL = model.URL;
                                 ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
                             }
-                            
-                            
+                            int outCommentID = 0;
+                            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+                            ptcm.ProjectTaskID = id;
+                            ptcm.Comment = "";
+                            ptcm.TaskStatusID = model.TaskStatusID;
+                            ptcm.AddedBy = loggedInUser;
+                            ptcm.AddedTS = DateTime.Now;
+                            ptcm.InsertCommentdata(ptcm, out outCommentID);
+
                             result = "Success";
                         }
                     }

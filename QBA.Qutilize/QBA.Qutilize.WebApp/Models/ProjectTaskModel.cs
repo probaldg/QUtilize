@@ -37,8 +37,8 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Parent Task Name")]
         public string ParentTaskName { get; set; }
 
-
-
+        [Display(Name = "Expected Time")]
+        public double ExpectedTime { get; set; }
 
         public DateTime TaskStartDate { get; set; }
 
@@ -196,6 +196,23 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
+        public DataTable GetProjectTaskStatusList(int OrgId)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@OrgId",OrgId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTaskStatus", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+        }
+
         public Boolean InsertTaskdata(ProjectTaskModel model, out int id)
         {
             string str = string.Empty;
@@ -218,6 +235,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@TaskStartDateActual",model.ActualTaskStartDate != null? model.ActualTaskStartDate: null),
                     new SqlParameter("@TaskEndDateActual",model.ActualTaskEndDate!= null?model.ActualTaskEndDate:null),
                     new SqlParameter("@StatusID",model.TaskStatusID),
+                    new SqlParameter("@ExpectedTime",model.ExpectedTime),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@isACTIVE",model.IsActive),
                     new SqlParameter("@isValueAdded",model.IsValueAdded),                    
