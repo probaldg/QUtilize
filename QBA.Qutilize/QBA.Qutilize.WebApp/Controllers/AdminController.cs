@@ -1708,6 +1708,67 @@ namespace QBA.Qutilize.WebApp.Controllers
             return PartialView("_PreviewProjectTask");
         }
 
+        public ActionResult LoadCommentsAndAttachmentsForProjectTasks(int id)
+        {
+            string strCommentDiv = string.Empty;
+            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+            DataSet ds = ptcm.GetProjectTasksComments(id);
+            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
+            if (ds != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+            {
+                strCommentDiv += @"<section class='comments'>";
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
+
+                    //Load Attachment
+                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
+                        {
+                            if (ds.Tables[0].Rows[i]["ID"].ToString() == ds.Tables[1].Rows[j]["IssueCommentId"].ToString())
+                            {
+                                string path = Server.MapPath("~/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
+                                if (Directory.Exists(path))
+                                {
+                                    DirectoryInfo di = new DirectoryInfo(path);
+                                    strCommentDiv += "<p><b>Attachments:</b>";
+
+                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a></p>";
+
+                                }
+                            }
+                        }
+
+                    }
+
+                    //Load URL
+                    if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
+                    {
+
+                        string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
+                        strCommentDiv += "<p><b>URL:</b>";
+                        for (int j = 0; j < arrURL.Length; j++)
+                        {
+                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
+
+                        }
+                        strCommentDiv += "</p>";
+                    }
+                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                }
+                strCommentDiv += @"</section>";
+
+
+            }
+            else
+            {
+                strCommentDiv += "<div>No Comments Found</div>";
+            }
+            strCommentDiv += @"</div></div></div></div></div></div></div>";
+            return Content(strCommentDiv);
+        }
+
         [HttpPost]
         public JsonResult ProjectTaskAttachments()
         {

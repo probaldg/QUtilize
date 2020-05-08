@@ -11,6 +11,7 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int ID { get; set; }
         public int ProjectTaskID { get; set; }
+        public int CommentID { get; set; }
         public string DirectoryName { get; set; }
         public string AttachmentName { get; set; }
         public string URL { get; set; }
@@ -57,6 +58,7 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
+                    new SqlParameter("@CommentID",model.CommentID),
                     new SqlParameter("@DirectoryName",model.DirectoryName),
                     new SqlParameter("@AttachmentName",model.AttachmentName),
                     new SqlParameter("@URL",model.URL),

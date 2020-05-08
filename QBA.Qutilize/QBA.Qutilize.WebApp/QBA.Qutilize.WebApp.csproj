@@ -50,9 +50,8 @@
     <Reference Include="DeviceDetector.NET, Version=3.9.2.1, Culture=neutral, PublicKeyToken=73b5cbe69dbf55fb, processorArchitecture=MSIL">
       <HintPath>..\packages\DeviceDetector.NET.3.11.4\lib\net45\DeviceDetector.NET.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=5.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.5.1.1\lib\net45\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MvcSiteMapProvider, Version=4.6.26.0, Culture=neutral, PublicKeyToken=1923abe4657913cc, processorArchitecture=MSIL">
@@ -61,9 +60,12 @@
     <Reference Include="MvcSiteMapProvider.WebActivator, Version=4.6.26.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MvcSiteMapProvider.MVC5.4.6.26\lib\net45\MvcSiteMapProvider.WebActivator.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -440,7 +442,10 @@
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="ProjectTaskAttachments\637243891031703519\msc_certificat.pdf" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <Content Include="ProjectTaskAttachments\637245490600959785\557529_263627663754630_1717702363_n.jpg" />
+    <Content Include="ProjectTaskAttachments\637245495846042304\photo0013.jpg" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Scripts\bootstrap-notify-master\bootstrap-notify.js" />
     <Content Include="Scripts\bootstrap-notify-master\bootstrap-notify.min.js" />
@@ -919,7 +924,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="bin\" />
     <Folder Include="IssueAttachments\" />
   </ItemGroup>
   <ItemGroup>
