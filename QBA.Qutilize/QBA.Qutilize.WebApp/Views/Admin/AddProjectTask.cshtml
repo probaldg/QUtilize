@@ -405,6 +405,7 @@
                 <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.HiddenFor(model => model.ProjectTask.TaskIdforstatus)
+                    <input type="hidden" name="FileDirectoryForChangeStatus" id="FileDirectoryForChangeStatus" value="" />
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.ProjectTask.TaskCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -1350,8 +1351,10 @@
             var TaskID = $('#ProjectTask_TaskIdforstatus').val();
             var actualStartDate = $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val();
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val();
+            var expectedTime = $("#ProjectTask_ExpectedTime").val();
             var TaskStatusId = $('#ddlTaskStatusChange').val();
             var Comment = $('#ProjectTask_Comment').val();
+            var url= $('#ProjectTask_URL').val();
             //  var Timespent = $('#ProjectIssue_Timespent').val();
 
             if (TaskStatusId <= 0) {
@@ -1373,7 +1376,12 @@
                 return false;
 
             }
-
+            if (expectedTime == "") {
+                document.getElementById("ErrorMsgTaskpopup").innerHTML = "Expected time required..";
+                document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
+                $('#ProjectTask_ExpectedTime').focus();
+                return false;
+            }
 
 
 
@@ -1386,9 +1394,9 @@
                 "ActualTaskStartDateDisplayforstatus": actualStartDate,
                 "ActualTaskEndDateDisplayforstatus": actualEndDate,
                  "TaskStatusID": TaskStatusId,
-                 "Comment": Comment
-
-
+                 "Comment": Comment,
+                 "ExpectedTime":expectedTime,
+                 "URL":url
             };
 
             $.ajax({
@@ -1491,6 +1499,87 @@
             }
 
         };
+
+        var DirectoryName = "";
+        if (document.getElementById("FileDirectoryForChangeStatus").value != "") {
+            DirectoryName = document.getElementById("FileDirectoryForChangeStatus").value;
+        } else {
+            DirectoryName = "";
+        }
+
+         Dropzone.options.myDropzone = {
+            url: "/Admin/ProjectTaskAttachments",
+            autoProcessQueue: true,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            acceptedFiles: "image/*,.pdf,.doc,.docx,.xlsx,.xls",
+            async: true,
+
+            init: function () {
+
+
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("FileDirectoryForChangeStatus", $("#FileDirectoryForChangeStatus").val());
+
+
+                });
+
+                //var submitButton = document.querySelector("input[name ='Command']");
+                var wrapperThis = this;
+                wrapperThis.processQueue();
+                $("#dropzoneJsForm").submit();
+                //submitButton.addEventListener("click", function (event) {
+                //    $(".overlay").show();
+                //    event.preventDefault(event);
+                //    wrapperThis.processQueue();
+
+                //    setTimeout(function () {
+                //        $("#dropzoneJsForm").submit();
+                //    }, 6000);
+
+
+                //    return false;
+                //});
+
+
+                this.on("addedfile", function (file) {
+                    document.getElementById("btnStatusUpdate").disabled = true;
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
+
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function (e) {
+                        // Make sure the button click doesn't submit the form:
+                        //e.defaultPrevented();
+                        //e.stopPropagation();
+
+                        // Remove the file preview.
+                        wrapperThis.removeFile(file);
+                        // If you want to the delete the file on the server as well,
+                        // you can do the AJAX request here.
+                    });
+
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                });
+
+                //this.on('sendingmultiple', function (data, xhr, formData) {
+                //    formData.append("TravelRequestID", $("#TravelRequestID").val());
+                //});
+                this.on("success", function (file, response) {
+                    //alert(file);
+                    // or however you would point to your assigned file ID here;
+                    //alert(JSON.stringify(response));
+                    document.getElementById("FileDirectoryForChangeStatus").value = JSON.stringify(response);
+                    document.getElementById("btnStatusUpdate").disabled = false;
+                    // console should show the ID you pointed to
+                    // do stuff with file.id ...
+                });
+            }
+
+        };
+
 
 
 

@@ -1722,40 +1722,41 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
 
                     //Load Attachment
+                    strCommentDiv += "<p><b>Attachments:</b>";
                     if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
                     {
                         for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
                         {
-                            if (ds.Tables[0].Rows[i]["ID"].ToString() == ds.Tables[1].Rows[j]["IssueCommentId"].ToString())
+                            if (ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString())
                             {
-                                string path = Server.MapPath("~/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
+                                string path = Server.MapPath("~/ProjectTaskAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
                                 if (Directory.Exists(path))
                                 {
                                     DirectoryInfo di = new DirectoryInfo(path);
-                                    strCommentDiv += "<p><b>Attachments:</b>";
-
-                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a></p>";
+                                    
+                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/ProjectTaskAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >&nbsp;" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
                                 }
                             }
                         }
 
                     }
+                    strCommentDiv += "</p>";
 
                     //Load URL
-                    if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
+                    if (ds.Tables[1].Rows[i]["URL"].ToString() != "" && ds.Tables[1].Rows[i]["URL"] != null)
                     {
 
-                        string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
+                        string[] arrURL = ds.Tables[1].Rows[i]["URL"].ToString().Split(';');
                         strCommentDiv += "<p><b>URL:</b>";
                         for (int j = 0; j < arrURL.Length; j++)
                         {
-                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
+                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "'>" + arrURL[j] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
 
                         }
                         strCommentDiv += "</p>";
                     }
-                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[1].Rows[i]["UserName"] + " </a>" + ds.Tables[1].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
@@ -1775,7 +1776,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
             string fName = "";
             string Directory = "";
-            string FolderName = Request.Form["DirectoryName"].ToString();
+            string FolderName = Request.Form["FileDirectoryForChangeStatus"].ToString();
             if (FolderName != "")
             {
                 Directory = FolderName.Replace("\"", string.Empty).Trim();
@@ -2143,15 +2144,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         if (id > 0)
                         {
-                            if (model.DirectoryName != null)
-                            {
-                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-
-                                ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                                ptam.ProjectTaskID = id;
-                                ptam.URL = model.URL;
-                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
-                            }
                             int outCommentID = 0;
                             ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
                             ptcm.ProjectTaskID = id;
@@ -2160,6 +2152,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                             ptcm.AddedBy = loggedInUser;
                             ptcm.AddedTS = DateTime.Now;
                             ptcm.InsertCommentdata(ptcm, out outCommentID);
+
+                            if (model.DirectoryName != null)
+                            {
+                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                                ptam.ProjectTaskCommentID = outCommentID;
+                                ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
+                                ptam.ProjectTaskID = id;
+                                ptam.URL = model.URL;
+                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+                            }
+                            
 
                             result = "Success";
                         }
