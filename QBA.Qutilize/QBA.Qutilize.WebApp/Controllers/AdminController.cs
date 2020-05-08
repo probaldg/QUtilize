@@ -461,40 +461,6 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
-        public ActionResult LoadProjectTaskStatus(int Taskid)
-        {
-            ProjectTaskModel task = new ProjectTaskModel();
-            
-            try
-            {
-
-                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
-
-                task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDate"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]) : (DateTime?)null;
-                task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDate"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]) : (DateTime?)null;
-
-                //return Json(JsonConvert.SerializeObject(issueModel));
-
-                DataTable dt = task.GetProjectTaskStatusList(userInfo.UserOrganisationID);
-                strStatusData += "<option value = 0>Please select</option>";
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow item in dt.Rows)
-                    {
-                        strStatusData += "<option value=" + Convert.ToInt32(item["StatusID"]) + ">" + Convert.ToString(item["StatusName"]) + "</option>";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                //throw;
-            }
-
-            return Json(strStatusData + '|' + JsonConvert.SerializeObject(task));
-        }
         public ActionResult LoadStatus(int IssueId)
         {
             ProjectIssueModel issueModel = new ProjectIssueModel();
@@ -769,13 +735,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                     string ExpecterdHours = item["ExpectedTime"].ToString();
                     string bgcolor = "#FFF";
                     string forecolor = "#333";
-                    if (ExpecterdHours != "")
-                    {
-                        string[] Arr = new string[2];
-                        Arr = ExpecterdHours.Split('.');  
-                        ExpecterdHours = Arr[0] + ':' + Arr[1];
+                    //if (ExpecterdHours != "")
+                    //{
+                    //    string[] Arr = new string[2];
+                    //    Arr = ExpecterdHours.Split('.');  
+                    //    ExpecterdHours = Arr[0] + ':' + Arr[1];
                        
-                    }
+                    //}
                     obj.TodayDate = System.DateTime.Now;
                     obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
                     obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
@@ -814,11 +780,11 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
-                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
+                        strUserData.Append("<td class='text-center' hidden='hidden'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
                     }
                     else
                     {
-                        strUserData.Append("<td class='text-center'></td>");
+                        strUserData.Append("<td class='text-center' hidden='hidden'></td>");
                     }
                     strUserData.Append("<td class='text-center'><a href='javascript:void(0);' onclick='PreviewTheIssueDetails("+ item["IssueID"].ToString() +")'>View</a></td>");
 
@@ -927,12 +893,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                     string bgcolor = "#FFF";
                     string forecolor = "#333";
                     string ExpecterdHours = item["ExpectedTime"].ToString();
-                    if (ExpecterdHours != "")
-                    {
-                        string[] Arr = new string[2];
-                        Arr = ExpecterdHours.Split('.');
-                        ExpecterdHours = Arr[0] + ':' + Arr[1];
-                    }
+                    //if (ExpecterdHours != "")
+                    //{
+                    //    string[] Arr = new string[2];
+                    //    Arr = ExpecterdHours.Split('.');
+                    //    ExpecterdHours = Arr[0] + ':' + Arr[1];
+                    //}
                     obj.TodayDate = System.DateTime.Now;
                     obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
                     obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
@@ -1472,7 +1438,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                         task.TaskStatusName = item["StatusName"].ToString() ?? "";
                         task.IsMilestone = (item["isMilestone"] != DBNull.Value) ? Convert.ToBoolean(item["isMilestone"]) : (bool?)null;
                         task.CompletePercent = Convert.ToInt32(item["CompletePercent"]);
-                        task.ExpectedTime = Convert.ToDouble(item["ExpectedTime"].ToString());
                         task.IsActive = Convert.ToBoolean(item["isACTIVE"]);
                         taskModel.TaskList.Add(task);
 
@@ -1550,7 +1515,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     task.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
                     task.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
                     task.IsValueAdded= Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
-                    task.ExpectedTime = Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
                     task.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
 
                     foreach (DataRow item in dtTaskData.Rows)
@@ -1774,13 +1738,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.IssuestartDate = dtIssueData.Rows[0]["IssueStartDate"].ToString();
                     ViewBag.IssueEndDate = dtIssueData.Rows[0]["IssueEndDate"].ToString();
 
-                    string ExpecterdHours = dtIssueData.Rows[0]["ExpectedTime"].ToString();
-                    if (ExpecterdHours != "")
-                    {
-                        string[] Arr = new string[2];
-                        Arr = ExpecterdHours.Split('.');
-                        ViewBag.ExpectedTime = Arr[0] + ':' + Arr[1];
-                    }
+                    ViewBag.ExpectedTime = dtIssueData.Rows[0]["ExpectedTime"].ToString();
+                    //if (ExpecterdHours != "")
+                    //{
+                    //    string[] Arr = new string[2];
+                    //    Arr = ExpecterdHours.Split('.');
+                    //    ViewBag.ExpectedTime = Arr[0] + ':' + Arr[1];
+                    //}
 
                     
 
@@ -1950,15 +1914,15 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     string ExpecterdHours  = dtIssueData.Rows[0]["ExpectedTime"].ToString();
                   
-                    if (ExpecterdHours != "")
-                    {
-                        string[] Arr = new string[2];
+                    //if (ExpecterdHours != "")
+                    //{
+                    //    string[] Arr = new string[2];
                        
-                        Arr = ExpecterdHours.Split('.');   // your input string
+                    //    Arr = ExpecterdHours.Split('.');   // your input string
                        
 
-                        projectIssue.ExpectedTime = Arr[0] + ':' + Arr[1];
-                    }
+                    //    projectIssue.ExpectedTime = Arr[0] + ':' + Arr[1];
+                    //}
 
                     //projectIssue.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     projectIssue.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
@@ -2091,15 +2055,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 ptam.URL = model.URL;
                                 ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
                             }
-                            int outCommentID = 0;
-                            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
-                            ptcm.ProjectTaskID = id;
-                            ptcm.Comment = "";
-                            ptcm.TaskStatusID = model.TaskStatusID;
-                            ptcm.AddedBy = loggedInUser;
-                            ptcm.AddedTS = DateTime.Now;
-                            ptcm.InsertCommentdata(ptcm, out outCommentID);
-
+                            
+                            
                             result = "Success";
                         }
                     }
@@ -2220,7 +2177,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                                         <br><br>
                                                         {1}
                                                         <br><br>
-                                                        Please login to Helpdesk System in Qutilize to view the Issue Details and provide remarks on the same.
+                                                        Please login to timetracker System to view the status Details .
                                                         <br><br>
                                                         Thanks & Regards,<br>
                                                         QBA Administrator
@@ -2340,11 +2297,21 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                    var insertStatus = pm.InsertIssuedata(model, out int id);
+                    var insertStatus = pm.InsertIssuedata(model, out int id,out string strMailToName,out string strMailTo);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
+                            UserModel userModel = new UserModel();
+                            DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
+                           
+                            string[] usernameArr = strMailToName.Split(';');
+                            string[] userEmailArr = strMailTo.Split(';');
+                            for (int j = 0; j < usernameArr.Length; j++)
+                            {
+                                sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                            }
                             model.ISErr = false;
                             model.ErrString = "Data Saved Successfully.";
                             TempData["ErrStatus"] = model.ISErr;
@@ -4538,12 +4505,12 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             string result="";
             string errMsg = string.Empty;
-            //StringBuilder sbContent = new StringBuilder();
-            Hashtable ht = new Hashtable();
             if (Request != null)
             {
                 try
                 {
+                    StringBuilder sbContent = new StringBuilder();
+                   
                     HttpPostedFileBase file = Request.Files[0];
                     if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
                     {
@@ -4553,12 +4520,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                         byte[] fileBytes = new byte[file.ContentLength];
                         var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
                         DataSet ds = ConvertExcelToDataSet(file.InputStream);
-                        #region SC L1 Grading
+
+                        #region create ticket
                         DataTable dtHD = ds.Tables[0];
                         if (dtHD != null && dtHD.Rows.Count > 0)
                         {
                             UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                        
+                            UserModel userModel = new UserModel();
+                            DataTable dtUSER= userModel.GetUsersByID(UIH.UserId);
+
+                            userModel.EmailId = dtUSER.Rows[0]["EmailId"].ToString();
+                            userModel.UserName= dtUSER.Rows[0]["Name"].ToString();
+                            int uploadSuccess = 0;
                             foreach (DataRow dr in dtHD.Rows)
                             {
                                 
@@ -4566,20 +4539,36 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 if (Convert.ToString(dr["ProjectName"]) != ""  && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" && 
                                     Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
                                     && Convert.ToString(dr["Assignedto"]) != "")
-                               {
+                                  {
                                     ProjectIssueModel model = new ProjectIssueModel();
                                     model.IssueCode = Convert.ToString(dr["TicketCode"]);
                                     model.IssueName = Convert.ToString(dr["TicketName"]);
-                                  
-                                      model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
-                                      // string ss = dr["startDate"].ToString();
-                                      model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
-                                      model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
+                                    model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
 
-                                      string[] Arr = new string[2];
-                                      Arr = (dr["ExpectedTime"].ToString()).Split(':');
-                                      string ExpectedTime = Arr[0] + '.' + Arr[1];
-                                      model.ExpectedDuration = Convert.ToDouble(ExpectedTime);
+                                    model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
+                                    model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
+                                    var startdt = model.IssuestartDate;
+                                    var enddt = model.IssueEndDate;
+                                    if (startdt> enddt)
+                                    {
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Start date should not be greater than end date please check your excel sheet </div></br>");
+                                        goto outer;
+                                    }
+
+                                    //  string[] Arr = new string[2];
+                                    // Arr = (dr["ExpectedTime"].ToString()).Split(':');
+                                    // string ExpectedTime = Arr[0] + '.' + Arr[1];
+                                    if (dr["ExpectedTime"].ToString() != "")
+                                    {
+                                        model.ExpectedDuration = Convert.ToDouble(dr["ExpectedTime"]);
+                                    }
+                                    else
+                                    {
+                                        model.ExpectedDuration = 0.00;
+                                    }
+
 
                                       model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
                                       if (Convert.ToString(dr["ActualStartDate"]) != "")
@@ -4590,43 +4579,51 @@ namespace QBA.Qutilize.WebApp.Controllers
                                       {
                                         model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
                                       }
-                                        model.IsActive = Convert.ToBoolean(dr["IsActive"]);
-                                        model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]);
+                                       if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }                                    
+                                       else { model.IsActive = true; }
+
+                                       if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
+                                       else { model.IsValueAdded = true; }
+                         
                                         model.AddedBy = loggedInUser;
                                         model.AddedTS = DateTime.Now;
-
-
                                         //Get ProjectId
                                         DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
                                         if (dtProjectId.Rows.Count > 0)
                                         {
                                             model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
+                                            model.ProjectName = Convert.ToString(dr["ProjectName"]);
                                         }
                                         else
                                         {
+                                        //For Project Name not correct
                                         int index = dtHD.Rows.IndexOf(dr);
                                         int excelROW = index + 2;
-                                        string ss = "Please correct the project name in your excel sheet, Row No:" + excelROW;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; project name does not correct check your excel sheet</div><br/>");
+
                                         goto outer;
                                         }
+
                                         //Get UserID
                                         String username = Convert.ToString(dr["Assignedto"]);
-                                        string[] userNameArr = username.Split(';');
 
+                                        string[] userNameArr = username.Split(';');
                                         for (int j = 0; j < userNameArr.Length; j++)
                                         {
                                             DataTable dtUserId = model.GetUserIDByUserName(userNameArr[j], model.ProjectID);
                                             if (dtUserId.Rows.Count > 0)
                                             {
-                                                model.UserIdAssigned = dtUserId.Rows[0]["Id"].ToString() + ',';
+                                                model.UserIdAssigned = model.UserIdAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
                                             }
                                             else
                                             {
+                                            //For UserID not correct
                                             int index = dtHD.Rows.IndexOf(dr);
                                             int excelROW = index + 2;
-                                            string ss = "Please correct the User name in your excel sheet and give ';' between two name, Row No:" + excelROW;
+                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; User name does not correct please check your excel sheet and put ';' between two username</div><br/>");
+
                                             goto outer;
-                                        }
+                                            }
                                         }
 
                                         //Get StatusID,Servity,TicktType 
@@ -4642,15 +4639,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         {
                                         int index = dtHD.Rows.IndexOf(dr);
                                         int excelROW = index + 2;
-                                        string ss = "Please correct the status name/Servity/Ticket type in your excel sheet , Row No:" + excelROW;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name/Servity/Ticket type does not correct please check your excel sheet </div></br>");
                                         goto outer;
                                     }
 
-                                        var insertStatus = model.InsertIssuedata(model, out int id);
+                                        var insertStatus = model.InsertIssuedata(model, out int id,out string strMailToName,out string strMailTo);
                                         if (insertStatus)
                                         {
                                             if (id > 0)
                                             {
+                                                uploadSuccess++;
+                                                string[] usernameArr = strMailToName.Split(';');
+                                                string[] userEmailArr = strMailTo.Split(';');
+                                                for (int j = 0; j < usernameArr.Length; j++)
+                                                {
+                                                sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName +" by "+userModel.UserName);
+                                                }
+
                                                 model.ISErr = false;
                                                 model.ErrString = "Data Saved Successfully.";
                                                 TempData["ErrStatus"] = model.ISErr;
@@ -4669,20 +4674,26 @@ namespace QBA.Qutilize.WebApp.Controllers
                                            result = "Error";
                                         }
                                 //****save end
-                                outer:
-                                    continue;
+                              
 
                                 }
                                 else
-                                { 
+                                {
                                     int index = dtHD.Rows.IndexOf(dr);
                                     int excelROW = index + 2;
-                                    string ss= "Please fill all mandatory field in your excel sheet, Row No" + excelROW + " does not fill up ";
+                                    sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp;Please put all mandatory value  in your excel sheet </div></br>");
 
+                                    goto outer;
                                 }
-                                
+                            //***Next row
+                            outer:
+                                continue;
                             }
-                            
+                            int totalEXCELRecord = dtHD.Rows.Count;
+                            int failure = totalEXCELRecord - uploadSuccess;
+                            sbContent.Append("<p><b>"+ uploadSuccess + " rows Successfully saved out of "+ totalEXCELRecord+" record in your excel sheet<b></p>");
+                            sbContent.Append("<p><b>"+ failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
+                            sendMail_InBulkTicketUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
                         }
                         #endregion
                     }
@@ -4699,6 +4710,45 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
             }
             return Json(result);
+        }
+
+        public void sendMail_InBulkTicketUploadingTime(string username,string emailid,string body)
+        {
+           string strSubject = @" Data processing report of Bulk Ticket";
+           string strBody = string.Format(@"Dear {0},
+                                                        <br><br>
+                                                        {1}
+                                                        <br><br>
+                                                        Please login to timetracker System to view the uploaded create Ticket.
+                                                        <br><br>
+                                                        Thanks & Regards,<br>
+                                                        QBA Administrator
+                                                        <br><br><br><br>
+                                                        *This is a system generated email. Please do not respond.
+                                                        ", username, body);
+
+            using (SendMailClass sm = new SendMailClass())
+            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
+
+        }
+        public void sendMail_afterSaveTicket(string username, string emailid, string body)
+        {
+            string strSubject = @"Ticket Created";
+            string strBody = string.Format(@"Dear {0},
+                                                        <br><br>
+                                                        {1}
+                                                        <br><br>
+                                                        Please login to timetracker System to view the create Ticket.
+                                                        <br><br>
+                                                        Thanks & Regards,<br>
+                                                        QBA Administrator
+                                                        <br><br><br><br>
+                                                        *This is a system generated email. Please do not respond.
+                                                        ", username, body);
+
+            using (SendMailClass sm = new SendMailClass())
+            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
+
         }
         private DataSet ConvertExcelToDataSet(System.IO.Stream newStream)
         {

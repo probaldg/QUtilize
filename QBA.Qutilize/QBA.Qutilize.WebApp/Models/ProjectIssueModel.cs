@@ -42,8 +42,9 @@ namespace QBA.Qutilize.WebApp.Models
 
         public List<ProjectStatusModel> StatusList { get; set; }
         public List<UserModel> UserList { get; set; }
-        
 
+        public string UserEmailId { get; set; }
+        public string UserName { get; set; }
         public string UserIdAssigned { get; set; }
         public string UserNameAssigned { get; set; }
 
@@ -228,12 +229,14 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
 
         }
-        public Boolean InsertIssuedata(ProjectIssueModel model, out int id)
+        public Boolean InsertIssuedata(ProjectIssueModel model, out int id,out string strMailToName, out string strMailTo)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
             id = 0;
+            strMailToName = string.Empty;
+            strMailTo = string.Empty;
 
             try
             {
@@ -247,7 +250,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@IssueDescription", model.IssueDescription!= null?model.IssueDescription:""),
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
-                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0),
+                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0.00),
                     new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@SeverityID",model.SeverityID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
@@ -260,6 +263,11 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@UserIds",model.UserIdAssigned)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Insert", param);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
+                    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
+                 }
 
                 if (!(Status.Value is DBNull))
                 {

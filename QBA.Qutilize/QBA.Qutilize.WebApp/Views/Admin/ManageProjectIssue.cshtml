@@ -112,7 +112,7 @@
                             <th class="text-center tblHeaderColor sorting">Ticket Status</th>
 
                             <th class="text-center tblHeaderColor sorting">Status</th>
-                            <th class="text-center tblHeaderColor sorting">Edit</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Edit</th>
                             <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
@@ -537,7 +537,8 @@
 
                         </div>
                         <div class="col-md-8">
-                            <label>File extension should be .xlsx<br />Column sequence should not be changed</label>
+                            <label style="color:red">*File extension should be .xlsx<br />*Column sequence should not be changed<br />*When you assigne the multiple user at a time you need to separate all user using by ';'</label>
+                            <label style="color:red">*Project Name,Ticket Code,Ticket Type,Ticket Name,start Date,End Date,Status,Severity,Percentage Complete,Assigned to feild are mandatory <br />*IsActive and IsValueAdded format are 'true'/'false' <br />Expected Time format like '10.30'</label>
                         </div>
                     </div>
                 </div>
@@ -848,10 +849,11 @@
             return true;
         }
         $("#ProjectIssue_Timespent").timepicker({ timeFormat: 'HH:mm' });
-        $("#ProjectIssue_ExpectedTime").timepicker({
-            timeFormat: 'HH:mm'
+        //$("#ProjectIssue_ExpectedTime").timepicker({
+        //    timeFormat: 'HH:mm',
+        //    maxTime:'500'
            
-        });
+        //});
 
         $("#tblGridListViewPost").dataTable();
         $("#tblGridListViewPost1").dataTable();
@@ -978,7 +980,9 @@
     $('#btnProjectIssueSave').click(function () {
 
     var IssueID = $('#ProjectIssue_IssueId').val();
-    var projectID = $('#ActiveProjectList').val();
+        var projectID = $('#ActiveProjectList').val();
+        var projectName = $("#ActiveProjectList option:selected").text();
+
     var IssueName = $('#ProjectIssue_IssueName').val();
     var IssueCode = $('#ProjectIssue_IssueCode').val();
     var IssueDescription = $('#ProjectIssue_IssueDescription').val();
@@ -1041,14 +1045,16 @@
     return false;
     }
 
+    //if (ExpectedTime == "") {
+    //document.getElementById("errormsg").innerHTML = "Expecte Time required..";
+    //document.getElementById("ErrorMsg").style.display = 'block';
+    //$('#ProjectIssue_ExpectedTime').focus();
+    //return false;
+    //}
+
     if (ExpectedTime == "") {
-    document.getElementById("errormsg").innerHTML = "Expecte Time required..";
-    document.getElementById("ErrorMsg").style.display = 'block';
-    $('#ProjectIssue_ExpectedTime').focus();
-    return false;
+        ExpectedTime = 0.00;
     }
-
-
 
     if (SeverityId <= 0) {
     document.getElementById("errormsg").innerHTML = "Please select Severity ";
@@ -1077,10 +1083,10 @@
     return false;
     }
 
-    var hms = ExpectedTime;   // your input string
-    var a = hms.split(':'); // split it at the colons
+    //var hms = ExpectedTime;   // your input string
+    //var a = hms.split(':'); // split it at the colons
 
-    ExpectedTime = a[0] + '.' + a[1];
+    //ExpectedTime = a[0] + '.' + a[1];
 
     var data = {
     "IssueID": IssueID,
@@ -1100,7 +1106,8 @@
     "SeverityID": SeverityId,
     "StatusID": IssueStatusId,
     "UserIdAssigned": userIds,
-    "IsValueAdded": IsValueAdded
+    "IsValueAdded": IsValueAdded,
+   "ProjectName" : projectName
 
     };
 
