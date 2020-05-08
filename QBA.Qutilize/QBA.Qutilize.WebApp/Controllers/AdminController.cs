@@ -1,8 +1,11 @@
 
+
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -11,8 +14,11 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+
+
 
 namespace QBA.Qutilize.WebApp.Controllers
 {
@@ -4412,6 +4418,280 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(Directory);
         }
+        [HttpGet]
+        public virtual ActionResult DownloadExcelTemplateForIssue(string fileid)
+        {
+            if (TempData[fileid] != null)
+            {
+                byte[] data = TempData[fileid] as byte[];
+                return File(data, "application/vnd.ms-excel", "ExcelForIssue.xlsx");
+            }
+            else
+            {
+                return new EmptyResult();
+            }
+        }
+
+        public ActionResult GenerateExcelForIssue()
+        {
+            // Generate a new unique identifier against which the file can be stored
+            string handle = DateTime.Now.Ticks.ToString();
+            try
+            {
+                using (ExcelPackage package = new ExcelPackage())
+                {
+                    ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
+                    ws.Cells["A1"].Value = "Project Name";
+                    ws.Cells["B1"].Value = "Ticket Code";
+                    ws.Cells["C1"].Value = "Ticket Type";
+                    ws.Cells["D1"].Value = "Ticket Name";
+                    ws.Cells["E1"].Value = "Ticket Description";
+                    ws.Cells["F1"].Value = "start Date";
+                    ws.Cells["G1"].Value = "End Date";
+                    ws.Cells["H1"].Value = "Expected Time";
+                    ws.Cells["I1"].Value = "Status";
+                    ws.Cells["J1"].Value = "Severity";
+                    ws.Cells["K1"].Value = "Percentage Complete";
+                    ws.Cells["L1"].Value = "Assigned to";
+                    ws.Cells["M1"].Value = "Actual Start Date";
+                    ws.Cells["N1"].Value = "Actual End Date";
+                    ws.Cells["O1"].Value = "IsActive";
+                    ws.Cells["P1"].Value = "IsValueAdded";
+
+                    ws.Cells["A1:P1"].Style.Font.Bold = true;
+                    ws.Cells["A1:P1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    ws.Cells["A1:P1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    ws.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
+                    ws.Cells["A1:P1"].Style.Locked = true;
+
+                    // Format  cells as TEXT in a spreadsheet
+
+                    ws.Cells["A:P"].Style.Numberformat.Format = "@";
+                  
+
+
+                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        package.SaveAs(memoryStream);
+                        memoryStream.Position = 0;
+                        TempData[handle] = memoryStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return Json(handle);
+
+        }
+        public ActionResult UploadExcelForCreateNewTicket(FormCollection formCollection)
+        {
+            string result="";
+            string errMsg = string.Empty;
+            //StringBuilder sbContent = new StringBuilder();
+            Hashtable ht = new Hashtable();
+            if (Request != null)
+            {
+                try
+                {
+                    HttpPostedFileBase file = Request.Files[0];
+                    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                    {
+                        string fileName = file.FileName;
+                       
+                        string fileContentType = file.ContentType;
+                        byte[] fileBytes = new byte[file.ContentLength];
+                        var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+                        DataSet ds = ConvertExcelToDataSet(file.InputStream);
+                        #region SC L1 Grading
+                        DataTable dtHD = ds.Tables[0];
+                        if (dtHD != null && dtHD.Rows.Count > 0)
+                        {
+                            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
+
+
+                            foreach (DataRow dr in dtHD.Rows)
+                            {
+                               //checking mandatory field
+                                if (Convert.ToString(dr["ProjectName"]) != ""  && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" && 
+                                    Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
+                                    && Convert.ToString(dr["Assignedto"]) != "")
+                               {
+                                    ProjectIssueModel model = new ProjectIssueModel();
+                                    model.IssueCode = Convert.ToString(dr["TicketCode"]);
+                                    model.IssueName = Convert.ToString(dr["TicketName"]);
+                                  
+                                      model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
+                                      // string ss = dr["startDate"].ToString();
+                                      model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
+                                      model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
+
+                                      string[] Arr = new string[2];
+                                      Arr = (dr["ExpectedTime"].ToString()).Split(':');
+                                      string ExpectedTime = Arr[0] + '.' + Arr[1];
+                                      model.ExpectedDuration = Convert.ToDouble(ExpectedTime);
+
+                                      model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
+                                      if (Convert.ToString(dr["ActualStartDate"]) != "")
+                                      {
+                                       model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
+                                      }
+                                      if (Convert.ToString(dr["ActualEndDate"]) != "")
+                                      {
+                                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
+                                      }
+                                        model.IsActive = Convert.ToBoolean(dr["IsActive"]);
+                                        model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]);
+                                        model.AddedBy = loggedInUser;
+                                        model.AddedTS = DateTime.Now;
+
+
+                                        //Get ProjectId
+                                        DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
+                                        if (dtProjectId.Rows.Count > 0)
+                                        {
+                                            model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
+                                        }
+                                        else
+                                        {
+
+                                        }
+                                        //Get UserID
+                                        String username = Convert.ToString(dr["Assignedto"]);
+                                        string[] userNameArr = username.Split(';');
+
+                                        for (int j = 0; j < userNameArr.Length; j++)
+                                        {
+                                            DataTable dtUserId = model.GetUserIDByUserName(userNameArr[j], model.ProjectID);
+                                            if (dtUserId.Rows.Count > 0)
+                                            {
+                                                model.UserIdAssigned = dtUserId.Rows[0]["Id"].ToString() + ',';
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                        }
+
+                                        //Get StatusID,Servity,TicktType 
+                                        DataSet dataset = model.Get_Status_Servity_TicketName(Convert.ToString(dr["Severity"]), Convert.ToString(dr["Status"]), Convert.ToString(dr["TicketType"]), UIH.UserId);
+                                        if (dataset != null && dataset.Tables[0] != null && dataset.Tables[1] != null && dataset.Tables[2] != null)
+                                        {
+
+                                            model.SeverityID = Convert.ToInt32(dataset.Tables[0].Rows[0]["SeverityID"]);
+                                            model.StatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
+                                            model.TicketTypeID = Convert.ToInt32(dataset.Tables[2].Rows[0]["ID"]);
+                                        }
+                                        else
+                                        {
+
+                                        }
+
+                                        var insertStatus = model.InsertIssuedata(model, out int id);
+                                        if (insertStatus)
+                                        {
+                                            if (id > 0)
+                                            {
+                                                model.ISErr = false;
+                                                model.ErrString = "Data Saved Successfully.";
+                                                TempData["ErrStatus"] = model.ISErr;
+                                                TempData["ErrMsg"] = model.ErrString.ToString();
+                                                result = "Success";
+
+                                           }
+                                        }
+                                
+                                        else
+                                        {
+                                           model.ISErr = true;
+                                           model.ErrString = "Error Occured.";
+                                           TempData["ErrStatus"] = model.ISErr;
+                                           TempData["ErrMsg"] = model.ErrString.ToString();
+                                           result = "Error";
+                                        }
+                                //****save end
+
+                            }
+                                else
+                                { 
+                                    int index = dtHD.Rows.IndexOf(dr);
+                                    int excelROW = index + 2;
+                                    string ss= "Please fill all mandatory field in your excel sheet, Row No" + excelROW + " does not fill up ";
+
+                                }
+                                
+                            }
+                            
+                        }
+                        #endregion
+                    }
+                }
+                catch (Exception exE)
+                {
+                    try
+                    {
+                        using (ErrorHandle errH = new ErrorHandle())
+                        { errH.WriteErrorLog(exE); }
+                    }
+                    catch (Exception exC) { }
+                    return null;
+                }
+            }
+            return Json(result);
+        }
+        private DataSet ConvertExcelToDataSet(System.IO.Stream newStream)
+        {
+            DataSet ds = null;
+            try
+            {
+                using (var package = new ExcelPackage(newStream))
+                {
+                    ds = new DataSet();
+                    foreach (ExcelWorksheet ew in package.Workbook.Worksheets)
+                    {
+                        DataTable dt = new DataTable(ew.Name);
+                        var currentSheet = ew;// package.Workbook.Worksheets;
+                        var workSheet = ew;// currentSheet.First();
+                        var noOfCol = workSheet.Dimension.End.Column;
+                        var noOfRow = workSheet.Dimension.End.Row;
+
+                        for (int intCol = 1; intCol <= noOfCol; intCol++)
+                        {
+                            string strColName = (workSheet.Cells[1, intCol].Value != null) ? workSheet.Cells[1, intCol].Value.ToString().Trim() : "NoName" + intCol.ToString();
+                            dt.Columns.Add(Regex.Replace(strColName, @"[^0-9a-zA-Z]+", ""), typeof(string));
+                        }
+                        for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                        {
+                            DataRow dr = dt.NewRow();
+                            for (int intCol = 1; intCol <= noOfCol; intCol++)
+                            {
+                                dr[intCol - 1] = (workSheet.Cells[rowIterator, intCol].Text != null) ? workSheet.Cells[rowIterator, intCol].Text.ToString() : "";
+                            }
+                            dt.Rows.Add(dr);
+                        }
+                        ds.Tables.Add(dt);
+                    }
+                }
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return ds;
+        }
+
 
     }
 }
