@@ -101,10 +101,29 @@
                                 </div>
                             </section>
                             <section id="tab3Admin" class="tab-content hide">
-                                <div id="dvAdminTicket"></div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        @Html.Action("GetAdminTicket", "Home")
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlAdminTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaAdminTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvAdminTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetAdminTicket", "Home")
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
