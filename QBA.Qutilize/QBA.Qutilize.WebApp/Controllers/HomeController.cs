@@ -210,7 +210,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     if (Session["sessSelfTicket"] != null) Session.Remove("sessSelfTicket");
                     if (Session["sessSelfUtilization"] != null) Session.Remove("sessSelfUtilization");
 
-                    if (Session["OrgAdmin"] != null) {
+                    if (Session["OrgAdmin"] != null)
+                    {
                         Session.Add("sessAdminProject", lvm.GetDashBoardAdminProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessAdminTask", lvm.GetDashBoardAdminTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessAdminTicket", lvm.GetDashBoardAdminTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
@@ -218,13 +219,15 @@ namespace QBA.Qutilize.WebApp.Controllers
                         //ds = (DataSet)Session["sessAdminProject"];
 
                     }
-                    if (Session["OrgPM"] != null) {
+                    if (Session["OrgPM"] != null)
+                    {
                         Session.Add("sessPMProject", lvm.GetDashBoardPMProjectData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessPMTask", lvm.GetDashBoardPMTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessPMTicket", lvm.GetDashBoardPMTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessPMUtilization", lvm.GetDashBoardPMTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                     }
-                    if (Session["OrgUser"] != null) {
+                    if (Session["OrgUser"] != null)
+                    {
                         Session.Add("sessSelfTask", lvm.GetDashBoardSelfTaskData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessSelfTicket", lvm.GetDashBoardSelfTicketData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
                         Session.Add("sessSelfUtilization", lvm.GetDashBoardSelfTisheetData(Convert.ToInt32(Session["sessUser"]), Convert.ToInt32(Session["ORGID"])));
@@ -1630,6 +1633,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["PM"]) + "</td>");
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTeamMemberList('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
                         sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowTaskNameListPopup('{0}','{2}');""> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
+
+                        //sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick='ShowTeamMemberList('{0}','{2}');'> {1} </a> </td>", Convert.ToString(dr["AssignedUser"]), Convert.ToString(dr["NoOfUser"]), Convert.ToString(dr["ProjectName"]));
+                        //sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick='ShowTaskNameListPopup('{0}','{2}');'> {1} </a> </td>", Convert.ToString(dr["TaslList"]), Convert.ToString(dr["NoOfTask"]), Convert.ToString(dr["ProjectName"]));
                         //sbContent.Append("<td>" +
                         //    "<a href='#' title='Team Member' data-toggle='popover' data-trigger='focus' data-content='" + Convert.ToString(dr["AssignedUser"]).Replace(";","<br>") + "'>" +
                         //    "" + Convert.ToString(dr["NoOfUser"]) + "</a></td>");
@@ -1706,12 +1712,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["EplapsedTime"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -1775,12 +1793,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["Timespent"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["Timespent"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -1821,7 +1851,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        sbContent.Append("<tr>");
+                        if (Convert.ToDecimal(dr["Utilization"]) > 120)
+                            sbContent.Append("<tr class='text-green'>");
+                        else if (Convert.ToDecimal(dr["Utilization"]) < 80)
+                            sbContent.Append("<tr class='text-red'>");
+                        else
+                            sbContent.Append("<tr>");
                         for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
                         {
                             sbContent.Append("<td class='control-text'>" + Convert.ToString(dr[iItem]) + "</td>");
@@ -1958,7 +1993,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     sbContent.Append("<th class='text-center tblHeaderColor'>Eplapsed Time</th>");
                     sbContent.Append("</tr></thead>");
                     sbContent.Append("<tbody id='tbodyDashBoardPMTaskData'>");
-                    
+
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         sbContent.Append("<tr>");
@@ -1966,12 +2001,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskID"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskName"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
-                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        //sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        //sbContent.Append("<td class='text-center'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["EplapsedTime"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -2035,12 +2082,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["Timespent"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["Timespent"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -2081,7 +2140,12 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        sbContent.Append("<tr>");
+                        if (Convert.ToDecimal(dr["Utilization"]) > 120)
+                            sbContent.Append("<tr class='text-green'>");
+                        else if (Convert.ToDecimal(dr["Utilization"]) < 80)
+                            sbContent.Append("<tr class='text-red'>");
+                        else
+                            sbContent.Append("<tr>");
                         for (int iItem = 0; iItem < ds.Tables[0].Columns.Count; iItem++)
                         {
                             sbContent.Append("<td class='control-text'>" + Convert.ToString(dr[iItem]) + "</td>");
@@ -2145,12 +2209,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskID"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDate"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TaskEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["EplapsedTime"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["EplapsedTime"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["EplapsedTime"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
 
@@ -2214,12 +2289,24 @@ namespace QBA.Qutilize.WebApp.Controllers
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["TicketType"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["SeverityName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDate"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        if (Convert.ToInt32(dr["DaysLeft"]) > 0 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else if (Convert.ToInt32(dr["DaysLeft"]) > -5 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueStartDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["IssueEndDateActual"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["StatusName"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ExpectedTime"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        //sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        if (Convert.ToDecimal(dr["ExpectedTime"]) < Convert.ToDecimal(dr["Timespent"]))
+                            sbContent.Append("<td class='control-text text-red'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else if ((Convert.ToDecimal(dr["ExpectedTime"]) - Convert.ToDecimal(dr["Timespent"])) <= 16 && Convert.ToString(dr["StatusName"]).ToLower() != "closed")
+                            sbContent.Append("<td class='control-text text-yellow'>" + Convert.ToString(dr["Timespent"]) + "</td>");
+                        else
+                            sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["Timespent"]) + "</td>");
                         sbContent.Append("</tr>");
                     }
                     sbContent.Append("</tbody>");
@@ -2285,7 +2372,8 @@ namespace QBA.Qutilize.WebApp.Controllers
             if (TextToDisplay.Trim() != string.Empty)
             {
                 string[] arrNoofRecord = TextToDisplay.Split(';');
-                if (arrNoofRecord.Length > 0) {
+                if (arrNoofRecord.Length > 0)
+                {
                     foreach (string strRowVal in arrNoofRecord)
                     {
                         sbOut.Append("<tr>");
@@ -2294,7 +2382,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             for (int i = 0; i < arrNoofColData.Length; i++)
                             {
-                                sbOut.Append("<td class='text-center'>"+ arrNoofColData[i] + "</td>");
+                                sbOut.Append("<td class='text-center'>" + arrNoofColData[i] + "</td>");
                             }
                         }
                         sbOut.Append("</tr>");
@@ -2336,5 +2424,84 @@ namespace QBA.Qutilize.WebApp.Controllers
             { sbOut.Append("<tr><td class='text-center'></td></tr>"); }
             return Json(sbOut.ToString());
         }
+        public ActionResult ChartLoadTask(int FilterVal, string strFor)
+        {
+            List<ChartValue> cv = new List<ChartValue>();
+            try
+            {
+                DataSet ds;
+                if(strFor=="A")
+                    ds = (DataSet)Session["sessAdminTask"];
+                else if (strFor == "P")
+                    ds = (DataSet)Session["sessPMTask"];
+                else 
+                    ds = (DataSet)Session["sessSelfTask"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    if (FilterVal == 0)//<option value="0">By Status</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "StatusName");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("StatusName = '" + strLbl + "'");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 1)//<option value="1">By project - Open</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "Name");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("Name = '" + strLbl + "'");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 2)//<option value="2">Closure Date</option>
+                    {
+                        try
+                        {
+                            ds.CaseSensitive = false;
+                            DataRow[] result = ds.Tables[0].Select("DaysLeft > 0 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expired", value = result.Length.ToString() });
+                            DataRow[] result1 = ds.Tables[0].Select("DaysLeft > (-5) AND DaysLeft <= 0 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expire in 5days", value = result1.Length.ToString() });
+                            DataRow[] result2 = ds.Tables[0].Select("StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expire not in 5days", value = (result2.Length - result.Length - result1.Length).ToString() });
+                        }
+                        catch (Exception exo) { }
+                    }
+                    else if (FilterVal == 3)//<option value="3">Elapsed Time</option>
+                    {
+                        try
+                        {
+                            DataRow[] result = ds.Tables[0].Select("ExpectedTime < EplapsedTime AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Overflow", value = result.Length.ToString() });
+                            DataRow[] result1 = ds.Tables[0].Select("ExpectedTime > EplapsedTime AND (Convert(ExpectedTime, System.Decimal)-Convert(EplapsedTime, System.Decimal)) <= 16 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "About to Overflow", value = result1.Length.ToString() });
+                            DataRow[] result2 = ds.Tables[0].Select("StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Underflow", value = (result2.Length - result.Length - result1.Length).ToString() });
+                        }
+                        catch (Exception exo) { }
+                    }
+                }
+            }
+            catch (Exception) { }
+            return Json(cv);
+        }
+    }
+    public class ChartValue
+    {
+        public string label { get; set; }
+        public string value { get; set; }
     }
 }
