@@ -977,143 +977,7 @@
     //        return $('#popover-content').html();
     //    }
     //});
-    // create initial empty chart
-    //window.onload = function () {
-    //    var ctx_live = document.getElementById("mycanvas");
-    //    window.myBar = new Chart(ctx_live, {
-    //        type: 'bar',
-    //        data: {
-    //            labels: [],
-    //            datasets: [{
-    //                data: [],
-    //                borderWidth: 1,
-    //                borderColor: '#00c0ef',
-    //                label: 'liveCount',
-    //            }]
-    //        },
-    //        options: {
-    //            responsive: true,
-    //            title: {
-    //                display: true,
-    //                text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
-    //            },
-    //            legend: {
-    //                display: false
-    //            },
-    //            scales: {
-    //                yAxes: [{
-    //                    ticks: {
-    //                        beginAtZero: true,
-    //                    }
-    //                }]
-    //            }
-    //        }
-    //    });
-    //};
-
-    //var postId = 1;
-    //// logic to get new data
-    //var getData = function () {
-    //    $.ajax({
-    //        url: 'https://jsonplaceholder.typicode.com/posts/' + postId + '/comments',
-    //        success: function (data) {
-    //            var lung = data.length;
-
-    //            console.log(data);
-
-    //            var timestamp_utc = [];
-    //            var temperature = [];
-
-
-    //            for (var i in data) {
-    //                timestamp_utc.push(data[i].email);
-    //                temperature.push(data[i].id);
-
-
-    //            }
-
-
-    //            var config_temp = {
-    //                labels: timestamp_utc.slice(lung - 10, lung),
-    //                datasets: [
-    //                    {
-    //                        //label: "temperature",
-    //                        fill: false,
-    //                        lineTension: 0.1,
-    //                        backgroundColor: dynamicColors(),//"rgba(0, 169, 252, 0.75)",
-    //                        borderColor: "rgba(0, 169, 252, 1)",
-    //                        pointRadius: "5",
-    //                        pointColor: "rgba(0, 169, 252, 1)",
-    //                        pointBorderColor: "#fff",
-    //                        pointHoverBackgroundColor: "rgba(0, 169, 252, 1)",
-    //                        pointHoverBorderColor: "rgba(0, 169, 252, 1)",
-    //                        data: temperature.slice(lung - 10, lung)
-    //                    }]
-    //            };
-
-
-    //            var ctx_temp = $("#mycanvas");
-
-    //            window.myBar = new Chart(ctx_temp, {
-    //                type: 'bar',
-    //                data: config_temp,
-    //                options: {
-    //                    responsive: true,
-    //                    title: {
-    //                        display: true,
-    //                        text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
-    //                    },
-    //                    legend: {
-    //                        display: false
-    //                    },
-    //                    scales: {
-    //                        yAxes: [{
-    //                            ticks: {
-    //                                beginAtZero: true,
-    //                            }
-    //                        }]
-    //                    }
-    //                }
-    //            });
-    //            window.myBar.update();
-    //            postId++;
-
-    //            //// process your data to pull out what you plan to use to update the chart
-    //            //// e.g. new label and a new data point
-
-    //            //// add new label and data point to chart's underlying data structures
-    //            ////myChart.data.labels.push("Post " + postId++);
-    //            ////myChart.data.datasets[0].data.push(Math.random());
-    //            ////myChart.data.labels.pop();
-    //            ////myChart.data.datasets[0].data.pop();
-    //            //if (myChart.data.labels.length > 0) {
-    //            //    for (var i in myChart.data.labels.length) {
-    //            //        myChart.data.labels.splice(-1, 1);
-    //            //        //myChart.data.labels.pop();
-    //            //    }
-    //            //    myChart.data.datasets[0].data.forEach(function (dataset) {
-    //            //        myChart.data.datasets[0].data.pop();
-    //            //    });
-    //            //    myChart.update();
-    //            //}
-    //            //for (var i in data) {
-    //            //    //timestamp_utc.push(data[i].timestamp_utc);
-    //            //    //temperature.push(data[i].temperature);
-    //            //    myChart.data.labels.push(data[i].email);
-    //            //    myChart.data.datasets[0].data.push(data[i].id);
-    //            //    myChart.update();
-    //            //}
-    //            //postId++;
-    //            ////myChart.data.labels.push(postId++); data['email']
-    //            ////myChart.data.datasets[0].data.push(data['id']);
-
-    //            //// re-render the chart
-    //            ////myChart.update();
-
-    //        }
-    //    });
-    //};
-    //setInterval(getData, 10000);
+   
     function ShowTeamMemberList(vValue, vProjName) {
         $('#headerForTeamMemeber').html('Team members for ' + vProjName);
             $('#tblTeamMemberList tbody').html('');
@@ -1136,8 +1000,7 @@
                 console.log(response);
             }
         });
-
-        }
+    };
         function ShowTaskNameListPopup(vValue, vProjName) {
             $('#headerForTaskNameList').html('');
             $('#headerForTaskNameList').html('Task for ' + vProjName);
@@ -1160,7 +1023,7 @@
                 console.log(response);
             }
         });
-        };
+    };
 </script>
 <style>
     /** Start: to style navigation tab **/
