@@ -11,6 +11,7 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int ID { get; set; }
         public int ProjectTaskID { get; set; }
+        public int ProjectTaskCommentID { get; set; }
         public string DirectoryName { get; set; }
         public string AttachmentName { get; set; }
         public string URL { get; set; }
@@ -57,6 +58,7 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
+                    new SqlParameter("@ProjectTaskCommentID",model.ProjectTaskCommentID),
                     new SqlParameter("@DirectoryName",model.DirectoryName),
                     new SqlParameter("@AttachmentName",model.AttachmentName),
                     new SqlParameter("@URL",model.URL),
@@ -113,6 +115,7 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
                     new SqlParameter("@DirectoryName",model.DirectoryName),
+                    new SqlParameter("@ProjectTaskCommentID",model.ProjectTaskCommentID),
                     new SqlParameter("@URL",model.URL)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTaskAttachments_Update", param);

@@ -11,6 +11,7 @@ namespace QBA.Qutilize.WebApp.Models
     {
         public int ID { get; set; }
         public int ProjectTaskID { get; set; }
+        public int TaskStatusID { get; set; }
         public string Comment { get; set; }        
         public DateTime AddedTS { get; set; }
         public int AddedBy { get; set; }
@@ -23,24 +24,23 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetProjectTasksComments(int ProjectTaskID)
+        
+        public DataSet GetProjectTasksComments(int ProjectTaskID)
         {
-            DataTable dt = null;
+            DataSet ds = null;
             try
             {
                 SqlParameter[] param ={
-                                        new SqlParameter("@ProjectTaskID",ProjectTaskID)
+                                       new SqlParameter("@ProjectTaskID",ProjectTaskID)
                                       };
-                dt = objSQLHelper.ExecuteDataTable("USP_tblMasterProjectTaskComments_Get", param);
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_getProjectTaskCommentsAndAttachments_Get]", param);
             }
             catch (Exception ex)
             {
 
             }
-            return dt;
-
+            return ds;
         }
-
 
 
         public Boolean InsertCommentdata(ProjectTaskCommentModel model, out int id)
@@ -56,6 +56,7 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
+                    new SqlParameter("TaskStatusID",model.TaskStatusID),
                     new SqlParameter("@Comment",model.Comment),                    
                     new SqlParameter("@AddedTS",model.AddedTS),
                     new SqlParameter("@AddedBy", model.AddedBy)

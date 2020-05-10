@@ -242,13 +242,14 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectID",model.ProjectID),
                     new SqlParameter("@IssueCode",model.IssueCode),
+                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
                     new SqlParameter("@IssueName",model.IssueName),
                     new SqlParameter("@IssueDescription", model.IssueDescription!= null?model.IssueDescription:""),
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
-                    new SqlParameter("@SeverityID",model.SeverityID),
-                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
+                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0),
                     new SqlParameter("@StatusID",model.StatusID),
+                    new SqlParameter("@SeverityID",model.SeverityID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!= null?model.ActualIssueStartDate:null),
                     new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate!= null?model.ActualIssueEndDate:null),
@@ -256,10 +257,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
-                    new SqlParameter("@UserIds",model.UserIdAssigned),
-                 
-                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0)
-
+                    new SqlParameter("@UserIds",model.UserIdAssigned)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Insert", param);
 
@@ -298,6 +296,61 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return result;
 
+        }
+
+        public DataTable GetProjectIDByProjectName(string  projectName)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@projectName",projectName)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetProjectId_ByProjectName]", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+
+        public DataTable GetUserIDByUserName(string UserName,int projectID)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@userName",UserName),
+                                        new SqlParameter("@ProjectId",projectID)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetUserId_ByUserName]", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public DataSet Get_Status_Servity_TicketName(string SeverityName, string statusName,string TicketTypeName,int userID)
+        {
+            DataSet dataset = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@SeverityName",SeverityName),
+                                        new SqlParameter("@statusName",statusName),
+                                        new SqlParameter("@TicketTypeName",TicketTypeName),
+                                        new SqlParameter("@userID",userID)
+                                      };
+                dataset = objSQLHelper.ExecuteDataset("[dbo].[USP_Get_Status_Servity_TicketName]", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dataset;
         }
 
         public Boolean UpdateIssuedata(ProjectIssueModel model)

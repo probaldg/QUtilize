@@ -76,8 +76,9 @@
 
     </div>
     <div align="right">
-        <button class="btn btn-primary"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
-        <button class="btn btn-primary"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>
+        
+        <button class="btn btn-primary" onclick="downloadExcelFile()"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
+        <button class="btn btn-primary" onclick="ShowPopupforTemplateUpload()"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>
         <input type="button" value="Add New Ticket" style="text-align: right;" class="btn btn-primary" onclick="AddNewTicket()">
     </div>
     <div>
@@ -399,89 +400,89 @@
                     @using (Html.BeginForm())
                     {
 
-                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
-                        <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
+                        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
+                            <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.ProjectIssue.IssueIdforstatus)
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCodeforChangeStatus, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueCodeforChangeStatus, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.IssueNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.IssueNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.IssueNameforChangeStatus, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.IssueNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.IssueNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.IssueNameforChangeStatus, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                <select id="ddlIssueStatusChange" class="form-control"><option value="0">Select</option></select>
+                            <div class="form-group">
+                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    <select id="ddlIssueStatusChange" class="form-control"><option value="0">Select</option></select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueStartDateDisplayforstatus, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.ActualIssueEndDateDisplayforstatus, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
+                            <div class="form-group">
 
-                            @Html.LabelFor(model => model.ProjectIssue.Timespent, htmlAttributes: new { @class = "control-label col-md-2 " })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.Timespent, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.Timespent, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.ProjectIssue.Timespent, htmlAttributes: new { @class = "control-label col-md-2 " })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.Timespent, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.Timespent, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.Comment, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.Comment, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.Comment, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.Label("", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="form-group">
+                                @Html.Label("", htmlAttributes: new { @class = "control-label col-md-2" })
 
-                            <div class="col-md-10">
-                                @Html.Label("*When you upload the multiple Url at a time you need to separate all url using by ';' ", htmlAttributes: new { @class = "control-label col-md-10" })
+                                <div class="col-md-10">
+                                    @Html.Label("*When you upload the multiple Url at a time you need to separate all url using by ';' ", htmlAttributes: new { @class = "control-label col-md-10" })
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectIssue.url, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.EditorFor(model => model.ProjectIssue.url, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.ProjectIssue.url, "", new { @class = "text-danger" })
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectIssue.url, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.ProjectIssue.url, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectIssue.url, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            @Html.Label("Attachments", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="form-group">
+                                @Html.Label("Attachments", htmlAttributes: new { @class = "control-label col-md-2" })
 
 
-                            <div class="col-md-10" id="my-dropzoneUp">
-                                <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
-                                    <div class='fallback'>
-                                        <input name='file' type='file' multiple />
+                                <div class="col-md-10" id="my-dropzoneUp">
+                                    <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
+                                        <div class='fallback'>
+                                            <input name='file' type='file' multiple />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                     }
                     <div class="modal-footer">
@@ -513,10 +514,123 @@
             </div><!-- modal-content -->
         </div><!-- modal-dialog -->
     </div><!-- modal -->
+    @* Modal for Upload Template*@
+    <div id="myModalTemplateUpload" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Upload File for Create New Ticket</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Upload file</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="file" name="NewTicketUpload" class="form-control" id="NewTicketUpload" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+
+                        </div>
+                        <div class="col-md-8">
+                            <label>File extension should be .xlsx<br />Column sequence should not be changed</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" id="viewfileL1" value="Upload" onclick="UploadExcelForIssue()" data-dismiss="modal" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseModalL1">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        //Upload Excel Template 
+       
+        
+        //Download Excel
+          function downloadExcelFile() {
+        try {
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                url: '@Url.Action("GenerateExcelForIssue", "Admin")',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                }),
+                success: function (response) {
+                    window.location = '/Admin/DownloadExcelTemplateForIssue?fileid=' + response
+                }
+            })
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+
+        //End
+        function UploadExcelForIssue() {
+            try {
+               
+                var formData = new FormData();
+                var totalFiles = document.getElementById("NewTicketUpload").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("NewTicketUpload").files[i];
+                   
+                    formData.append("FileUpload", file);
+                }
+             
+                $.ajax({
+                    url: '@Url.Action("UploadExcelForCreateNewTicket", "Admin")',
+                    type: 'POST',
+                    beforeSend: function () {
+                        $('#spinner').show();
+                    },
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: function (response) {
+                        if (response == "Success") {
+                            response = null;
+                          
+                            location.reload();
+
+
+                        } else {
+                        }
+
+                    },
+                    error: function (response) {
 
 
 
+                    }
+                })
+            }
+            catch (e) {
+                alert(e);
+            }
+        } 
 
+        //End upload
+
+
+        //Show mpdal
+        function ShowPopupforTemplateUpload() {
+            
+            $('#myModalTemplateUpload').modal('show');
+        }
+    </script>
 
     <script type="text/javascript">
         function AddNewTicket() {
@@ -547,7 +661,7 @@
                 }
             });
         }
-
+        
 
         function ShowPopupforChangeStatus(issueid, StatusID,Issuecode,Issuename) {
             $('#ProjectIssue_IssueIdforstatus').val(issueid);
@@ -734,7 +848,10 @@
             return true;
         }
         $("#ProjectIssue_Timespent").timepicker({ timeFormat: 'HH:mm' });
-        $("#ProjectIssue_ExpectedTime").timepicker({ timeFormat: 'HH:mm' });
+        $("#ProjectIssue_ExpectedTime").timepicker({
+            timeFormat: 'HH:mm'
+           
+        });
 
         $("#tblGridListViewPost").dataTable();
         $("#tblGridListViewPost1").dataTable();
@@ -777,7 +894,7 @@
 
 
 
-       
+
 
     //Issue Status Update
     $('#btnStatusUpdate').click(function () {
@@ -1013,6 +1130,8 @@
 
     })
     //End
+       
+
     $('#ddlUsersAssigned').change(function () {
 
 
@@ -1383,7 +1502,7 @@
 
 
                 this.on("addedfile", function (file) {
-                  
+
                     document.getElementById("btnStatusUpdate").disabled = true;
                     // Create the remove button
                     var removeButton = Dropzone.createElement("<button class='btn btn-lg dark'>Remove File</button>");
@@ -1408,7 +1527,7 @@
                 //    formData.append("TravelRequestID", $("#TravelRequestID").val());
                 //});
                 this.on("success", function (file, response) {
-                   
+
                     // or however you would point to your assigned file ID here;
                     //alert(JSON.stringify(response));
                     document.getElementById("FileDirectory").value = JSON.stringify(response);
@@ -1535,8 +1654,8 @@
             z-index: 3500 !important;
         }
     </style>
-    
- 
+
+
 </body>
 </html>
 
