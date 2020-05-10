@@ -194,10 +194,29 @@
                                 </div>
                             </section>
                             <section id="tab3Manager" class="tab-content hide">
-                                <div id="dvPMTicket"></div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        @Html.Action("GetPMTicket", "Home")
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlPMTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaPMTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvPMTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetPMTicket", "Home")
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -257,10 +276,29 @@
                                 </div>
                             </section>
                             <section id="tab2Self" class="tab-content hide">
-                                <div id="dvSelfTicket"></div>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        @Html.Action("GetSelfTicket", "Home")
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlSelfTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaSelfTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvSelfTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetSelfTicket", "Home")
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
@@ -351,14 +389,11 @@
                     window.chartColors.blue,
                 ],
                 label: 'Dataset 1'
-            }]//,
-            //labels: [
-            //    'Red',
-            //    'Orange',
-            //    'Yellow',
-            //    'Green',
-            //    'Blue'
-            //]
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
         },
         options: {
             responsive: true,
@@ -383,14 +418,11 @@
                     window.chartColors.blue,
                 ],
                 label: 'Dataset 1'
-            }]//,
-            //labels: [
-            //    'Red',
-            //    'Orange',
-            //    'Yellow',
-            //    'Green',
-            //    'Blue'
-            //]
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
         },
         options: {
             responsive: true,
@@ -415,14 +447,98 @@
                     window.chartColors.blue,
                 ],
                 label: 'Dataset 1'
-            }]//,
-            //labels: [
-            //    'Red',
-            //    'Orange',
-            //    'Yellow',
-            //    'Green',
-            //    'Blue'
-            //]
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configATi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configPTi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configSTi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
         },
         options: {
             responsive: true,
@@ -441,6 +557,13 @@
         window.myPiePTask = new Chart(ctxPTask, configPTa);
         var ctxATask = document.getElementById('chart-areaAdminTask').getContext('2d');
         window.myPieATask = new Chart(ctxATask, configATa);
+
+        var ctxSTicket = document.getElementById('chart-areaSelfTicket').getContext('2d');
+        window.myPieSTicket = new Chart(ctxSTicket, configSTi);
+        var ctxPTicket = document.getElementById('chart-areaPMTicket').getContext('2d');
+        window.myPiePTicket = new Chart(ctxPTicket, configPTi);
+        var ctxATicket = document.getElementById('chart-areaAdminTicket').getContext('2d');
+        window.myPieATicket = new Chart(ctxATicket, configATi);
         //window.myPieSTicket = new Chart(ctx, config);
     };
     var colorNames = Object.keys(window.chartColors);
@@ -552,6 +675,115 @@
                         }
                         configSTa.data.datasets.push(newDataset);
                         window.myPieSTask.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+
+        $("#ddlAdminTicket").val(0);
+        $("#ddlAdminTicket").change(function () {
+            var vSelVal = document.getElementById("ddlAdminTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal,"strFor":'A'
+                    }),
+                    success: function (response) {
+                        configATi.data.datasets.splice(0, 1);
+                        configATi.data.labels.splice(0, configATi.data.labels.length);
+                        window.myPieATicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configATi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configATi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configATi.data.datasets.push(newDataset);
+                        window.myPieATicket.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlPMTicket").val(0);
+        $("#ddlPMTicket").change(function () {
+            var vSelVal = document.getElementById("ddlPMTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'P'
+                    }),
+                    success: function (response) {
+                        configPTi.data.datasets.splice(0, 1);
+                        configPTi.data.labels.splice(0, configPTi.data.labels.length);
+                        window.myPiePTicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configPTi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configPTi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configPTi.data.datasets.push(newDataset);
+                        window.myPiePTicket.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlselfTicket").val(0);
+        $("#ddlselfTicket").change(function () {
+            var vSelVal = document.getElementById("ddlselfTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'S'
+                    }),
+                    success: function (response) {
+                        configSTi.data.datasets.splice(0, 1);
+                        configSTi.data.labels.splice(0, configSTi.data.labels.length);
+                        window.myPieSTicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configSTi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configSTi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configSTi.data.datasets.push(newDataset);
+                        window.myPieSTicket.update();
                     },
                     error: function (response) {
                         alert(Error);

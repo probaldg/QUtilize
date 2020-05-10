@@ -2484,9 +2484,113 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         try
                         {
+                            ds.CaseSensitive = false;
                             DataRow[] result = ds.Tables[0].Select("ExpectedTime < EplapsedTime AND StatusName <> 'closed' ");
                             cv.Add(new ChartValue { label = "Overflow", value = result.Length.ToString() });
                             DataRow[] result1 = ds.Tables[0].Select("ExpectedTime > EplapsedTime AND (Convert(ExpectedTime, System.Decimal)-Convert(EplapsedTime, System.Decimal)) <= 16 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "About to Overflow", value = result1.Length.ToString() });
+                            DataRow[] result2 = ds.Tables[0].Select("StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Underflow", value = (result2.Length - result.Length - result1.Length).ToString() });
+                        }
+                        catch (Exception exo) { }
+                    }
+                }
+            }
+            catch (Exception) { }
+            return Json(cv);
+        }
+        public ActionResult ChartLoadTicket(int FilterVal, string strFor)
+        {
+            List<ChartValue> cv = new List<ChartValue>();
+            try
+            {
+                DataSet ds;
+                if (strFor == "A")
+                    ds = (DataSet)Session["sessAdminTicket"];
+                else if (strFor == "P")
+                    ds = (DataSet)Session["sessPMTicket"];
+                else
+                    ds = (DataSet)Session["sessSelfTicket"];
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    if (FilterVal == 0)//<option value="0">By Status</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "StatusName");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("StatusName = '" + strLbl + "'");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 1)//<option value="1">By project - Open</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "Name");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("Name = '" + strLbl + "'");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 2)//<option value="2">By Type - Open</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "TicketType");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("TicketType = '" + strLbl + "' AND StatusName <> 'closed' ");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 3)//<option value="3">By Severity - Open</option>
+                    {
+                        DataTable uniqueCols = ds.Tables[0].DefaultView.ToTable(true, "SeverityName");
+                        string[] arrrayLbl = uniqueCols.Rows.OfType<DataRow>().Select(k => k[0].ToString()).ToArray();
+                        foreach (string strLbl in arrrayLbl)
+                        {
+                            try
+                            {
+                                DataRow[] result = ds.Tables[0].Select("SeverityName = '" + strLbl + "' AND StatusName <> 'closed' ");
+                                cv.Add(new ChartValue { label = strLbl, value = result.Length.ToString() });
+                            }
+                            catch (Exception exo) { }
+                        }
+                    }
+                    else if (FilterVal == 4)//<option value="4">Closure Date</option>
+                    {
+                        try
+                        {
+                            ds.CaseSensitive = false;
+                            DataRow[] result = ds.Tables[0].Select("DaysLeft > 0 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expired", value = result.Length.ToString() });
+                            DataRow[] result1 = ds.Tables[0].Select("DaysLeft > (-5) AND DaysLeft <= 0 AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expire in 5days", value = result1.Length.ToString() });
+                            DataRow[] result2 = ds.Tables[0].Select("StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Expire not in 5days", value = (result2.Length - result.Length - result1.Length).ToString() });
+                        }
+                        catch (Exception exo) { }
+                    }
+                    else if (FilterVal == 5)//<option value="5">Elapsed Time</option>
+                    {
+                        try
+                        {
+                            ds.CaseSensitive = false;
+                            DataRow[] result = ds.Tables[0].Select("ExpectedTime < Timespent AND StatusName <> 'closed' ");
+                            cv.Add(new ChartValue { label = "Overflow", value = result.Length.ToString() });
+                            DataRow[] result1 = ds.Tables[0].Select("ExpectedTime > Timespent AND (Convert(ExpectedTime, System.Decimal)-Convert(Timespent, System.Decimal)) <= 16 AND StatusName <> 'closed' ");
                             cv.Add(new ChartValue { label = "About to Overflow", value = result1.Length.ToString() });
                             DataRow[] result2 = ds.Tables[0].Select("StatusName <> 'closed' ");
                             cv.Add(new ChartValue { label = "Underflow", value = (result2.Length - result.Length - result1.Length).ToString() });
