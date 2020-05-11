@@ -267,7 +267,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectIssue.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2 " })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectIssue.ExpectedTime, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.EditorFor(model => model.ProjectIssue.ExpectedTime, new { htmlAttributes = new { @class = "form-control", type = "number", onkeypress = "return MaxLengthOfTextbox()" } })
                                     @Html.ValidationMessageFor(model => model.ProjectIssue.ExpectedTime, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -552,7 +552,7 @@
 
 
     <script type="text/javascript">
-        //Upload Excel Template 
+
        
         
         //Download Excel
@@ -577,6 +577,7 @@
     }
 
         //End
+                //Upload Excel Template 
         function UploadExcelForIssue() {
             try {
                
@@ -631,6 +632,17 @@
             
             $('#myModalTemplateUpload').modal('show');
         }
+        //Length of expected date
+        function MaxLengthOfTextbox() {
+            var ExpectedTime = $('#ProjectIssue_ExpectedTime').val();
+
+            var Length = ExpectedTime.length;
+            if (Length > 5) {
+                return false;
+            }
+            return true;
+
+        };
     </script>
 
     <script type="text/javascript">
