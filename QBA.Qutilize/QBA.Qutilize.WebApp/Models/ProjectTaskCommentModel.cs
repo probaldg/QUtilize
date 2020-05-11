@@ -24,24 +24,23 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataTable GetProjectTasksComments(int ProjectTaskID)
+        
+        public DataSet GetProjectTasksComments(int ProjectTaskID)
         {
-            DataTable dt = null;
+            DataSet ds = null;
             try
             {
                 SqlParameter[] param ={
-                                        new SqlParameter("@ProjectTaskID",ProjectTaskID)
+                                       new SqlParameter("@ProjectTaskID",ProjectTaskID)
                                       };
-                dt = objSQLHelper.ExecuteDataTable("USP_tblMasterProjectTaskComments_Get", param);
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_getProjectTaskCommentsAndAttachments_Get]", param);
             }
             catch (Exception ex)
             {
 
             }
-            return dt;
-
+            return ds;
         }
-
 
 
         public Boolean InsertCommentdata(ProjectTaskCommentModel model, out int id)
