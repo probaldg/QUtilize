@@ -5,11 +5,11 @@
 <div class="row">
 
     <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-12" id="dashBoardDateRange">
-                @Html.Action("GetDateRange", "Home")
-            </div>
-        </div>
+        @*<div class="row">
+                <div class="col-md-12" id="dashBoardDateRange">
+                    @Html.Action("GetDateRange", "Home")
+                </div>
+            </div>*@
         @if (HttpContext.Current.Session["SysAdmin"] != null)
         {
             <div class="row">
@@ -24,988 +24,1342 @@
                 </div>
             </div>
         }
-        @if (HttpContext.Current.Session["OrgAdmin"] != null)
+        else
         {
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Admin Data</h3>
-                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" id="DashBoardAdminSummary">
-                                <!-- load header summary -->
-                                @Html.Action("LoadDashBoardAdminSummary", "Home")
-                            </div>
-                            <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
-                                <div class="col-md-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="barChartAdmin" width="200" height="30"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div>
+                <select id="ddlDashBoardSelection">
+                    @if (HttpContext.Current.Session["OrgAdmin"] != null)
+                    {
+                        <option value="0">Admin Dashboard</option>
+                        @*<option value="1">Manager Dashboard</option>
+                            <option value="2">Self Dashboard</option>*@
+                    }
+                    @if (HttpContext.Current.Session["OrgPM"] != null)
+                    {
+                        <option value="1">Manager Dashboard</option>
+                        @*<option value="2">Self Dashboard</option>*@
+                    }
+                    @if (HttpContext.Current.Session["OrgUser"] != null)
+                    {
+                        <option value="2">Self Dashboard</option>
+                    }
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    @Html.Action("GetTableForDaywisedetailsinMinuteForAdmin", "Home")
-                                </div>
+                </select>
+            </div>
+            if (HttpContext.Current.Session["OrgAdmin"] != null)
+            {
+                <div style='display:none;' id='divAdminDB'>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab1Admin" style="font-weight:bold; font-size:medium">Project </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab2Admin" style="font-weight:bold; font-size:medium">Project Tasks </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab3Admin" style="font-weight:bold; font-size:medium">Helpdesk Tickets</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab4Admin" style="font-weight:bold; font-size:medium">Resource Utilization</a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="DonutChartUserWiseAdmin" width="200" height="100"></canvas>
+                            <section id="tab1Admin" class="tab-content active">
+                                <div id="dvAdminProject"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetAdminProject", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab2Admin" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlAdminTask">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">Closure Date</option>
+                                                    <option value="3">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaAdminTask"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvAdminTask"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetAdminTask", "Home")
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="DonutChartProjectWiseAdmin" width="200" height="100"></canvas>
+                            </section>
+                            <section id="tab3Admin" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlAdminTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaAdminTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvAdminTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetAdminTicket", "Home")
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    @Html.Action("GetTableForTaskDetailsForAdmin", "Home")
+                            </section>
+                            <section id="tab4Admin" class="tab-content hide">
+                                <div id="dvAdminUtilization"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetAdminUtilization", "Home")
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    @Html.Action("GetTableForTicketDetailsForAdmin", "Home")
-                                </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-        @if (HttpContext.Current.Session["OrgPM"] != null)
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Manager data</h3>
-                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" id="DashBoardPMSummary">
-                                <!-- load header summary -->
-                                @Html.Action("LoadDashBoardPMSummary", "Home")
+            }
+            if (HttpContext.Current.Session["OrgPM"] != null)
+            {
+                <div style='display:none;' id='divManagerDB'>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab1Manager" style="font-weight:bold; font-size:medium">Project</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab2Manager" style="font-weight:bold; font-size:medium">Project Tasks </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab3Manager" style="font-weight:bold; font-size:medium">Helpdesk Tickets</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab4Manager" style="font-weight:bold; font-size:medium">Resource Utilization</a>
+                                    </li>
+                                </ul>
                             </div>
-
-
-
-
-                            <div class="row" id="divLoadDashBoardDataDayWiseAdmin">
-                                <div class="col-md-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="barChartPM" width="200" height="30"></canvas>
+                            <section id="tab1Manager" class="tab-content active">
+                                <div id="dvPMProject"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMProject", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab2Manager" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlPMTask">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">Closure Date</option>
+                                                    <option value="3">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaPMTask"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvPMTask"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetPMTask", "Home")
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-12">
-                                    @Html.Action("GetTableForDaywisedetailsinMinuteForPM", "Home")
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label>User Wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="DonutChartUserWisePM" width="200" height="100"></canvas>
+                            </section>
+                            <section id="tab3Manager" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlPMTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaPMTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvPMTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetPMTicket", "Home")
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="DonutChartProjectWisePM" width="200" height="100"></canvas>
-                                        </div>
+                            </section>
+                            <section id="tab4Manager" class="tab-content hide">
+                                <div id="dvPMUtilization"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetPMUtilization", "Home")
                                     </div>
                                 </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-        @if (HttpContext.Current.Session["OrgUser"] != null)
-        {
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Self Data</h3>
-                            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-down" style="top:-15px;"></i></span>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" id="divLoadDashBoardDataDayWise">
-                                <div class="col-md-12">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="barChart" width="200" height="30"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label> Day wise details:</label></div>
-                                        <div class="panel-body" id="divActualData">
-                                            @Html.Action("GetDataActual", "Home")
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="panel panel-info">
-                                        <div class="panel-heading"><label>Project wise details in hour:</label></div>
-                                        <div class="panel-body">
-                                            <canvas id="DonutChart" width="200" height="100"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    @Html.Action("GetTableForTaskDetailsForUser", "Home")
-                                </div>
-                                <div class="col-md-6">
-                                    @Html.Action("GetTableForTicketDetailsForUser", "Home")
-                                </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+            if (HttpContext.Current.Session["OrgUser"] != null)
+            {
+                <div style='display:none;' id='divSelfDB'>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#tab1Self" style="font-weight:bold; font-size:medium">Project Task</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab2Self" style="font-weight:bold; font-size:medium">Helpdesk Ticket</a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab3Self" style="font-weight:bold; font-size:medium">Timesheet</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <section id="tab1Self" class="tab-content active">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlselfTask">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">Closure Date</option>
+                                                    <option value="3">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaSelfTask"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvSelfTask"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetSelfTask", "Home")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab2Self" class="tab-content hide">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <select id="ddlSelfTicket">
+                                                    <option value="0">By Status</option>
+                                                    <option value="1">By project - Open</option>
+                                                    <option value="2">By Type - Open</option>
+                                                    <option value="3">By Severity - Open</option>
+                                                    <option value="4">Closure Date</option>
+                                                    <option value="5">Elapsed Time</option>
+                                                </select>
+                                            </div>
+                                            <div class="panel panel-body"><canvas id="chart-areaSelfTicket"></canvas></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="dvSelfTicket"></div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @Html.Action("GetSelfTicket", "Home")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section id="tab3Self" class="tab-content hide">
+                                <div id="dvSelfUtilization"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.Action("GetSelfTimeSheet", "Home")
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
-
-    <!----->
-    @*<div class="col-md-3">
-
-        <div class="info-box bg-yellow">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-birthday-cake" style="font-size:24px"></i>   Upcoming Birthdays</span>
-            <div style="padding: 5px 10px;">
-                @Html.Action("GetBirthDayDetail", "Home")
+</div>
+<div id="TeamMemberListModel" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="MemberListModel">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTeamMemeber" class="modal-title" style="color:#626262;"></h4>
             </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-green">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-heart" style="font-size:24px"></i>   Upcoming Anniversary</span>
-            <div style="padding: 5px 10px;">
-
-                @Html.Action("GetAnniversaryDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-aqua">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-bell" style="font-size:24px"></i> Upcoming News/Events</span>
-            <div style="padding: 5px 10px;">
-                @Html.Action("GetNewsDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <div class="info-box bg-red">
-            <span style="display:block;height:40px;text-align:center;line-height:50px;background: rgba(0,0,0,0.2);"><i class="fa fa-umbrella" style="font-size:24px"></i>   Holiday list</span>
-            <div style="padding: 5px 10px;">
-
-                @Html.Action("GetHoliDayDetail", "Home")
-            </div>
-            <!-- /.info-box-content -->
-        </div>*@
-    @*<div class="box box-info box-solid">
-                    <div class="box-body" id="divActiveUserData" style="text-align: left;">
-                        @Html.Action("GetOnlineUserActive", "Home", new { CurrDate = ViewBag.CurrentDate })
-                    </div>
+            <div class="modal-body">
+                <div id="popupTeamMemberBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
+                    <table class="table-bordered table table-striped  w-auto" id="tblTeamMemberList">
+                        <thead id="tblHeadListViewPost">
+                            <tr>
+                                <th class="text-center tblHeaderColor sorting">Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBosyTaskList"></tbody>
+                    </table>
                 </div>
-        </div>*@
-
-
-
-
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="TaskNameListModel" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="TaskListModel">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTaskNameList" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupTaskNameListBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
+                    <table class="table-bordered table table-striped  w-auto" id="tblTaskNameList">
+                        <thead id="tblTaskHeadListViewPost">
+                            <tr>
+                                <th class="text-center tblHeaderColor sorting">Task Name</th>
+                                <th class="text-center tblHeaderColor sorting">Status</th>
+                                <th class="text-center tblHeaderColor sorting">Task Start Date</th>
+                                <th class="text-center tblHeaderColor sorting">Task End Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tBodyTaskNameList"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 <Text>
 
 </Text>
-@*<script>
-        !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
-    </script>*@
 <script>
+    var configATa = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1,2,3,4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configPTa = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configSTa = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configATi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configPTi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    var configSTi = {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: [1, 2, 3, 4],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                    window.chartColors.blue,
+                ],
+                label: 'Dataset 1'
+            }],
+            labels: [
+                'Green',
+                'Blue'
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+                enabled: true,
+            }
+        }
+    };
+    window.onload = function () {
+        var ctxSTask = document.getElementById('chart-areaSelfTask').getContext('2d');
+        window.myPieSTask = new Chart(ctxSTask, configSTa);
+        var ctxPTask = document.getElementById('chart-areaPMTask').getContext('2d');
+        window.myPiePTask = new Chart(ctxPTask, configPTa);
+        var ctxATask = document.getElementById('chart-areaAdminTask').getContext('2d');
+        window.myPieATask = new Chart(ctxATask, configATa);
+
+        var ctxSTicket = document.getElementById('chart-areaSelfTicket').getContext('2d');
+        window.myPieSTicket = new Chart(ctxSTicket, configSTi);
+        var ctxPTicket = document.getElementById('chart-areaPMTicket').getContext('2d');
+        window.myPiePTicket = new Chart(ctxPTicket, configPTi);
+        var ctxATicket = document.getElementById('chart-areaAdminTicket').getContext('2d');
+        window.myPieATicket = new Chart(ctxATicket, configATi);
+        //window.myPieSTicket = new Chart(ctx, config);
+    };
+    var colorNames = Object.keys(window.chartColors);
+    function  dynamicColors() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    };
     $(document).ready(function () {
-        $('#tblAppraisalRating').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'Day wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            //buttons: [{
-            //    extend: 'pdfHtml5',
-            //    pageSize: 'LEGAL',
-            //    header: true,
-            //    message: vMSG, // Date Range
-            //    title: vReportName, // Report Name should be go here.
-
-            //    //orientation: 'landscape',
-            //    customize: function (doc) {
-            //        doc.defaultStyle.fontSize = 10; //<-- set fontsize to 16 instead of 10
-            //    }
-            //},
-            //{
-            //    extend: 'excelHtml5',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'print',//,
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'csv',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //}
-            //],
-            //buttons: [
-            //     'copy', 'csv', 'excel', 'pdf'
-            //],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableuserWiseDetailsInMinutes').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            //buttons: [{
-            //    extend: 'pdfHtml5',
-            //    pageSize: 'LEGAL',
-            //    header: true,
-            //    message: vMSG, // Date Range
-            //    title: vReportName, // Report Name should be go here.
-
-            //    //orientation: 'landscape',
-            //    customize: function (doc) {
-            //        doc.defaultStyle.fontSize = 10; //<-- set fontsize to 16 instead of 10
-            //    }
-            //},
-            //{
-            //    extend: 'excelHtml5',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'print',//,
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'csv',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //}
-            //],
-            //buttons: [
-            //     'copy', 'csv', 'excel', 'pdf'
-            //],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableForDaywiseTicketDetails').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableForDaywiseTaslDetails').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableForDaywiseTaslDetailsUser').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableForDaywiseTicketDetailsUser').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-        $('#TableuserWiseDetailsInMinutesForPM').DataTable({
-            // "pageLength": 10,
-            "aaSorting": [],
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    text: 'Download Report',
-                    extend: 'csvHtml5',
-                    title: 'User wise details For Project Manager',
-                    exportOptions: {
-                        columns: 'th:not(.noExport)'
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    title: 'Data export'
-                }
-            ],
-            //buttons: [{
-            //    extend: 'pdfHtml5',
-            //    pageSize: 'LEGAL',
-            //    header: true,
-            //    message: vMSG, // Date Range
-            //    title: vReportName, // Report Name should be go here.
-
-            //    //orientation: 'landscape',
-            //    customize: function (doc) {
-            //        doc.defaultStyle.fontSize = 10; //<-- set fontsize to 16 instead of 10
-            //    }
-            //},
-            //{
-            //    extend: 'excelHtml5',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'print',//,
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //},
-            //{
-            //    extend: 'csv',
-            //    message: vMSG, // Date Range
-            //    title: vReportName // Report Name should be go here.
-            //}
-            //],
-            //buttons: [
-            //     'copy', 'csv', 'excel', 'pdf'
-            //],
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-
-
-        });
-
-        @*setInterval(function () {
-            var date = new Date();
-            var day = date.getDate();       // yields date
-            var month = date.getMonth() + 1;    // yields month (add one as '.getMonth()' is zero indexed)
-            var year = date.getFullYear();  // yields year
-            var hour = date.getHours();     // yields hours
-            var minute = date.getMinutes(); // yields minutes
-            var second = date.getSeconds(); // yields seconds
-            // After this construct a string with the above results as below
-            var vCurrDateTime = month + "/" + day + "/" + year + "_" + hour + ':' + minute + ':' + second;
-            //location.href = 'Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime;
-            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")?CurrDate=' + vCurrDateTime);
-        }, 5000);*@
-    });
-
-
-
-    @if(Session["DateRange"] != null)
-    {
-        string[] arrdate = Session["DateRange"].ToString().Split('|');
-        <Text>
-
-            var selecteduser ="@arrdate[5]";
-            var selectedproject = "@arrdate[4]";
-
-
-        </text>
-    }
-    else
-    {
-        <Text>
-            var selecteduser = "False";
-    var selectedproject = "False";
-
-        </text>
-    }
-
-    $(document).ready(function () {
-        //$(".datepicker").datepicker();
-        $('#txtStartDate').datepicker();
-        $('#txtEndDate').datepicker();
-        gerBarChartData();
-        gerDonutChartData();
-        gerDonutChartDataUserWiseAdmin();
-        gerDonutChartDataProjectWiseAdmin();
-        gerBarChartDataAdmin();
-        gerDonutChartDataUserWisePM();
-        gerDonutChartDataProjectWisePM();
-        gerBarChartDataPM();
-        getDayWiseDetailsinMinutesForAdmin();
-    });
-
-    function GetUsersProject() {
-        if (selectedproject == "False") {
-            var Userid = document.getElementById("ddlUsers").value;
-         try {
-
-            $.ajax({
-                url: '@Url.Action("getProjectsByUserID", "Home")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    userid: Userid
-                }),
-                success: function (response) {
-                    if (response != "") {
-                        console.log(JSON.stringify(response));
-                        $("#ddlProjects").empty();
-                        $("#ddlProjects").append('<option value="0">Select</option>');
-                        var jsonObj = response;
-                        for (obj in jsonObj) {
-                            console.log(jsonObj[obj]["ProjectID"]);
-                            $("#ddlProjects").append('<option value="' + jsonObj[obj]["ProjectID"] + '">' + jsonObj[obj]["ProjectName"]+'</option>');
-                        }
-                        selecteduser = "True";
-
-                    }
-                }
-            });
-        }
-        catch (e) {
-            alert(e);
-        }
-        }
-    }
-
-    function GetProjectUsers() {
-        if (selecteduser == "False") {
-            var projectID = document.getElementById("ddlProjects").value;
-            try {
-
-                $.ajax({
-                    url: '@Url.Action("getUsersbyProjectID", "Home")',
+        $("#ddlAdminTask").val(0);
+        $("#ddlAdminTask").change(function () {
+            var vSelVal = document.getElementById("ddlAdminTask").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTask", "Home")',
                     type: "POST",
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify({
-                        projectID: projectID
+                        "FilterVal": vSelVal,"strFor":'A'
                     }),
                     success: function (response) {
-                        if (response != "") {
-                            console.log(JSON.stringify(response));
-                            $("#ddlUsers").empty();
-                            $("#ddlUsers").append('<option value="0">Select</option>');
-                            var jsonObj = response;
-                            for (obj in jsonObj) {
-                                console.log(jsonObj[obj]["ID"]);
-                                $("#ddlUsers").append('<option value="' + jsonObj[obj]["ID"] + '">' + jsonObj[obj]["Name"] + '</option>');
-                            }
-                            selectedproject = "True";
+                        configATa.data.datasets.splice(0, 1);
+                        configATa.data.labels.splice(0, configATa.data.labels.length);
+                        window.myPieATask.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configATa.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configATa.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
                         }
-                    }
-                });
-            }
-            catch (e) {
-                alert(e);
-            }
-        }
-    }
-
-    $(document).on('click', '.panel-heading span.clickable', function (e) {
-        var $this = $(this);
-        if (!$this.hasClass('panel-collapsed')) {
-            $this.parents('.panel').find('.panel-body').slideUp();
-            $this.addClass('panel-collapsed');
-            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-
-        } else {
-            $this.parents('.panel').find('.panel-body').slideDown();
-            $this.removeClass('panel-collapsed');
-            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-
-        }
-    })
-    function alertFunc() {
-        alert("Refresh data");
-        try {
-            $("#divActiveUserData").load('@Url.Action("GetOnlineUserActive", "Home")');
-        }
-        catch (e) {
-            alert(e);
-        }
-    }
-    function gerBarChartData(){
-        try {
-        //-----Single Bar --------------
-        var c = document.getElementById("barChart");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("BarChartData", "Home")');//"/Home/BarChartData"
-        var myBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: tData,
-            options: {
-                scales: {
-                    xAxes: [{
-                        stacked: true
-                    }],
-                    yAxes: [{
-                        stacked: true
-                    }]
-                },
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myBarChart.update();
-        }
-        catch (e) { }
-    };
-    function gerBarChartDataAdmin(){
-        try {
-        //-----Single Bar --------------
-        var c = document.getElementById("barChartAdmin");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("BarChartDataAdmin", "Home")');//"/Home/BarChartData"
-        var myBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: tData,
-            options: {
-                responsive: true,
-                scales: {
-                    xAxes: [{
-                        stacked: true
-                    }],
-                    yAxes: [{
-                        stacked: true
-                    }]
-                },
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myBarChart.update();
-        }
-        catch (e) { }
-    };
-
-
-    function getDayWiseDetailsinMinutesForAdmin() {
-         try {
-
-            $.ajax({
-                url: '@Url.Action("BarChartDataAdmin", "Home")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-
-                }),
-                success: function (response) {
-                    if (response != "") {
-                        console.log(JSON.stringify(response));
-                    }
-                }
-            });
-        }
-        catch (e) {
-            alert(e);
-        }
-    }
-
-    function gerBarChartDataPM(){
-        try {
-        //-----Single Bar --------------
-        var c = document.getElementById("barChartPM");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("BarChartDataPM", "Home")');//"/Home/BarChartData"
-        var myBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: tData,
-            options: {
-                scales: {
-                    xAxes: [{
-                        stacked: true
-                    }],
-                    yAxes: [{
-                        stacked: true
-                    }]
-                },
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myBarChart.update();
-        }
-        catch (e) { }
-    };
-    function gerDonutChartData() {
-        try {
-        //----Donut Chart---------
-        var c = document.getElementById("DonutChart");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("GetDonutChartData", "Home")');//"/Home/GetDonutChartData"
-        var myPieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: tData,
-            options: {
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myPieChart.update();
-        }
-        catch (e) { }
-    }
-    function gerDonutChartDataUserWiseAdmin() {
-        try {
-        //----Donut Chart---------
-        var c = document.getElementById("DonutChartUserWiseAdmin");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("GetDonutChartUserWiseAdmin", "Home")');//"/Home/GetDonutChartData"
-        var myPieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: tData,
-            options: {
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myPieChart.update();
-        }
-        catch (e) { }
-    }
-    function gerDonutChartDataProjectWiseAdmin() {
-        try {
-        //----Donut Chart---------
-        var c = document.getElementById("DonutChartProjectWiseAdmin");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("GetDonutChartProjectWiseAdmin", "Home")');//"/Home/GetDonutChartData"
-        var myPieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: tData,
-            options: {
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myPieChart.update();
-        }
-        catch (e) { }
-    }
-    function gerDonutChartDataUserWisePM() {
-        try {
-        //----Donut Chart---------
-        var c = document.getElementById("DonutChartUserWisePM");
-        var ctx = c.getContext("2d");
-        var tData = $.getValues('@Url.Action("GetDonutChartUserWisePM", "Home")');//"/Home/GetDonutChartData"
-        var myPieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: tData,
-            options: {
-                responsive: true,
-                legend: {
-                    display: false,
-                    position: 'right'
-                },
-                tooltips: {
-                    enabled: true
-                }
-            }
-        });
-            myPieChart.update();
-        }
-        catch (e) { }
-    }
-    function gerDonutChartDataProjectWisePM() {
-        try {
-            //----Donut Chart---------
-            var c = document.getElementById("DonutChartProjectWisePM");
-            var ctx = c.getContext("2d");
-            var tData = $.getValues('@Url.Action("GetDonutChartProjectWisePM", "Home")');//"/Home/GetDonutChartData"
-            var myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: tData,
-                options: {
-                    responsive: true,
-                    legend: {
-                        display: false,
-                        position: 'bottom'
+                        configATa.data.datasets.push(newDataset);
+                        window.myPieATask.update();
                     },
-                    tooltips: {
-                        enabled: true
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
                     }
+              });
+        }).change();
+        $("#ddlPMTask").val(0);
+        $("#ddlPMTask").change(function () {
+            var vSelVal = document.getElementById("ddlPMTask").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTask", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'P'
+                    }),
+                    success: function (response) {
+                        configPTa.data.datasets.splice(0, 1);
+                        configPTa.data.labels.splice(0, configPTa.data.labels.length);
+                        window.myPiePTask.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configPTa.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configPTa.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configPTa.data.datasets.push(newDataset);
+                        window.myPiePTask.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlselfTask").val(0);
+        $("#ddlselfTask").change(function () {
+            var vSelVal = document.getElementById("ddlselfTask").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTask", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'S'
+                    }),
+                    success: function (response) {
+                        configSTa.data.datasets.splice(0, 1);
+                        configSTa.data.labels.splice(0, configSTa.data.labels.length);
+                        window.myPieSTask.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configSTa.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configSTa.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configSTa.data.datasets.push(newDataset);
+                        window.myPieSTask.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+
+        $("#ddlAdminTicket").val(0);
+        $("#ddlAdminTicket").change(function () {
+            var vSelVal = document.getElementById("ddlAdminTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal,"strFor":'A'
+                    }),
+                    success: function (response) {
+                        configATi.data.datasets.splice(0, 1);
+                        configATi.data.labels.splice(0, configATi.data.labels.length);
+                        window.myPieATicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configATi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configATi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configATi.data.datasets.push(newDataset);
+                        window.myPieATicket.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlPMTicket").val(0);
+        $("#ddlPMTicket").change(function () {
+            var vSelVal = document.getElementById("ddlPMTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'P'
+                    }),
+                    success: function (response) {
+                        configPTi.data.datasets.splice(0, 1);
+                        configPTi.data.labels.splice(0, configPTi.data.labels.length);
+                        window.myPiePTicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configPTi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configPTi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configPTi.data.datasets.push(newDataset);
+                        window.myPiePTicket.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlselfTicket").val(0);
+        $("#ddlselfTicket").change(function () {
+            var vSelVal = document.getElementById("ddlselfTicket").value;
+             $.ajax({
+                    url: '@Url.Action("ChartLoadTicket", "Home")',
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        "FilterVal": vSelVal, "strFor": 'S'
+                    }),
+                    success: function (response) {
+                        configSTi.data.datasets.splice(0, 1);
+                        configSTi.data.labels.splice(0, configSTi.data.labels.length);
+                        window.myPieSTicket.update();
+                        var newDataset = {
+                            backgroundColor: [],
+                            data: [],
+                            label: 'New dataset ' + configSTi.data.datasets.length,
+                        };
+                     for (var index = 0; index < response.length; ++index) {
+                         newDataset.data.push(response[index].value);
+                         var labelName = response[index].label;
+                         configSTi.data.labels.push(labelName);
+                         var newColor = dynamicColors();
+                         newDataset.backgroundColor.push(newColor);
+                        }
+                        configSTi.data.datasets.push(newDataset);
+                        window.myPieSTicket.update();
+                    },
+                    error: function (response) {
+                        alert(Error);
+                    //console.log(response);
+                    }
+              });
+        }).change();
+        $("#ddlDashBoardSelection").change(function () {
+            $("#divAdminDB").hide();
+            $("#divManagerDB").hide();
+            $("#divSelfDB").hide();
+            $(this).find("option:selected").each(function () {
+                if (this.value == '0') {
+                    $("#divAdminDB").show();
+                }
+                else if (this.value == '1') {
+                    $("#divManagerDB").show();
+                }
+                else if (this.value == '2') {
+                    $("#divSelfDB").show();
                 }
             });
-                myPieChart.update();
-         }
-        catch (e) {}
-    }
-    function ResetData() {
+        }).change();
+        $('#divAdminDB .nav-tabs > li > a').click(function (event) {
+            event.preventDefault();//stop browser to take action for clicked anchor
 
-        $.ajax({
-                url: '@Url.Action("GetResetData", "Home")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
+            //get displaying tab content jQuery selector
+            var active_tab_selector = $('#divAdminDB .nav-tabs > li.active > a').attr('href');
 
-                }),
-            success: function (response) {
-                if (response != "") {
-                    //alert(response);
-                    $("#dashBoardDateRange").empty();
-                    $("#dashBoardDateRange").html(response);
-                    $('#txtStartDate').datepicker();
-                    $('#txtEndDate').datepicker();
-                    var url = '@Url.Action("DashBoard", "Home")';
-                        window.location.href = url;
-                }
-            }
-           });
-        selecteduser = false;
-        selectedproject = false;
+            //find actived navigation and remove 'active' css
+            var actived_nav = $('#divAdminDB .nav-tabs > li.active');
+            actived_nav.removeClass('active');
 
-    }
-    function RefreshData() {
-        try {
-            var vStartDate = $('#txtStartDate').val();
-            var vEndDate = $('#txtEndDate').val();
-            var vUser = $("#ddlUsers").val();
-            var vProject = $("#ddlProjects").val();
-            if (typeof vUser === "undefined") {
-                vUser = 0;
-            }
-            if (typeof vProject === "undefined") {
-                vProject = 0;
-            }
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+
+            //show target tab content
+            var target_tab_selector = $(this).attr('href');
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+
+        });
+        $('#divManagerDB .nav-tabs > li > a').click(function (event) {
+            event.preventDefault();//stop browser to take action for clicked anchor
+
+            //get displaying tab content jQuery selector
+            var active_tab_selector = $('#divManagerDB .nav-tabs > li.active > a').attr('href');
+
+            //find actived navigation and remove 'active' css
+            var actived_nav = $('#divManagerDB .nav-tabs > li.active');
+            actived_nav.removeClass('active');
+
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+
+            //show target tab content
+            var target_tab_selector = $(this).attr('href');
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+
+        });
+        $('#divSelfDB .nav-tabs > li > a').click(function (event) {
+            event.preventDefault();//stop browser to take action for clicked anchor
+
+            //get displaying tab content jQuery selector
+            var active_tab_selector = $('#divSelfDB .nav-tabs > li.active > a').attr('href');
+
+            //find actived navigation and remove 'active' css
+            var actived_nav = $('#divSelfDB .nav-tabs > li.active');
+            actived_nav.removeClass('active');
+
+            //add 'active' css into clicked navigation
+            $(this).parents('li').addClass('active');
+
+            //hide displaying tab content
+            $(active_tab_selector).removeClass('active');
+            $(active_tab_selector).addClass('hide');
+
+            //show target tab content
+            var target_tab_selector = $(this).attr('href');
+            $(target_tab_selector).removeClass('hide');
+            $(target_tab_selector).addClass('active');
+
+        });
+
+        $('#tblDashBoardSelfTaskData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 7]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvSelfTask')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardSelfTicketData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 3, 4, 9]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvSelfTicket')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardSelfTisheetData').DataTable({
+            initComplete: function () {
+                this.api().columns([0]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvSelfUtilization')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#tblDashBoardAdminProjectData').DataTable({
+            //initComplete: function () {
+            //    this.api().columns().every(function () {
+            //        var column = this;
+            //        var select = $('<select><option value=""></option></select>')
+            //            .appendTo($(column.header()))
+            //            .on('change', function () {
+            //                var val = $.fn.dataTable.util.escapeRegex(
+            //                    $(this).val()
+            //                );
+
+            //                column
+            //                    .search(val ? '^' + val + '$' : '', true, false)
+            //                    .draw();
+            //            });
+
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //},
+            initComplete: function () {
+                this.api().columns([0,1,2,4,5]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        //.appendTo($(column.footer()).empty())
+                        //.appendTo($(column.header()))
+                        .appendTo('#dvAdminProject')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardAdminTaskData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 7]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvAdminTask')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardAdminTicketData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 3,4,9]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvAdminTicket')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardAdminTisheetData').DataTable({
+            initComplete: function () {
+                this.api().columns([0]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvAdminUtilization')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+
+        $('#tblDashBoardPMProjectData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 1, 2, 4, 5]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        //.appendTo($(column.footer()).empty())
+                        //.appendTo($(column.header()))
+                        .appendTo('#dvPMProject')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardPMTaskData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 7]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvPMTask')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardPMTicketData').DataTable({
+            initComplete: function () {
+                this.api().columns([0, 3, 4, 9]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvPMTicket')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+        $('#tblDashBoardPMTisheetData').DataTable({
+            initComplete: function () {
+                this.api().columns([0]).every(function () {
+                    var column = this;
+                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+                        .appendTo('#dvPMUtilization')
+                        .on('change', function () {
+                            var vals = $('option:selected', this).map(function (index, element) {
+                                return $.fn.dataTable.util.escapeRegex($(element).val());
+                            }).toArray().join('|');
+                            column
+                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>')
+                    });
+                });
+                //select2 init for .mymsel class
+                $(".mymsel").select2();
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+            //// "pageLength": 10,
+            //"aaSorting": [],
+            //dom: 'Bfrtip',
+            //buttons: [
+            //    {
+            //        text: 'Download Report',
+            //        extend: 'csvHtml5',
+            //        title: 'Day wise details',
+            //        exportOptions: {
+            //            columns: 'th:not(.noExport)'
+            //        }
+            //    },
+            //    {
+            //        extend: 'pdfHtml5',
+            //        title: 'Data export'
+            //    }
+            //],
+            //"columnDefs": [{
+            //    "targets": 'no-sort',
+            //    "orderable": false,
+            //}]
+        });
+    });
+    //$('[data-toggle="popover"]').popover({
+    //    html: true,
+    //    content: function () {
+    //        return $('#popover-content').html();
+    //    }
+    //});
+   
+    function ShowTeamMemberList(vValue, vProjName) {
+        $('#headerForTeamMemeber').html('Team members for ' + vProjName);
+            $('#tblTeamMemberList tbody').html('');
             $.ajax({
-                url: '@Url.Action("GetRefreshedData", "Home")',
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({
-                    startdate: vStartDate, endDate: vEndDate, User: vUser, Project: vProject, selectedproject: selectedproject, selecteduser: selecteduser
-                }),
-                success: function (response) {
-                    if (response != "") {
-                        gerBarChartData();
-                        gerDonutChartData();
-                        $("#divActualData").html(response);
-                        gerDonutChartDataUserWiseAdmin();
-                        gerDonutChartDataProjectWiseAdmin();
-                        gerBarChartDataAdmin()
-                        $("#DashBoardAdminSummary").load('@Url.Action("LoadDashBoardAdminSummary", "Home")');
-                        gerDonutChartDataUserWisePM();
-                        gerDonutChartDataProjectWisePM();
-                        gerBarChartDataPM();
-                        $("#DashBoardPMSummary").load('@Url.Action("LoadDashBoardPMSummary", "Home")');
-                        var url = '@Url.Action("DashBoard", "Home")';
-                        window.location.href = url;
+            url: '@Url.Action("DisplayTeamMemberList", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
 
-                    }
-                }
-            });
-        }
-        catch (e) {
-            alert(e);
-        }
-    }
+            data: JSON.stringify({
+                "TextToDisplay": vValue
+            }),
+                success: function (response) {
+                    $('#tblTeamMemberList tbody').append(response);
+                    $('#TeamMemberListModel').modal('show');
+
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
+        function ShowTaskNameListPopup(vValue, vProjName) {
+            $('#headerForTaskNameList').html('');
+            $('#headerForTaskNameList').html('Task for ' + vProjName);
+            $('#tblTaskNameList tbody').html('');
+            $.ajax({
+            url: '@Url.Action("DisplayTaskNameListPopup", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TextToDisplay": vValue
+            }),
+                success: function (response) {
+                    $('#tblTaskNameList tbody').append(response);
+                    $('#TaskNameListModel').modal('show');
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
 </script>
 <style>
-    .green_icon {
-        background-color: #4cd137;
-        position: absolute;
-        right: 10px;
-        bottom: -4px;
-        height: 14px;
-        width: 14px;
-        border: 1px solid white;
-        border-radius: 50%;
+    /** Start: to style navigation tab **/
+    .nav {
+        margin-bottom: 18px;
+        margin-left: 0;
+        list-style: none;
     }
 
-    .orange_icon {
-        background-color: #FFA500;
-        position: absolute;
-        right: 10px;
-        bottom: -4px;
-        height: 14px;
-        width: 14px;
-        border: 1px solid white;
-        border-radius: 50%;
+        .nav > li > a {
+            display: block;
+        }
+
+    .nav-tabs {
+        *zoom: 1;
     }
 
-    .red_icon {
-        background-color: #FF0000;
-        position: absolute;
-        right: 10px;
-        bottom: -4px;
-        height: 14px;
-        width: 14px;
-        border: 1px solid white;
-        border-radius: 50%;
+        .nav-tabs:before,
+        .nav-tabs:after {
+            display: table;
+            content: "";
+        }
+
+        .nav-tabs:after {
+            clear: both;
+        }
+
+        .nav-tabs > li {
+            float: left;
+        }
+
+            .nav-tabs > li > a {
+                padding-right: 12px;
+                padding-left: 12px;
+                margin-right: 2px;
+                line-height: 14px;
+            }
+
+    .nav-tabs {
+        border-bottom: 1px solid #ddd;
+    }
+
+        .nav-tabs > li {
+            margin-bottom: -1px;
+        }
+
+            .nav-tabs > li > a {
+                padding-top: 8px;
+                padding-bottom: 8px;
+                line-height: 18px;
+                border: 1px solid transparent;
+                -webkit-border-radius: 4px 4px 0 0;
+                -moz-border-radius: 4px 4px 0 0;
+                border-radius: 4px 4px 0 0;
+            }
+
+                .nav-tabs > li > a:hover {
+                    border-color: #eeeeee #eeeeee #dddddd;
+                }
+
+        .nav-tabs > .active > a,
+        .nav-tabs > .active > a:hover {
+            color: #555555;
+            cursor: default;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
+
+    li {
+        line-height: 18px;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .tab-content.hide {
+        display: none;
+    }
+
+
+    /** End: to style navigation tab **/
+
+    .ui-timepicker-container {
+        z-index: 3500 !important;
     }
 </style>
