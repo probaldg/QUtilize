@@ -469,10 +469,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                    
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
                     DataTable dtIssueData = issueModel.GetProjectIssueByIssueId(IssueId);
-
+                
                 issueModel.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
                 issueModel.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
-
+                issueModel.Timespent = dtIssueData.Rows[0]["TimeSpent"].ToString() != "" ? dtIssueData.Rows[0]["TimeSpent"].ToString() : "0.00";
                 //return Json(JsonConvert.SerializeObject(issueModel));
 
                 DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
@@ -750,7 +750,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         bgcolor = "#FF0000";
                         forecolor = "#FFF";
                     }
-                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date== obj.TodayDate.Date) ) && (item["StatusName"].ToString() != "CLOSED"))
+                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date) ) && (item["StatusName"].ToString() != "CLOSED"))
                     {
                         bgcolor = "#FF8C00";
                         forecolor = "#FFF";
@@ -1801,6 +1801,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.IssueEndDate = dtIssueData.Rows[0]["IssueEndDate"].ToString();
 
                     ViewBag.ExpectedTime = dtIssueData.Rows[0]["ExpectedTime"].ToString();
+                    ViewBag.Timespent = dtIssueData.Rows[0]["Timespent"].ToString();
+
                     //if (ExpecterdHours != "")
                     //{
                     //    string[] Arr = new string[2];
@@ -1808,7 +1810,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     //    ViewBag.ExpectedTime = Arr[0] + ':' + Arr[1];
                     //}
 
-                    
+
 
                     ViewBag.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueStartDateActual"] : (DateTime?)null;
@@ -2233,7 +2235,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     }
 
-                    var updateStatus = model.UpdateIssuestatus(model, out strMailToName, out strMailTo);
+                   var updateStatus = model.UpdateIssuestatus(model, out strMailToName, out strMailTo);
 
                     if (updateStatus)
                     {
@@ -2375,26 +2377,43 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                    var insertStatus = pm.InsertIssuedata(model, out int id,out string strMailToName,out string strMailTo);
+                    var insertStatus = pm.InsertIssuedata(model, out int id);//out string strMailToName,out string strMailTo);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
-                            UserModel userModel = new UserModel();
-                            DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
-                           
-                            string[] usernameArr = strMailToName.Split(';');
-                            string[] userEmailArr = strMailTo.Split(';');
-                            for (int j = 0; j < usernameArr.Length; j++)
+
+                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
+                            projectIssueModel.IssueIdforstatus = id;
+                            projectIssueModel.Comment = "";
+                            projectIssueModel.StatusID = model.StatusID;
+                            projectIssueModel.url = model.url;
+                            projectIssueModel.DirectoryName = model.DirectoryName;
+                            projectIssueModel.Duration = 0;
+                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
+                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
+                            projectIssueModel.EditedBy = loggedInUser;
+                            projectIssueModel.EditedTS = DateTime.Now;
+                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
+                         
+                            if (updateStatus)
                             {
-                                sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                UserModel userModel = new UserModel();
+                                DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                                userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
+
+                                string[] usernameArr = strMailToName.Split(';');
+                                string[] userEmailArr = strMailTo.Split(';');
+                                for (int j = 0; j < usernameArr.Length; j++)
+                                {
+                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                }
+                                model.ISErr = false;
+                                model.ErrString = "Data Saved Successfully.";
+                                TempData["ErrStatus"] = model.ISErr;
+                                TempData["ErrMsg"] = model.ErrString.ToString();
+                                result = "Success";
                             }
-                            model.ISErr = false;
-                            model.ErrString = "Data Saved Successfully.";
-                            TempData["ErrStatus"] = model.ISErr;
-                            TempData["ErrMsg"] = model.ErrString.ToString();
-                            result = "Success";
                         }
                     }
                     else
@@ -4466,7 +4485,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(sbOut.ToString());
             //return Json(JsonConvert.SerializeObject(MgrList));
         }
-
+        
         public JsonResult IssueAttachments()
         {
             string fName = "";
@@ -4519,6 +4538,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                 return new EmptyResult();
             }
         }
+        [HttpGet]
+        public virtual ActionResult DownloadExcelTemplateForTask(string fileid)
+        {
+            if (TempData[fileid] != null)
+            {
+                byte[] data = TempData[fileid] as byte[];
+                return File(data, "application/vnd.ms-excel", "ExcelForProjectTask.xlsx");
+            }
+            else
+            {
+                return new EmptyResult();
+            }
+        }
 
         public ActionResult GenerateExcelForIssue()
         {
@@ -4545,16 +4577,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ws.Cells["N1"].Value = "Actual End Date";
                     ws.Cells["O1"].Value = "IsActive";
                     ws.Cells["P1"].Value = "IsValueAdded";
+                    ws.Cells["Q1"].Value = "URL";
 
-                    ws.Cells["A1:P1"].Style.Font.Bold = true;
-                    ws.Cells["A1:P1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    ws.Cells["A1:P1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    ws.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
-                    ws.Cells["A1:P1"].Style.Locked = true;
+                    ws.Cells["A1:Q1"].Style.Font.Bold = true;
+                    ws.Cells["A1:Q1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    ws.Cells["A1:Q1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    ws.Cells["A1:Q1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
+                    ws.Cells["A1:Q1"].Style.Locked = true;
 
                     // Format  cells as TEXT in a spreadsheet
 
-                    ws.Cells["A:P"].Style.Numberformat.Format = "@";
+                    ws.Cells["A:Q"].Style.Numberformat.Format = "@";
                   
 
 
@@ -4579,6 +4612,65 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(handle);
 
         }
+        public ActionResult GenerateExcelForProjectTask()
+        {
+            // Generate a new unique identifier against which the file can be stored
+            string handle = DateTime.Now.Ticks.ToString();
+            try
+            {
+                using (ExcelPackage package = new ExcelPackage())
+                {
+                    ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
+                    ws.Cells["A1"].Value = "Project Name";
+                    ws.Cells["B1"].Value = "Task Name";
+                    ws.Cells["C1"].Value = "Task code";
+                    ws.Cells["D1"].Value = "Parent Task";
+                    ws.Cells["E1"].Value = "start Date";
+                    ws.Cells["F1"].Value = "End Date";
+                    ws.Cells["G1"].Value = "IsMilestone";
+                    ws.Cells["H1"].Value = "Assigned to";
+                    ws.Cells["I1"].Value = "Percentage Complete";
+                    ws.Cells["J1"].Value = "Actual Start Date";
+                    ws.Cells["K1"].Value = "Actual End Date";
+                    ws.Cells["L1"].Value = "Status";
+                    ws.Cells["M1"].Value = "Expected Time";
+                    ws.Cells["N1"].Value = "IsActive";
+                    ws.Cells["O1"].Value = "IsValueAdded";
+                    ws.Cells["P1"].Value = "URL";
+
+                    ws.Cells["A1:P1"].Style.Font.Bold = true;
+                    ws.Cells["A1:P1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    ws.Cells["A1:P1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    ws.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
+                    ws.Cells["A1:P1"].Style.Locked = true;
+
+                    // Format  cells as TEXT in a spreadsheet
+
+                    ws.Cells["A:P"].Style.Numberformat.Format = "@";
+
+
+
+                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        package.SaveAs(memoryStream);
+                        memoryStream.Position = 0;
+                        TempData[handle] = memoryStream.ToArray();
+                    }
+                }
+            }
+            catch (Exception exE)
+            {
+                try
+                {
+                    using (ErrorHandle errH = new ErrorHandle())
+                    { errH.WriteErrorLog(exE); }
+                }
+                catch (Exception exC) { }
+            }
+            return Json(handle);
+        }
+
         public ActionResult UploadExcelForCreateNewTicket(FormCollection formCollection)
         {
             string result="";
@@ -4665,6 +4757,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                          
                                         model.AddedBy = loggedInUser;
                                         model.AddedTS = DateTime.Now;
+                                        model.url = Convert.ToString(dr["URL"]);
+                                        model.DirectoryName = "";   
+
                                         //Get ProjectId
                                         DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
                                         if (dtProjectId.Rows.Count > 0)
@@ -4720,18 +4815,34 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name/Servity/Ticket type does not correct please check your excel sheet </div></br>");
                                         goto outer;
                                     }
-
-                                        var insertStatus = model.InsertIssuedata(model, out int id,out string strMailToName,out string strMailTo);
+                                        //save ticket
+                                        var insertStatus = model.InsertIssuedata(model, out int id);// out string strMailToName,out string strMailTo);
                                         if (insertStatus)
                                         {
                                             if (id > 0)
                                             {
-                                                uploadSuccess++;
+                                            uploadSuccess++;
+                                            //Save Comment details ...satrt
+                                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
+                                            projectIssueModel.IssueIdforstatus = id;
+                                            projectIssueModel.Comment = "";
+                                            projectIssueModel.StatusID = model.StatusID;
+                                            projectIssueModel.url = model.url;
+                                            projectIssueModel.DirectoryName = model.DirectoryName;
+                                            projectIssueModel.Duration = 0;
+                                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
+                                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
+                                            projectIssueModel.EditedBy = loggedInUser;
+                                            projectIssueModel.EditedTS = DateTime.Now;
+                                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
+                                            
+                                            if (updateStatus)
+                                            {
                                                 string[] usernameArr = strMailToName.Split(';');
                                                 string[] userEmailArr = strMailTo.Split(';');
                                                 for (int j = 0; j < usernameArr.Length; j++)
                                                 {
-                                                sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName +" by "+userModel.UserName);
+                                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
                                                 }
 
                                                 model.ISErr = false;
@@ -4739,18 +4850,20 @@ namespace QBA.Qutilize.WebApp.Controllers
                                                 TempData["ErrStatus"] = model.ISErr;
                                                 TempData["ErrMsg"] = model.ErrString.ToString();
                                                 result = "Success";
+                                            }
+                                            //save Comment details .. End
 
                                            }
-                                        }
-                                
-                                        else
-                                        {
+                                        }  //ticket save ..End
+
+                                      else
+                                      {
                                            model.ISErr = true;
                                            model.ErrString = "Error Occured.";
                                            TempData["ErrStatus"] = model.ISErr;
                                            TempData["ErrMsg"] = model.ErrString.ToString();
                                            result = "Error";
-                                        }
+                                       }
                                 //****save end
                               
 

@@ -75,7 +75,10 @@ namespace QBA.Qutilize.WebApp.Models
         public String Comment { get; set; }
         [Display(Name = "URL")]
         public string url { get; set; }
-        
+
+        [Display(Name = "URL")]
+        public string commenturl { get; set; }
+
         public string DirectoryName { get; set; }
 
         [Display(Name = "Time Spent")]
@@ -229,14 +232,14 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
 
         }
-        public Boolean InsertIssuedata(ProjectIssueModel model, out int id,out string strMailToName, out string strMailTo)
+        public Boolean InsertIssuedata(ProjectIssueModel model, out int id)//out string strMailToName, out string strMailTo)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
             id = 0;
-            strMailToName = string.Empty;
-            strMailTo = string.Empty;
+          //  strMailToName = string.Empty;
+          //  strMailTo = string.Empty;
 
             try
             {
@@ -263,11 +266,11 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@UserIds",model.UserIdAssigned)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Insert", param);
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
-                    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
-                 }
+                //if (dt != null && dt.Rows.Count > 0)
+                //{
+                //    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
+                //    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
+                // }
 
                 if (!(Status.Value is DBNull))
                 {
