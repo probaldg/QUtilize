@@ -438,7 +438,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "ValidateActualEndDateForStatus()" } })
+                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "" } })
                                     @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -446,8 +446,8 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ExpectedTime, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTime, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.ExpectedTimeForStatus, new { htmlAttributes = new { @class = "form-control" } })                                    
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTimeForStatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -474,8 +474,8 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.URL, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.URL, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ProjectTask.URLForStatus, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.URLForStatus, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -608,14 +608,18 @@
                 data: JSON.stringify({
                     "Taskid":Taskid
                 }),
-                 success: function (result) {
-
+                success: function (result) {
+                    var str = result.split("|");                    
+                    var TaskObj = JSON.parse(str[1]);                    
+                    $('#ProjectTask_TaskIdforstatus').val(Taskid);
                      $("#ddlTaskStatusChange").html("");
-                     $("#ddlTaskStatusChange").append(result);
+                    $("#ddlTaskStatusChange").append(str[0]);
                      $('#ddlTaskStatusChange').val(StatusID);
                      $('#ProjectTask_TaskCodeforChangeStatus').val(Taskcode);
-                     $('#ProjectTask_TaskNameforChangeStatus').val(Taskname);
-
+                    $('#ProjectTask_TaskNameforChangeStatus').val(Taskname);
+                    $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
+                    $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
+                    $('#ProjectTask_ExpectedTimeForStatus').val(TaskObj.ExpectedTime);
                      $('#mymodal').modal('show');
 
                  },
@@ -1378,13 +1382,14 @@
 
               //Task Status Update
         $('#btnStatusUpdate').click(function () {
-            var TaskID = $('#ProjectTask_TaskIdforstatus').val();
+            var TaskID = $('#ProjectTask_TaskIdforstatus').val();            
             var actualStartDate = $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val();
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val();
-            var expectedTime = $("#ProjectTask_ExpectedTime").val();
+            var expectedTime = $('#ProjectTask_ExpectedTimeForStatus').val();            
             var TaskStatusId = $('#ddlTaskStatusChange').val();
             var Comment = $('#ProjectTask_Comment').val();
-            var url= $('#ProjectTask_URL').val();
+            var url = $('#ProjectTask_URLForStatus').val();
+            var directoryName = $("#FileDirectoryForChangeStatus").val();
             //  var Timespent = $('#ProjectIssue_Timespent').val();
 
             if (TaskStatusId <= 0) {
@@ -1426,7 +1431,8 @@
                  "TaskStatusID": TaskStatusId,
                  "Comment": Comment,
                  "ExpectedTime":expectedTime,
-                 "URL":url
+                 "URL": url,
+                 "DirectoryName": directoryName
             };
 
             $.ajax({
