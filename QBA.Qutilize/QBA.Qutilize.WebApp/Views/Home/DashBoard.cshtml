@@ -372,6 +372,40 @@
         </div>
     </div>
 </div>
+<div id="ProjectDetailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="DetailsListModel">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="headerForProjectDetails" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupProjectDetailsBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
+                    @*<table class="table-bordered table table-striped  w-auto" id="tblProjectDetails">
+            <thead id="tblHeadListViewPost">
+                <tr>
+                    <th class="text-center tblHeaderColor sorting">Name</th>
+                </tr>
+            </thead>
+            <tbody id="tBodyProjectDetailsList"></tbody>
+        </table>*@
+                    <div class="row" id="DivForShowingProjectDetailsData">
+                        <div class="col-md-5" id="DivprojectNameDetails"></div>
+                        <div class="col-md-7" id="DivForProjectTaskGraph"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="DivForProjectTaskDetails"></div>                        
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <Text>
 
 </Text>
@@ -1228,7 +1262,36 @@
     //        return $('#popover-content').html();
     //    }
     //});
-   
+
+    function ShowProjectDetails(vProjName) {
+        $('#headerForProjectDetails').html('Details of ' + vProjName);
+       
+            $.ajax({
+            url: '@Url.Action("DisplayProjectDetailsList", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TextToDisplay": vProjName
+            }),
+                success: function (response) {
+                    $('#DivprojectNameDetails').empty();
+                    $('#DivprojectNameDetails').append(response);
+                    $('#DivForProjectTaskGraph').empty();
+                    $('#DivForProjectTaskGraph').append(response);
+                    $('#DivForProjectTaskDetails').empty();
+                    $('#DivForProjectTaskDetails').append(response);
+                    $('#ProjectDetailsModal').modal('show');
+
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
+
     function ShowTeamMemberList(vValue, vProjName) {
         $('#headerForTeamMemeber').html('Team members for ' + vProjName);
             $('#tblTeamMemberList tbody').html('');

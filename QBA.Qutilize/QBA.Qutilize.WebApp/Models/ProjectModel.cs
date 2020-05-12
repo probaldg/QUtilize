@@ -229,6 +229,23 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
+        public DataSet GetProjectByName(string projectName)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@projectName",projectName)
+                                      };
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USPProjects_GetByName]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
+
         public DataTable GetAllUserListByProjectID(int projectID)
         {
             DataTable dt = null;

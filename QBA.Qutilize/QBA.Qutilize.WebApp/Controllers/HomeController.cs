@@ -1626,7 +1626,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             sbContent.Append("<tr>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["NAME"]) + "</td>");
                         //sbContent.Append("<td>" + Convert.ToString(dr["ProjectCode"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowProjectDetails('{0}');""> {0} </a> </td>", Convert.ToString(dr["ProjectName"]));
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</td>");
@@ -1918,7 +1918,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             sbContent.Append("<tr>");
                         //sbContent.Append("<td>" + Convert.ToString(dr["NAME"]) + "</td>");
                         //sbContent.Append("<td>" + Convert.ToString(dr["ProjectCode"]) + "</td>");
-                        sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectName"]) + "</td>");
+                        sbContent.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowProjectDetails('{0}');""> {0} </a> </td>", Convert.ToString(dr["ProjectName"]));
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectType"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ProjectRate"]) + "</td>");
                         sbContent.Append("<td class='control-text'>" + Convert.ToString(dr["ClientName"]) + "</td>");
@@ -2365,7 +2365,90 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Content(sbContent.ToString());
         }
 
+        public ActionResult DisplayProjectDetailsList(string TextToDisplay)
+        {
+            StringBuilder sbOutProjectDetailsList = new StringBuilder();
+            StringBuilder sbOutProjectTaskGraph = new StringBuilder();
+            StringBuilder sbOutProjectTaskDetails = new StringBuilder();
 
+            ProjectModel pm = new ProjectModel();
+            DataSet ds= pm.GetProjectByName(TextToDisplay);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                sbOutProjectDetailsList.Append("<table class='table-bordered table table-striped  w-auto' id='tblProjectDetails'>");
+                sbOutProjectDetailsList.Append("<thead id='tblHeadListViewPost'>");
+                sbOutProjectDetailsList.Append("<tr><th colspan='2' class='text-center tblHeaderColor sorting'>Project Management Dashboard</th></tr></thead>");
+                sbOutProjectDetailsList.Append("<tbody id='tBodyProjectDetailsList'>");
+                sbOutProjectDetailsList.Append("<tr><td>Project Name</td><td>"+ ds.Tables[0].Rows[0]["Name"].ToString() + "</td></tr>");
+                sbOutProjectDetailsList.Append("<tr><td>Start Date</td><td>" + ds.Tables[0].Rows[0]["StartDate"].ToString() + "</td></tr>");
+                sbOutProjectDetailsList.Append("<tr><td>Project Type</td><td>" + ds.Tables[0].Rows[0]["ProjectTypeName"].ToString() + "</td></tr>");
+                sbOutProjectDetailsList.Append("<tr><td>Client Name</td><td>" + ds.Tables[0].Rows[0]["ClientName"].ToString() + "</td></tr>");
+                sbOutProjectDetailsList.Append("<tr><td>Project Manager</td><td>" + ds.Tables[0].Rows[0]["ProjectManagerName"].ToString() + "</td></tr>");
+                sbOutProjectDetailsList.Append("</tbody>");
+                sbOutProjectDetailsList.Append("</table>");
+            }
+            
+            if(ds.Tables[1].Rows.Count > 0)
+            {
+
+                sbOutProjectTaskDetails.Append("<thead id='tblHeadListViewPost'><tr>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Project Name</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Task No.</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Task Name</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Task Start Date</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Task End Date</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Actual Start Date</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Actual End Date</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Current Status</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Estimated Time</th>");
+                sbOutProjectTaskDetails.Append("<th class='text-center tblHeaderColor sorting'>Elapsed Time</th>");
+                sbOutProjectTaskDetails.Append("</tr></thead><tbody id='tBodyProjectTaskDetailsList'>");
+                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                {
+                    sbOutProjectTaskDetails.Append("<tr>");
+                    sbOutProjectTaskDetails.Append("<td>"+ds.Tables[1].Rows[i]["ProjectName"].ToString()+"</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskID"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskName"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskStartDate"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskEndDate"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskStartDateActual"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["TaskEndDateActual"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["StatusName"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["ExpectedTime"].ToString() + "</td>");
+                    sbOutProjectTaskDetails.Append("<td>" + ds.Tables[1].Rows[i]["ExpectedTime"].ToString() + "</td>");
+
+                    sbOutProjectTaskDetails.Append("</tr>");
+
+                }
+                sbOutProjectTaskDetails.Append("</tbody>");
+                sbOutProjectTaskDetails.Append("</table>");
+            }
+            //if (TextToDisplay.Trim() != string.Empty)
+            //{
+            //    string[] arrNoofRecord = TextToDisplay.Split(';');
+            //    if (arrNoofRecord.Length > 0)
+            //    {
+            //        foreach (string strRowVal in arrNoofRecord)
+            //        {
+            //            sbOut.Append("<tr>");
+            //            string[] arrNoofColData = strRowVal.Split('|');
+            //            if (arrNoofColData.Length > 0)
+            //            {
+            //                for (int i = 0; i < arrNoofColData.Length; i++)
+            //                {
+            //                    sbOut.Append("<td class='text-center'>" + arrNoofColData[i] + "</td>");
+            //                }
+            //            }
+            //            sbOut.Append("</tr>");
+            //        }
+            //    }
+            //    else
+            //        sbOut.Append("<tr><td class='text-center'></td></tr>");
+            //}
+            //else
+            //{ sbOut.Append("<tr><td class='text-center'></td></tr>"); }
+            return Json(sbOutProjectDetailsList.ToString() + '|' + sbOutProjectTaskDetails.ToString());
+        }
         public ActionResult DisplayTeamMemberList(string TextToDisplay)
         {
             StringBuilder sbOut = new StringBuilder();
