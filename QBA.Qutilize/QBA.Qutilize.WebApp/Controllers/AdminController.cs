@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -2031,6 +2032,42 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
+        public ActionResult LoadProjectTaskStatus(int Taskid)
+        {
+            ProjectTaskModel task = new ProjectTaskModel();
+
+            try
+            {
+
+                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
+                DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
+
+                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
+
+                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
+                task.ExpectedTime =Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
+                //return Json(JsonConvert.SerializeObject(issueModel));
+
+                DataTable dt = task.GetProjectTaskStatusList(userInfo.UserOrganisationID);
+                strStatusData += "<option value = 0>Please select</option>";
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow item in dt.Rows)
+                    {
+                        strStatusData += "<option value=" + Convert.ToInt32(item["StatusID"]) + ">" + Convert.ToString(item["StatusName"]) + "</option>";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                //throw;
+            }
+
+            return Json(strStatusData + '|' + JsonConvert.SerializeObject(task));
+        }
+
         public ActionResult SaveProjectTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
@@ -2178,10 +2215,45 @@ namespace QBA.Qutilize.WebApp.Controllers
                         model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplayforstatus);
 
                     }
-
-
-
+                    model.ExpectedTime = Convert.ToDouble(model.ExpectedTime);
                     var updateStatus = model.UpdateTaskstatus(model);
+
+
+                    //if (model.DirectoryName != null)
+                    //{
+                        ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+
+                        int outCommentID = 0;
+                        ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+                        ptcm.ProjectTaskID = model.TaskIdforstatus;
+                        ptcm.Comment = model.Comment;
+                        ptcm.TaskStatusID = model.TaskStatusID;
+                        ptcm.AddedBy = loggedInUser;
+                        ptcm.AddedTS = DateTime.Now;
+                        ptcm.InsertCommentdata(ptcm, out outCommentID);
+
+                        if (outCommentID >0)
+                        {
+                            //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                            ptam.ProjectTaskCommentID = outCommentID;
+                        if (model.DirectoryName != null)
+                        {
+                            ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
+                        }
+                        else
+                        {
+                            ptam.DirectoryName = null;
+                        } 
+                            ptam.ProjectTaskID = model.TaskIdforstatus;
+                            ptam.URL = model.URL;
+                            ptam.AddedBy = loggedInUser;
+                            ptam.AddedTS = DateTime.Now;
+                            ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+                        }
+                    //}
+
+
+                        
 
                     if (updateStatus)
                     {

@@ -28,6 +28,9 @@ namespace QBA.Qutilize.WebApp.Models
         [Display(Name = "Actual End Date")]
         public string ActualTaskEndDateDisplayforstatus { get; set; }
 
+        public DateTime ActualTaskStartDateforstatus { get; set; }
+        public DateTime ActualTaskEndDateforstatus { get; set; }
+
         [Display(Name = "Comment")]
         public String Comment { get; set; }
 
@@ -39,6 +42,9 @@ namespace QBA.Qutilize.WebApp.Models
 
         [Display(Name = "Expected Time")]
         public double ExpectedTime { get; set; }
+
+        [Display(Name = "Expected Time")]
+        public double ExpectedTimeForStatus { get; set; }
 
         public DateTime TaskStartDate { get; set; }
 
@@ -78,6 +84,9 @@ namespace QBA.Qutilize.WebApp.Models
         public bool IsValueAdded { get; set; }
         public bool? IsMilestone { get; set; }
         public string DirectoryName { get; set; }
+        public string URL { get; set; }
+        public string URLForStatus { get; set; }
+
 
         public string UserIdsTaskAssigned { get; set; }
         public string UserNameTaskAssigned { get; set; }
@@ -87,7 +96,10 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime AddedTS { get; set; }
         public DateTime EditedTS { get; set; }
 
-        public string URL { get; set; }
+        
+
+
+        
 
         public bool ISErr { get; set; }
         public string ErrString { get; set; }

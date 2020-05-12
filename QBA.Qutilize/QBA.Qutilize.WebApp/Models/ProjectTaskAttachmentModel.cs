@@ -116,7 +116,9 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
                     new SqlParameter("@DirectoryName",model.DirectoryName),
                     new SqlParameter("@ProjectTaskCommentID",model.ProjectTaskCommentID),
-                    new SqlParameter("@URL",model.URL)
+                    new SqlParameter("@URL",model.URL),
+                    new SqlParameter("@EditedBy",model.AddedBy),
+                    new SqlParameter("@EditTS",model.AddedTS)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectTaskAttachments_Update", param);
 
