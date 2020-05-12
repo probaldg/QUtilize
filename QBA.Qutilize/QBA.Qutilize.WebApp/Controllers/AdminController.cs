@@ -4686,6 +4686,238 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(handle);
 
         }
+        public ActionResult UploadExcelForCreateNewTicket(FormCollection formCollection)
+        {
+            string result = "";
+            string errMsg = string.Empty;
+            if (Request != null)
+            {
+                try
+                {
+                    StringBuilder sbContent = new StringBuilder();
+
+                    HttpPostedFileBase file = Request.Files[0];
+                    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                    {
+                        string fileName = file.FileName;
+
+                        string fileContentType = file.ContentType;
+                        byte[] fileBytes = new byte[file.ContentLength];
+                        var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+                        DataSet ds = ConvertExcelToDataSet(file.InputStream);
+
+                        #region create ticket
+                        DataTable dtHD = ds.Tables[0];
+                        if (dtHD != null && dtHD.Rows.Count > 0)
+                        {
+                            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                            UserModel userModel = new UserModel();
+                            DataTable dtUSER = userModel.GetUsersByID(UIH.UserId);
+
+                            userModel.EmailId = dtUSER.Rows[0]["EmailId"].ToString();
+                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
+                            int uploadSuccess = 0;
+                            foreach (DataRow dr in dtHD.Rows)
+                            {
+
+                                //checking mandatory field
+                                if (Convert.ToString(dr["ProjectName"]) != "" && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" &&
+                                    Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
+                                    && Convert.ToString(dr["Assignedto"]) != "" && Convert.ToString(dr["PercentagComplete"]) != "")
+                                {
+                                    ProjectIssueModel model = new ProjectIssueModel();
+                                    model.IssueCode = Convert.ToString(dr["TicketCode"]);
+                                    model.IssueName = Convert.ToString(dr["TicketName"]);
+                                    model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
+
+                                    model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
+                                    model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
+                                    var startdt = model.IssuestartDate;
+                                    var enddt = model.IssueEndDate;
+                                    if (startdt > enddt)
+                                    {
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Start date should not be greater than end date please check your excel sheet </div></br>");
+                                        goto outer;
+                                    }
+
+                                    //  string[] Arr = new string[2];
+                                    // Arr = (dr["ExpectedTime"].ToString()).Split(':');
+                                    // string ExpectedTime = Arr[0] + '.' + Arr[1];
+                                    if (dr["ExpectedTime"].ToString() != "")
+                                    {
+                                        model.ExpectedDuration = Convert.ToDouble(dr["ExpectedTime"]);
+                                    }
+                                    else
+                                    {
+                                        model.ExpectedDuration = 0.00;
+                                    }
+
+
+                                    model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
+                                    if (Convert.ToString(dr["ActualStartDate"]) != "")
+                                    {
+                                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
+                                    }
+                                    if (Convert.ToString(dr["ActualEndDate"]) != "")
+                                    {
+                                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
+                                    }
+                                    if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }
+                                    else { model.IsActive = true; }
+
+                                    if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
+                                    else { model.IsValueAdded = true; }
+
+                                    model.AddedBy = loggedInUser;
+                                    model.AddedTS = DateTime.Now;
+                                    model.url = Convert.ToString(dr["URL"]);
+                                    model.DirectoryName = "";
+
+                                    //Get ProjectId
+                                    DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
+                                    if (dtProjectId.Rows.Count > 0)
+                                    {
+                                        model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
+                                        model.ProjectName = Convert.ToString(dr["ProjectName"]);
+                                    }
+                                    else
+                                    {
+                                        //For Project Name not correct
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; project name does not correct check your excel sheet</div><br/>");
+
+                                        goto outer;
+                                    }
+
+                                    //Get UserID
+                                    String username = Convert.ToString(dr["Assignedto"]);
+
+                                    string[] userNameArr = username.Split(';');
+                                    for (int j = 0; j < userNameArr.Length; j++)
+                                    {
+                                        DataTable dtUserId = model.GetUserIDByUserName(userNameArr[j], model.ProjectID);
+                                        if (dtUserId.Rows.Count > 0)
+                                        {
+                                            model.UserIdAssigned = model.UserIdAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
+                                        }
+                                        else
+                                        {
+                                            //For UserID not correct
+                                            int index = dtHD.Rows.IndexOf(dr);
+                                            int excelROW = index + 2;
+                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; User name does not correct please check your excel sheet and put ';' between two username</div><br/>");
+
+                                            goto outer;
+                                        }
+                                    }
+
+                                    //Get StatusID,Servity,TicktType 
+                                    DataSet dataset = model.Get_Status_Servity_TicketName(Convert.ToString(dr["Severity"]), Convert.ToString(dr["Status"]), Convert.ToString(dr["TicketType"]), UIH.UserId);
+                                    if (dataset != null && dataset.Tables[0] != null && dataset.Tables[1] != null && dataset.Tables[2] != null)
+                                    {
+
+                                        model.SeverityID = Convert.ToInt32(dataset.Tables[0].Rows[0]["SeverityID"]);
+                                        model.StatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
+                                        model.TicketTypeID = Convert.ToInt32(dataset.Tables[2].Rows[0]["ID"]);
+                                    }
+                                    else
+                                    {
+                                        int index = dtHD.Rows.IndexOf(dr);
+                                        int excelROW = index + 2;
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name/Servity/Ticket type does not correct please check your excel sheet </div></br>");
+                                        goto outer;
+                                    }
+                                    //save ticket
+                                    var insertStatus = model.InsertIssuedata(model, out int id);// out string strMailToName,out string strMailTo);
+                                    if (insertStatus)
+                                    {
+                                        if (id > 0)
+                                        {
+                                            uploadSuccess++;
+                                            //Save Comment details ...satrt
+                                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
+                                            projectIssueModel.IssueIdforstatus = id;
+                                            projectIssueModel.Comment = "";
+                                            projectIssueModel.StatusID = model.StatusID;
+                                            projectIssueModel.url = model.url;
+                                            projectIssueModel.DirectoryName = model.DirectoryName;
+                                            projectIssueModel.Duration = 0;
+                                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
+                                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
+                                            projectIssueModel.EditedBy = loggedInUser;
+                                            projectIssueModel.EditedTS = DateTime.Now;
+                                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
+
+                                            if (updateStatus)
+                                            {
+                                                string[] usernameArr = strMailToName.Split(';');
+                                                string[] userEmailArr = strMailTo.Split(';');
+                                                for (int j = 0; j < usernameArr.Length; j++)
+                                                {
+                                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                                }
+
+                                                model.ISErr = false;
+                                                model.ErrString = "Data Saved Successfully.";
+                                                TempData["ErrStatus"] = model.ISErr;
+                                                TempData["ErrMsg"] = model.ErrString.ToString();
+                                                result = "Success";
+                                            }
+                                            //save Comment details .. End
+
+                                        }
+                                    }  //ticket save ..End
+
+                                    else
+                                    {
+                                        model.ISErr = true;
+                                        model.ErrString = "Error Occured.";
+                                        TempData["ErrStatus"] = model.ISErr;
+                                        TempData["ErrMsg"] = model.ErrString.ToString();
+                                        result = "Error";
+                                    }
+                                    //****save end
+
+
+                                }
+                                else
+                                {
+                                    int index = dtHD.Rows.IndexOf(dr);
+                                    int excelROW = index + 2;
+                                    sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp;Please put all mandatory value  in your excel sheet </div></br>");
+
+                                    goto outer;
+                                }
+                            //***Next row
+                            outer:
+                                continue;
+                            }
+                            int totalEXCELRecord = dtHD.Rows.Count;
+                            int failure = totalEXCELRecord - uploadSuccess;
+                            sbContent.Append("<p><b>" + uploadSuccess + " rows Successfully saved out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
+                            sbContent.Append("<p><b>" + failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
+                            sendMail_InBulkTicketUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
+                        }
+                        #endregion
+                    }
+                }
+                catch (Exception exE)
+                {
+                    try
+                    {
+                        using (ErrorHandle errH = new ErrorHandle())
+                        { errH.WriteErrorLog(exE); }
+                    }
+                    catch (Exception exC) { }
+                    return null;
+                }
+            }
+            return Json(result);
+        }
+
         public ActionResult GenerateExcelForProjectTask()
         {
             // Generate a new unique identifier against which the file can be stored
@@ -4744,22 +4976,22 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(handle);
         }
-
-        public ActionResult UploadExcelForCreateNewTicket(FormCollection formCollection)
+        
+        public ActionResult UploadExcelForCreateNewProjectTask(FormCollection formCollection)
         {
-            string result="";
+            string result = "";
             string errMsg = string.Empty;
             if (Request != null)
             {
                 try
                 {
                     StringBuilder sbContent = new StringBuilder();
-                   
+
                     HttpPostedFileBase file = Request.Files[0];
                     if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
                     {
                         string fileName = file.FileName;
-                       
+
                         string fileContentType = file.ContentType;
                         byte[] fileBytes = new byte[file.ContentLength];
                         var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
@@ -4771,29 +5003,29 @@ namespace QBA.Qutilize.WebApp.Controllers
                         {
                             UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
                             UserModel userModel = new UserModel();
-                            DataTable dtUSER= userModel.GetUsersByID(UIH.UserId);
+                            DataTable dtUSER = userModel.GetUsersByID(UIH.UserId);
 
                             userModel.EmailId = dtUSER.Rows[0]["EmailId"].ToString();
-                            userModel.UserName= dtUSER.Rows[0]["Name"].ToString();
+                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
                             int uploadSuccess = 0;
                             foreach (DataRow dr in dtHD.Rows)
                             {
-                                
-                               //checking mandatory field
-                                if (Convert.ToString(dr["ProjectName"]) != ""  && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" && 
-                                    Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
-                                    && Convert.ToString(dr["Assignedto"]) != "")
-                                  {
-                                    ProjectIssueModel model = new ProjectIssueModel();
-                                    model.IssueCode = Convert.ToString(dr["TicketCode"]);
-                                    model.IssueName = Convert.ToString(dr["TicketName"]);
-                                    model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
 
-                                    model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
-                                    model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
-                                    var startdt = model.IssuestartDate;
-                                    var enddt = model.IssueEndDate;
-                                    if (startdt> enddt)
+                                //checking mandatory field
+                                if (Convert.ToString(dr["ProjectName"]) != "" && Convert.ToString(dr["TaskName"]) != "" && Convert.ToString(dr["Taskcode"]) != "" && Convert.ToString(dr["startDate"]) != "" &&
+                                  Convert.ToString(dr["Status"]) != "" && Convert.ToString(dr["Assignedto"]) != "" && Convert.ToString(dr["PercentageComplete"]) != "")
+                                {
+                                    ProjectIssueModel projectIssueModel = new ProjectIssueModel();
+                                    ProjectTaskModel model = new ProjectTaskModel();
+
+                                    model.TaskName = Convert.ToString(dr["TaskName"]);
+                                    model.TaskCode = Convert.ToString(dr["Taskcode"]);
+
+                                    model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
+                                    model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
+                                    var startdt = model.TaskStartDate;
+                                    var enddt = model.TaskEndDate;
+                                    if (startdt > enddt)
                                     {
                                         int index = dtHD.Rows.IndexOf(dr);
                                         int excelROW = index + 2;
@@ -4801,146 +5033,140 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         goto outer;
                                     }
 
-                                    //  string[] Arr = new string[2];
-                                    // Arr = (dr["ExpectedTime"].ToString()).Split(':');
-                                    // string ExpectedTime = Arr[0] + '.' + Arr[1];
                                     if (dr["ExpectedTime"].ToString() != "")
                                     {
-                                        model.ExpectedDuration = Convert.ToDouble(dr["ExpectedTime"]);
+                                        model.ExpectedTime = Convert.ToDouble(dr["ExpectedTime"]);
                                     }
                                     else
                                     {
-                                        model.ExpectedDuration = 0.00;
+                                        model.ExpectedTime = 0.00;
                                     }
 
 
-                                      model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
-                                      if (Convert.ToString(dr["ActualStartDate"]) != "")
-                                      {
-                                       model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
-                                      }
-                                      if (Convert.ToString(dr["ActualEndDate"]) != "")
-                                      {
-                                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
-                                      }
-                                       if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }                                    
-                                       else { model.IsActive = true; }
+                                    model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
+                                    if (Convert.ToString(dr["ActualStartDate"]) != "")
+                                    {
+                                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
+                                    }
+                                    if (Convert.ToString(dr["ActualEndDate"]) != "")
+                                    {
+                                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
+                                    }
+                                    if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }
+                                    else { model.IsActive = true; }
 
-                                       if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
-                                       else { model.IsValueAdded = true; }
-                         
-                                        model.AddedBy = loggedInUser;
-                                        model.AddedTS = DateTime.Now;
-                                        model.url = Convert.ToString(dr["URL"]);
-                                        model.DirectoryName = "";   
+                                    if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
+                                    else { model.IsValueAdded = true; }
 
-                                        //Get ProjectId
-                                        DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
-                                        if (dtProjectId.Rows.Count > 0)
-                                        {
-                                            model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
-                                            model.ProjectName = Convert.ToString(dr["ProjectName"]);
-                                        }
-                                        else
-                                        {
+                                    if (dr["IsMilestone"].ToString() != "") { model.IsMilestone = Convert.ToBoolean(dr["IsMilestone"]); }
+                                    else { model.IsMilestone = true; }
+
+                                    model.AddedBy = loggedInUser;
+                                    model.AddedTS = DateTime.Now;
+                                    model.URL = Convert.ToString(dr["URL"]);
+                                    model.DirectoryName = "";
+
+                                    //Get ProjectId
+                                    DataTable dtProjectId = projectIssueModel.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
+                                    if (dtProjectId.Rows.Count > 0)
+                                    {
+                                        model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
+                                        model.ProjectName = Convert.ToString(dr["ProjectName"]);
+                                    }
+                                    else
+                                    {
                                         //For Project Name not correct
                                         int index = dtHD.Rows.IndexOf(dr);
                                         int excelROW = index + 2;
                                         sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; project name does not correct check your excel sheet</div><br/>");
 
                                         goto outer;
-                                        }
-
-                                        //Get UserID
-                                        String username = Convert.ToString(dr["Assignedto"]);
-
-                                        string[] userNameArr = username.Split(';');
-                                        for (int j = 0; j < userNameArr.Length; j++)
+                                    }
+                                    //Get Parent TaskId
+                                    if (Convert.ToString(dr["ParentTask"]) != "")
+                                    {
+                                        DataTable dtParentTaskId = model.GetParentTasksId_ByParentTaskName(Convert.ToString(dr["ParentTask"]), model.ProjectID);
+                                        if (dtParentTaskId.Rows.Count > 0)
                                         {
-                                            DataTable dtUserId = model.GetUserIDByUserName(userNameArr[j], model.ProjectID);
-                                            if (dtUserId.Rows.Count > 0)
-                                            {
-                                                model.UserIdAssigned = model.UserIdAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
-                                            }
-                                            else
-                                            {
+                                            model.ParentTaskId = Convert.ToInt32(dtParentTaskId.Rows[0]["TaskID"]);
+                                        }
+                                        else
+                                        {
+                                            //For Parent task Name not correct
+                                            int index = dtHD.Rows.IndexOf(dr);
+                                            int excelROW = index + 2;
+                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Parent Task name does not correct check your excel sheet</div><br/>");
+
+                                            goto outer;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        model.ParentTaskId = 0;
+                                    }
+                                    //Get UserID
+                                    String username = Convert.ToString(dr["Assignedto"]);
+
+                                    string[] userNameArr = username.Split(';');
+                                    for (int j = 0; j < userNameArr.Length; j++)
+                                    {
+                                        DataTable dtUserId = projectIssueModel.GetUserIDByUserName(userNameArr[j], model.ProjectID);
+                                        if (dtUserId.Rows.Count > 0)
+                                        {
+                                            model.UserIdsTaskAssigned = model.UserIdsTaskAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
+                                        }
+                                        else
+                                        {
                                             //For UserID not correct
                                             int index = dtHD.Rows.IndexOf(dr);
                                             int excelROW = index + 2;
                                             sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; User name does not correct please check your excel sheet and put ';' between two username</div><br/>");
 
                                             goto outer;
-                                            }
                                         }
+                                    }
 
-                                        //Get StatusID,Servity,TicktType 
-                                        DataSet dataset = model.Get_Status_Servity_TicketName(Convert.ToString(dr["Severity"]), Convert.ToString(dr["Status"]), Convert.ToString(dr["TicketType"]), UIH.UserId);
-                                        if (dataset != null && dataset.Tables[0] != null && dataset.Tables[1] != null && dataset.Tables[2] != null)
-                                        {
+                                    //Get StatusID 
+                                    DataSet dataset = projectIssueModel.Get_Status_Servity_TicketName("0", Convert.ToString(dr["Status"]),"0", UIH.UserId);
+                                    if (dataset != null && dataset.Tables[1] != null )
+                                    {
 
-                                            model.SeverityID = Convert.ToInt32(dataset.Tables[0].Rows[0]["SeverityID"]);
-                                            model.StatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
-                                            model.TicketTypeID = Convert.ToInt32(dataset.Tables[2].Rows[0]["ID"]);
-                                        }
-                                        else
-                                        {
+                                        model.TaskStatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
+                                    }
+                                    else
+                                    {
                                         int index = dtHD.Rows.IndexOf(dr);
                                         int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name/Servity/Ticket type does not correct please check your excel sheet </div></br>");
+                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name does not correct please check your excel sheet </div></br>");
                                         goto outer;
                                     }
-                                        //save ticket
-                                        var insertStatus = model.InsertIssuedata(model, out int id);// out string strMailToName,out string strMailTo);
-                                        if (insertStatus)
+                                    //save Project task
+                                    var insertStatus = model.InsertTaskdata(model, out int id);
+                                    if (insertStatus)
+                                    {
+                                        if (id > 0)
                                         {
-                                            if (id > 0)
-                                            {
                                             uploadSuccess++;
                                             //Save Comment details ...satrt
-                                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
-                                            projectIssueModel.IssueIdforstatus = id;
-                                            projectIssueModel.Comment = "";
-                                            projectIssueModel.StatusID = model.StatusID;
-                                            projectIssueModel.url = model.url;
-                                            projectIssueModel.DirectoryName = model.DirectoryName;
-                                            projectIssueModel.Duration = 0;
-                                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
-                                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
-                                            projectIssueModel.EditedBy = loggedInUser;
-                                            projectIssueModel.EditedTS = DateTime.Now;
-                                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
-                                            
-                                            if (updateStatus)
-                                            {
-                                                string[] usernameArr = strMailToName.Split(';');
-                                                string[] userEmailArr = strMailTo.Split(';');
-                                                for (int j = 0; j < usernameArr.Length; j++)
-                                                {
-                                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
-                                                }
-
-                                                model.ISErr = false;
-                                                model.ErrString = "Data Saved Successfully.";
-                                                TempData["ErrStatus"] = model.ISErr;
-                                                TempData["ErrMsg"] = model.ErrString.ToString();
-                                                result = "Success";
-                                            }
+                                            model.ISErr = false;
+                                            model.ErrString = "Data Saved Successfully.";
+                                            TempData["ErrStatus"] = model.ISErr;
+                                            TempData["ErrMsg"] = model.ErrString.ToString();
+                                            result = "Success";
                                             //save Comment details .. End
 
-                                           }
-                                        }  //ticket save ..End
+                                        }
+                                    }  //Project task save ..End
 
-                                      else
-                                      {
-                                           model.ISErr = true;
-                                           model.ErrString = "Error Occured.";
-                                           TempData["ErrStatus"] = model.ISErr;
-                                           TempData["ErrMsg"] = model.ErrString.ToString();
-                                           result = "Error";
-                                       }
-                                //****save end
-                              
-
+                                    else
+                                    {
+                                        model.ISErr = true;
+                                        model.ErrString = "Error Occured.";
+                                        TempData["ErrStatus"] = model.ISErr;
+                                        TempData["ErrMsg"] = model.ErrString.ToString();
+                                        result = "Error";
+                                    }
+                                    //****save end
                                 }
                                 else
                                 {
@@ -4956,9 +5182,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                             }
                             int totalEXCELRecord = dtHD.Rows.Count;
                             int failure = totalEXCELRecord - uploadSuccess;
-                            sbContent.Append("<p><b>"+ uploadSuccess + " rows Successfully saved out of "+ totalEXCELRecord+" record in your excel sheet<b></p>");
-                            sbContent.Append("<p><b>"+ failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
-                            sendMail_InBulkTicketUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
+                            sbContent.Append("<p><b>" + uploadSuccess + " rows Successfully saved out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
+                            sbContent.Append("<p><b>" + failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
+                            sendMail_InBulkTaskUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
                         }
                         #endregion
                     }
@@ -4977,6 +5203,25 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(result);
         }
 
+        public void sendMail_InBulkTaskUploadingTime(string username, string emailid, string body)
+        {
+            string strSubject = @" Data processing report of Bulk Project Task";
+            string strBody = string.Format(@"Dear {0},
+                                                        <br><br>
+                                                        {1}
+                                                        <br><br>
+                                                        Please login to timetracker System to view the uploaded create Project Task.
+                                                        <br><br>
+                                                        Thanks & Regards,<br>
+                                                        QBA Administrator
+                                                        <br><br><br><br>
+                                                        *This is a system generated email. Please do not respond.
+                                                        ", username, body);
+
+            using (SendMailClass sm = new SendMailClass())
+            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
+
+        }
         public void sendMail_InBulkTicketUploadingTime(string username,string emailid,string body)
         {
            string strSubject = @" Data processing report of Bulk Ticket";

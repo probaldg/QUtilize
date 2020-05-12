@@ -77,7 +77,7 @@
     <br />
     <div align="right">
         <button class="btn btn-primary" onclick="downloadExcelFile()"><i class="fa fa-arrow-circle-down"></i>Download Template</button>
-        <button class="btn btn-primary" onclick="UploadExcelForProjectTask()" ><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button> 
+        <button class="btn btn-primary" onclick="ShowPopupforTemplateUpload()"><i class="fa fa-arrow-circle-up"></i>Bulk Upload</button>
         <input type="button" value="Add New Project Task" style="text-align: right;" class="btn btn-primary" onclick="AddNewProjectTask()">
     </div>
 
@@ -532,10 +532,45 @@
             </div><!-- modal-content -->
         </div><!-- modal-dialog -->
     </div><!-- modal -->
+    @* Modal for Upload Template*@
+    <div id="myModalTemplateUpload" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h5 class="modal-title">Upload File for Create New Project Task</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Upload file</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="file" name="NewtaskUpload" class="form-control" id="NewtaskUpload" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+
+                        </div>
+                        <div class="col-md-8">
+                            <label style="color:red">*File extension should be .xlsx<br />*Column sequence should not be changed<br />*When you assigne the multiple user at a time you need to separate all user using by ';'</label>
+                            <label style="color:red">*Project Name,Task Name,Task Code,start Date,End Date,Assigned to,Percentage Complete feild are mandatory <br />*IsActive,IsValueAdded and IsMilestone format are 'true'/'false' <br />Expected Time format like '10.30'</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" id="viewfileL1" value="Upload" onclick="UploadExcelForTask()" data-dismiss="modal" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseModalL1">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
 
-        
+
 
         //Download Excel
         function downloadExcelFile() {
@@ -559,8 +594,62 @@
     }
 
         //End
-        
 
+              //Upload Excel Template 
+        function UploadExcelForTask() {
+            try {
+               
+                var formData = new FormData();
+                var totalFiles = document.getElementById("NewtaskUpload").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("NewtaskUpload").files[i];
+                   
+                    formData.append("FileUpload", file);
+                }
+             
+                $.ajax({
+                    url: '@Url.Action("UploadExcelForCreateNewProjectTask", "Admin")',
+                    type: 'POST',
+                    beforeSend: function () {
+                        $('#spinner').show();
+                    },
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: function (response) {
+                        if (response == "Success") {
+                            response = null;
+                          
+                            location.reload();
+
+
+                        } else {
+                        }
+
+                    },
+                    error: function (response) {
+
+
+
+                    }
+                })
+            }
+            catch (e) {
+                alert(e);
+            }
+        } 
+
+        //End upload
+
+
+        //Show mpdal
+        function ShowPopupforTemplateUpload() {
+            
+            $('#myModalTemplateUpload').modal('show');
+        }
 
 
     </script>
@@ -727,7 +816,7 @@
                         if (obj.TaskList.length > 0) {
                             $('#ddlParentTask').attr("disabled", false);
                             //var taskList = obj.TaskList;
-
+                           
                            /* for (var i = 0; i < taskList.length; i++) {
                                 var taskActualStartValue = (taskList[i].ActualTaskStartDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskStartDate));
                                 var taskActualEndValue = (taskList[i].ActualTaskEndDate == null) ? "" : formatDateInMM_DD_YYYY((taskList[i].ActualTaskEndDate));
