@@ -1937,7 +1937,9 @@ namespace QBA.Qutilize.WebApp.Controllers
                         strCommentDiv += "<p><b>URL:</b>";
                         for (int j = 0; j < arrURL.Length; j++)
                         {
-                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
+                           // strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
+                            strCommentDiv += "<a class='img' target='_blank'  href = '" + arrURL[j] + "'  rel='noopener noreferrer'>" + arrURL[j] + " </ a > &nbsp;";
+
 
                         }
                         strCommentDiv += "</p>";
