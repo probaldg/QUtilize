@@ -141,6 +141,25 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
+        public DataTable GetParentTasksId_ByParentTaskName(string parentTask,int ProjectId)
+        {
+            DataTable dt = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@taskname",parentTask),
+                                        new SqlParameter("@projectId",ProjectId)
+                                      };
+                dt = objSQLHelper.ExecuteDataTable("USP_GetParentTaskId_byParentTaskName", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dt;
+
+        }
+
         public DataTable GetAllUserOfOrganisationByProjectID(int? ProjectId = 0)
         {
             DataTable dt = null;
