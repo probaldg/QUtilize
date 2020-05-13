@@ -404,87 +404,94 @@
                     @using (Html.BeginForm())
                     {
 
-                        <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            @Html.HiddenFor(model => model.ProjectTask.TaskIdforstatus)
-                            <input type="hidden" name="FileDirectoryForChangeStatus" id="FileDirectoryForChangeStatus" value="" />
+                    <div class="form-horizontal col-md-12" style="border: 1px solid #f1f1f1; padding:5px">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProjectTask.TaskIdforstatus)
+                        <input type="hidden" name="FileDirectoryForChangeStatus" id="FileDirectoryForChangeStatus" value="" />
 
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskCodeforChangeStatus, "", new { @class = "text-danger" })
-                                </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskCodeforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskCodeforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskCodeforChangeStatus, "", new { @class = "text-danger" })
                             </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskNameforChangeStatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <select id="ddlTaskStatusChange" class="form-control"><option value="0">Select</option></select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            @*<div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ExpectedTimeForStatus, new { htmlAttributes = new { @class = "form-control" } })                                    
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTimeForStatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>*@
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.Comment, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.Comment, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Attchments</label>
-                                <div class="col-md-10">
-                                    <div class='col-md-12' id='my-dropzoneUp'>
-                                        <div class='col-md-12'>
-                                            <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.URLForStatus, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.URLForStatus, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-
-
                         </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskNameforChangeStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskNameforChangeStatus, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskNameforChangeStatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlTaskStatusChange" class="form-control"><option value="0">Select</option></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplayforstatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, new { htmlAttributes = new { @class = "form-control", onchange = "" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplayforstatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+            @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProjectTask.ExpectedTimeForStatus, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTimeForStatus, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.Comment, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Attchments</label>
+                            <div class="col-md-10">
+                                <div class='col-md-12' id='my-dropzoneUp'>
+                                    <div class='col-md-12'>
+                                        <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("", htmlAttributes: new { @class = "control-label col-md-2" })
+
+                            <div class="col-md-10">
+                                @Html.Label("*When you upload the multiple Url at a time you need to separate all url using by ';' ", htmlAttributes: new { @class = "control-label col-md-10" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.URLForStatus, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.URLForStatus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
 
                     }
 
@@ -708,10 +715,55 @@
                      $('#ddlTaskStatusChange').val(StatusID);
                      $('#ProjectTask_TaskCodeforChangeStatus').val(Taskcode);
                     $('#ProjectTask_TaskNameforChangeStatus').val(Taskname);
-                    $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
-                    $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
+                    $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val('');
+                    $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val('');
+                   // $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
+                  //  $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
+                    //
+                    $("#ProjectTask_ActualTaskEndDateDisplayforstatus").removeAttr('disabled');
+                    $("#ProjectTask_ActualTaskStartDateDisplayforstatus").attr("disabled", "disabled");
+                    if (TaskObj.ActualTaskStartDate != null) {
+                        $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(formatDateInMM_DD_YYYY(TaskObj.ActualTaskStartDate));
+                    }
+                    if (TaskObj.ActualTaskEndDate != null) {
+                        $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(formatDateInMM_DD_YYYY(TaskObj.ActualTaskEndDate));
+                    }
+
+                    $('#mymodal').modal('show');
+
+                    var TaskStatus = $("#ddlTaskStatusChange option:selected").text();
+                    
+                    $('#ddlTaskStatusChange').change(function () {
+                        var ChangedStatus = $("#ddlTaskStatusChange option:selected").text();
+                        var systemDATE = new Date();
+                        var dd = String(systemDATE.getDate()).padStart(2, '0');
+                        var mm = String(systemDATE.getMonth() + 1).padStart(2, '0'); //January is 0!
+                        var yyyy = systemDATE.getFullYear();
+                        systemDATE = mm + '/' + dd + '/' + yyyy;
+                    
+                        if (TaskStatus == "Open" || TaskStatus == "OPEN") {
+
+                            $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(systemDATE)
+                          
+
+                        }
+                        if (ChangedStatus == "Closed" || ChangedStatus == "CLOSED") {
+
+                            $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(systemDATE)
+                            $("#ProjectTask_ActualTaskEndDateDisplayforstatus").attr("disabled", "disabled");
+
+                        }
+                        else {
+                            $("#ProjectTask_ActualTaskEndDateDisplayforstatus").removeAttr('disabled');
+                        }
+
+                    });
+                    //
+
+
+
+
                    // $('#ProjectTask_ExpectedTimeForStatus').val(TaskObj.ExpectedTime);
-                     $('#mymodal').modal('show');
 
                  },
                  error: function () {
@@ -1478,6 +1530,7 @@
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val();
            // var expectedTime = $('#ProjectTask_ExpectedTimeForStatus').val();            
             var TaskStatusId = $('#ddlTaskStatusChange').val();
+            var taskStatusName = $("#ddlTaskStatusChange option:selected").text();
             var Comment = $('#ProjectTask_Comment').val();
             var url = $('#ProjectTask_URLForStatus').val();
             var directoryName = $("#FileDirectoryForChangeStatus").val();
@@ -1489,13 +1542,13 @@
                 $('#ddlTaskStatusChange').focus();
                 return false;
             }
-            if (actualStartDate == "" && TaskStatusId == 11) {
+            if (actualStartDate == "" && taskStatusName == "Closed") {
                 document.getElementById("ErrorMsgTaskpopup").innerHTML = "Actual start date required..";
                 document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
                 $('#ProjectTask_ActualTaskStartDateDisplayforstatus').focus();
                 return false;
             }
-            if (actualEndDate == "" && TaskStatusId == 11) {
+            if (actualEndDate == "" && taskStatusName == "Closed") {
                 document.getElementById("ErrorMsgTaskpopup").innerHTML = "Actual end date required..";
                 document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
                 $('#ProjectTask_ActualTaskEndDateDisplayforstatus').focus();

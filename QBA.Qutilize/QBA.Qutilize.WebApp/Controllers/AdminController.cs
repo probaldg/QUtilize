@@ -2095,9 +2095,13 @@ namespace QBA.Qutilize.WebApp.Controllers
                 UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
                 DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
 
-                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
+                task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
+                task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
 
-                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
+
+               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
+
+               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
                // task.ExpectedTime =Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
                 //return Json(JsonConvert.SerializeObject(issueModel));
 
