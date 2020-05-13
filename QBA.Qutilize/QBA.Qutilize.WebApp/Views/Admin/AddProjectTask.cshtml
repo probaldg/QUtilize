@@ -108,13 +108,14 @@
                             <th class="text-center tblHeaderColor sorting">Project Name</th>
                             <th class="text-center tblHeaderColor sorting">Start Date</th>
                             <th class="text-center tblHeaderColor sorting">End Date</th>
-                            <th class="text-center tblHeaderColor sorting">Actual Start Date</th>
-                            <th class="text-center tblHeaderColor sorting">Actual End Date</th>
+                            <th class="text-center tblHeaderColor sorting">Expected Time</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Actual Start Date</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Actual End Date</th>
                             <th class="text-center tblHeaderColor sorting">Task Status</th>
                             <th class="text-center tblHeaderColor sorting">Status</th>
                             <th class="text-center tblHeaderColor sorting">Percentage Complete</th>
                             <th class="text-center tblHeaderColor sorting">IsMilestone</th>
-                            <th class="text-center tblHeaderColor sorting">Edit</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Edit</th>
                             <th class="text-center tblHeaderColor sorting">View</th>
                         </tr>
                     </thead>
@@ -140,8 +141,9 @@
                             <th class="text-center tblHeaderColor sorting">Project Name</th>
                             <th class="text-center tblHeaderColor sorting">Start Date</th>
                             <th class="text-center tblHeaderColor sorting">End Date</th>
-                            <th class="text-center tblHeaderColor sorting">Actual Start Date</th>
-                            <th class="text-center tblHeaderColor sorting">Actual End Date</th>
+                            <th class="text-center tblHeaderColor sorting">Expected Time</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Actual Start Date</th>
+                            <th hidden="hidden" class="text-center tblHeaderColor sorting">Actual End Date</th>
                             <th class="text-center tblHeaderColor sorting">Task Status</th>
                             <th class="text-center tblHeaderColor sorting">Status</th>
                             <th class="text-center tblHeaderColor sorting">Percentage Complete</th>
@@ -443,13 +445,13 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
                                 <div class="col-md-10">
                                     @Html.EditorFor(model => model.ProjectTask.ExpectedTimeForStatus, new { htmlAttributes = new { @class = "form-control" } })                                    
                                     @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTimeForStatus, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
+                            </div>*@
 
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTask.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -708,7 +710,7 @@
                     $('#ProjectTask_TaskNameforChangeStatus').val(Taskname);
                     $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
                     $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val(TaskObj.ActualTaskStartDateDisplayforstatus);
-                    $('#ProjectTask_ExpectedTimeForStatus').val(TaskObj.ExpectedTime);
+                   // $('#ProjectTask_ExpectedTimeForStatus').val(TaskObj.ExpectedTime);
                      $('#mymodal').modal('show');
 
                  },
@@ -990,7 +992,7 @@
             var userIds = $('#UserIdsInString').val();
 
             var DirectoryName = $("#FileDirectory").val();
-            alert(DirectoryName);
+          
             var URL = $("#ProjectTask_URL").val();
 
             var validationStatus = ProjectTask_validateTaskSave()
@@ -1474,7 +1476,7 @@
             var TaskID = $('#ProjectTask_TaskIdforstatus').val();            
             var actualStartDate = $('#ProjectTask_ActualTaskStartDateDisplayforstatus').val();
             var actualEndDate = $('#ProjectTask_ActualTaskEndDateDisplayforstatus').val();
-            var expectedTime = $('#ProjectTask_ExpectedTimeForStatus').val();            
+           // var expectedTime = $('#ProjectTask_ExpectedTimeForStatus').val();            
             var TaskStatusId = $('#ddlTaskStatusChange').val();
             var Comment = $('#ProjectTask_Comment').val();
             var url = $('#ProjectTask_URLForStatus').val();
@@ -1500,12 +1502,12 @@
                 return false;
 
             }
-            if (expectedTime == "") {
-                document.getElementById("ErrorMsgTaskpopup").innerHTML = "Expected time required..";
-                document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
-                $('#ProjectTask_ExpectedTime').focus();
-                return false;
-            }
+            //if (expectedTime == "") {
+            //    document.getElementById("ErrorMsgTaskpopup").innerHTML = "Expected time required..";
+            //    document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
+            //    $('#ProjectTask_ExpectedTime').focus();
+            //    return false;
+            //}
 
 
 
@@ -1519,7 +1521,7 @@
                 "ActualTaskEndDateDisplayforstatus": actualEndDate,
                  "TaskStatusID": TaskStatusId,
                  "Comment": Comment,
-                 "ExpectedTime":expectedTime,
+                // "ExpectedTime":expectedTime,
                  "URL": url,
                  "DirectoryName": directoryName
             };

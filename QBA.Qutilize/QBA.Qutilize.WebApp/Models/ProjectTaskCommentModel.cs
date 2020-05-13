@@ -56,7 +56,7 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
-                    new SqlParameter("TaskStatusID",model.TaskStatusID),
+                    new SqlParameter("@TaskStatusID",model.TaskStatusID),
                     new SqlParameter("@Comment",model.Comment),                    
                     new SqlParameter("@AddedTS",model.AddedTS),
                     new SqlParameter("@AddedBy", model.AddedBy)

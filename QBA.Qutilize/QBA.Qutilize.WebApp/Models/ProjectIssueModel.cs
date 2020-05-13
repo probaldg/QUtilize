@@ -25,7 +25,7 @@ namespace QBA.Qutilize.WebApp.Models
         public string IssueCodeforChangeStatus { get; set; }
 
         public string ProjectName { get; set; }
-     
+        public DateTime TaskEndDate { get; set; }
         public DateTime IssuestartDate { get; set; }
 
         [Display(Name = "Start Date")]
