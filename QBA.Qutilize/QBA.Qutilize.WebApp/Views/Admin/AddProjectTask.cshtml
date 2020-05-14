@@ -196,164 +196,164 @@
 
 
 
-                        <div class="form-horizontal col-md-12">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            @Html.HiddenFor(model => model.ProjectTask.TaskId)
-                            <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
-                                    @Html.HiddenFor(model => model.ActiveProjectID)
+                    <div class="form-horizontal col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ProjectTask.TaskId)
+                        <input type="hidden" name="FileDirectory" id="FileDirectory" value="" />
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ActiveProjectList, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ActiveProjectList, new SelectList(Model.ActiveProjectList, "ProjectID", "ProjectName"), "Select", new { @class = "form-control", onchange = "GetAssigneUserDetlByProject()" })
+                                @Html.HiddenFor(model => model.ActiveProjectID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
+                                @Html.HiddenFor(model => model.ProjectTypeID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskName, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskCode, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskCode, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.TaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ExpectedTime, new { htmlAttributes = new { @class = "form-control", type = "number", onkeypress = "return MaxLengthOfTextbox()" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTime, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsMilestone, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="ProjectTask_IsMilestone" />
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTypeList, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.DropDownListFor(model => model.ProjectTypeList, new SelectList(Model.ProjectTypeList, "ID", "Name"), "Select", new { @class = "form-control", disabled = "true" })
-                                    @Html.HiddenFor(model => model.ProjectTypeID)
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskName, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskName, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskCode, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskCode, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-                            <div class="form-group">
-                                @Html.Label("Parent Task", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <select id="ddlParentTask" class="form-control"><option value="">Select Task</option></select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2 " })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskStartDateDisplay, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.TaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.TaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.TaskEndDateDisplay, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.IsMilestone, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <div class="checkbox">
-                                        <input type="checkbox" id="ProjectTask_IsMilestone" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10" id="divUserDDL">
-                                    @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
-                                    <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
-                                    <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group">
-                                @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplay, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplay, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.ExpectedTime, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.ExpectedTime, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.ExpectedTime, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <div class="checkbox">
-                                        @Html.EditorFor(model => model.ProjectTask.IsActive)
-                                        @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    <div class="checkbox">
-                                        @Html.EditorFor(model => model.ProjectTask.IsValueAdded)
-                                        @Html.ValidationMessageFor(model => model.ProjectTask.IsValueAdded, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Attchments</label>
-                                <div class="col-md-10">
-                                    <div class='col-md-12' id='my-dropzoneUp'>
-                                        <div class='col-md-12'>
-                                            <div class='dropzone' id='my-dropzone' name='mainFileUploader'>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.ProjectTask.URL, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.ProjectTask.URL, "", new { @class = "text-danger" })
-                                </div>
+                        <div class="form-group">
+                            @Html.Label("Assigned to", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10" id="divUserDDL">
+                                @Html.HiddenFor(model => model.ProjectTask.UserIdsTaskAssigned)
+                                <input type="hidden" id="UserIdsInString" name="UserIdsInString" />
+                                <select id="ddlUsersAssigned" class="form-control" multiple="multiple"><option value="">Select User</option></select>
                             </div>
 
                         </div>
+
+
+                        <div class="form-group">
+                            @Html.Label("Percentage Complete", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlPercentage" class="form-control"><option value="">Select percentage</option></select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskStartDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskStartDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskStartDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.ActualTaskEndDateDisplay, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.ActualTaskEndDateDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.ActualTaskEndDateDisplay, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <select id="ddlTaskStatus" class="form-control"><option value="0">Select status</option></select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.ProjectTask.IsActive)
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.IsActive, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.IsValueAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.ProjectTask.IsValueAdded)
+                                    @Html.ValidationMessageFor(model => model.ProjectTask.IsValueAdded, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Attchments</label>
+                            <div class="col-md-10">
+                                <div class='col-md-12' id='my-dropzoneUp'>
+                                    <div class='col-md-12'>
+                                        <div class='dropzone' id='my-dropzone1' name='mainFileUploader'>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProjectTask.URL, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ProjectTask.URL, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ProjectTask.URL, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
                     }
 
                 </div>
@@ -659,7 +659,17 @@
             
             $('#myModalTemplateUpload').modal('show');
         }
+        //
+        function MaxLengthOfTextbox() {
+            var ExpectedTime = $('#ProjectTask_ExpectedTime').val();
+            var Length = ExpectedTime.length;
+            if (Length > 6) {
+                return false;
+            }
+          
+            return true;
 
+        }; 
 
     </script>
 
@@ -1043,8 +1053,10 @@
             var IsMilestone = $('#ProjectTask_IsMilestone').is(':checked');
             var userIds = $('#UserIdsInString').val();
 
-            var DirectoryName = $("#FileDirectory").val();
-          
+            var vDirectoryName = $("#FileDirectory").val();
+            alert(vDirectoryName);
+
+
             var URL = $("#ProjectTask_URL").val();
 
             var validationStatus = ProjectTask_validateTaskSave()
@@ -1077,7 +1089,7 @@
                 "TaskStatusID": taskStatusId,
                 "UserIdsTaskAssigned": userIds,
                 "IsValueAdded": IsValueAdded,
-                "DirectoryName": DirectoryName,
+                "DirectoryName": vDirectoryName,
                 "URL":URL
             };
 
@@ -1535,7 +1547,7 @@
             var url = $('#ProjectTask_URLForStatus').val();
             var directoryName = $("#FileDirectoryForChangeStatus").val();
             //  var Timespent = $('#ProjectIssue_Timespent').val();
-
+            alert(directoryName);
             if (TaskStatusId <= 0) {
                 document.getElementById("ErrorMsgTaskpopup").innerHTML = "Please select Status ";
                 document.getElementById("ErrorMsgTaskpopup").style.display = 'block';
@@ -1603,11 +1615,13 @@
         var DirectoryName = "";
         if (document.getElementById("FileDirectory").value != "") {
             DirectoryName = document.getElementById("FileDirectory").value;
+         
         } else {
             DirectoryName = "";
+           
         }
 
-        Dropzone.options.myDropzone = {
+        Dropzone.options.myDropzone1 = {
             url: "/Admin/ProjectTaskAttachments",
             autoProcessQueue: true,
             uploadMultiple: true,
@@ -1620,7 +1634,7 @@
 
 
                 this.on("sending", function (file, xhr, formData) {
-                    formData.append("DirectoryName", $("#FileDirectory").val());
+                    formData.append("FileDirectory", $("#FileDirectory").val());
 
 
                 });
@@ -1688,7 +1702,7 @@
         }
 
          Dropzone.options.myDropzone = {
-            url: "/Admin/ProjectTaskAttachments",
+             url: "/Admin/ProjectTaskAttachmentsForStatus",
             autoProcessQueue: true,
             uploadMultiple: true,
             parallelUploads: 100,
@@ -1759,9 +1773,6 @@
             }
 
         };
-
-
-
 
     </script>
 

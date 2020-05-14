@@ -1789,7 +1789,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult ProjectTaskAttachments()
+        public JsonResult ProjectTaskAttachmentsForStatus()
         {
             ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
             string fName = "";
@@ -1832,7 +1832,50 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(Directory);
         }
+        [HttpPost]
+        public JsonResult ProjectTaskAttachments()
+        {
+            ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
+            string fName = "";
+            string Directory = "";
+            string FolderName = Request.Form["FileDirectory"].ToString();
+            if (FolderName != "")
+            {
+                Directory = FolderName.Replace("\"", string.Empty).Trim();
+            }
+            else
+            {
+                Directory = DateTime.Now.Ticks.ToString();
+            }
 
+            foreach (string imageFile in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[imageFile];
+                fName = file.FileName;
+                int id = 0;
+                int pressID = 0;
+                if (file != null && file.ContentLength > 0)
+                {
+                    var originalDirectory = new DirectoryInfo(string.Format("{0}ProjectTaskAttachments", Server.MapPath(@"\")));
+                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
+                    var fileName = file.FileName;
+                    bool isExists = System.IO.Directory.Exists(pathString);
+                    if (!isExists)
+                        System.IO.Directory.CreateDirectory(pathString);
+                    var path = string.Format("{0}\\{1}", pathString, fileName);
+                    file.SaveAs(path);
+                    tpam.ProjectTaskID = 0;
+                    tpam.DirectoryName = Directory;
+                    tpam.AttachmentName = fileName;
+                    tpam.AddedTS = DateTime.Now;
+                    tpam.AddedBy = loggedInUser;
+
+                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                    tpam.InsertAttachmentdata(tpam, out id);
+                }
+            }
+            return Json(Directory);
+        }
         public ActionResult previewIssue(int IssueId)
         {
             ProjectIssueModel projectIssue = new ProjectIssueModel();
@@ -2201,39 +2244,48 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                    var insertStatus = pm.InsertTaskdata(model, out int id);
+                   var insertStatus = pm.InsertTaskdata(model, out int id);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
 
-                            if (model.DirectoryName != null)
-                            {
+                          //  if (model.DirectoryName != null)
+                          //  {
                                 ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
 
-                                int outCommentID = 0;
+                                //int outCommentID = 0;
                                 ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
                                 ptcm.ProjectTaskID = id;
                                 ptcm.Comment = "";
                                 ptcm.TaskStatusID = model.TaskStatusID;
                                 ptcm.AddedBy = loggedInUser;
                                 ptcm.AddedTS = DateTime.Now;
-                                ptcm.InsertCommentdata(ptcm, out outCommentID);
+                                ptcm.InsertCommentdata(ptcm, out int outCommentID);
 
+                            if (outCommentID > 0)
+                            {
+                                //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                                ptam.ProjectTaskCommentID = outCommentID;
                                 if (model.DirectoryName != null)
                                 {
-                                  //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-                                    ptam.ProjectTaskCommentID = outCommentID;
-
                                     ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                                    ptam.ProjectTaskID = id;
-                                    ptam.URL = model.URL;
-                                    ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+                                }
+                                else
+                                {
+                                    model.DirectoryName = null;
                                 }
 
+                                ptam.ProjectTaskID = id;
+                                ptam.URL = model.URL;
+                                ptam.AddedBy = loggedInUser;
+                                ptam.AddedTS = DateTime.Now;
+                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+                            }
+                                
 
                                 result = "Success";
-                            }
+                           // }
                         }
                         else
                         {
@@ -5217,7 +5269,7 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                                             // if (model.DirectoryName != null)
                                             // {
-                                            //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                                            
                                             ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
                                             ptam.ProjectTaskCommentID = outCommentID;
 
