@@ -43,11 +43,13 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        public Boolean InsertCommentdata(ProjectTaskCommentModel model, out int id)
+        public Boolean InsertCommentdata(ProjectTaskCommentModel model, out int id, out string strMailToName, out string strMailTo)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
+             strMailToName = string.Empty;
+             strMailTo = string.Empty;
             id = 0;
 
             try
@@ -56,7 +58,7 @@ namespace QBA.Qutilize.WebApp.Models
                 Status.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectTaskID",model.ProjectTaskID),
-                    new SqlParameter("TaskStatusID",model.TaskStatusID),
+                    new SqlParameter("@TaskStatusID",model.TaskStatusID),
                     new SqlParameter("@Comment",model.Comment),                    
                     new SqlParameter("@AddedTS",model.AddedTS),
                     new SqlParameter("@AddedBy", model.AddedBy)
@@ -65,6 +67,11 @@ namespace QBA.Qutilize.WebApp.Models
 
                 if (!(Status.Value is DBNull))
                 {
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
+                        strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
+                    }
                     id = Convert.ToInt32(Status.Value);
                     if (id > 0)
                     {

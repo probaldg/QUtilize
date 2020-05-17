@@ -664,6 +664,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
+                    
+                    string bgcolor = "#FFF";
+                    string forecolor = "#333";
+                    obj.TodayDate = System.DateTime.Now;
+                    obj.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
+                    obj.OneDayBeforeDate = obj.TaskEndDate.AddDays(-1);
+                    if ((obj.TaskEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF0000";
+                        forecolor = "#FFF";
+                    }
+                    if (((obj.TaskEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF8C00";
+                        forecolor = "#FFF";
+                    }
+
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
 
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
@@ -676,14 +693,17 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         Milestone = "";
                     }
-                    strUserData.Append("<tr>");
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
+
                     strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ParentTaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ExpectedTime"].ToString() + "</td>");
+
                     strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -695,14 +715,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
-                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + item["TaskID"].ToString() + ")'>Edit</a> </td>");
+                        strUserData.Append("<td hidden='hidden' class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + item["TaskID"].ToString() + ")'>Edit</a> </td>");
                     }
                     else
                     {
-                         strUserData.Append("<td class='text-center'></td>");
+                         strUserData.Append("<td hidden='hidden' class='text-center'></td>");
 
                     }
-                    strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='ShowPopupforPreview(" + item["TaskID"].ToString() + ")'>View</a> </td>");
+                    strUserData.Append("<td class='text-center' ><a href='javascript:void(0);' id='projectTaskEdit' onclick='ShowPopupforPreview(" + item["TaskID"].ToString() + ")'>View</a> </td>");
                     strUserData.Append("</tr>");
 
                 }
@@ -820,6 +840,23 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
+                    string bgcolor = "#FFF";
+                    string forecolor = "#333";
+                   
+                    obj.TodayDate = System.DateTime.Now;
+                    obj.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
+                    obj.OneDayBeforeDate = obj.TaskEndDate.AddDays(-1);
+                    if ((obj.TaskEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF0000";
+                        forecolor = "#FFF";
+                    }
+                    if (((obj.TaskEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
+                    {
+                        bgcolor = "#FF8C00";
+                        forecolor = "#FFF";
+                    }
+
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
@@ -832,7 +869,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         Milestone = "";
                     }
-                    strUserData.Append("<tr>");
+                    
+                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
                     strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
@@ -840,8 +878,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");      
                     strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["ExpectedTime"].ToString() + "</td>");
+
+                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
@@ -977,6 +1017,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
+
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
                     var ManagerName = (item["ProjectManagerName"] == DBNull.Value) ? "" : item["ProjectManagerName"].ToString();
@@ -1568,7 +1609,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
                     ViewBag.ProjectID = Convert.ToInt32(dtTaskData.Rows[0]["ProjectID"]);
                     ViewBag.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]).ToString("dd/MM/yyyy");
-                    ViewBag.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]).ToString("dd/MM/yyyy"); ;
+                    ViewBag.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]).ToString("dd/MM/yyyy"); 
+                    ViewBag.ExpectedTime= dtTaskData.Rows[0]["ExpectedTime"].ToString();
                     ViewBag.IsMilestone = (dtTaskData.Rows[0]["isMilestone"] != System.DBNull.Value) ? Convert.ToBoolean(dtTaskData.Rows[0]["isMilestone"]) : (bool?)null;
                     ViewBag.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
                     ViewBag.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
@@ -1676,6 +1718,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult LoadCommentsAndAttachmentsForProjectTasks(int id)
         {
             string strCommentDiv = string.Empty;
+          
             ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
             DataSet ds = ptcm.GetProjectTasksComments(id);
             strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
@@ -1709,19 +1752,30 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strCommentDiv += "</p>";
 
                     //Load URL
-                    if (ds.Tables[1].Rows[i]["URL"].ToString() != "" && ds.Tables[1].Rows[i]["URL"] != null)
+                    strCommentDiv += "<p><b>URL:</b>";
+                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
                     {
-
-                        string[] arrURL = ds.Tables[1].Rows[i]["URL"].ToString().Split(';');
-                        strCommentDiv += "<p><b>URL:</b>";
-                        for (int j = 0; j < arrURL.Length; j++)
+                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
                         {
-                            strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "'>" + arrURL[j] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
 
+                            if ((ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString()))
+                            {
+
+                                string[] arrURL = ds.Tables[1].Rows[j]["URL"].ToString().Split(';');
+                                
+                                for (int k = 0; k < arrURL.Length; k++)
+                                {
+                                    strCommentDiv += "<a class='img' target='_blank'   href = '" + arrURL[k] + "' rel='noopener noreferrer'>" + arrURL[k] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
+
+                                }
+
+                            }
                         }
-                        strCommentDiv += "</p>";
+
                     }
-                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[1].Rows[i]["UserName"] + " </a>" + ds.Tables[1].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
+                    strCommentDiv += "</p>";
+                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] +" " + ds.Tables[0].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
+
                 }
                 strCommentDiv += @"</section>";
 
@@ -1736,7 +1790,7 @@ namespace QBA.Qutilize.WebApp.Controllers
         }
 
         [HttpPost]
-        public JsonResult ProjectTaskAttachments()
+        public JsonResult ProjectTaskAttachmentsForStatus()
         {
             ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
             string fName = "";
@@ -1779,7 +1833,50 @@ namespace QBA.Qutilize.WebApp.Controllers
             }
             return Json(Directory);
         }
+        [HttpPost]
+        public JsonResult ProjectTaskAttachments()
+        {
+            ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
+            string fName = "";
+            string Directory = "";
+            string FolderName = Request.Form["FileDirectory"].ToString();
+            if (FolderName != "")
+            {
+                Directory = FolderName.Replace("\"", string.Empty).Trim();
+            }
+            else
+            {
+                Directory = DateTime.Now.Ticks.ToString();
+            }
 
+            foreach (string imageFile in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[imageFile];
+                fName = file.FileName;
+                int id = 0;
+                int pressID = 0;
+                if (file != null && file.ContentLength > 0)
+                {
+                    var originalDirectory = new DirectoryInfo(string.Format("{0}ProjectTaskAttachments", Server.MapPath(@"\")));
+                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
+                    var fileName = file.FileName;
+                    bool isExists = System.IO.Directory.Exists(pathString);
+                    if (!isExists)
+                        System.IO.Directory.CreateDirectory(pathString);
+                    var path = string.Format("{0}\\{1}", pathString, fileName);
+                    file.SaveAs(path);
+                    tpam.ProjectTaskID = 0;
+                    tpam.DirectoryName = Directory;
+                    tpam.AttachmentName = fileName;
+                    tpam.AddedTS = DateTime.Now;
+                    tpam.AddedBy = loggedInUser;
+
+                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
+                    tpam.InsertAttachmentdata(tpam, out id);
+                }
+            }
+            return Json(Directory);
+        }
         public ActionResult previewIssue(int IssueId)
         {
             ProjectIssueModel projectIssue = new ProjectIssueModel();
@@ -1849,6 +1946,61 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return PartialView("_PreviewProjectIssue");
         }
+        public string MailCommentsForTask(int id)
+        {
+            string strCommentDiv = string.Empty;
+
+            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+            DataSet ds = ptcm.GetProjectTasksComments(id);
+            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
+            if (ds != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
+            {
+                strCommentDiv += @"<section class='comments'>";
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
+
+                 
+
+                    //Load URL
+                    strCommentDiv += "<p><b>URL:</b>";
+                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
+                    {
+                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
+                        {
+
+                            if ((ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString()))
+                            {
+
+                                string[] arrURL = ds.Tables[1].Rows[j]["URL"].ToString().Split(';');
+
+                                for (int k = 0; k < arrURL.Length; k++)
+                                {
+                                    strCommentDiv += "<a class='img' target='_blank'   href = '" + arrURL[k] + "' rel='noopener noreferrer'>" + arrURL[k] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
+
+                                }
+
+                            }
+                        }
+
+                    }
+                    strCommentDiv += "</p>";
+                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
+
+                }
+                strCommentDiv += @"</section>";
+
+
+            }
+            else
+            {
+                strCommentDiv += "<div>No Comments Found</div>";
+            }
+            strCommentDiv += @"</div></div></div></div></div></div></div>";
+            return strCommentDiv;
+
+        }
+
         public string MailCommentsForIssues(int id)
         {
             StringBuilder sbContent = new StringBuilder();
@@ -1876,7 +2028,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                             }
                             sbContent.Append("</p>");
                         }
-                        sbContent.Append( "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>");
+                        sbContent.Append( "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>");
                     }
                     sbContent.Append("</section>");
 
@@ -1944,7 +2096,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                         }
                         strCommentDiv += "</p>";
                     }
-                    strCommentDiv += "</div><p class='attribution'>by<a href='#non'> " + ds.Tables[0].Rows[i]["UserName"] + " </a>" + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
@@ -2042,10 +2194,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                 UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
                 DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
 
-                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
+                task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
+                task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
 
-                task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
-                task.ExpectedTime =Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
+
+               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
+
+               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
+               // task.ExpectedTime =Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
                 //return Json(JsonConvert.SerializeObject(issueModel));
 
                 DataTable dt = task.GetProjectTaskStatusList(userInfo.UserOrganisationID);
@@ -2144,39 +2300,56 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                    var insertStatus = pm.InsertTaskdata(model, out int id);
+                   var insertStatus = pm.InsertTaskdata(model, out int id);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
 
-                            if (model.DirectoryName != null)
-                            {
+                          //  if (model.DirectoryName != null)
+                          //  {
                                 ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
 
-                                int outCommentID = 0;
+                                //int outCommentID = 0;
                                 ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
                                 ptcm.ProjectTaskID = id;
                                 ptcm.Comment = "";
                                 ptcm.TaskStatusID = model.TaskStatusID;
                                 ptcm.AddedBy = loggedInUser;
                                 ptcm.AddedTS = DateTime.Now;
-                                ptcm.InsertCommentdata(ptcm, out outCommentID);
+                                ptcm.InsertCommentdata(ptcm, out int outCommentID,out string strMailToName,out string strMailTo);
 
+                            if (outCommentID > 0 && (model.URL!=null || model.DirectoryName!=null))
+                            {
+                                //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                                ptam.ProjectTaskCommentID = outCommentID;
                                 if (model.DirectoryName != null)
                                 {
-                                  //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-                                    ptam.ProjectTaskCommentID = outCommentID;
-
                                     ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                                    ptam.ProjectTaskID = id;
-                                    ptam.URL = model.URL;
-                                    ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
                                 }
+                               
 
-
-                                result = "Success";
+                                ptam.ProjectTaskID = id;
+                                ptam.URL = model.URL;
+                                ptam.AddedBy = loggedInUser;
+                                ptam.AddedTS = DateTime.Now;
+                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
                             }
+                            //send mail 
+                            UserModel userModel = new UserModel();
+                            DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
+                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
+
+                            string[] usernameArr = strMailToName.Split(';');
+                            string[] userEmailArr = strMailTo.Split(';');
+                            for (int j = 0; j < usernameArr.Length; j++)
+                            {
+                                sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Project Task has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                            }
+
+
+                            result = "Success";
+                           // }
                         }
                         else
                         {
@@ -2196,6 +2369,8 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult UpdateStatusTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
+            ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
             string result = "";
             try
             {
@@ -2221,20 +2396,20 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     //if (model.DirectoryName != null)
                     //{
-                        ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-
-                        int outCommentID = 0;
-                        ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+                      
+                        //int outCommentID = 0;
+                        //Save Comment here
                         ptcm.ProjectTaskID = model.TaskIdforstatus;
                         ptcm.Comment = model.Comment;
                         ptcm.TaskStatusID = model.TaskStatusID;
                         ptcm.AddedBy = loggedInUser;
                         ptcm.AddedTS = DateTime.Now;
-                        ptcm.InsertCommentdata(ptcm, out outCommentID);
+                        ptcm.InsertCommentdata(ptcm, out int outCommentID,out string strMailToName,out string strMailTo);
 
-                        if (outCommentID >0)
+
+                    //Save Attachment and url here
+                        if (outCommentID >0 && (model.DirectoryName != null || model.URL!=null))
                         {
-                            //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
                             ptam.ProjectTaskCommentID = outCommentID;
                         if (model.DirectoryName != null)
                         {
@@ -2250,10 +2425,50 @@ namespace QBA.Qutilize.WebApp.Controllers
                             ptam.AddedTS = DateTime.Now;
                             ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
                         }
+
+                    #region Mail Sending
+                   // ProjectTaskCommentModel PTCM = new ProjectTaskCommentModel();
+                    DataSet dtTaskComment = ptcm.GetProjectTasksComments(model.TaskIdforstatus); 
+
+                    string[] MailToName_arr = strMailToName.Split(';');
+                    string[] MailTo_arr = strMailTo.Split(';');
+                    if (dtTaskComment != null && dtTaskComment.Tables[0] != null && dtTaskComment.Tables[0].Rows.Count > 0)
+                    {
+                        #region :  
+                        string strBody = "";
+                        string strSubject = "";
+                        for (int i = 0; i < MailToName_arr.Length; i++)
+                        {
+                            strSubject = @"Project Task Status and discussion history";
+                            strBody = string.Format(@"Dear {0},
+                                                        <br><br>
+                                                        {1}
+                                                        <br><br>
+                                                        Please login to timetracker System to view the status Details .
+                                                        <br><br>
+                                                        Thanks & Regards,<br>
+                                                        QBA Administrator
+                                                        <br><br><br><br>
+                                                        *This is a system generated email. Please do not respond.
+                                                        ", MailToName_arr[i], MailCommentsForTask(model.TaskIdforstatus));
+
+                            using (SendMailClass sm = new SendMailClass())
+                            { sm.SendMail(MailTo_arr[i], strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
+
+                        }
+                        #endregion
+                    }
+                    model.ISErr = false;
+                    model.ErrString = "Data Saved Successfully.";
+                    TempData["ErrStatus"] = model.ISErr;
+                    TempData["ErrMsg"] = model.ErrString.ToString();
+                    result = "Success";
+                    #endregion
+
                     //}
 
 
-                        
+
 
                     if (updateStatus)
                     {
@@ -2480,7 +2695,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                 string[] userEmailArr = strMailTo.Split(';');
                                 for (int j = 0; j < usernameArr.Length; j++)
                                 {
-                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                    sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
                                 }
                                 model.ISErr = false;
                                 model.ErrString = "Data Saved Successfully.";
@@ -4857,7 +5072,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                                                 string[] userEmailArr = strMailTo.Split(';');
                                                 for (int j = 0; j < usernameArr.Length; j++)
                                                 {
-                                                    sendMail_afterSaveTicket(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                                    sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
                                                 }
 
                                                 model.ISErr = false;
@@ -5147,12 +5362,47 @@ namespace QBA.Qutilize.WebApp.Controllers
                                         if (id > 0)
                                         {
                                             uploadSuccess++;
-                                            //Save Comment details ...satrt
+                                             //Save Comment details ...satrt
+                                              
+                                                int outCommentID = 0;
+                                                ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
+                                                ptcm.ProjectTaskID = id;
+                                                ptcm.Comment = "";
+                                                ptcm.TaskStatusID = model.TaskStatusID;
+                                                ptcm.AddedBy = loggedInUser;
+                                                ptcm.AddedTS = DateTime.Now;
+                                                ptcm.InsertCommentdata(ptcm, out outCommentID,out string strMailToName, out string strMailTo);
+
+                                            if (outCommentID > 0 && model.URL != "" )
+                                            {
+
+                                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
+                                                ptam.ProjectTaskCommentID = outCommentID;
+
+                                                ptam.DirectoryName = "";
+                                                ptam.ProjectTaskID = id;
+                                                ptam.URL = model.URL;
+                                                ptam.AddedBy = loggedInUser;
+                                                ptam.AddedTS = DateTime.Now;
+                                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
+
+                                            }
+                                            //mail
+                                            string[] usernameArr = strMailToName.Split(';');
+                                            string[] userEmailArr = strMailTo.Split(';');
+                                            for (int j = 0; j < usernameArr.Length; j++)
+                                            {
+                                                sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Project Task has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
+                                            }
+
+                                            //
+
                                             model.ISErr = false;
                                             model.ErrString = "Data Saved Successfully.";
                                             TempData["ErrStatus"] = model.ISErr;
                                             TempData["ErrMsg"] = model.ErrString.ToString();
                                             result = "Success";
+
                                             //save Comment details .. End
 
                                         }
@@ -5241,7 +5491,7 @@ namespace QBA.Qutilize.WebApp.Controllers
             { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
 
         }
-        public void sendMail_afterSaveTicket(string username, string emailid, string body)
+        public void sendMail_afterSaveTicketandTask(string username, string emailid, string body)
         {
             string strSubject = @"Ticket Created";
             string strBody = string.Format(@"Dear {0},

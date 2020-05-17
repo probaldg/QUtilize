@@ -764,12 +764,15 @@
 
 
                          }
-                         if (ChangedStatus == "CLOSED") {
+                            if (ChangedStatus == "CLOSED") {
 
-                             $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val(systemDATE)
-                             $("#ProjectIssue_ActualIssueEndDateDisplayforstatus").attr("disabled", "disabled");
+                                $('#ProjectIssue_ActualIssueEndDateDisplayforstatus').val(systemDATE)
+                                $("#ProjectIssue_ActualIssueEndDateDisplayforstatus").attr("disabled", "disabled");
 
-                         }
+                            }
+                            else {
+                                $("#ProjectIssue_ActualIssueEndDateDisplayforstatus").removeAttr('disabled');
+                            }
 
                      });
                  },
@@ -955,8 +958,8 @@
         var url = $('#ProjectIssue_commenturl').val();
     var vDirectoryName = $("#FileDirectory").val();
 
-        alert(url);
-        alert(vDirectoryName);
+       // alert(url);
+      //  alert(vDirectoryName);
     if (IssueStatusId <= 0) {
     document.getElementById("ErrorMsgTask").innerHTML = "Please select Status ";
     document.getElementById("ErrorMsgTask").style.display = 'block';
@@ -1291,7 +1294,7 @@
     success: function (response) {
 
     var obj1 = JSON.parse(response);
-
+        
     if (obj1.PercentageComplete.length > 0) {
     var percentageArray = obj1.PercentageComplete;
     $("#ddlPercentage").html('');
