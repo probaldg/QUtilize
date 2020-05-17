@@ -226,6 +226,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\buttons.dataTables.min.css" />
     <Content Include="Content\dist\css\adminlte.css" />
     <Content Include="Content\dist\css\adminlte.min.css" />
     <Content Include="Content\dist\css\alt\adminlte.components.css" />
@@ -309,9 +310,14 @@
     <Content Include="Content\icheck-bootstrap\icheck-bootstrap.min.css" />
     <Content Include="Content\ionicons.css" />
     <Content Include="Content\jquery-ui-timepicker-addon.css" />
+    <Content Include="Content\jquery.fancybox.min.css" />
+    <Content Include="Content\jquery.timepicker.min.css" />
+    <Content Include="Content\select2.min.css" />
+    <Content Include="Content\themes_base_jquery-ui.css" />
     <Content Include="Content\sidenav.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Style.css" />
+    <Content Include="Content\themes_smoothness_jquery-ui.css" />
     <Content Include="Content\timeline.css" />
     <Content Include="Content\WebAdmin.css" />
     <Content Include="favicon.ico" />
@@ -328,6 +334,7 @@
     <Content Include="Images\icon.ico" />
     <Content Include="Images\img_F.png" />
     <Content Include="Images\img_M.png" />
+    <Content Include="Images\loading.gif" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\LogOut.PNG" />
     <Content Include="Images\marker.png" />
@@ -439,6 +446,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\jquery.dataTables.min.css" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -446,6 +454,7 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="ProjectTaskAttachments\637245490600959785\557529_263627663754630_1717702363_n.jpg" />
     <Content Include="ProjectTaskAttachments\637245495846042304\photo0013.jpg" />
+    <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\bootstrap-multiselect.js" />
     <Content Include="Scripts\bootstrap-notify-master\bootstrap-notify.js" />
     <Content Include="Scripts\bootstrap-notify-master\bootstrap-notify.min.js" />
@@ -459,8 +468,14 @@
     <Content Include="Scripts\bootstrap\js\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap\js\bootstrap.js" />
     <Content Include="Scripts\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Scripts\buttons.flash.min.js" />
+    <Content Include="Scripts\buttons.html5.min.js" />
+    <Content Include="Scripts\buttons.print.min.js" />
+    <Content Include="Scripts\Chart.bundle.min.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\Chart.min.js" />
+    <Content Include="Scripts\dataTables.buttons.min.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\clipboard.min.js" />
     <Content Include="Scripts\Common.js" />
     <Content Include="Scripts\dropzone\basic.css" />
@@ -481,7 +496,10 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
+    <Content Include="Scripts\jquery.fancybox.min.js" />
     <Content Include="Scripts\jquery.min.js" />
+    <Content Include="Scripts\jquery.timepicker.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -492,6 +510,7 @@
     <Content Include="Scripts\jquery\jquery.min.js" />
     <Content Include="Scripts\jquery\jquery.slim.js" />
     <Content Include="Scripts\jquery\jquery.slim.min.js" />
+    <Content Include="Scripts\jszip.min.js" />
     <Content Include="Scripts\js\adminlte.js" />
     <Content Include="Scripts\js\adminlte.min.js" />
     <Content Include="Scripts\js\demo.js" />
@@ -500,6 +519,7 @@
     <Content Include="Scripts\js\pages\dashboard3.js" />
     <Content Include="Scripts\ModalAnimation.JS" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\pace-master\docs\lib\color.js" />
     <Content Include="Scripts\pace-master\docs\lib\themes.js" />
     <Content Include="Scripts\pace-master\docs\resources\barber-pole-orange.css" />
@@ -673,7 +693,9 @@
     <Content Include="Scripts\pace-master\themes\yellow\pace-theme-mac-osx.css" />
     <Content Include="Scripts\pace-master\themes\yellow\pace-theme-material.css" />
     <Content Include="Scripts\pace-master\themes\yellow\pace-theme-minimal.css" />
+    <Content Include="Scripts\pdfmake.min.js" />
     <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
@@ -836,6 +858,7 @@
     <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Scripts\util.js" />
     <Content Include="Scripts\utils_chartjs.js" />
+    <Content Include="Scripts\vfs_fonts.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

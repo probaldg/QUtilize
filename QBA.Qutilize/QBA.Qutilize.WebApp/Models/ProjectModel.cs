@@ -229,15 +229,15 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
         }
 
-        public DataSet GetProjectByName(string projectName)
+        public DataSet GetUserByProject(int PID)
         {
             DataSet ds = null;
             try
             {
                 SqlParameter[] param ={
-                                        new SqlParameter("@projectName",projectName)
+                                        new SqlParameter("@PID",PID)
                                       };
-                ds = objSQLHelper.ExecuteDataset("[dbo].[USPProjects_GetByName]", param);
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_Dashboard_UserByProject_Get]", param);
             }
             catch (Exception ex)
             {
@@ -245,7 +245,38 @@ namespace QBA.Qutilize.WebApp.Models
             }
             return ds;
         }
+        public DataSet GetTaskDetailsByTaskID(int TaskID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@taskId",TaskID)
+                                      };
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_Dashboard_TaskDetails_Get]", param);
+            }
+            catch (Exception ex)
+            {
 
+            }
+            return ds;
+        }
+        public DataSet GetTicketDetailsByTicketID(int TicketID)
+        {
+            DataSet ds = null;
+            try
+            {
+                SqlParameter[] param ={
+                                        new SqlParameter("@TicketId",TicketID)
+                                      };
+                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_Dashboard_TicketDetails_Get]", param);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return ds;
+        }
         public DataTable GetAllUserListByProjectID(int projectID)
         {
             DataTable dt = null;
