@@ -2,6 +2,9 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_ViewStartPrivate.cshtml";
 }
+<div id="spinner" class="spinner" style="display:none;">
+    <img id="img-spinner" src="~/images/loading.gif" alt="Loading" />
+</div>
 <div class="row">
 
     <div class="col-md-12">
@@ -68,16 +71,18 @@
                                 </ul>
                             </div>
                             <section id="tab1Admin" class="tab-content active">
-                                <div id="dvAdminProject"></div>
+                                <div class="row" id="dvAdminProject">
+                                    @Html.Action("GetAdminProjectDropdowns", "Home")
+                                </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" id="dvAdminProjectData">
                                         @Html.Action("GetAdminProject", "Home")
                                     </div>
                                 </div>
                             </section>
                             <section id="tab2Admin" class="tab-content hide">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-2">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlAdminTask">
@@ -89,8 +94,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaAdminTask"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvAdminTask"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -102,7 +107,7 @@
                             </section>
                             <section id="tab3Admin" class="tab-content hide">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-4">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlAdminTicket">
@@ -116,8 +121,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaAdminTicket"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvAdminTicket"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -161,16 +166,18 @@
                                 </ul>
                             </div>
                             <section id="tab1Manager" class="tab-content active">
-                                <div id="dvPMProject"></div>
+                                <div class="row" id="dvPMProject">
+                                    @Html.Action("GetPMProjectDropdowns", "Home")
+                                </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" id="dvPMProjectData">
                                         @Html.Action("GetPMProject", "Home")
                                     </div>
                                 </div>
                             </section>
                             <section id="tab2Manager" class="tab-content hide">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-4">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlPMTask">
@@ -182,8 +189,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaPMTask"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvPMTask"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -195,7 +202,7 @@
                             </section>
                             <section id="tab3Manager" class="tab-content hide">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-4">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlPMTicket">
@@ -209,8 +216,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaPMTicket"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvPMTicket"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -252,7 +259,7 @@
                             </div>
                             <section id="tab1Self" class="tab-content active">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-4">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlselfTask">
@@ -264,8 +271,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaSelfTask"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvSelfTask"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -277,7 +284,7 @@
                             </section>
                             <section id="tab2Self" class="tab-content hide">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    @*<div class="col-md-4">
                                         <div class="panel panel-info">
                                             <div class="panel-heading">
                                                 <select id="ddlSelfTicket">
@@ -291,8 +298,8 @@
                                             </div>
                                             <div class="panel panel-body"><canvas id="chart-areaSelfTicket"></canvas></div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-8">
+                                    </div>*@
+                                    <div class="col-md-12">
                                         <div id="dvSelfTicket"></div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -327,14 +334,14 @@
             </div>
             <div class="modal-body">
                 <div id="popupTeamMemberBody" class="table-responsive-sm" style="overflow:auto;height:300px;">
-                    <table class="table-bordered table table-striped  w-auto" id="tblTeamMemberList">
+                    @*<table class="table-bordered table table-striped  w-auto" id="tblTeamMemberList">
                         <thead id="tblHeadListViewPost">
                             <tr>
                                 <th class="text-center tblHeaderColor sorting">Name</th>
                             </tr>
                         </thead>
                         <tbody id="tBosyTaskList"></tbody>
-                    </table>
+                    </table>*@
                 </div>
             </div>
             <div class="modal-footer">
@@ -372,200 +379,278 @@
         </div>
     </div>
 </div>
+<div id="ProjectDetailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="DetailsListModel" style=" width:95%; height:90%; ">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
+                <h4 id="headerForProjectDetails" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupProjectDetailsBody" class="table-responsive-sm" style="overflow:auto;height:100%; ">
+                    <div class="row" id="DivForShowingProjectDetailsData">
+                        <div class="col-md-6" id="DivprojectNameDetails"></div>
+                        <div class="col-md-3" id="DivForProjectTaskGraph"></div>
+                        <div class="col-md-3" id="DivForProjectCostGraph"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="DivForProjectTaskDetails"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6" id="DivprojectUserDetails"></div>
+                        <div class="col-md-6" id="DivprojectUserUtilizationDetails"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="TaskDetailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="DetailsListModel" style=" width:95%; height:90%; ">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTaskDetails" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupTaskDetailsBody" class="table-responsive-sm" style="overflow:auto;height:100%; ">
+                    <div class="row" id="DivForShowingTaskDetailsData">
+                        <div class="col-md-12" id="DivTaskNameDetails"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="DivForTaskTimelineDetails"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="TicketDetailsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-sm" id="DetailsListModel" style=" width:95%; height:90%; ">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn btn-danger" data-dismiss="modal">&times;</button>
+                <h4 id="headerForTicketDetails" class="modal-title" style="color:#626262;"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="popupTicketDetailsBody" class="table-responsive-sm" style="overflow:auto;height:100%; ">
+                    <div class="row" id="DivForShowingTicketDetailsData">
+                        <div class="col-md-12" id="DivTicketNameDetails"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="DivForTicketTimelineDetails"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <Text>
 
 </Text>
 <script>
-    var configATa = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1,2,3,4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    var configPTa = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1, 2, 3, 4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    var configSTa = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1, 2, 3, 4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    var configATi = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1, 2, 3, 4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    var configPTi = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1, 2, 3, 4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    var configSTi = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [1, 2, 3, 4],
-                backgroundColor: [
-                    window.chartColors.red,
-                    window.chartColors.orange,
-                    window.chartColors.yellow,
-                    window.chartColors.green,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                'Green',
-                'Blue'
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                display: false
-            },
-            tooltips: {
-                enabled: true,
-            }
-        }
-    };
-    window.onload = function () {
-        var ctxSTask = document.getElementById('chart-areaSelfTask').getContext('2d');
-        window.myPieSTask = new Chart(ctxSTask, configSTa);
-        var ctxPTask = document.getElementById('chart-areaPMTask').getContext('2d');
-        window.myPiePTask = new Chart(ctxPTask, configPTa);
-        var ctxATask = document.getElementById('chart-areaAdminTask').getContext('2d');
-        window.myPieATask = new Chart(ctxATask, configATa);
+    //var configATa = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1,2,3,4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //var configPTa = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1, 2, 3, 4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //var configSTa = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1, 2, 3, 4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //var configATi = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1, 2, 3, 4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //var configPTi = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1, 2, 3, 4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //var configSTi = {
+    //    type: 'pie',
+    //    data: {
+    //        datasets: [{
+    //            data: [1, 2, 3, 4],
+    //            backgroundColor: [
+    //                window.chartColors.red,
+    //                window.chartColors.orange,
+    //                window.chartColors.yellow,
+    //                window.chartColors.green,
+    //                window.chartColors.blue,
+    //            ],
+    //            label: 'Dataset 1'
+    //        }],
+    //        labels: [
+    //            'Green',
+    //            'Blue'
+    //        ]
+    //    },
+    //    options: {
+    //        responsive: true,
+    //        legend: {
+    //            display: false
+    //        },
+    //        tooltips: {
+    //            enabled: true,
+    //        }
+    //    }
+    //};
+    //window.onload = function () {
+    //    //var ctxSTask = document.getElementById('chart-areaSelfTask').getContext('2d');
+    //    //window.myPieSTask = new Chart(ctxSTask, configSTa);
+    //    //var ctxPTask = document.getElementById('chart-areaPMTask').getContext('2d');
+    //    //window.myPiePTask = new Chart(ctxPTask, configPTa);
+    //    //var ctxATask = document.getElementById('chart-areaAdminTask').getContext('2d');
+    //    //window.myPieATask = new Chart(ctxATask, configATa);
 
-        var ctxSTicket = document.getElementById('chart-areaSelfTicket').getContext('2d');
-        window.myPieSTicket = new Chart(ctxSTicket, configSTi);
-        var ctxPTicket = document.getElementById('chart-areaPMTicket').getContext('2d');
-        window.myPiePTicket = new Chart(ctxPTicket, configPTi);
-        var ctxATicket = document.getElementById('chart-areaAdminTicket').getContext('2d');
-        window.myPieATicket = new Chart(ctxATicket, configATi);
-        //window.myPieSTicket = new Chart(ctx, config);
-    };
+    //    //var ctxSTicket = document.getElementById('chart-areaSelfTicket').getContext('2d');
+    //    //window.myPieSTicket = new Chart(ctxSTicket, configSTi);
+    //    //var ctxPTicket = document.getElementById('chart-areaPMTicket').getContext('2d');
+    //    //window.myPiePTicket = new Chart(ctxPTicket, configPTi);
+    //    //var ctxATicket = document.getElementById('chart-areaAdminTicket').getContext('2d');
+    //    //window.myPieATicket = new Chart(ctxATicket, configATi);
+    //    //window.myPieSTicket = new Chart(ctx, config);
+    //};
     var colorNames = Object.keys(window.chartColors);
     function  dynamicColors() {
         var r = Math.floor(Math.random() * 255);
@@ -574,7 +659,7 @@
         return "rgb(" + r + "," + g + "," + b + ")";
     };
     $(document).ready(function () {
-        $("#ddlAdminTask").val(0);
+        @*$("#ddlAdminTask").val(0);
         $("#ddlAdminTask").change(function () {
             var vSelVal = document.getElementById("ddlAdminTask").value;
              $.ajax({
@@ -681,9 +766,9 @@
                     //console.log(response);
                     }
               });
-        }).change();
+        }).change();*@
 
-        $("#ddlAdminTicket").val(0);
+        @*$("#ddlAdminTicket").val(0);
         $("#ddlAdminTicket").change(function () {
             var vSelVal = document.getElementById("ddlAdminTicket").value;
              $.ajax({
@@ -790,7 +875,7 @@
                     //console.log(response);
                     }
               });
-        }).change();
+        }).change();*@
         $("#ddlDashBoardSelection").change(function () {
             $("#divAdminDB").hide();
             $("#divManagerDB").hide();
@@ -878,54 +963,54 @@
         });
 
         $('#tblDashBoardSelfTaskData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 7]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvSelfTask')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 7]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvSelfTask')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
         $('#tblDashBoardSelfTicketData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 3, 4, 9]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvSelfTicket')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 3, 4, 9]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvSelfTicket')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -980,83 +1065,83 @@
             //        });
             //    });
             //},
-            initComplete: function () {
-                this.api().columns([0,1,2,4,5]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        //.appendTo($(column.footer()).empty())
-                        //.appendTo($(column.header()))
-                        .appendTo('#dvAdminProject')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0,1,2,4,5]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            //.appendTo($(column.footer()).empty())
+            //            //.appendTo($(column.header()))
+            //            .appendTo('#dvAdminProject')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
         $('#tblDashBoardAdminTaskData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 7]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvAdminTask')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 7]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvAdminTask')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
         $('#tblDashBoardAdminTicketData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 3,4,9]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvAdminTicket')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 3,4,9]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvAdminTicket')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -1091,83 +1176,83 @@
         });
 
         $('#tblDashBoardPMProjectData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 1, 2, 4, 5]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        //.appendTo($(column.footer()).empty())
-                        //.appendTo($(column.header()))
-                        .appendTo('#dvPMProject')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 1, 2, 4, 5]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            //.appendTo($(column.footer()).empty())
+            //            //.appendTo($(column.header()))
+            //            .appendTo('#dvPMProject')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
         $('#tblDashBoardPMTaskData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 7]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvPMTask')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 7]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvPMTask')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
         $('#tblDashBoardPMTicketData').DataTable({
-            initComplete: function () {
-                this.api().columns([0, 3, 4, 9]).every(function () {
-                    var column = this;
-                    var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
-                        .appendTo('#dvPMTicket')
-                        .on('change', function () {
-                            var vals = $('option:selected', this).map(function (index, element) {
-                                return $.fn.dataTable.util.escapeRegex($(element).val());
-                            }).toArray().join('|');
-                            column
-                                .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
-                                .draw();
-                        });
+            //initComplete: function () {
+            //    this.api().columns([0, 3, 4, 9]).every(function () {
+            //        var column = this;
+            //        var select = $('<select class="mymsel" multiple="multiple"><option value="">--- ' + column.header().innerText + ' ---</option></select>')
+            //            .appendTo('#dvPMTicket')
+            //            .on('change', function () {
+            //                var vals = $('option:selected', this).map(function (index, element) {
+            //                    return $.fn.dataTable.util.escapeRegex($(element).val());
+            //                }).toArray().join('|');
+            //                column
+            //                    .search(vals.length > 0 ? '^(' + vals + ')$' : '', true, false)
+            //                    .draw();
+            //            });
 
-                    column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-                //select2 init for .mymsel class
-                $(".mymsel").select2();
-            },
+            //        column.data().unique().sort().each(function (d, j) {
+            //            select.append('<option value="' + d + '">' + d + '</option>')
+            //        });
+            //    });
+            //    //select2 init for .mymsel class
+            //    $(".mymsel").select2();
+            //},
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -1221,17 +1306,103 @@
             //    "orderable": false,
             //}]
         });
+
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            content: function () {
+                return $('#popover-content').html();
+            }
+        });
     });
-    //$('[data-toggle="popover"]').popover({
-    //    html: true,
-    //    content: function () {
-    //        return $('#popover-content').html();
-    //    }
-    //});
-   
-    function ShowTeamMemberList(vValue, vProjName) {
+    
+
+    function ShowProjectDetails(vProjName, vProjID, vstrFor ) {
+        $('#headerForProjectDetails').html('Details of ' + vProjName);
+       
+            $.ajax({
+            url: '@Url.Action("DisplayProjectDetailsList", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "ProjName": vProjName, "ProjID": vProjID, strFor: vstrFor
+            }),
+                success: function (response) {
+                    $('#DivprojectNameDetails').empty();
+                    $('#DivprojectNameDetails').append(response[0]);
+                    $('#DivForProjectTaskGraph').empty();
+                    $('#DivForProjectTaskGraph').append(response[1]);
+                    $('#DivForProjectTaskDetails').empty();
+                    $('#DivForProjectTaskDetails').append(response[2]);
+                    $('#DivprojectUserDetails').empty();
+                    $('#DivprojectUserDetails').append(response[3]);
+                    $('#DivForProjectCostGraph').empty();
+                    $('#DivForProjectCostGraph').append(response[4]);
+                    $('#DivprojectUserUtilizationDetails').empty();
+                    $('#DivprojectUserUtilizationDetails').append(response[5]);
+                    $('#ProjectDetailsModal').modal('show');
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
+    function ShowTaskDetails(vTaskName, vTaskID, vstrFor ) {
+        $('#headerForTaskDetails').html('Details of ' + vTaskName);
+       
+            $.ajax({
+            url: '@Url.Action("DisplayTaskDetailsList", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TaskID": vTaskID, strFor: vstrFor
+            }),
+                success: function (response) {
+                    $('#DivTaskNameDetails').empty();
+                    $('#DivTaskNameDetails').append(response[0]);
+                    $('#DivForTaskTimelineDetails').empty();
+                    $('#DivForTaskTimelineDetails').append(response[1]);
+                    $('#TaskDetailsModal').modal('show');
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
+    function ShowTicketDetails(vTicketName, vTicketID, vstrFor ) {
+        $('#headerForTicketDetails').html('Details of ' + vTicketName);
+       
+            $.ajax({
+            url: '@Url.Action("DisplayTicketDetailsList", "Home")',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+
+            data: JSON.stringify({
+                "TicketID": vTicketID, strFor: vstrFor
+            }),
+                success: function (response) {
+                    $('#DivTicketNameDetails').empty();
+                    $('#DivTicketNameDetails').append(response[0]);
+                    $('#DivForTicketTimelineDetails').empty();
+                    $('#DivForTicketTimelineDetails').append(response[1]);
+                    $('#TicketDetailsModal').modal('show');
+            },
+                error: function (response) {
+                    alert('Some error occurred.');
+                console.log(response);
+            }
+        });
+    };
+    function ShowTeamMemberList(vValue, vProjName, vPID) {
         $('#headerForTeamMemeber').html('Team members for ' + vProjName);
-            $('#tblTeamMemberList tbody').html('');
+        //$('#tblTeamMemberList tbody').html('');
+        $('#popupTeamMemberBody').html('');
             $.ajax({
             url: '@Url.Action("DisplayTeamMemberList", "Home")',
             type: "POST",
@@ -1239,12 +1410,12 @@
             contentType: "application/json; charset=utf-8",
 
             data: JSON.stringify({
-                "TextToDisplay": vValue
+                "TextToDisplay": vValue, PID: vPID
             }),
                 success: function (response) {
-                    $('#tblTeamMemberList tbody').append(response);
+                    //$('#tblTeamMemberList tbody').append(response);
+                    $('#popupTeamMemberBody').append(response);
                     $('#TeamMemberListModel').modal('show');
-
             },
                 error: function (response) {
                     alert('Some error occurred.');
@@ -1274,6 +1445,72 @@
                 console.log(response);
             }
         });
+    };
+    function ReloadAdminProject() {
+        var vDept = $("#ddlAdminDepartment option:selected").val();
+        var vProj = $("#ddlAdminProj option:selected").val();
+        var vPM = $("#ddlAdminProjManager option:selected").val();
+        //alert(vDept + ' - ' + vProj + ' - ' + vPM);
+        try {
+            $.ajax({
+                url: '@Url.Action("getAdminProjectDataFromClient", "Home")',
+                type: "POST",
+                beforeSend: function () {
+                    $('#spinner').show();
+                },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    Dept: vDept, Proj: vProj, PM: vPM
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        var UserObj = JSON.parse(response);
+                        $("#dvAdminProjectData").empty();
+                        $("#dvAdminProjectData").html(UserObj);
+                    }
+                },
+                complete: function () {
+                    $('#spinner').hide();
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+
+    };
+    function ReloadPMProject() {
+        var vProj = $("#ddlPMProj option:selected").val();
+        //alert(vDept + ' - ' + vProj + ' - ' + vPM);
+        try {
+            $.ajax({
+                url: '@Url.Action("getPMProjectDataFromClient", "Home")',
+                type: "POST",
+                beforeSend: function () {
+                    $('#spinner').show();
+                },
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({
+                    Proj: vProj
+                }),
+                success: function (response) {
+                    if (response != "") {
+                        var UserObj = JSON.parse(response);
+                        $("#dvPMProjectData").empty();
+                        $("#dvPMProjectData").html(UserObj);
+                    }
+                },
+                complete: function () {
+                    $('#spinner').hide();
+                }
+            });
+        }
+        catch (e) {
+            alert(e);
+        }
+
     };
 </script>
 <style>

@@ -21,16 +21,19 @@
                 <td colspan="3">@ViewBag.ProjectName</td>
             </tr>
             @*<tr>
-                <td><b>Ticket Description</b></td>
-                <td colspan="3">@ViewBag.IssueDescription</td>
-            </tr>*@
+            <td><b>Ticket Description</b></td>
+            <td colspan="3">@ViewBag.IssueDescription</td>
+        </tr>*@
             <tr>
                 <td><b>Task Start Date</b></td>
                 <td>@ViewBag.TaskStartDate</td>
                 <td><b>Task End Date</b></td>
                 <td>@ViewBag.TaskEndDate</td>
             </tr>
-
+            <tr>
+                <td><b>Expected Time</b></td>
+                <td colspan="3">@ViewBag.ExpectedTime</td>
+            </tr>
             <tr>
                 <td><b>Acutal Task Start Date</b></td>
                 <td>@ViewBag.ActualTaskStartDate</td>
@@ -64,19 +67,19 @@
                 </td>
             </tr>
             @*<tr>
-                <td><b>Attachments<b></td>
-                <td colspan="3">
-                    @Html.Raw(ViewBag.AttachmentName)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <b>URL</b>
-                </td>
-                <td colspan="3">
-                    @Html.Raw(ViewBag.URL)
-                </td>
-            </tr>*@
+            <td><b>Attachments<b></td>
+            <td colspan="3">
+                @Html.Raw(ViewBag.AttachmentName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>URL</b>
+            </td>
+            <td colspan="3">
+                @Html.Raw(ViewBag.URL)
+            </td>
+        </tr>*@
         </table>
     </div>
 
