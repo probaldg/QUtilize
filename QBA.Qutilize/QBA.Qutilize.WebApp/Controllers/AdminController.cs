@@ -39,6 +39,12 @@ namespace QBA.Qutilize.WebApp.Controllers
             return View();
         }
 
+        public ActionResult webcam()
+        {
+            return View();
+        }
+
+
         #region User managment region
 
         public ActionResult ManageUsers(int ID = 0)
