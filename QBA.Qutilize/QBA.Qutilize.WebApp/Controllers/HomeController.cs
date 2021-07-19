@@ -23,6 +23,10 @@ namespace QBA.Qutilize.WebApp.Controllers
             //DateTime.TryParse(st, out dd);
             return View();
         }
+        public ActionResult webcam()
+        {
+            return View();
+        }
 
         public ActionResult About()
         {

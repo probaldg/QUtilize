@@ -698,6 +698,8 @@
     <Content Include="Scripts\qr-scanner.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\select2.min.js" />
+    <Content Include="Scripts\src\qr-scanner.js" />
+    <Content Include="Scripts\src\worker.js" />
     <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
@@ -946,7 +948,7 @@
     <Content Include="Views\Admin\_PreviewProjectIssue.cshtml" />
     <Content Include="Views\Admin\_PreviewProjectTask.cshtml" />
     <Content Include="Views\Home\DashBoardOld.cshtml" />
-    <Content Include="Views\Admin\webcam.cshtml" />
+    <Content Include="Views\Home\webcam.cshtml" />
     <Content Include="Scripts\qr-scanner-worker.min.js.map" />
     <Content Include="Scripts\qr-scanner.min.js.map" />
   </ItemGroup>
