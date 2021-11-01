@@ -1,31 +1,21 @@
 
-
 using Newtonsoft.Json;
-using OfficeOpenXml;
 using QBA.Qutilize.WebApp.Helper;
 using QBA.Qutilize.WebApp.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
-
-
 
 namespace QBA.Qutilize.WebApp.Controllers
 {
     public class AdminController : Controller
     {
-      
         readonly int loggedInUser = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
         ImageCompress generateThumbnail = new ImageCompress();
         UserModel um = new UserModel();
@@ -38,8 +28,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             return View();
         }
-
-       
 
         #region User managment region
 
@@ -464,21 +452,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return Json(strUserData);
         }
-        public ActionResult LoadStatus(int IssueId)
+        public ActionResult LoadStatus()
         {
-            ProjectIssueModel issueModel = new ProjectIssueModel();
             try
             {
-                   
+                    ProjectIssueModel issueModel = new ProjectIssueModel();
                     UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                    DataTable dtIssueData = issueModel.GetProjectIssueByIssueId(IssueId);
-                
-                issueModel.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
-                issueModel.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
-                issueModel.Timespent = dtIssueData.Rows[0]["TimeSpent"].ToString() != "" ? dtIssueData.Rows[0]["TimeSpent"].ToString() : "0.00";
-                //return Json(JsonConvert.SerializeObject(issueModel));
-
-                DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
+                  
+                    DataTable dt = issueModel.Get_MasterStatus(userInfo.UserOrganisationID);
                     strStatusData += "<option value = 0>Please select</option>";
                     if (dt.Rows.Count > 0)
                     {
@@ -495,7 +476,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                 //throw;
              }
 
-            return Json(strStatusData+'|'+ JsonConvert.SerializeObject(issueModel));
+            return Json(strStatusData);
         }
         public ActionResult GetTask(int ProjID)
         {
@@ -666,23 +647,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
-                    
-                    string bgcolor = "#FFF";
-                    string forecolor = "#333";
-                    obj.TodayDate = System.DateTime.Now;
-                    obj.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
-                    obj.OneDayBeforeDate = obj.TaskEndDate.AddDays(-1);
-                    if ((obj.TaskEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF0000";
-                        forecolor = "#FFF";
-                    }
-                    if (((obj.TaskEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF8C00";
-                        forecolor = "#FFF";
-                    }
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
 
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
@@ -695,17 +659,14 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         Milestone = "";
                     }
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
-
+                    strUserData.Append("<tr>");
                     strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ParentTaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
-                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
-                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["ExpectedTime"].ToString() + "</td>");
-
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -717,14 +678,14 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
-                        strUserData.Append("<td hidden='hidden' class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + item["TaskID"].ToString() + ")'>Edit</a> </td>");
+                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectTaskEdit' onclick='EditProjectTask(" + item["TaskID"].ToString() + ")'>Edit</a> </td>");
                     }
                     else
                     {
-                         strUserData.Append("<td hidden='hidden' class='text-center'></td>");
+                         strUserData.Append("<td class='text-center'></td>");
 
                     }
-                    strUserData.Append("<td class='text-center' ><a href='javascript:void(0);' id='projectTaskEdit' onclick='ShowPopupforPreview(" + item["TaskID"].ToString() + ")'>View</a> </td>");
+
                     strUserData.Append("</tr>");
 
                 }
@@ -755,45 +716,19 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
-                    string ExpecterdHours = item["ExpectedTime"].ToString();
-                    string bgcolor = "#FFF";
-                    string forecolor = "#333";
-                    //if (ExpecterdHours != "")
-                    //{
-                    //    string[] Arr = new string[2];
-                    //    Arr = ExpecterdHours.Split('.');  
-                    //    ExpecterdHours = Arr[0] + ':' + Arr[1];
-                       
-                    //}
-                    obj.TodayDate = System.DateTime.Now;
-                    obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
-                    obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
-                    if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF0000";
-                        forecolor = "#FFF";
-                    }
-                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date) ) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF8C00";
-                        forecolor = "#FFF";
-                    }
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                    
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:"+ forecolor+" '>");
-                    strUserData.Append("<td class='text-center' > TI" + item["IssueID"].ToString() + "</td>");
+                    strUserData.Append("<tr>");
+                    strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" +item["IssueName"].ToString() + "</td>");
                     strUserData.Append(" <td class='text-center'>" +item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
-
-                    strUserData.Append("<td class='text-center'>" + ExpecterdHours + "</td>");
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -803,11 +738,11 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     if (item["StatusName"].ToString() != "CLOSED")
                     {
-                        strUserData.Append("<td class='text-center' hidden='hidden'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
+                        strUserData.Append("<td class='text-center'><a href='javascript:void(0);' id='projectIssueEdit' onclick='EditProjectIssue(" + item["IssueID"].ToString() + ")'>Edit</a> </td>");
                     }
                     else
                     {
-                        strUserData.Append("<td class='text-center' hidden='hidden'></td>");
+                        strUserData.Append("<td class='text-center'></td>");
                     }
                     strUserData.Append("<td class='text-center'><a href='javascript:void(0);' onclick='PreviewTheIssueDetails("+ item["IssueID"].ToString() +")'>View</a></td>");
 
@@ -842,23 +777,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
-                    string bgcolor = "#FFF";
-                    string forecolor = "#333";
-                   
-                    obj.TodayDate = System.DateTime.Now;
-                    obj.TaskEndDate = Convert.ToDateTime(item["TaskEndDate"]);
-                    obj.OneDayBeforeDate = obj.TaskEndDate.AddDays(-1);
-                    if ((obj.TaskEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF0000";
-                        forecolor = "#FFF";
-                    }
-                    if (((obj.TaskEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF8C00";
-                        forecolor = "#FFF";
-                    }
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
@@ -871,8 +789,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         Milestone = "";
                     }
-                    
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
+                    strUserData.Append("<tr>");
                     strUserData.Append("<td class='text-center'>" + item["TaskID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskCode"].ToString() + "</td>");
@@ -880,10 +797,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");      
                     strUserData.Append("<td class='text-center'>" + item["TaskStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["TaskEndDate"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + item["ExpectedTime"].ToString() + "</td>");
-
-                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
-                    strUserData.Append("<td hidden='hidden' class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskStartDateActual"].ToString() + "</td>");
+                    strUserData.Append("<td class='text-center'>" + item["TaskEndDateActual"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + status + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
@@ -900,7 +815,7 @@ namespace QBA.Qutilize.WebApp.Controllers
                     {
                         strUserData.Append("<td class='text-center'></td>");
                     }
-                    strUserData.AppendFormat(@"<td class='text-center'><a href ='javascript:void(0);' onclick=""ShowPopupforPreview({0});"">View</td>", Convert.ToInt32(item["TaskID"]));
+
                     strUserData.Append("</tr>");
 
                 }
@@ -933,35 +848,12 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
-                    string bgcolor = "#FFF";
-                    string forecolor = "#333";
-                    string ExpecterdHours = item["ExpectedTime"].ToString();
-                    //if (ExpecterdHours != "")
-                    //{
-                    //    string[] Arr = new string[2];
-                    //    Arr = ExpecterdHours.Split('.');
-                    //    ExpecterdHours = Arr[0] + ':' + Arr[1];
-                    //}
-                    obj.TodayDate = System.DateTime.Now;
-                    obj.IssueEndDate = Convert.ToDateTime(item["IssueEndDate"]);
-                    obj.OneDayBeforeDate = obj.IssueEndDate.AddDays(-1);
-                    if ((obj.IssueEndDate.Date < obj.TodayDate.Date) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF0000";
-                        forecolor = "#FFF";
-                    }
-                    if (((obj.IssueEndDate.Date == obj.TodayDate.Date) || (obj.OneDayBeforeDate.Date == obj.TodayDate.Date)) && (item["StatusName"].ToString() != "CLOSED"))
-                    {
-                        bgcolor = "#FF8C00";
-                        forecolor = "#FFF";
-                    }
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
 
                     var CompletePercent = (item["CompletePercent"] == DBNull.Value) ? "" : item["CompletePercent"].ToString();
                     var SeverityName = (item["SeverityName"] == DBNull.Value) ? "" : item["SeverityName"].ToString();
 
-
-                    strUserData.Append("<tr  style='background-color:" + bgcolor + ";color:" + forecolor + " '>");
+                    strUserData.Append("<tr>");
                     strUserData.Append("<td class='text-center'> TI" + item["IssueID"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["ProjectName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueCode"].ToString() + "</td>");
@@ -969,8 +861,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     strUserData.Append(" <td class='text-center'>" + item["TicketTypeName"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueStartDate"].ToString() + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["IssueEndDate"].ToString() + "</td>");
-                    strUserData.Append("<td class='text-center'>" + ExpecterdHours + "</td>");
-
                     strUserData.Append("<td class='text-center'>" + SeverityName + "</td>");
                     strUserData.Append("<td class='text-center'>" + CompletePercent + "</td>");
                     strUserData.Append("<td class='text-center'>" + item["StatusName"].ToString() + "</td>");
@@ -1019,7 +909,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 }
                 foreach (DataRow item in dt.Rows)
                 {
-
                     string status = Convert.ToBoolean(item["IsActive"]) == true ? "Active" : "In Active";
                     var departmentName = (item["DepartmentName"] == DBNull.Value) ? "" : item["DepartmentName"].ToString();
                     var ManagerName = (item["ProjectManagerName"] == DBNull.Value) ? "" : item["ProjectManagerName"].ToString();
@@ -1590,295 +1479,6 @@ namespace QBA.Qutilize.WebApp.Controllers
 
         }
 
-        public ActionResult previewProjectTask(int taskId)
-        {            
-            ProjectTaskModel task = new ProjectTaskModel();
-            ProjectTaskAttachmentModel attachment = new ProjectTaskAttachmentModel();
-            try
-            {
-
-                DataTable dtTaskData = task.GetProjectTasksByTaskId(taskId);
-                DataTable dtTaskAttachment = attachment.GetProjectTasksAttachments(taskId);
-
-                if (dtTaskData.Rows.Count > 0)
-                {
-
-                    ViewBag.TaskId = Convert.ToInt32(dtTaskData.Rows[0]["TaskID"]);
-                    ViewBag.TaskCode = dtTaskData.Rows[0]["TaskCode"].ToString() ?? "";
-                    ViewBag.TaskName = dtTaskData.Rows[0]["TaskName"].ToString();
-                    ViewBag.ParentTaskName = dtTaskData.Rows[0]["ParentTaskName"].ToString() ?? "";
-                    ViewBag.ParentTaskId = Convert.ToInt32(dtTaskData.Rows[0]["ParentTaskID"]);
-                    ViewBag.ProjectName = dtTaskData.Rows[0]["ProjectName"].ToString();
-                    ViewBag.ProjectID = Convert.ToInt32(dtTaskData.Rows[0]["ProjectID"]);
-                    ViewBag.TaskStartDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDate"]).ToString("dd/MM/yyyy");
-                    ViewBag.TaskEndDate = Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDate"]).ToString("dd/MM/yyyy"); 
-                    ViewBag.ExpectedTime= dtTaskData.Rows[0]["ExpectedTime"].ToString();
-                    ViewBag.IsMilestone = (dtTaskData.Rows[0]["isMilestone"] != System.DBNull.Value) ? Convert.ToBoolean(dtTaskData.Rows[0]["isMilestone"]) : (bool?)null;
-                    ViewBag.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
-                    ViewBag.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
-                    ViewBag.TaskStatusName = dtTaskData.Rows[0]["StatusName"].ToString() ?? "";
-                    ViewBag.TaskStatusID = Convert.ToInt32(dtTaskData.Rows[0]["StatusID"]);
-                    ViewBag.IsActive = Convert.ToBoolean(dtTaskData.Rows[0]["isACTIVE"]);
-                    ViewBag.IsValueAdded = Convert.ToBoolean(dtTaskData.Rows[0]["isValueAdded"]);
-                    ViewBag.CompletePercent = Convert.ToInt32(dtTaskData.Rows[0]["CompletePercent"]);
-                    string usernameassigned = string.Empty;
-                    
-
-                    
-                    
-                    int i = 0;
-                    foreach (DataRow item in dtTaskData.Rows)
-                    {
-                        
-                                UserModel userModel = new UserModel
-                                {
-
-                                    ID = Convert.ToInt32(item["UserID"]),
-                                    Name = item["UserName"].ToString(),
-                                    IsActive = Convert.ToBoolean(item["IsUserActive"])
-
-
-
-                                };
-
-
-                                task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
-                                usernameassigned += (item["UserName"]).ToString() + ", ";
-                                task.UserList.Add(userModel);
-                            }
-                        //}
-                        //else
-                        //{
-                        //    UserModel userModel = new UserModel
-                        //    {
-
-                        //        ID = Convert.ToInt32(item["UserID"]),
-                        //        Name = item["UserName"].ToString(),
-                        //        IsActive = Convert.ToBoolean(item["IsUserActive"])
-                        //    };
-
-
-                        //    task.UserIdsTaskAssigned += (item["UserID"]).ToString() + ", ";
-                        //    usernameassigned += (item["UserName"]).ToString() + ", ";
-                        //    task.UserList.Add(userModel);
-                        //}
-                       
-                        
-                        
-
-                        
-                    
-                    usernameassigned = usernameassigned.TrimEnd(',');
-                    ViewBag.UserNameAssigned = usernameassigned.Remove(usernameassigned.Length - 2, 2);
-                    
-                    if (dtTaskAttachment.Rows.Count > 0)
-                    {
-                        string AttachmentName = string.Empty;
-                        string path = string.Empty;
-                        string URL = string.Empty;
-                        string URLs = dtTaskAttachment.Rows[0]["URL"].ToString();
-                        string[] URLlist = URLs.Split(',');
-
-                        foreach(string url in URLlist)
-                        {
-                            URL+= "<a class='img' target='_blank'   href = '" + url +"' > " + url + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
-                        }
-
-                        ViewBag.URL = URL;
-
-                        if (dtTaskAttachment.Rows[0]["DirectoryName"] != null)
-                        {
-                            path = Server.MapPath("~/ProjectTaskAttachments/" + dtTaskAttachment.Rows[0]["DirectoryName"].ToString());
-                        }
-
-                        if (Directory.Exists(path))
-                        {
-                            foreach(DataRow item in dtTaskAttachment.Rows)
-                            {
-                                AttachmentName += "<a class='img' target='_blank'  data-fancybox href = '/ProjectTaskAttachments/" + dtTaskAttachment.Rows[0]["DirectoryName"].ToString() + "/" + item["AttachmentName"].ToString() + "' > " + item["AttachmentName"].ToString() + " </a>&nbsp;&nbsp;&nbsp;&nbsp;";
-                            }
-                            
-                        }
-                        ViewBag.AttachmentName = AttachmentName;
-                    }
-
-
-                   // foreach()
-                   // task.TaskList.Add(task);
-                }
-
-            }
-            catch (Exception)
-            {
-
-                //throw;
-            }
-
-            return PartialView("_PreviewProjectTask");
-        }
-
-        public ActionResult LoadCommentsAndAttachmentsForProjectTasks(int id)
-        {
-            string strCommentDiv = string.Empty;
-          
-            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
-            DataSet ds = ptcm.GetProjectTasksComments(id);
-            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
-            if (ds != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
-            {
-                strCommentDiv += @"<section class='comments'>";
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
-
-                    //Load Attachment
-                    strCommentDiv += "<p><b>Attachments:</b>";
-                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
-                    {
-                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
-                        {
-                            if (ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString())
-                            {
-                                string path = Server.MapPath("~/ProjectTaskAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
-                                if (Directory.Exists(path))
-                                {
-                                    DirectoryInfo di = new DirectoryInfo(path);
-                                    
-                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/ProjectTaskAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >&nbsp;" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a>&nbsp;&nbsp;&nbsp;&nbsp;";
-
-                                }
-                            }
-                        }
-
-                    }
-                    strCommentDiv += "</p>";
-
-                    //Load URL
-                    strCommentDiv += "<p><b>URL:</b>";
-                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
-                    {
-                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
-                        {
-
-                            if ((ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString()))
-                            {
-
-                                string[] arrURL = ds.Tables[1].Rows[j]["URL"].ToString().Split(';');
-                                
-                                for (int k = 0; k < arrURL.Length; k++)
-                                {
-                                    strCommentDiv += "<a class='img' target='_blank'   href = '" + arrURL[k] + "' rel='noopener noreferrer'>" + arrURL[k] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
-
-                                }
-
-                            }
-                        }
-
-                    }
-                    strCommentDiv += "</p>";
-                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] +" " + ds.Tables[0].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
-
-                }
-                strCommentDiv += @"</section>";
-
-
-            }
-            else
-            {
-                strCommentDiv += "<div>No Comments Found</div>";
-            }
-            strCommentDiv += @"</div></div></div></div></div></div></div>";
-            return Content(strCommentDiv);
-        }
-
-        [HttpPost]
-        public JsonResult ProjectTaskAttachmentsForStatus()
-        {
-            ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
-            string fName = "";
-            string Directory = "";
-            string FolderName = Request.Form["FileDirectoryForChangeStatus"].ToString();
-            if (FolderName != "")
-            {
-                Directory = FolderName.Replace("\"", string.Empty).Trim();
-            }
-            else
-            {
-                Directory = DateTime.Now.Ticks.ToString();
-            }
-
-            foreach (string imageFile in Request.Files)
-            {
-                HttpPostedFileBase file = Request.Files[imageFile];
-                fName = file.FileName;
-                int id = 0;                
-                int pressID = 0;
-                if (file != null && file.ContentLength > 0)
-                {
-                    var originalDirectory = new DirectoryInfo(string.Format("{0}ProjectTaskAttachments", Server.MapPath(@"\")));
-                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
-                    var fileName = file.FileName;
-                    bool isExists = System.IO.Directory.Exists(pathString);
-                    if (!isExists)
-                        System.IO.Directory.CreateDirectory(pathString);
-                    var path = string.Format("{0}\\{1}", pathString, fileName);
-                    file.SaveAs(path);
-                    tpam.ProjectTaskID = 0;
-                    tpam.DirectoryName = Directory;
-                    tpam.AttachmentName = fileName;
-                    tpam.AddedTS = DateTime.Now;
-                    tpam.AddedBy = loggedInUser;
-
-                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
-                    tpam.InsertAttachmentdata(tpam, out id);
-                }
-            }
-            return Json(Directory);
-        }
-        [HttpPost]
-        public JsonResult ProjectTaskAttachments()
-        {
-            ProjectTaskAttachmentModel tpam = new ProjectTaskAttachmentModel();
-            string fName = "";
-            string Directory = "";
-            string FolderName = Request.Form["FileDirectory"].ToString();
-            if (FolderName != "")
-            {
-                Directory = FolderName.Replace("\"", string.Empty).Trim();
-            }
-            else
-            {
-                Directory = DateTime.Now.Ticks.ToString();
-            }
-
-            foreach (string imageFile in Request.Files)
-            {
-                HttpPostedFileBase file = Request.Files[imageFile];
-                fName = file.FileName;
-                int id = 0;
-                int pressID = 0;
-                if (file != null && file.ContentLength > 0)
-                {
-                    var originalDirectory = new DirectoryInfo(string.Format("{0}ProjectTaskAttachments", Server.MapPath(@"\")));
-                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
-                    var fileName = file.FileName;
-                    bool isExists = System.IO.Directory.Exists(pathString);
-                    if (!isExists)
-                        System.IO.Directory.CreateDirectory(pathString);
-                    var path = string.Format("{0}\\{1}", pathString, fileName);
-                    file.SaveAs(path);
-                    tpam.ProjectTaskID = 0;
-                    tpam.DirectoryName = Directory;
-                    tpam.AttachmentName = fileName;
-                    tpam.AddedTS = DateTime.Now;
-                    tpam.AddedBy = loggedInUser;
-
-                    //   _bl.savePressPhotoAlbum(pressID, fileName, out id);
-                    tpam.InsertAttachmentdata(tpam, out id);
-                }
-            }
-            return Json(Directory);
-        }
         public ActionResult previewIssue(int IssueId)
         {
             ProjectIssueModel projectIssue = new ProjectIssueModel();
@@ -1899,19 +1499,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     ViewBag.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
                     ViewBag.IssuestartDate = dtIssueData.Rows[0]["IssueStartDate"].ToString();
                     ViewBag.IssueEndDate = dtIssueData.Rows[0]["IssueEndDate"].ToString();
-
-                    ViewBag.ExpectedTime = dtIssueData.Rows[0]["ExpectedTime"].ToString();
-                    ViewBag.Timespent = dtIssueData.Rows[0]["Timespent"].ToString();
-
-                    //if (ExpecterdHours != "")
-                    //{
-                    //    string[] Arr = new string[2];
-                    //    Arr = ExpecterdHours.Split('.');
-                    //    ViewBag.ExpectedTime = Arr[0] + ':' + Arr[1];
-                    //}
-
-
-
                     ViewBag.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     ViewBag.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueStartDateActual"] : (DateTime?)null;
                     ViewBag.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? dtIssueData.Rows[0]["IssueEndDateActual"] : (DateTime?)null;
@@ -1948,157 +1535,20 @@ namespace QBA.Qutilize.WebApp.Controllers
 
             return PartialView("_PreviewProjectIssue");
         }
-        public string MailCommentsForTask(int id)
-        {
-            string strCommentDiv = string.Empty;
-
-            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
-            DataSet ds = ptcm.GetProjectTasksComments(id);
-            strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
-            if (ds != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
-            {
-                strCommentDiv += @"<section class='comments'>";
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
-
-                 
-
-                    //Load URL
-                    strCommentDiv += "<p><b>URL:</b>";
-                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0)
-                    {
-                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
-                        {
-
-                            if ((ds.Tables[0].Rows[i]["CommentID"].ToString() == ds.Tables[1].Rows[j]["ProjectTaskCommentId"].ToString()))
-                            {
-
-                                string[] arrURL = ds.Tables[1].Rows[j]["URL"].ToString().Split(';');
-
-                                for (int k = 0; k < arrURL.Length; k++)
-                                {
-                                    strCommentDiv += "<a class='img' target='_blank'   href = '" + arrURL[k] + "' rel='noopener noreferrer'>" + arrURL[k] + " </a> &nbsp;&nbsp;&nbsp;&nbsp;";
-
-                                }
-
-                            }
-                        }
-
-                    }
-                    strCommentDiv += "</p>";
-                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTime"].ToString() + "</p></div></article>";
-
-                }
-                strCommentDiv += @"</section>";
-
-
-            }
-            else
-            {
-                strCommentDiv += "<div>No Comments Found</div>";
-            }
-            strCommentDiv += @"</div></div></div></div></div></div></div>";
-            return strCommentDiv;
-
-        }
-
-        public string MailCommentsForIssues(int id)
-        {
-            StringBuilder sbContent = new StringBuilder();
-            try
-            {
-                ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
-                DataSet ds = acm.GetIssueCommentByIssueID(id);
-                sbContent.Append("<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>");
-                if (ds!=null && ds.Tables[0]!=null && ds.Tables[0].Rows.Count > 0)
-                {
-                    sbContent.Append("<section class='comments'>");
-                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                    {
-                        //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
-                        sbContent.Append("<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"] + ".</p> <p><b>Comment:</b> " + ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>");
-                        //Load URL
-                        if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
-                        {
-                            string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
-                            sbContent.Append( "<p><b>URL:</b>");
-                            for (int j = 0; j < arrURL.Length; j++)
-                            {
-                                sbContent.Append( "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </a></b> ");
-
-                            }
-                            sbContent.Append("</p>");
-                        }
-                        sbContent.Append( "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>");
-                    }
-                    sbContent.Append("</section>");
-
-
-                }
-                else
-                {
-                    sbContent.Append("<div>No Comments Found</div>");
-                }
-                sbContent.Append("</div></div></div></div></div></div></div>");
-            }
-            catch( Exception ex)
-            {
-
-            }
-            return sbContent.ToString();
-
-        }
         public ActionResult LoadCommentsForIssues(int id)
         {
             string strCommentDiv = string.Empty;
             ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
-            DataSet ds = acm.GetIssueCommentByIssueID(id);
+            DataTable dt = acm.GetIssueCommentByIssueID(id);
             strCommentDiv += @"<div class='row'><div class='col-md-12'> <div class='panel panel-default'><div class='panel-heading'><h4> Status and discussion history</h4></div><div class='panel-body'><div class='row form-group'><div class='col-md-12'><div class='col-md-12'>";
-            if (ds!=null && ds.Tables[0]!=null && ds.Tables[0].Rows.Count > 0)
+            if (dt.Rows.Count > 0)
             {
+               
                 strCommentDiv += @"<section class='comments'>";
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + ds.Tables[0].Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ ds.Tables[0].Rows[i]["Comment"].ToString() + "</p>";
-                 
-                    //Load Attachment
-                    if (ds != null && ds.Tables[1] != null && ds.Tables[1].Rows.Count > 0 )
-                    {
-                        for (int j = 0; j < ds.Tables[1].Rows.Count; j++)
-                        {
-                            if (ds.Tables[0].Rows[i]["ID"].ToString() == ds.Tables[1].Rows[j]["IssueCommentId"].ToString())
-                            {
-                                string path = Server.MapPath("~/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString());
-                                if (Directory.Exists(path))
-                                {
-                                    DirectoryInfo di = new DirectoryInfo(path);
-                                    strCommentDiv += "<p><b>Attachments:</b>";
-
-                                    strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '/IssueAttachments/" + ds.Tables[1].Rows[j]["DirectoryName"].ToString() + "/" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "' >" + ds.Tables[1].Rows[j]["AttachmentName"].ToString() + "</a></p>";
-
-                                }
-                            }
-                        }
-                        
-                    }
-
-                    //Load URL
-                    if (ds.Tables[0].Rows[i]["url"].ToString() != "" && ds.Tables[0].Rows[i]["url"] != null)
-                    {
-
-                        string[] arrURL = ds.Tables[0].Rows[i]["url"].ToString().Split(';');
-                        strCommentDiv += "<p><b>URL:</b>";
-                        for (int j = 0; j < arrURL.Length; j++)
-                        {
-                           // strCommentDiv += "<a class='img' target='_blank'  data-fancybox href = '" + arrURL[j] + "' >" + arrURL[j] + " </ a > &nbsp;";
-                            strCommentDiv += "<a class='img' target='_blank'  href = '" + arrURL[j] + "'  rel='noopener noreferrer'>" + arrURL[j] + " </ a > &nbsp;";
-
-
-                        }
-                        strCommentDiv += "</p>";
-                    }
-                    strCommentDiv += "</div><p class='attribution'>by " + ds.Tables[0].Rows[i]["UserName"] + " " + ds.Tables[0].Rows[i]["AddedTS"].ToString() + "</p></div></article>";
+                    //strApproverCommentDiv += "<div class='row'><div class='col-md-12'><div class='col-md-2'><label>"+dt.Rows[i]["CommentedBy"] +" wrote on:"+ Convert.ToDateTime(dt.Rows[i]["AddedTS"].ToString()) +"</label></div><div class='col-md-10'><label class='form-control'>" + dt.Rows[i]["ApproverComment"].ToString() + "</label></div></div></div>&nbsp;&nbsp;";
+                    strCommentDiv += @"<article class='comment'><a class='comment-img' href='#non'><img src ='https://pbs.twimg.com/profile_images/444197466133385216/UA08zh-B.jpeg' alt = '' width = '50' height = '50'/></a><div class='comment-body'><div class='text'><p><b>Status:</b> " + dt.Rows[i]["StatusName"]+".</p> <p><b>Comment:</b> "+ dt.Rows[i]["Comment"].ToString() + "</p></div><p class='attribution'>by<a href='#non'> " + dt.Rows[i]["UserName"] + " </a>" + dt.Rows[i]["AddedTS"].ToString() + "</p></div></article>";
                 }
                 strCommentDiv += @"</section>";
 
@@ -2129,22 +1579,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     projectIssue.IssueDescription = dtIssueData.Rows[0]["IssueDescription"].ToString() ?? "";
                     projectIssue.ProjectName =dtIssueData.Rows[0]["ProjectName"].ToString();
                     projectIssue.ProjectID = Convert.ToInt32(dtIssueData.Rows[0]["ProjectID"]);
-
                     projectIssue.IssuestartDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDate"]);
                     projectIssue.IssueEndDate = Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDate"]);
-
-                    string ExpecterdHours  = dtIssueData.Rows[0]["ExpectedTime"].ToString();
-                  
-                    //if (ExpecterdHours != "")
-                    //{
-                    //    string[] Arr = new string[2];
-                       
-                    //    Arr = ExpecterdHours.Split('.');   // your input string
-                       
-
-                    //    projectIssue.ExpectedTime = Arr[0] + ':' + Arr[1];
-                    //}
-
                     //projectIssue.TicketTypeName = dtIssueData.Rows[0]["TicketTypeName"].ToString();
                     projectIssue.ActualIssueStartDate = (dtIssueData.Rows[0]["IssueStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueStartDateActual"]) : (DateTime?)null;
                     projectIssue.ActualIssueEndDate = (dtIssueData.Rows[0]["IssueEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtIssueData.Rows[0]["IssueEndDateActual"]) : (DateTime?)null;
@@ -2184,46 +1620,6 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(JsonConvert.SerializeObject(projectIssue));
 
 
-        }
-
-        public ActionResult LoadProjectTaskStatus(int Taskid)
-        {
-            ProjectTaskModel task = new ProjectTaskModel();
-
-            try
-            {
-
-                UserInfoHelper userInfo = new UserInfoHelper(loggedInUser);
-                DataTable dtTaskData = task.GetProjectTasksByTaskId(Taskid);
-
-                task.ActualTaskStartDate = (dtTaskData.Rows[0]["TaskStartDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskStartDateActual"]) : (DateTime?)null;
-                task.ActualTaskEndDate = (dtTaskData.Rows[0]["TaskEndDateActual"] != System.DBNull.Value) ? Convert.ToDateTime(dtTaskData.Rows[0]["TaskEndDateActual"]) : (DateTime?)null;
-
-
-               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskStartDateActual"].ToString();
-
-               // task.ActualTaskStartDateDisplayforstatus = dtTaskData.Rows[0]["TaskEndDateActual"].ToString();
-               // task.ExpectedTime =Convert.ToDouble(dtTaskData.Rows[0]["ExpectedTime"].ToString());
-                //return Json(JsonConvert.SerializeObject(issueModel));
-
-                DataTable dt = task.GetProjectTaskStatusList(userInfo.UserOrganisationID);
-                strStatusData += "<option value = 0>Please select</option>";
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow item in dt.Rows)
-                    {
-                        strStatusData += "<option value=" + Convert.ToInt32(item["StatusID"]) + ">" + Convert.ToString(item["StatusName"]) + "</option>";
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-                //throw;
-            }
-
-            return Json(strStatusData + '|' + JsonConvert.SerializeObject(task));
         }
 
         public ActionResult SaveProjectTask(ProjectTaskModel model)
@@ -2300,63 +1696,20 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     }
 
+
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                   var insertStatus = pm.InsertTaskdata(model, out int id);
+                    var insertStatus = pm.InsertTaskdata(model, out int id);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
-
-                          //  if (model.DirectoryName != null)
-                          //  {
-                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-
-                                //int outCommentID = 0;
-                                ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
-                                ptcm.ProjectTaskID = id;
-                                ptcm.Comment = "";
-                                ptcm.TaskStatusID = model.TaskStatusID;
-                                ptcm.AddedBy = loggedInUser;
-                                ptcm.AddedTS = DateTime.Now;
-                                ptcm.InsertCommentdata(ptcm, out int outCommentID,out string strMailToName,out string strMailTo);
-
-                            if (outCommentID > 0 && (model.URL!=null || model.DirectoryName!=null))
-                            {
-                                //  ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-                                ptam.ProjectTaskCommentID = outCommentID;
-                                if (model.DirectoryName != null)
-                                {
-                                    ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                                }
-                               
-
-                                ptam.ProjectTaskID = id;
-                                ptam.URL = model.URL;
-                                ptam.AddedBy = loggedInUser;
-                                ptam.AddedTS = DateTime.Now;
-                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
-                            }
-                            //send mail 
-                            UserModel userModel = new UserModel();
-                            DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
-
-                            string[] usernameArr = strMailToName.Split(';');
-                            string[] userEmailArr = strMailTo.Split(';');
-                            for (int j = 0; j < usernameArr.Length; j++)
-                            {
-                                sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Project Task has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
-                            }
-
-
                             result = "Success";
-                           // }
                         }
-                        else
-                        {
-                            result = "Error";
-                        }
+                    }
+                    else
+                    {
+                        result = "Error";
                     }
                 }
             }
@@ -2371,8 +1724,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         public ActionResult UpdateStatusTask(ProjectTaskModel model)
         {
             ProjectTaskModel pm = new ProjectTaskModel();
-            ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-            ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
             string result = "";
             try
             {
@@ -2392,85 +1743,10 @@ namespace QBA.Qutilize.WebApp.Controllers
                         model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualTaskEndDateDisplayforstatus);
 
                     }
-                    model.ExpectedTime = Convert.ToDouble(model.ExpectedTime);
+
+
+
                     var updateStatus = model.UpdateTaskstatus(model);
-
-
-                    //if (model.DirectoryName != null)
-                    //{
-                      
-                        //int outCommentID = 0;
-                        //Save Comment here
-                        ptcm.ProjectTaskID = model.TaskIdforstatus;
-                        ptcm.Comment = model.Comment;
-                        ptcm.TaskStatusID = model.TaskStatusID;
-                        ptcm.AddedBy = loggedInUser;
-                        ptcm.AddedTS = DateTime.Now;
-                        ptcm.InsertCommentdata(ptcm, out int outCommentID,out string strMailToName,out string strMailTo);
-
-
-                    //Save Attachment and url here
-                        if (outCommentID >0 && (model.DirectoryName != null || model.URL!=null))
-                        {
-                            ptam.ProjectTaskCommentID = outCommentID;
-                        if (model.DirectoryName != null)
-                        {
-                            ptam.DirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                        }
-                        else
-                        {
-                            ptam.DirectoryName = null;
-                        } 
-                            ptam.ProjectTaskID = model.TaskIdforstatus;
-                            ptam.URL = model.URL;
-                            ptam.AddedBy = loggedInUser;
-                            ptam.AddedTS = DateTime.Now;
-                            ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
-                        }
-
-                    #region Mail Sending
-                   // ProjectTaskCommentModel PTCM = new ProjectTaskCommentModel();
-                    DataSet dtTaskComment = ptcm.GetProjectTasksComments(model.TaskIdforstatus); 
-
-                    string[] MailToName_arr = strMailToName.Split(';');
-                    string[] MailTo_arr = strMailTo.Split(';');
-                    if (dtTaskComment != null && dtTaskComment.Tables[0] != null && dtTaskComment.Tables[0].Rows.Count > 0)
-                    {
-                        #region :  
-                        string strBody = "";
-                        string strSubject = "";
-                        for (int i = 0; i < MailToName_arr.Length; i++)
-                        {
-                            strSubject = @"Project Task Status and discussion history";
-                            strBody = string.Format(@"Dear {0},
-                                                        <br><br>
-                                                        {1}
-                                                        <br><br>
-                                                        Please login to timetracker System to view the status Details .
-                                                        <br><br>
-                                                        Thanks & Regards,<br>
-                                                        QBA Administrator
-                                                        <br><br><br><br>
-                                                        *This is a system generated email. Please do not respond.
-                                                        ", MailToName_arr[i], MailCommentsForTask(model.TaskIdforstatus));
-
-                            using (SendMailClass sm = new SendMailClass())
-                            { sm.SendMail(MailTo_arr[i], strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
-
-                        }
-                        #endregion
-                    }
-                    model.ISErr = false;
-                    model.ErrString = "Data Saved Successfully.";
-                    TempData["ErrStatus"] = model.ISErr;
-                    TempData["ErrMsg"] = model.ErrString.ToString();
-                    result = "Success";
-                    #endregion
-
-                    //}
-
-
-
 
                     if (updateStatus)
                     {
@@ -2505,8 +1781,6 @@ namespace QBA.Qutilize.WebApp.Controllers
         {
             ProjectIssueModel pm = new ProjectIssueModel();
             string result = "";
-            string strMailToName = string.Empty;
-            string strMailTo = string.Empty;
             try
             {
 
@@ -2525,49 +1799,18 @@ namespace QBA.Qutilize.WebApp.Controllers
                         model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(model.ActualIssueEndDateDisplayforstatus);
 
                     }
+                    
 
-                   var updateStatus = model.UpdateIssuestatus(model, out strMailToName, out strMailTo);
+
+                    var updateStatus = model.UpdateIssuestatus(model);
 
                     if (updateStatus)
                     {
-                            #region Mail Sending
-                            ProjectIssueCommentModel acm = new ProjectIssueCommentModel();
-                            DataSet dtIssueComment = acm.GetIssueCommentByIssueID(model.IssueIdforstatus);
-
-                             string []MailToName_arr = strMailToName.Split(';');
-                             string[] MailTo_arr = strMailTo.Split(';');
-                            if (dtIssueComment !=null && dtIssueComment.Tables[0] != null && dtIssueComment.Tables[0].Rows.Count > 0)
-                            {
-                            #region :  
-                            string strBody = "";
-                            string strSubject = "";
-                            for (int i = 0; i < MailToName_arr.Length; i++)
-                            {
-                                 strSubject = @"Project Issue Status and discussion history";
-                                 strBody = string.Format(@"Dear {0},
-                                                        <br><br>
-                                                        {1}
-                                                        <br><br>
-                                                        Please login to timetracker System to view the status Details .
-                                                        <br><br>
-                                                        Thanks & Regards,<br>
-                                                        QBA Administrator
-                                                        <br><br><br><br>
-                                                        *This is a system generated email. Please do not respond.
-                                                        ", MailToName_arr[i], MailCommentsForIssues(model.IssueIdforstatus));
-
-                                 using (SendMailClass sm = new SendMailClass())
-                                 { sm.SendMail(MailTo_arr[i], strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
-                              
-                            }
-                                #endregion
-                            }
                         model.ISErr = false;
                         model.ErrString = "Data Saved Successfully.";
                         TempData["ErrStatus"] = model.ISErr;
                         TempData["ErrMsg"] = model.ErrString.ToString();
                         result = "Success";
-                        #endregion
                     }
                     else
                     {
@@ -2668,43 +1911,16 @@ namespace QBA.Qutilize.WebApp.Controllers
 
                     model.AddedBy = loggedInUser;
                     model.AddedTS = DateTime.Now;
-                    var insertStatus = pm.InsertIssuedata(model, out int id);//out string strMailToName,out string strMailTo);
+                    var insertStatus = pm.InsertIssuedata(model, out int id);
                     if (insertStatus)
                     {
                         if (id > 0)
                         {
-
-                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
-                            projectIssueModel.IssueIdforstatus = id;
-                            projectIssueModel.Comment = "";
-                            projectIssueModel.StatusID = model.StatusID;
-                            projectIssueModel.url = model.url;
-                            projectIssueModel.DirectoryName = model.DirectoryName;
-                            projectIssueModel.Duration = 0;
-                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
-                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
-                            projectIssueModel.EditedBy = loggedInUser;
-                            projectIssueModel.EditedTS = DateTime.Now;
-                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
-                         
-                            if (updateStatus)
-                            {
-                                UserModel userModel = new UserModel();
-                                DataTable dtUSER = userModel.GetUsersByID(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                                userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
-
-                                string[] usernameArr = strMailToName.Split(';');
-                                string[] userEmailArr = strMailTo.Split(';');
-                                for (int j = 0; j < usernameArr.Length; j++)
-                                {
-                                    sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
-                                }
-                                model.ISErr = false;
-                                model.ErrString = "Data Saved Successfully.";
-                                TempData["ErrStatus"] = model.ISErr;
-                                TempData["ErrMsg"] = model.ErrString.ToString();
-                                result = "Success";
-                            }
+                            model.ISErr = false;
+                            model.ErrString = "Data Saved Successfully.";
+                            TempData["ErrStatus"] = model.ISErr;
+                            TempData["ErrMsg"] = model.ErrString.ToString();
+                            result = "Success";
                         }
                     }
                     else
@@ -3514,7 +2730,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                     org.url = dt.Rows[0]["url"].ToString();
                     org.address = dt.Rows[0]["address"].ToString();
                     org.contact_email_id = dt.Rows[0]["contact_email_id"].ToString();
-                    org.NoOfUserLicense =Convert.ToInt32(dt.Rows[0]["NoOfUserLicense"]);
                     org.logo = dt.Rows[0]["logo"].ToString();
                     org.isActive = Convert.ToBoolean(dt.Rows[0]["isActive"]);
                     org.createdBy = Convert.ToInt32(System.Web.HttpContext.Current.Session["sessUser"]);
@@ -3524,7 +2739,6 @@ namespace QBA.Qutilize.WebApp.Controllers
                 {
                     org.orgname = "";
                     org.wikiurl = "";
-                    org.NoOfUserLicense = 0;
                     org.url = "";
                     org.logo = "";
                     org.isActive = false;
@@ -3550,13 +2764,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                 List<OrganisationModel> viewModelList = new List<OrganisationModel>();
                 foreach (DataRow dr in dt.Rows)
                 {
-                    strOrganisation += "<tr>" +
-                        "<td class='text-center'>" + dr["id"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["orgname"] + "</td>" +
-                        "<td class='text-center'>" + dr["address"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["contact_email_id"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["NoOfUserLicense"].ToString() + "</td>" +
-                        "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
+                    strOrganisation += "<tr><td class='text-center'>" + dr["id"].ToString() + "</td><td class='text-center'>" + dr["orgname"] + "</td>" + "<td class='text-center'>" + dr["address"].ToString() + "</td>" +
+                        "<td class='text-center'>" + dr["contact_email_id"].ToString() + "</td>" + "<td class='text-center'>" + dr["isActive"].ToString() + "</td>" +
                        "<td  class='text-center'><a href = 'ManageOrganisation?ID=" + dr["ID"].ToString() + "'>Edit</a></td></tr>";
                     i++;
                 }
@@ -3575,6 +2784,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var filelogo = Request.Files["logo"];
                     if (filelogo != null && filelogo.ContentLength > 0)
                     {
+
+
                         var logo = Path.GetFileName(filelogo.FileName);
                         logo = orgModel.orgname + "_logo_" + logo;
                         var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
@@ -3594,6 +2805,8 @@ namespace QBA.Qutilize.WebApp.Controllers
                     var filelogo = Request.Files["logo"];
                     if (filelogo != null && filelogo.ContentLength > 0)
                     {
+
+
                         var logo = Path.GetFileName(filelogo.FileName);
                         logo = orgModel.orgname + "_logo_" + logo;
                         var path = Path.Combine(Server.MapPath("~/images/organisation_logo"), logo);
@@ -4776,788 +3989,5 @@ namespace QBA.Qutilize.WebApp.Controllers
             return Json(sbOut.ToString());
             //return Json(JsonConvert.SerializeObject(MgrList));
         }
-        
-        public JsonResult IssueAttachments()
-        {
-            string fName = "";
-            string Directory = "";
-            string FolderName = Request.Form["DirectoryName"].ToString();
-            if (FolderName != "")
-            {
-                Directory = FolderName.Replace("\"", string.Empty).Trim();
-            }
-            else
-            {
-                Directory = DateTime.Now.Ticks.ToString();
-            }
-
-            foreach (string imageFile in Request.Files)
-            {
-                HttpPostedFileBase file = Request.Files[imageFile];
-                fName = file.FileName;
-                int id = 0;
-                int pressID = 0;
-                if (file != null && file.ContentLength > 0)
-                {
-
-
-                    var originalDirectory = new DirectoryInfo(string.Format("{0}IssueAttachments", Server.MapPath(@"\")));
-                    string pathString = System.IO.Path.Combine(originalDirectory.ToString(), Directory);
-                    var fileName = file.FileName;
-                    bool isExists = System.IO.Directory.Exists(pathString);
-                    if (!isExists)
-                        System.IO.Directory.CreateDirectory(pathString);
-                    var path = string.Format("{0}\\{1}", pathString, fileName);
-
-
-                    file.SaveAs(path);
-                 
-                }
-            }
-            return Json(Directory);
-        }
-        [HttpGet]
-        public virtual ActionResult DownloadExcelTemplateForIssue(string fileid)
-        {
-            if (TempData[fileid] != null)
-            {
-                byte[] data = TempData[fileid] as byte[];
-                return File(data, "application/vnd.ms-excel", "ExcelForIssue.xlsx");
-            }
-            else
-            {
-                return new EmptyResult();
-            }
-        }
-        [HttpGet]
-        public virtual ActionResult DownloadExcelTemplateForTask(string fileid)
-        {
-            if (TempData[fileid] != null)
-            {
-                byte[] data = TempData[fileid] as byte[];
-                return File(data, "application/vnd.ms-excel", "ExcelForProjectTask.xlsx");
-            }
-            else
-            {
-                return new EmptyResult();
-            }
-        }
-
-        public ActionResult GenerateExcelForIssue()
-        {
-            // Generate a new unique identifier against which the file can be stored
-            string handle = DateTime.Now.Ticks.ToString();
-            try
-            {
-                using (ExcelPackage package = new ExcelPackage())
-                {
-                    ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
-                    ws.Cells["A1"].Value = "Project Name";
-                    ws.Cells["B1"].Value = "Ticket Code";
-                    ws.Cells["C1"].Value = "Ticket Type";
-                    ws.Cells["D1"].Value = "Ticket Name";
-                    ws.Cells["E1"].Value = "Ticket Description";
-                    ws.Cells["F1"].Value = "start Date";
-                    ws.Cells["G1"].Value = "End Date";
-                    ws.Cells["H1"].Value = "Expected Time";
-                    ws.Cells["I1"].Value = "Status";
-                    ws.Cells["J1"].Value = "Severity";
-                    ws.Cells["K1"].Value = "Percentage Complete";
-                    ws.Cells["L1"].Value = "Assigned to";
-                    ws.Cells["M1"].Value = "Actual Start Date";
-                    ws.Cells["N1"].Value = "Actual End Date";
-                    ws.Cells["O1"].Value = "IsActive";
-                    ws.Cells["P1"].Value = "IsValueAdded";
-                    ws.Cells["Q1"].Value = "URL";
-
-                    ws.Cells["A1:Q1"].Style.Font.Bold = true;
-                    ws.Cells["A1:Q1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    ws.Cells["A1:Q1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    ws.Cells["A1:Q1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
-                    ws.Cells["A1:Q1"].Style.Locked = true;
-
-                    // Format  cells as TEXT in a spreadsheet
-
-                    ws.Cells["A:Q"].Style.Numberformat.Format = "@";
-                  
-
-
-                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        package.SaveAs(memoryStream);
-                        memoryStream.Position = 0;
-                        TempData[handle] = memoryStream.ToArray();
-                    }
-                }
-            }
-            catch (Exception exE)
-            {
-                try
-                {
-                    using (ErrorHandle errH = new ErrorHandle())
-                    { errH.WriteErrorLog(exE); }
-                }
-                catch (Exception exC) { }
-            }
-            return Json(handle);
-
-        }
-        public ActionResult UploadExcelForCreateNewTicket(FormCollection formCollection)
-        {
-            string result = "";
-            string errMsg = string.Empty;
-            if (Request != null)
-            {
-                try
-                {
-                    StringBuilder sbContent = new StringBuilder();
-
-                    HttpPostedFileBase file = Request.Files[0];
-                    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-                    {
-                        string fileName = file.FileName;
-
-                        string fileContentType = file.ContentType;
-                        byte[] fileBytes = new byte[file.ContentLength];
-                        var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
-                        DataSet ds = ConvertExcelToDataSet(file.InputStream);
-
-                        #region create ticket
-                        DataTable dtHD = ds.Tables[0];
-                        if (dtHD != null && dtHD.Rows.Count > 0)
-                        {
-                            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                            UserModel userModel = new UserModel();
-                            DataTable dtUSER = userModel.GetUsersByID(UIH.UserId);
-
-                            userModel.EmailId = dtUSER.Rows[0]["EmailId"].ToString();
-                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
-                            int uploadSuccess = 0;
-                            foreach (DataRow dr in dtHD.Rows)
-                            {
-
-                                //checking mandatory field
-                                if (Convert.ToString(dr["ProjectName"]) != "" && Convert.ToString(dr["TicketCode"]) != "" && Convert.ToString(dr["TicketName"]) != "" && Convert.ToString(dr["TicketType"]) != "" &&
-                                    Convert.ToString(dr["startDate"]) != "" && Convert.ToString(dr["EndDate"]) != "" && Convert.ToString(dr["Severity"]) != "" && Convert.ToString(dr["Status"]) != ""
-                                    && Convert.ToString(dr["Assignedto"]) != "" && Convert.ToString(dr["PercentagComplete"]) != "")
-                                {
-                                    ProjectIssueModel model = new ProjectIssueModel();
-                                    model.IssueCode = Convert.ToString(dr["TicketCode"]);
-                                    model.IssueName = Convert.ToString(dr["TicketName"]);
-                                    model.IssueDescription = Convert.ToString(dr["TicketDescription"]);
-
-                                    model.IssuestartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
-                                    model.IssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
-                                    var startdt = model.IssuestartDate;
-                                    var enddt = model.IssueEndDate;
-                                    if (startdt > enddt)
-                                    {
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Start date should not be greater than end date please check your excel sheet </div></br>");
-                                        goto outer;
-                                    }
-
-                                    //  string[] Arr = new string[2];
-                                    // Arr = (dr["ExpectedTime"].ToString()).Split(':');
-                                    // string ExpectedTime = Arr[0] + '.' + Arr[1];
-                                    if (dr["ExpectedTime"].ToString() != "")
-                                    {
-                                        model.ExpectedDuration = Convert.ToDouble(dr["ExpectedTime"]);
-                                    }
-                                    else
-                                    {
-                                        model.ExpectedDuration = 0.00;
-                                    }
-
-
-                                    model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
-                                    if (Convert.ToString(dr["ActualStartDate"]) != "")
-                                    {
-                                        model.ActualIssueStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
-                                    }
-                                    if (Convert.ToString(dr["ActualEndDate"]) != "")
-                                    {
-                                        model.ActualIssueEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
-                                    }
-                                    if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }
-                                    else { model.IsActive = true; }
-
-                                    if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
-                                    else { model.IsValueAdded = true; }
-
-                                    model.AddedBy = loggedInUser;
-                                    model.AddedTS = DateTime.Now;
-                                    model.url = Convert.ToString(dr["URL"]);
-                                    model.DirectoryName = "";
-
-                                    //Get ProjectId
-                                    DataTable dtProjectId = model.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
-                                    if (dtProjectId.Rows.Count > 0)
-                                    {
-                                        model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
-                                        model.ProjectName = Convert.ToString(dr["ProjectName"]);
-                                    }
-                                    else
-                                    {
-                                        //For Project Name not correct
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; project name does not correct check your excel sheet</div><br/>");
-
-                                        goto outer;
-                                    }
-
-                                    //Get UserID
-                                    String username = Convert.ToString(dr["Assignedto"]);
-
-                                    string[] userNameArr = username.Split(';');
-                                    for (int j = 0; j < userNameArr.Length; j++)
-                                    {
-                                        DataTable dtUserId = model.GetUserIDByUserName(userNameArr[j], model.ProjectID);
-                                        if (dtUserId.Rows.Count > 0)
-                                        {
-                                            model.UserIdAssigned = model.UserIdAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
-                                        }
-                                        else
-                                        {
-                                            //For UserID not correct
-                                            int index = dtHD.Rows.IndexOf(dr);
-                                            int excelROW = index + 2;
-                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; User name does not correct please check your excel sheet and put ';' between two username</div><br/>");
-
-                                            goto outer;
-                                        }
-                                    }
-
-                                    //Get StatusID,Servity,TicktType 
-                                    DataSet dataset = model.Get_Status_Servity_TicketName(Convert.ToString(dr["Severity"]), Convert.ToString(dr["Status"]), Convert.ToString(dr["TicketType"]), UIH.UserId);
-                                    if (dataset != null && dataset.Tables[0] != null && dataset.Tables[1] != null && dataset.Tables[2] != null)
-                                    {
-
-                                        model.SeverityID = Convert.ToInt32(dataset.Tables[0].Rows[0]["SeverityID"]);
-                                        model.StatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
-                                        model.TicketTypeID = Convert.ToInt32(dataset.Tables[2].Rows[0]["ID"]);
-                                    }
-                                    else
-                                    {
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name/Servity/Ticket type does not correct please check your excel sheet </div></br>");
-                                        goto outer;
-                                    }
-                                    //save ticket
-                                    var insertStatus = model.InsertIssuedata(model, out int id);// out string strMailToName,out string strMailTo);
-                                    if (insertStatus)
-                                    {
-                                        if (id > 0)
-                                        {
-                                            uploadSuccess++;
-                                            //Save Comment details ...satrt
-                                            ProjectIssueModel projectIssueModel = new ProjectIssueModel();
-                                            projectIssueModel.IssueIdforstatus = id;
-                                            projectIssueModel.Comment = "";
-                                            projectIssueModel.StatusID = model.StatusID;
-                                            projectIssueModel.url = model.url;
-                                            projectIssueModel.DirectoryName = model.DirectoryName;
-                                            projectIssueModel.Duration = 0;
-                                            projectIssueModel.ActualIssueStartDate = model.ActualIssueStartDate;
-                                            projectIssueModel.ActualIssueEndDate = model.ActualIssueEndDate;
-                                            projectIssueModel.EditedBy = loggedInUser;
-                                            projectIssueModel.EditedTS = DateTime.Now;
-                                            var updateStatus = projectIssueModel.UpdateIssuestatus(projectIssueModel, out string strMailToName, out string strMailTo);
-
-                                            if (updateStatus)
-                                            {
-                                                string[] usernameArr = strMailToName.Split(';');
-                                                string[] userEmailArr = strMailTo.Split(';');
-                                                for (int j = 0; j < usernameArr.Length; j++)
-                                                {
-                                                    sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Ticket has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
-                                                }
-
-                                                model.ISErr = false;
-                                                model.ErrString = "Data Saved Successfully.";
-                                                TempData["ErrStatus"] = model.ISErr;
-                                                TempData["ErrMsg"] = model.ErrString.ToString();
-                                                result = "Success";
-                                            }
-                                            //save Comment details .. End
-
-                                        }
-                                    }  //ticket save ..End
-
-                                    else
-                                    {
-                                        model.ISErr = true;
-                                        model.ErrString = "Error Occured.";
-                                        TempData["ErrStatus"] = model.ISErr;
-                                        TempData["ErrMsg"] = model.ErrString.ToString();
-                                        result = "Error";
-                                    }
-                                    //****save end
-
-
-                                }
-                                else
-                                {
-                                    int index = dtHD.Rows.IndexOf(dr);
-                                    int excelROW = index + 2;
-                                    sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp;Please put all mandatory value  in your excel sheet </div></br>");
-
-                                    goto outer;
-                                }
-                            //***Next row
-                            outer:
-                                continue;
-                            }
-                            int totalEXCELRecord = dtHD.Rows.Count;
-                            int failure = totalEXCELRecord - uploadSuccess;
-                            sbContent.Append("<p><b>" + uploadSuccess + " rows Successfully saved out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
-                            sbContent.Append("<p><b>" + failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
-                            sendMail_InBulkTicketUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
-                        }
-                        #endregion
-                    }
-                }
-                catch (Exception exE)
-                {
-                    try
-                    {
-                        using (ErrorHandle errH = new ErrorHandle())
-                        { errH.WriteErrorLog(exE); }
-                    }
-                    catch (Exception exC) { }
-                    return null;
-                }
-            }
-            return Json(result);
-        }
-
-        public ActionResult GenerateExcelForProjectTask()
-        {
-            // Generate a new unique identifier against which the file can be stored
-            string handle = DateTime.Now.Ticks.ToString();
-            try
-            {
-                using (ExcelPackage package = new ExcelPackage())
-                {
-                    ExcelWorksheet ws = package.Workbook.Worksheets.Add("Sheet1");
-                    ws.Cells["A1"].Value = "Project Name";
-                    ws.Cells["B1"].Value = "Task Name";
-                    ws.Cells["C1"].Value = "Task code";
-                    ws.Cells["D1"].Value = "Parent Task";
-                    ws.Cells["E1"].Value = "start Date";
-                    ws.Cells["F1"].Value = "End Date";
-                    ws.Cells["G1"].Value = "IsMilestone";
-                    ws.Cells["H1"].Value = "Assigned to";
-                    ws.Cells["I1"].Value = "Percentage Complete";
-                    ws.Cells["J1"].Value = "Actual Start Date";
-                    ws.Cells["K1"].Value = "Actual End Date";
-                    ws.Cells["L1"].Value = "Status";
-                    ws.Cells["M1"].Value = "Expected Time";
-                    ws.Cells["N1"].Value = "IsActive";
-                    ws.Cells["O1"].Value = "IsValueAdded";
-                    ws.Cells["P1"].Value = "URL";
-
-                    ws.Cells["A1:P1"].Style.Font.Bold = true;
-                    ws.Cells["A1:P1"].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    ws.Cells["A1:P1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    ws.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Navy);
-                    ws.Cells["A1:P1"].Style.Locked = true;
-
-                    // Format  cells as TEXT in a spreadsheet
-
-                    ws.Cells["A:P"].Style.Numberformat.Format = "@";
-
-
-
-                    ws.Cells[ws.Dimension.Address].AutoFitColumns();
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        package.SaveAs(memoryStream);
-                        memoryStream.Position = 0;
-                        TempData[handle] = memoryStream.ToArray();
-                    }
-                }
-            }
-            catch (Exception exE)
-            {
-                try
-                {
-                    using (ErrorHandle errH = new ErrorHandle())
-                    { errH.WriteErrorLog(exE); }
-                }
-                catch (Exception exC) { }
-            }
-            return Json(handle);
-        }
-        
-        public ActionResult UploadExcelForCreateNewProjectTask(FormCollection formCollection)
-        {
-            string result = "";
-            string errMsg = string.Empty;
-            if (Request != null)
-            {
-                try
-                {
-                    StringBuilder sbContent = new StringBuilder();
-
-                    HttpPostedFileBase file = Request.Files[0];
-                    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-                    {
-                        string fileName = file.FileName;
-
-                        string fileContentType = file.ContentType;
-                        byte[] fileBytes = new byte[file.ContentLength];
-                        var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
-                        DataSet ds = ConvertExcelToDataSet(file.InputStream);
-
-                        #region create ticket
-                        DataTable dtHD = ds.Tables[0];
-                        if (dtHD != null && dtHD.Rows.Count > 0)
-                        {
-                            UserInfoHelper UIH = new UserInfoHelper(int.Parse(HttpContext.Session["sessUser"].ToString()));
-                            UserModel userModel = new UserModel();
-                            DataTable dtUSER = userModel.GetUsersByID(UIH.UserId);
-
-                            userModel.EmailId = dtUSER.Rows[0]["EmailId"].ToString();
-                            userModel.UserName = dtUSER.Rows[0]["Name"].ToString();
-                            int uploadSuccess = 0;
-                            foreach (DataRow dr in dtHD.Rows)
-                            {
-
-                                //checking mandatory field
-                                if (Convert.ToString(dr["ProjectName"]) != "" && Convert.ToString(dr["TaskName"]) != "" && Convert.ToString(dr["Taskcode"]) != "" && Convert.ToString(dr["startDate"]) != "" &&
-                                  Convert.ToString(dr["Status"]) != "" && Convert.ToString(dr["Assignedto"]) != "" && Convert.ToString(dr["PercentageComplete"]) != "")
-                                {
-                                    ProjectIssueModel projectIssueModel = new ProjectIssueModel();
-                                    ProjectTaskModel model = new ProjectTaskModel();
-
-                                    model.TaskName = Convert.ToString(dr["TaskName"]);
-                                    model.TaskCode = Convert.ToString(dr["Taskcode"]);
-
-                                    model.TaskStartDate = DateTimeHelper.ConvertStringToValidDate(dr["startDate"].ToString());
-                                    model.TaskEndDate = DateTimeHelper.ConvertStringToValidDate(dr["EndDate"].ToString());
-                                    var startdt = model.TaskStartDate;
-                                    var enddt = model.TaskEndDate;
-                                    if (startdt > enddt)
-                                    {
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Start date should not be greater than end date please check your excel sheet </div></br>");
-                                        goto outer;
-                                    }
-
-                                    if (dr["ExpectedTime"].ToString() != "")
-                                    {
-                                        model.ExpectedTime = Convert.ToDouble(dr["ExpectedTime"]);
-                                    }
-                                    else
-                                    {
-                                        model.ExpectedTime = 0.00;
-                                    }
-
-
-                                    model.CompletePercent = Convert.ToInt32(dr["PercentageComplete"]);
-                                    if (Convert.ToString(dr["ActualStartDate"]) != "")
-                                    {
-                                        model.ActualTaskStartDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualStartDate"].ToString());
-                                    }
-                                    if (Convert.ToString(dr["ActualEndDate"]) != "")
-                                    {
-                                        model.ActualTaskEndDate = DateTimeHelper.ConvertStringToValidDate(dr["ActualEndDate"].ToString());
-                                    }
-                                    if (dr["IsActive"].ToString() != "") { model.IsActive = Convert.ToBoolean(dr["IsActive"]); }
-                                    else { model.IsActive = true; }
-
-                                    if (dr["IsValueAdded"].ToString() != "") { model.IsValueAdded = Convert.ToBoolean(dr["IsValueAdded"]); }
-                                    else { model.IsValueAdded = true; }
-
-                                    if (dr["IsMilestone"].ToString() != "") { model.IsMilestone = Convert.ToBoolean(dr["IsMilestone"]); }
-                                    else { model.IsMilestone = true; }
-
-                                    model.AddedBy = loggedInUser;
-                                    model.AddedTS = DateTime.Now;
-                                    model.URL = Convert.ToString(dr["URL"]);
-                                    model.DirectoryName = "";
-
-                                    //Get ProjectId
-                                    DataTable dtProjectId = projectIssueModel.GetProjectIDByProjectName(Convert.ToString(dr["ProjectName"]));
-                                    if (dtProjectId.Rows.Count > 0)
-                                    {
-                                        model.ProjectID = Convert.ToInt32(dtProjectId.Rows[0]["ID"]);
-                                        model.ProjectName = Convert.ToString(dr["ProjectName"]);
-                                    }
-                                    else
-                                    {
-                                        //For Project Name not correct
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; project name does not correct check your excel sheet</div><br/>");
-
-                                        goto outer;
-                                    }
-                                    //Get Parent TaskId
-                                    if (Convert.ToString(dr["ParentTask"]) != "")
-                                    {
-                                        DataTable dtParentTaskId = model.GetParentTasksId_ByParentTaskName(Convert.ToString(dr["ParentTask"]), model.ProjectID);
-                                        if (dtParentTaskId.Rows.Count > 0)
-                                        {
-                                            model.ParentTaskId = Convert.ToInt32(dtParentTaskId.Rows[0]["TaskID"]);
-                                        }
-                                        else
-                                        {
-                                            //For Parent task Name not correct
-                                            int index = dtHD.Rows.IndexOf(dr);
-                                            int excelROW = index + 2;
-                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; Parent Task name does not correct check your excel sheet</div><br/>");
-
-                                            goto outer;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        model.ParentTaskId = 0;
-                                    }
-                                    //Get UserID
-                                    String username = Convert.ToString(dr["Assignedto"]);
-
-                                    string[] userNameArr = username.Split(';');
-                                    for (int j = 0; j < userNameArr.Length; j++)
-                                    {
-                                        DataTable dtUserId = projectIssueModel.GetUserIDByUserName(userNameArr[j], model.ProjectID);
-                                        if (dtUserId.Rows.Count > 0)
-                                        {
-                                            model.UserIdsTaskAssigned = model.UserIdsTaskAssigned + dtUserId.Rows[0]["Id"].ToString() + ',';
-                                        }
-                                        else
-                                        {
-                                            //For UserID not correct
-                                            int index = dtHD.Rows.IndexOf(dr);
-                                            int excelROW = index + 2;
-                                            sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; User name does not correct please check your excel sheet and put ';' between two username</div><br/>");
-
-                                            goto outer;
-                                        }
-                                    }
-
-                                    //Get StatusID 
-                                    DataSet dataset = projectIssueModel.Get_Status_Servity_TicketName("0", Convert.ToString(dr["Status"]),"0", UIH.UserId);
-                                    if (dataset != null && dataset.Tables[1] != null )
-                                    {
-
-                                        model.TaskStatusID = Convert.ToInt32(dataset.Tables[1].Rows[0]["StatusID"]);
-                                    }
-                                    else
-                                    {
-                                        int index = dtHD.Rows.IndexOf(dr);
-                                        int excelROW = index + 2;
-                                        sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp; status name does not correct please check your excel sheet </div></br>");
-                                        goto outer;
-                                    }
-                                    //save Project task
-                                    var insertStatus = model.InsertTaskdata(model, out int id);
-                                    if (insertStatus)
-                                    {
-                                        if (id > 0)
-                                        {
-                                            uploadSuccess++;
-                                             //Save Comment details ...satrt
-                                              
-                                                int outCommentID = 0;
-                                                ProjectTaskCommentModel ptcm = new ProjectTaskCommentModel();
-                                                ptcm.ProjectTaskID = id;
-                                                ptcm.Comment = "";
-                                                ptcm.TaskStatusID = model.TaskStatusID;
-                                                ptcm.AddedBy = loggedInUser;
-                                                ptcm.AddedTS = DateTime.Now;
-                                                ptcm.InsertCommentdata(ptcm, out outCommentID,out string strMailToName, out string strMailTo);
-
-                                            if (outCommentID > 0 && model.URL != "" )
-                                            {
-
-                                                ProjectTaskAttachmentModel ptam = new ProjectTaskAttachmentModel();
-                                                ptam.ProjectTaskCommentID = outCommentID;
-
-                                                ptam.DirectoryName = "";
-                                                ptam.ProjectTaskID = id;
-                                                ptam.URL = model.URL;
-                                                ptam.AddedBy = loggedInUser;
-                                                ptam.AddedTS = DateTime.Now;
-                                                ptam.UpdateAttachmentsdataWithProjectTaskID(ptam);
-
-                                            }
-                                            //mail
-                                            string[] usernameArr = strMailToName.Split(';');
-                                            string[] userEmailArr = strMailTo.Split(';');
-                                            for (int j = 0; j < usernameArr.Length; j++)
-                                            {
-                                                sendMail_afterSaveTicketandTask(usernameArr[j], userEmailArr[j], "Project Task has been assigned to you on project " + model.ProjectName + " by " + userModel.UserName);
-                                            }
-
-                                            //
-
-                                            model.ISErr = false;
-                                            model.ErrString = "Data Saved Successfully.";
-                                            TempData["ErrStatus"] = model.ISErr;
-                                            TempData["ErrMsg"] = model.ErrString.ToString();
-                                            result = "Success";
-
-                                            //save Comment details .. End
-
-                                        }
-                                    }  //Project task save ..End
-
-                                    else
-                                    {
-                                        model.ISErr = true;
-                                        model.ErrString = "Error Occured.";
-                                        TempData["ErrStatus"] = model.ISErr;
-                                        TempData["ErrMsg"] = model.ErrString.ToString();
-                                        result = "Error";
-                                    }
-                                    //****save end
-                                }
-                                else
-                                {
-                                    int index = dtHD.Rows.IndexOf(dr);
-                                    int excelROW = index + 2;
-                                    sbContent.Append("<div class='row'><b> Row No:" + excelROW + "<b>&nbsp;Please put all mandatory value  in your excel sheet </div></br>");
-
-                                    goto outer;
-                                }
-                            //***Next row
-                            outer:
-                                continue;
-                            }
-                            int totalEXCELRecord = dtHD.Rows.Count;
-                            int failure = totalEXCELRecord - uploadSuccess;
-                            sbContent.Append("<p><b>" + uploadSuccess + " rows Successfully saved out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
-                            sbContent.Append("<p><b>" + failure + " rows can not save out of " + totalEXCELRecord + " record in your excel sheet<b></p>");
-                            sendMail_InBulkTaskUploadingTime(userModel.UserName, userModel.EmailId, sbContent.ToString());
-                        }
-                        #endregion
-                    }
-                }
-                catch (Exception exE)
-                {
-                    try
-                    {
-                        using (ErrorHandle errH = new ErrorHandle())
-                        { errH.WriteErrorLog(exE); }
-                    }
-                    catch (Exception exC) { }
-                    return null;
-                }
-            }
-            return Json(result);
-        }
-
-        public void sendMail_InBulkTaskUploadingTime(string username, string emailid, string body)
-        {
-            string strSubject = @" Data processing report of Bulk Project Task";
-            string strBody = string.Format(@"Dear {0},
-                                                        <br><br>
-                                                        {1}
-                                                        <br><br>
-                                                        Please login to timetracker System to view the uploaded create Project Task.
-                                                        <br><br>
-                                                        Thanks & Regards,<br>
-                                                        QBA Administrator
-                                                        <br><br><br><br>
-                                                        *This is a system generated email. Please do not respond.
-                                                        ", username, body);
-
-            using (SendMailClass sm = new SendMailClass())
-            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
-
-        }
-        public void sendMail_InBulkTicketUploadingTime(string username,string emailid,string body)
-        {
-           string strSubject = @" Data processing report of Bulk Ticket";
-           string strBody = string.Format(@"Dear {0},
-                                                        <br><br>
-                                                        {1}
-                                                        <br><br>
-                                                        Please login to timetracker System to view the uploaded create Ticket.
-                                                        <br><br>
-                                                        Thanks & Regards,<br>
-                                                        QBA Administrator
-                                                        <br><br><br><br>
-                                                        *This is a system generated email. Please do not respond.
-                                                        ", username, body);
-
-            using (SendMailClass sm = new SendMailClass())
-            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
-
-        }
-        public void sendMail_afterSaveTicketandTask(string username, string emailid, string body)
-        {
-            string strSubject = @"Ticket Created";
-            string strBody = string.Format(@"Dear {0},
-                                                        <br><br>
-                                                        {1}
-                                                        <br><br>
-                                                        Please login to timetracker System to view the create Ticket.
-                                                        <br><br>
-                                                        Thanks & Regards,<br>
-                                                        QBA Administrator
-                                                        <br><br><br><br>
-                                                        *This is a system generated email. Please do not respond.
-                                                        ", username, body);
-
-            using (SendMailClass sm = new SendMailClass())
-            { sm.SendMail(emailid, strSubject, strBody, ConfigurationManager.AppSettings["smtpFrom"], ConfigurationManager.AppSettings["smtpPass"]); }
-
-        }
-        private DataSet ConvertExcelToDataSet(System.IO.Stream newStream)
-        {
-            DataSet ds = null;
-            try
-            {
-                using (var package = new ExcelPackage(newStream))
-                {
-                    ds = new DataSet();
-                    foreach (ExcelWorksheet ew in package.Workbook.Worksheets)
-                    {
-                        DataTable dt = new DataTable(ew.Name);
-                        var currentSheet = ew;// package.Workbook.Worksheets;
-                        var workSheet = ew;// currentSheet.First();
-                        var noOfCol = workSheet.Dimension.End.Column;
-                        var noOfRow = workSheet.Dimension.End.Row;
-
-                        for (int intCol = 1; intCol <= noOfCol; intCol++)
-                        {
-                            string strColName = (workSheet.Cells[1, intCol].Value != null) ? workSheet.Cells[1, intCol].Value.ToString().Trim() : "NoName" + intCol.ToString();
-                            dt.Columns.Add(Regex.Replace(strColName, @"[^0-9a-zA-Z]+", ""), typeof(string));
-                        }
-                        for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
-                        {
-                            DataRow dr = dt.NewRow();
-                            for (int intCol = 1; intCol <= noOfCol; intCol++)
-                            {
-                                dr[intCol - 1] = (workSheet.Cells[rowIterator, intCol].Text != null) ? workSheet.Cells[rowIterator, intCol].Text.ToString() : "";
-                            }
-                            dt.Rows.Add(dr);
-                        }
-                        ds.Tables.Add(dt);
-                    }
-                }
-            }
-            catch (Exception exE)
-            {
-                try
-                {
-                    using (ErrorHandle errH = new ErrorHandle())
-                    { errH.WriteErrorLog(exE); }
-                }
-                catch (Exception exC) { }
-            }
-            return ds;
-        }
-
-
     }
 }

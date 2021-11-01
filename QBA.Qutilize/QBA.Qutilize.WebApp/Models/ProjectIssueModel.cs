@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 
 namespace QBA.Qutilize.WebApp.Models
 {
@@ -25,12 +24,12 @@ namespace QBA.Qutilize.WebApp.Models
         public string IssueCodeforChangeStatus { get; set; }
 
         public string ProjectName { get; set; }
-        public DateTime TaskEndDate { get; set; }
+     
         public DateTime IssuestartDate { get; set; }
 
         [Display(Name = "Start Date")]
         public string IssueStartDateDisplay { get; set; }
-        public DateTime  IssueEndDate { get; set; }
+        public DateTime IssueEndDate { get; set; }
 
         [Display(Name = "End Date")]
         public string IssueEndDateDisplay { get; set; }
@@ -42,9 +41,8 @@ namespace QBA.Qutilize.WebApp.Models
 
         public List<ProjectStatusModel> StatusList { get; set; }
         public List<UserModel> UserList { get; set; }
+        
 
-        public string UserEmailId { get; set; }
-        public string UserName { get; set; }
         public string UserIdAssigned { get; set; }
         public string UserNameAssigned { get; set; }
 
@@ -73,24 +71,11 @@ namespace QBA.Qutilize.WebApp.Models
         public int IssueIdforstatus { get; set; }
         [Display(Name = "Comment")]
         public String Comment { get; set; }
-        [Display(Name = "URL")]
-        public string url { get; set; }
-
-        [Display(Name = "URL")]
-        public string commenturl { get; set; }
-
-        public string DirectoryName { get; set; }
 
         [Display(Name = "Time Spent")]
         public string Timespent { get; set; }
         public double Duration { get; set; }
 
-        [Display(Name = "Expected Time")]
-        public string ExpectedTime { get; set; }
-        public double ExpectedDuration { get; set; }
-
-        public DateTime TodayDate { get; set; }
-        public DateTime OneDayBeforeDate { get; set; }
 
         public DateTime? ActualIssueEndDate { get; set; }
 
@@ -105,7 +90,7 @@ namespace QBA.Qutilize.WebApp.Models
         public DateTime EditedTS { get; set; }
         public bool ISErr { get; set; }
         public string ErrString { get; set; }
-        public DateTime ss { get; set;}
+
         public ProjectIssueModel()
         {
            
@@ -232,14 +217,12 @@ namespace QBA.Qutilize.WebApp.Models
             return dt;
 
         }
-        public Boolean InsertIssuedata(ProjectIssueModel model, out int id)//out string strMailToName, out string strMailTo)
+        public Boolean InsertIssuedata(ProjectIssueModel model, out int id)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
             id = 0;
-          //  strMailToName = string.Empty;
-          //  strMailTo = string.Empty;
 
             try
             {
@@ -248,14 +231,13 @@ namespace QBA.Qutilize.WebApp.Models
                 SqlParameter[] param ={Status,
                     new SqlParameter("@ProjectID",model.ProjectID),
                     new SqlParameter("@IssueCode",model.IssueCode),
-                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
                     new SqlParameter("@IssueName",model.IssueName),
                     new SqlParameter("@IssueDescription", model.IssueDescription!= null?model.IssueDescription:""),
                     new SqlParameter("@IssuestartDate",model.IssuestartDate),
                     new SqlParameter("@IssueEndDate",model.IssueEndDate),
-                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0.00),
-                    new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@SeverityID",model.SeverityID),
+                    new SqlParameter("@TicketTypeID",model.TicketTypeID),
+                    new SqlParameter("@StatusID",model.StatusID),
                     new SqlParameter("@CompletePercent",model.CompletePercent),
                     new SqlParameter("@IssueStartDateActual",model.ActualIssueStartDate!= null?model.ActualIssueStartDate:null),
                     new SqlParameter("@IssueEndDateActual",model.ActualIssueEndDate!= null?model.ActualIssueEndDate:null),
@@ -264,13 +246,10 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@ADDEDBY",model.AddedBy),
                     new SqlParameter("@ADDEDTS",model.AddedTS),
                     new SqlParameter("@UserIds",model.UserIdAssigned)
+
+
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Insert", param);
-                //if (dt != null && dt.Rows.Count > 0)
-                //{
-                //    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
-                //    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
-                // }
 
                 if (!(Status.Value is DBNull))
                 {
@@ -309,61 +288,6 @@ namespace QBA.Qutilize.WebApp.Models
 
         }
 
-        public DataTable GetProjectIDByProjectName(string  projectName)
-        {
-            DataTable dt = null;
-            try
-            {
-                SqlParameter[] param ={
-                                        new SqlParameter("@projectName",projectName)
-                                      };
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetProjectId_ByProjectName]", param);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
-
-
-        public DataTable GetUserIDByUserName(string UserName,int projectID)
-        {
-            DataTable dt = null;
-            try
-            {
-                SqlParameter[] param ={
-                                        new SqlParameter("@userName",UserName),
-                                        new SqlParameter("@ProjectId",projectID)
-                                      };
-                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_GetUserId_ByUserName]", param);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
-        public DataSet Get_Status_Servity_TicketName(string SeverityName, string statusName,string TicketTypeName,int userID)
-        {
-            DataSet dataset = null;
-            try
-            {
-                SqlParameter[] param ={
-                                        new SqlParameter("@SeverityName",SeverityName),
-                                        new SqlParameter("@statusName",statusName),
-                                        new SqlParameter("@TicketTypeName",TicketTypeName),
-                                        new SqlParameter("@userID",userID)
-                                      };
-                dataset = objSQLHelper.ExecuteDataset("[dbo].[USP_Get_Status_Servity_TicketName]", param);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dataset;
-        }
-
         public Boolean UpdateIssuedata(ProjectIssueModel model)
         {
             string str = string.Empty;
@@ -390,11 +314,7 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@isValueAdded",model.IsValueAdded),
                     new SqlParameter("@EditedBY",model.EditedBy),
                     new SqlParameter("@EditedTS",model.EditedTS),
-                    new SqlParameter("@UserIds",model.UserIdAssigned),
-                    new SqlParameter("@ExpectedTime",model.ExpectedDuration!=0?model.ExpectedDuration:0)
-
-                
-
+                    new SqlParameter("@UserIds",model.UserIdAssigned)
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_Update", param);
 
@@ -410,21 +330,11 @@ namespace QBA.Qutilize.WebApp.Models
         }
 
 
-        public Boolean UpdateIssuestatus(ProjectIssueModel model, out string strMailToName, out string strMailTo)
+        public Boolean UpdateIssuestatus(ProjectIssueModel model)
         {
             string str = string.Empty;
             bool result = false;
             DataTable dt = null;
-            DataTable dtAttachment = null;
-            strMailToName = string.Empty;
-            strMailTo = string.Empty;
-            string FileDirectoryName = "";
-            int IssueCommentId;
-            if (model.DirectoryName != null && model.DirectoryName != "")
-            {
-                FileDirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-            }
-              
 
             try
             {
@@ -437,40 +347,11 @@ namespace QBA.Qutilize.WebApp.Models
                     new SqlParameter("@Comment", model.Comment!= null?model.Comment:""),
                     new SqlParameter("@Timespent",model.Duration!=0?model.Duration:0),
                     new SqlParameter("@EditedBY",model.EditedBy),
-                    new SqlParameter("@EditedTS",model.EditedTS),
-                     new SqlParameter("@url",model.url!=null?model.url:""),
-                    new SqlParameter("@DirectoryName",FileDirectoryName!=null?FileDirectoryName:"")
-
+                    new SqlParameter("@EditedTS",model.EditedTS)
+                   
                 };
                 dt = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssue_UpdateStatus", param);
 
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    // int.TryParse(dt.Rows[0][0].ToString(), out ID);
-                    strMailToName = Convert.ToString(dt.Rows[0]["MailToName"]);
-                    strMailTo = Convert.ToString(dt.Rows[0]["MailTo"]);
-                    IssueCommentId = Convert.ToInt32(dt.Rows[0]["IssueCommentId"]);
-                    if (model.DirectoryName != null && model.DirectoryName != "")
-                    {
-                        FileDirectoryName = model.DirectoryName.Replace("\"", string.Empty).Trim();
-                        var originalDirectory = new DirectoryInfo(string.Format("{0}IssueAttachments", System.Web.HttpContext.Current.Server.MapPath(@"\")));
-                        string pathString = Path.Combine(originalDirectory.ToString(), FileDirectoryName);
-                        string[] files = Directory.GetFiles(pathString);
-                        foreach (string file in files)
-                        {
-                            string Attachments = Path.GetFileName(file);
-                            SqlParameter[] param1 ={
-                        new SqlParameter("@IssueID",model.IssueIdforstatus),
-                        new SqlParameter("@DirectoryName",FileDirectoryName),
-                        new SqlParameter("@AttachmentName",Attachments),
-                        new SqlParameter("@AddedTS",model.EditedTS),
-                        new SqlParameter("@AddedBy",model.EditedBy),
-                        new SqlParameter("@IssueCommentId",IssueCommentId)
-                         };
-                            dtAttachment = objSQLHelper.ExecuteDataTable("USPtblMasterProjectIssueAttachments_Insert", param1);
-                        }
-                    }
-                }
 
                 result = true;
             }
@@ -478,8 +359,6 @@ namespace QBA.Qutilize.WebApp.Models
             {
                 result = false;
             }
-
-         
             return result;
 
         }

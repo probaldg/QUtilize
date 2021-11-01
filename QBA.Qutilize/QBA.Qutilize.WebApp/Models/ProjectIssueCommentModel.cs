@@ -25,21 +25,21 @@ namespace QBA.Qutilize.WebApp.Models
         SqlHelper objSQLHelper = new SqlHelper();
         #endregion
 
-        public DataSet GetIssueCommentByIssueID(int ISSUEID)
+        public DataTable GetIssueCommentByIssueID(int ISSUEID)
         {
-            DataSet ds = null;
+            DataTable dt = null;
             try
             {
                 SqlParameter[] param ={
                                         new SqlParameter("@ISSUEID",ISSUEID)
                                       };
-                ds = objSQLHelper.ExecuteDataset("[dbo].[USP_tblMapIssueComment_GetByISSUEID]", param);
+                dt = objSQLHelper.ExecuteDataTable("[dbo].[USP_tblMapIssueComment_GetByISSUEID]", param);
             }
             catch (Exception ex)
             {
 
             }
-            return ds;
+            return dt;
         }
     }
 }

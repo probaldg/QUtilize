@@ -23,7 +23,6 @@ namespace QBA.Qutilize.Models
         public DateTime? ActualTaskEndDate { get; set; }
         public string ActualTaskEndDateDisplay { get; set; }
         public int TaskDepthLevel { get; set; }
-        public int SubTaskCount { get; set; }
         public bool IsActive { get; set; }
         public bool? IsMilestone { get; set; }
         public int AddedBy { get; set; }

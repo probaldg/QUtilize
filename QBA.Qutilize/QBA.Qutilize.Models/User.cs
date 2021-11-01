@@ -8,7 +8,6 @@ namespace QBA.Qutilize.Models
         public User()
         {
             Projects = new List<Project>();
-            Tasks = new List<ProjectTask>();
             Roles = new List<Roles>();
         }
         public int ID { get; set; }
@@ -18,9 +17,8 @@ namespace QBA.Qutilize.Models
         public string Password { get; set; }
         public ICollection<Roles> Roles { get; set; }
         public ICollection<Project> Projects { get; set; }
-        public ICollection<ProjectTask> Tasks { get; set; }
 
-
+       
         public string CreatedBy { get; set; }
         public DateTime CreateDate { get; set; }
         public string EditedBy { get; set; }

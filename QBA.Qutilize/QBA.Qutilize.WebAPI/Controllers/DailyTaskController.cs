@@ -29,7 +29,8 @@ namespace QBA.Qutilize.WebAPI.Controllers
 
             try
             {
-                var queryResult =_dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, dailyTaskModel.StartTime.ToString(), dailyTaskModel.UserId.ToString(), true).ToList();
+
+                var queryResult = _dbContext.USPDailyTasks_InsertTaskStartTime(dailyTaskModel.UserId, dailyTaskModel.ProjectId, dailyTaskModel.StartTime.ToString(), dailyTaskModel.UserId.ToString(), true).ToList();
 
                 _dbContext.SaveChanges();
                 if (queryResult != null && queryResult.Count > 0)
